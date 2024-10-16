@@ -114,7 +114,7 @@ public class InputReader : MonoBehaviour
             {
                 Attack1?.Invoke();
             }
-            else if (attack1HoldTimer > attackReleaseThreshold && !a1N2)// charged swing
+            else if (attack1HoldTimer > attackReleaseThreshold)// charged swing
             {
                 Attack1Charged?.Invoke();
             }
@@ -136,7 +136,7 @@ public class InputReader : MonoBehaviour
                 Attack2?.Invoke();
             }
             
-            else if (attack2HoldTimer > attackReleaseThreshold && !a1N2) // charged swing
+            else if (attack2HoldTimer > attackReleaseThreshold) // charged swing
             {
                 Attack2Charged?.Invoke();
             }
