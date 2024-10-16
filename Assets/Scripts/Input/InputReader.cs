@@ -105,7 +105,7 @@ public class InputReader : MonoBehaviour
         {
             if (attack1HoldTimer < attackReleaseThreshold && a1N2) // attack 1+2 swing
             {
-                Debug.Log("Attack now!");
+                // Debug.Log("Attack now!");
                 Attack1n2?.Invoke();
                 a1N2 = false;
             }
