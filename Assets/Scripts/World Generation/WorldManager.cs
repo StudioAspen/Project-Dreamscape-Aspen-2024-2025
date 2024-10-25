@@ -2,72 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using KBCore.Refs;
+using UnityEngine.Events;
 
 public class WorldManager : MonoBehaviour
 {
-    private MasterLevelManager masterLevelManager;
+    [Header("References")]
+    [SerializeField, Scene] private MasterLevelManager masterLevelManager;
 
-    [Header("Misc Controls")]
-    [SerializeField] public bool isInSkyView;
-
-    [Header("Island Selection")]
-    [SerializeField] private GameObject playerCamera;
-    [SerializeField] private GameObject islandSelectCamera;
+    [Header("Settings")]
     public bool IsSelecting;
+    private int activeLandCount;
 
-    private void Awake()
+    [HideInInspector] public UnityEvent OnWaveFinished = new UnityEvent();
+
+    private void OnValidate()
     {
-        masterLevelManager = FindAnyObjectByType<MasterLevelManager>();
+        this.ValidateRefs();
     }
 
-    void Update()
+    private void Start()
     {
-        if (AreAllWavesFinished() && !IsSelecting)
-        {
-            IsSelecting = true;
-
-            FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
-            //masterLevelManager.SpawnSelectionSpheres();
-        }
-      
-/*        if (Input.GetKeyDown(KeyCode.Q) && isInSkyView == false) 
-        {
-            islandTimertext.SetActive(true);
-            islandSelectCamera.SetActive(true);
-            playerCamera.SetActive(false);
-            isInSkyView = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.E) && isInSkyView == true)
-        {
-           
-            islandSelectCamera.SetActive(false);
-            playerCamera.SetActive(true);
-            islandTimertext.SetActive(false);
-            isInSkyView = false;
-        }*/
-    }
-
-    private bool AreAllWavesFinished()
-    {
-        bool finished = true;
-
-        foreach(IslandManager island in masterLevelManager.SpawnedIslands)
-        {
-            EnemySpawner enemyManager = island.EnemySpawner;
-
-            if (!enemyManager.IsWaveFinished) finished = false;
-        }
-
-        return finished;
+        activeLandCount = 1;
     }
 
     public void PrepareForNextWave() 
     {
+        activeLandCount = masterLevelManager.SpawnedIslands.Count;
         foreach (IslandManager island in masterLevelManager.SpawnedIslands) 
         {
-            island.LevelUp();
             island.EnemySpawner.WaveReset();
         }
     }
+
+    public void DecrementActiveLandCount()
+    {
+        activeLandCount--;
+        if (activeLandCount == 0)
+        {
+            IsSelecting = true;
+
+            OnWaveFinished?.Invoke();
+        }
+    }
+
 }
