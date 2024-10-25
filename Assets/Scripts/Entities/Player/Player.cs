@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : Entity
 {
@@ -12,8 +13,7 @@ public class Player : Entity
     [SerializeField, Self] private CharacterController controller;
     [SerializeField, Self] private InputReader input;
 
-    [Header("Player: Grounded Movement")]
-    [SerializeField] private float rotationSpeed = 5f;
+    [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
     public float MovementSpeed => movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
     private float movementOnSlopeSpeedModifier = 1f;
@@ -49,9 +49,6 @@ public class Player : Entity
     private float dashDelayTimer = Mathf.Infinity;
     private Coroutine dashCoroutine;
 
-    [Header("Player: Camera")]
-    public bool CameraLocked = true;
-
     #region States 
     public PlayerIdleState PlayerIdleState { get; private set; }
     public PlayerWalkingState PlayerWalkingState { get; private set; }
@@ -65,18 +62,22 @@ public class Player : Entity
     #endregion
 
     [SerializeField] private float nearbyEntityRadius = 2.5f;
-    public List<Entity> NearbyEntities; 
+    public List<Entity> NearbyEntities;
 
-    private void OnEnable()
+    protected override void OnOnEnable()
     {
+        base.OnOnEnable();
+
         input.Jump.AddListener(HandleJumpInput);
         input.SprintHold.AddListener(HandleSprintInput);
         input.SprintRelease.AddListener(HandleSprintReleaseInput);
         input.Dash.AddListener(HandleDashInput);
     }
 
-    private void OnDisable()
+    protected override void OnOnDisable()
     {
+        base.OnOnDisable();
+
         input.Jump.RemoveListener(HandleJumpInput);
         input.SprintHold.RemoveListener(HandleSprintInput);
         input.SprintRelease.RemoveListener(HandleSprintReleaseInput);
@@ -97,6 +98,8 @@ public class Player : Entity
 
         SetStartState(PlayerIdleState);
         SetDefaultState(PlayerIdleState);
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     protected override void OnUpdate()
@@ -114,9 +117,7 @@ public class Player : Entity
 
         HandleAnimations();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position);
-
-        //Cursor.lockState = CameraLocked ? CursorLockMode.Locked : CursorLockMode.None;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position, gameObject);
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
     }
@@ -150,7 +151,14 @@ public class Player : Entity
 
     protected override void CheckGrounded()
     {
-        //IsGrounded is always false for the first 0.1f seconds of being airborne
+        //IsGrounded is always false until the apex of the jump
+        if (IsJumping && inAirTimer > 0f && inAirTimer < Mathf.Sqrt(jumpHeight * -2f * physicsSettings.Gravity) / Mathf.Abs(physicsSettings.Gravity))
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        //IsGrounded is always false for the first 0.1 seconds in air
         if (inAirTimer > 0f && inAirTimer < 0.1f)
         {
             IsGrounded = false;
@@ -381,11 +389,6 @@ public class Player : Entity
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
     }
 
-    public float Distance(Vector3 pos)
-    {
-        return Vector3.Distance(transform.position, pos);
-    }
-
     public void ReplaceComboAnimationClip(AnimationClip newClip)
     {
         AnimatorOverrideController aoc = new AnimatorOverrideController(animator.runtimeAnimatorController);
@@ -408,5 +411,10 @@ public class Player : Entity
     public void SetComboAnimationSpeed(float speed)
     {
         animator.SetFloat("ComboAnimationSpeed", speed);
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 }
