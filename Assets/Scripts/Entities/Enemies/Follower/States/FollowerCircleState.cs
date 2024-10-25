@@ -38,6 +38,8 @@ public class FollowerCircleState : EnemyBaseState
 
     private void Ticker_OnTick()
     {
+        if (enemy.Target == null) return;
+
         if (enemy.Target.TryGetComponent(out Player player))
         {
             if (player.NearbyEntities.Count > 0)
