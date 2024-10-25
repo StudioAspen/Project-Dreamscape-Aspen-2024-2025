@@ -10,7 +10,7 @@ public abstract class Augment : MonoBehaviour
 
     protected Player player;
 
-    public virtual void Start()
+    protected virtual void Start()
     {
         player = GetComponent<AugmentManager>().Player.GetComponent<Player>();
     }
