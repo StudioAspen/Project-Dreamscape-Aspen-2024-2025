@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 3642624367869852063}
   - component: {fileID: 8171416551064500414}
   m_Layer: 8
-  m_Name: IslandPrefab
+  m_Name: LandPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -370,9 +370,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f02db51567371a4439e810df791d4573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldManager: {fileID: 0}
   islandManager: {fileID: 6052383663745716427}
   enemyPrefabs:
-  - {fileID: 2211407975701868877, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
+  - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
+  - {fileID: -71318835558361112, guid: 8d65e1d3225116f43bc402345430faf9, type: 3}
   weightingSkewFactor: 2.2
   spawnInterval: 3
   baseCurrency: 2

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using KBCore.Refs;
+using UnityEngine.Events;
 
 public class WorldManager : MonoBehaviour
 {
@@ -13,30 +14,16 @@ public class WorldManager : MonoBehaviour
     public bool IsSelecting;
     private int activeLandCount;
 
+    [HideInInspector] public UnityEvent OnWaveFinished = new UnityEvent();
+
     private void OnValidate()
     {
         this.ValidateRefs();
     }
 
-    void Update(){}
-
     private void Start()
     {
         activeLandCount = 1;
-    }
-
-    private bool AreAllWavesFinished()
-    {
-        bool finished = true;
-
-        foreach(IslandManager island in masterLevelManager.SpawnedIslands)
-        {
-            EnemySpawner enemyManager = island.EnemySpawner;
-
-            if (!enemyManager.IsWaveFinished) finished = false;
-        }
-
-        return finished;
     }
 
     public void PrepareForNextWave() 
@@ -54,7 +41,8 @@ public class WorldManager : MonoBehaviour
         if (activeLandCount == 0)
         {
             IsSelecting = true;
-            FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
+
+            OnWaveFinished?.Invoke();
         }
     }
 

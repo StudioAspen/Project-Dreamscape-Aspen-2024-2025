@@ -36,11 +36,24 @@ public class Enemy : Entity
     {
         spawner = e;
     }
+
     protected override void OnAwake()
     {
         base.OnAwake();
 
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
+    }
+
+    protected override void OnOnEnable()
+    {
+        base.OnOnEnable();
+
+        SetStartState(EnemyIdleState);
+    }
+
+    protected override void OnOnDisable()
+    {
+        base.OnOnDisable();
     }
 
     protected override void OnStart()
@@ -49,7 +62,6 @@ public class Enemy : Entity
 
         ChangeTeam(1);
 
-        SetStartState(EnemyIdleState);
         SetDefaultState(EnemyIdleState);
     }
 
@@ -122,12 +134,12 @@ public class Enemy : Entity
         if(path.Count < 2) return;
 
         #region Debug
-        Vector3 prevCorner = transform.position;
+/*        Vector3 prevCorner = transform.position;
         foreach (Vector3 wayPoint in path)
         {
             Debug.DrawLine(prevCorner, wayPoint, Color.red);
             prevCorner = wayPoint;
-        }
+        }*/
         #endregion
 
         Vector3 currDest = path[1];
@@ -155,8 +167,13 @@ public class Enemy : Entity
     protected override void OnDeath()
     {
         base.OnDeath();
-        spawner.RemoveEnemyFromList(this);
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        spawner.RemoveEnemyFromList(this);
     }
 
     protected virtual void AssignTarget()

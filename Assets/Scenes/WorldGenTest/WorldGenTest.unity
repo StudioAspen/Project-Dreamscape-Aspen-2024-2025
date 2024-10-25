@@ -682,6 +682,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   masterLevelManager: {fileID: 1675041088}
   IsSelecting: 0
+  OnWaveFinished:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &657163285
 Transform:
   m_ObjectHideFlags: 0
@@ -1864,6 +1867,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06bdd953341903b40830c8427f7a3aa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldManager: {fileID: 657163284}
+  masterLevelManager: {fileID: 1675041088}
   availableIslands:
   - islandName: Forest
     islandImage: {fileID: 0}

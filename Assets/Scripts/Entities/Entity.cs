@@ -69,9 +69,9 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     protected virtual void OnOnEnable()
     {
-        SetStartState(EntityEmptyState);
-
         CurrentHealth = MaxHealth;
+
+        SetStartState(EntityEmptyState);
     }
 
     private void OnDisable()

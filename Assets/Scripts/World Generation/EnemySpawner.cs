@@ -102,10 +102,8 @@ public class EnemySpawner : MonoBehaviour
 
                 Enemy e = enemyPooler.SpawnObject().GetComponent<Enemy>();
                 e.transform.position = islandManager.GetRandomEnemySpawn().position;
-
-
-                Enemy e = Instantiate(enemyPrefabs[i], islandManager.GetRandomEnemySpawn().position, Quaternion.identity);
                 e.Init(this);
+
                 enemiesSpawned.Add(e);
 
                 currentShopCurrency -= enemyPrefabs[i].Cost;

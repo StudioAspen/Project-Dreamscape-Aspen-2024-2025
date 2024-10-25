@@ -16,14 +16,21 @@ public class Follower : Enemy
         base.OnAwake();
     }
 
+    protected override void OnOnEnable()
+    {
+        base.OnOnEnable();
+
+        // SetStartState(EnemyIdleState);
+    }
+
+    protected override void OnOnDisable()
+    {
+        base.OnOnDisable();
+    }
+
     protected override void OnStart()
     {
         base.OnStart();
-
-        ChangeTeam(1);
-
-        SetStartState(EnemyIdleState);
-        SetDefaultState(EnemyIdleState);
     }
 
     protected override void OnUpdate()
