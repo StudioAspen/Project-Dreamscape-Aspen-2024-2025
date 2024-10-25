@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
 
 public class Enemy : Entity
@@ -14,6 +15,7 @@ public class Enemy : Entity
     [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
+    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
@@ -26,6 +28,8 @@ public class Enemy : Entity
 
     public Entity Target { get; private set; }
     private EnemySpawner spawner;
+
+    [HideInInspector] public bool IsAttackAnimationPlaying;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -63,6 +67,8 @@ public class Enemy : Entity
         ChangeTeam(1);
 
         SetDefaultState(EnemyIdleState);
+
+        Weapon.DisableTriggers();
     }
 
     protected override void OnUpdate()
@@ -82,6 +88,21 @@ public class Enemy : Entity
     private void LateUpdate()
     {
         DebugState();
+    }
+
+    private void OnAnimatorMove()
+    {
+        OnOnAnimatorMove();
+    }
+
+    protected virtual void OnOnAnimatorMove()
+    {
+        if (!IsAttackAnimationPlaying) return;
+
+        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        //desiredAnimationMovement.y = 0f;
+
+        rigidBody.MovePosition(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -196,5 +217,21 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+    }
+
+    public void FinishAnimation()
+    {
+        IsAttackAnimationPlaying = false;
+        DisableWeaponTriggers();
+    }
+
+    public virtual void EnableWeaponTriggers()
+    {
+        Weapon.EnableTriggers();
+    }
+
+    public virtual void DisableWeaponTriggers()
+    {
+        Weapon.DisableTriggers();
     }
 }

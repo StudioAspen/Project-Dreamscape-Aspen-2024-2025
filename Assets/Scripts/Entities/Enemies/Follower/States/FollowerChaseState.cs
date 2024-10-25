@@ -29,6 +29,14 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
+        if(follower.Distance(follower.Target) < follower.AttackRange)
+        {
+            Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
+            follower.FollowerAttackState.SetAttackDirection(attackDir);
+            follower.ChangeState(follower.FollowerAttackState);
+            return;
+        }
+
         if (follower.Target.TryGetComponent(out Player player))
         {
             if (player.NearbyEntities.Count > 0)
@@ -45,7 +53,10 @@ public class FollowerChaseState : EnemyChaseState
 
                 if (!qualifiedToChase)
                 {
-                    follower.ChangeState(follower.FollowerCircleState);
+                    if (follower.Distance(follower.Target) < follower.MaxCircleRadius)
+                    {
+                        follower.ChangeState(follower.FollowerCircleState);
+                    }
                 }
             }
         }

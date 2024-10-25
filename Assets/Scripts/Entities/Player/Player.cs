@@ -64,16 +64,20 @@ public class Player : Entity
     [SerializeField] private float nearbyEntityRadius = 2.5f;
     public List<Entity> NearbyEntities;
 
-    private void OnEnable()
+    protected override void OnOnEnable()
     {
+        base.OnOnEnable();
+
         input.Jump.AddListener(HandleJumpInput);
         input.SprintHold.AddListener(HandleSprintInput);
         input.SprintRelease.AddListener(HandleSprintReleaseInput);
         input.Dash.AddListener(HandleDashInput);
     }
 
-    private void OnDisable()
+    protected override void OnOnDisable()
     {
+        base.OnOnDisable();
+
         input.Jump.RemoveListener(HandleJumpInput);
         input.SprintHold.RemoveListener(HandleSprintInput);
         input.SprintRelease.RemoveListener(HandleSprintReleaseInput);

@@ -163,6 +163,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     public virtual void Die()
     {
+        if(pool == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         pool.Release(gameObject);
     }
 
@@ -279,7 +285,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         List<Entity> targets = new List<Entity>();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, targetDetectionRadius);
+        Collider[] hits = Physics.OverlapSphere(transform.position, targetDetectionRadius, LayerMask.GetMask("Entity"));
         if (hits == null) return targets;
         if (hits.Length == 0) return targets;
 
@@ -298,7 +304,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         List<Entity> targets = new List<Entity>();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, radius);
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius, LayerMask.GetMask("Entity"));
         if (hits == null) return targets;
         if (hits.Length == 0) return targets;
 
