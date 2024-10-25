@@ -1,11 +1,7 @@
 using KBCore.Refs;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
-using static EnemySpawner;
-using UnityEngine.InputSystem.HID;
 using DG.Tweening;
 
 public class Weapon : MonoBehaviour
@@ -26,6 +22,8 @@ public class Weapon : MonoBehaviour
     private Ray currentFrameCollisionRay;
     private Ray previousFrameCollisionRay;
     private int currentHitFrame;
+    [HideInInspector] public UnityEvent<Entity> OnWeaponStartSwing = new UnityEvent<Entity>();
+    [HideInInspector] public UnityEvent<Entity> OnWeaponEndSwing = new UnityEvent<Entity>();
     [HideInInspector] public UnityEvent<Entity, Entity, Vector3> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3>();
 
     [Header("Weapon: Combo")]
@@ -134,9 +132,9 @@ public class Weapon : MonoBehaviour
         StartImpactFrames(0.1f);
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
-        CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
+        //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
-        victim.TakeDamage(GetRandomDamage(), hitPoint, holderEntity);
+        victim.TakeDamage(GetRandomDamage(), hitPoint, holderEntity.gameObject);
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint);
     }

@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3490398193883977143}
-  - component: {fileID: -4810948276731600067}
+  - component: {fileID: -71318835558361112}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
   m_Layer: 9
-  m_Name: Follower
+  m_Name: Dummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ Transform:
   - {fileID: 2996173690986891309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4810948276731600067
+--- !u!114 &-71318835558361112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,26 +46,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7894c5e290feeb840a15d05698e254c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ebb84e9a941c36418bf783de194e868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
-  hitNumberPrefab: {fileID: 5332358636057589605, guid: 82d0321b56e44764eaafb464a992de85,
-    type: 3}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 50
-  <Level>k__BackingField: 1
+  <MaxHealth>k__BackingField: 1
+  <Level>k__BackingField: 0
   IsGrounded: 0
   baseSpeed: 3
   velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 5
-  targetDetectionRadius: 25
+  targetDetectionRadius: 10
+  OnEntityTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEntityDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  OnKillEntity:
+    m_PersistentCalls:
+      m_Calls: []
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
-  <Cost>k__BackingField: 1
-  <CircleEntityCountThreshold>k__BackingField: 2
+  <Cost>k__BackingField: 3
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5

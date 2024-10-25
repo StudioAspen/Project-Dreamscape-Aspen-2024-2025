@@ -8,7 +8,7 @@ public class Follower : Enemy
     [field: SerializeField] public int CircleEntityCountThreshold { get; private set; } = 2;
 
     #region States
-    public FollowerCircleState EnemyCircleState { get; private set; }
+    public FollowerCircleState FollowerCircleState { get; private set; }
     #endregion
 
     protected override void OnAwake()
@@ -16,14 +16,21 @@ public class Follower : Enemy
         base.OnAwake();
     }
 
+    protected override void OnOnEnable()
+    {
+        base.OnOnEnable();
+
+        // SetStartState(EnemyIdleState);
+    }
+
+    protected override void OnOnDisable()
+    {
+        base.OnOnDisable();
+    }
+
     protected override void OnStart()
     {
         base.OnStart();
-
-        ChangeTeam(1);
-
-        SetStartState(EnemyIdleState);
-        SetDefaultState(EnemyIdleState);
     }
 
     protected override void OnUpdate()
@@ -40,6 +47,7 @@ public class Follower : Enemy
     {
         base.InitializeStates();
 
-        EnemyCircleState = new FollowerCircleState(this);
+        EnemyChaseState = new FollowerChaseState(this);
+        FollowerCircleState = new FollowerCircleState(this);
     }
 }

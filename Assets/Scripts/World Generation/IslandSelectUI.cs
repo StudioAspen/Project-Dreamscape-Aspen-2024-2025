@@ -1,4 +1,5 @@
 using DG.Tweening;
+using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,6 +8,9 @@ using UnityEngine.UI;
 
 public class IslandSelectUI : MonoBehaviour
 {
+    [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private MasterLevelManager masterLevelManager;
+
     [System.Serializable]
     public class Island
     {
@@ -20,6 +24,21 @@ public class IslandSelectUI : MonoBehaviour
     public float animationDuration = 1f; // Duration of the animation
     public float spacing = 10f;  // Space between buttons
     public float bounceDuration = 5f; // Duration of the bounce
+
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
+
+    private void Awake()
+    {
+        worldManager.OnWaveFinished.AddListener(WorldManager_OnWaveFinished);
+    }
+
+    private void OnDestroy()
+    {
+        worldManager.OnWaveFinished.RemoveListener(WorldManager_OnWaveFinished);
+    }
 
     void Start()
     {
@@ -35,7 +54,12 @@ public class IslandSelectUI : MonoBehaviour
 
     }
 
-    public void PrepareIslandSelection()
+    private void WorldManager_OnWaveFinished()
+    {
+        PrepareIslandSelection();
+    }
+
+    private void PrepareIslandSelection()
     {
         Time.timeScale = 0f; // Freeze the game
 
@@ -128,7 +152,7 @@ public class IslandSelectUI : MonoBehaviour
     void AssignIslandToSpheres(Island selectedIsland)
     {
         // Drop the spheres
-        FindObjectOfType<MasterLevelManager>().SpawnSelectionSpheres();
+        masterLevelManager.SpawnSelectionSpheres();
     }
 
 

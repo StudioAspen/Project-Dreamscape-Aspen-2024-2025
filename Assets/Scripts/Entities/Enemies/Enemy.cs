@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
@@ -24,11 +25,17 @@ public class Enemy : Entity
     private bool lookAtPath;
 
     public Entity Target { get; private set; }
+    private EnemySpawner spawner;
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; private set; }
-    public EnemyChaseState EnemyChaseState { get; private set; }
+    public EnemyIdleState EnemyIdleState { get; protected set; }
+    public EnemyChaseState EnemyChaseState { get; protected set; }
     #endregion
+
+    public void Init(EnemySpawner e)
+    {
+        spawner = e;
+    }
 
     protected override void OnAwake()
     {
@@ -37,13 +44,24 @@ public class Enemy : Entity
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
+    protected override void OnOnEnable()
+    {
+        base.OnOnEnable();
+
+        SetStartState(EnemyIdleState);
+    }
+
+    protected override void OnOnDisable()
+    {
+        base.OnOnDisable();
+    }
+
     protected override void OnStart()
     {
         base.OnStart();
 
         ChangeTeam(1);
 
-        SetStartState(EnemyIdleState);
         SetDefaultState(EnemyIdleState);
     }
 
@@ -52,13 +70,13 @@ public class Enemy : Entity
         base.OnUpdate();
 
         HandleAnimations();
-
-        MoveTowardsDestination();
     }
 
     protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
+        
+        MoveTowardsDestination();
     }
 
     private void LateUpdate()
@@ -126,7 +144,12 @@ public class Enemy : Entity
 
         Vector3 currDest = path[1];
         if (lookAtPath) LookAt(currDest);
-        transform.position = Vector3.MoveTowards(transform.position, currDest, MovementSpeed * Time.deltaTime);
+
+        Vector3 dir = currDest - transform.position;
+        dir.y = 0f;
+        dir.Normalize();
+
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
 
         if (Distance(currDest) < 0.05f)
         {
@@ -144,8 +167,13 @@ public class Enemy : Entity
     protected override void OnDeath()
     {
         base.OnDeath();
-
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+    }
+
+    public override void Die()
+    {
+        base.Die();
+        spawner.RemoveEnemyFromList(this);
     }
 
     protected virtual void AssignTarget()
@@ -158,5 +186,15 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
+    }
+
+    public override void LookAt(Vector3 target)
+    {
+        Vector3 dir = target - transform.position;
+
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 }
