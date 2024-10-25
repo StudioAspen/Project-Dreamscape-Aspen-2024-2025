@@ -14,8 +14,4 @@ public class AoeAugment : Augment
         base.Activate();
         Debug.Log("Explosion Activated");
     }
-
-    // Implementing Evan's abstract from his Augment to not return error
-    public override AugmentBranch GetBranch() { return AugmentBranch.NONE; } // chose a random branch name existed
-    public override int GetLevel() { return 1; }
 }

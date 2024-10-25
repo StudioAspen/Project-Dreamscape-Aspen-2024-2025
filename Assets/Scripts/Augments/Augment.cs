@@ -11,12 +11,20 @@ public abstract class Augment : MonoBehaviour // public class Augment : Scriptab
     [field: SerializeField] public Augments Requirement { get; private set; }
     public bool isActive = false;
 
+    // Evan 
+    [Header("Augment Attributes")]
+    [SerializeField] public AugmentBranch Branch;
+    [SerializeField] public int Level;
+
+    protected Player player;
+
+    public virtual void Start()
+    {
+        player = GetComponent<AugmentManager>().Player.GetComponent<Player>();
+    }
+
     public virtual void Activate()
     {
         Debug.Log("Augment Activated");
     }
-
-    // Evan
-    public abstract AugmentBranch GetBranch();
-    public abstract int GetLevel();
 }
