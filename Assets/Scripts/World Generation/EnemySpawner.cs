@@ -165,6 +165,9 @@ public class EnemySpawner : MonoBehaviour
     public void RemoveEnemyFromList(Enemy e)
     {
         enemiesSpawned.Remove(e);
+
+        if (currentShopCurrency > 0) return;
+
         if(enemiesSpawned.Count == 0)
         {
             worldManager.DecrementActiveLandCount();
