@@ -1,15 +1,17 @@
 using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MomentumSystem : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private Player player;
+    [SerializeField] private TMP_Text debugText;
 
     [Header("Settings")]
-    [SerializeField] private float baseTimeBetween = 3f;
+    [SerializeField] private float baseTimeBetween = 5f;
     [SerializeField] private float timeBetweenMultiplier = 0.975f;
     private float timer;
     private float timeBetween;
@@ -71,6 +73,8 @@ public class MomentumSystem : MonoBehaviour
         momentum++;
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
+
+        debugText.text = $"Momentum: {momentum}";
     }
 
     private void Reset()
@@ -78,6 +82,8 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         momentum = 0;
+
+        debugText.text = $"Momentum: {momentum}";
     }
 
 }

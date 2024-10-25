@@ -41,8 +41,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        maxShopCurrency = baseCurrency + (growthFactor * Mathf.Pow(islandManager.Level,polynomialDegree));
-        currentShopCurrency = maxShopCurrency;
+        WaveReset();
       
         StartCoroutine(SpawnCoroutine());
     }
