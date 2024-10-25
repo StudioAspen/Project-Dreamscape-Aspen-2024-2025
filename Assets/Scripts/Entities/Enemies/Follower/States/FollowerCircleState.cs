@@ -6,7 +6,7 @@ public class FollowerCircleState : EnemyBaseState
 
     private bool cwCircle;
 
-    private float changeDirInterval = 0.25f;
+    private float changeDirInterval = 0.5f;
     private float changeDirTimer;
     private float circlingRadius = 5f;
 
@@ -24,6 +24,8 @@ public class FollowerCircleState : EnemyBaseState
 
         enemy.SetSpeedModifier(0.5f);
 
+        Ticker.Instance.OnTick.AddListener(Ticker_OnTick);
+
         changeDirTimer = 0f;
 
         canChaseTimer = 0f;
@@ -31,19 +33,11 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnExit()
     {
-
+        Ticker.Instance.OnTick.RemoveListener(Ticker_OnTick);
     }
 
-    public override void Update()
+    private void Ticker_OnTick()
     {
-        if(enemy.Target == null)
-        {
-            enemy.ChangeState(enemy.EnemyIdleState);
-            return;
-        }
-
-        canChaseTimer += Time.deltaTime;
-
         if (enemy.Target.TryGetComponent(out Player player))
         {
             if (player.NearbyEntities.Count > 0)
@@ -62,6 +56,17 @@ public class FollowerCircleState : EnemyBaseState
                 }
             }
         }
+    }
+
+    public override void Update()
+    {
+        if(enemy.Target == null)
+        {
+            enemy.ChangeState(enemy.EnemyIdleState);
+            return;
+        }
+
+        canChaseTimer += Time.deltaTime;
 
         changeDirTimer += Time.deltaTime;
 
@@ -69,7 +74,7 @@ public class FollowerCircleState : EnemyBaseState
         {
             changeDirTimer = 0f;
             enemy.SetDestination(CalculateCircleDestination(), false);
-            cwCircle = Random.Range(0, 25) == 0 ? !cwCircle : cwCircle;
+            cwCircle = Random.Range(0, 50) == 0 ? !cwCircle : cwCircle;
         }
 
         enemy.LookAt(enemy.Target.transform.position);

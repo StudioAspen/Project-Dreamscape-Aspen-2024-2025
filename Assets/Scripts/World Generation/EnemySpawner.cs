@@ -7,7 +7,8 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private IslandManager islandManager;
-    [SerializeField, Anywhere] private List<Enemy> enemyPrefabs = new List<Enemy>();
+    [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
+    private ObjectPooler enemyPooler;
     private List<float> enemyNormalizedWeights = new List<float>();
 
     [Header("Settings")]
@@ -31,6 +32,8 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
+        enemyPooler = transform.parent.GetComponentInChildren<ObjectPooler>();
+
         CalculateNormalizedWeights();
     }
 
@@ -94,7 +97,12 @@ public class EnemySpawner : MonoBehaviour
 
             if(randomValue < cumalativeWeight)
             {
-                enemiesSpawned.Add(Instantiate(enemyPrefabs[i], islandManager.GetRandomEnemySpawn().position, Quaternion.identity));
+                enemyPooler.ChangePrefab(enemyPrefabs[i].gameObject);
+
+                Enemy e = enemyPooler.SpawnObject().GetComponent<Enemy>();
+                e.transform.position = islandManager.GetRandomEnemySpawn().position;
+
+                enemiesSpawned.Add(e);
 
                 currentShopCurrency -= enemyPrefabs[i].Cost;
 
@@ -117,7 +125,7 @@ public class EnemySpawner : MonoBehaviour
 
         foreach (Enemy enemy in new List<Enemy>(enemiesSpawned))
         {
-            Destroy(enemy.gameObject);
+            enemyPooler.ReleaseObject(enemy.gameObject);
         }
         enemiesSpawned.Clear();
 

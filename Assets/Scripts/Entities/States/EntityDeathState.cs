@@ -29,7 +29,7 @@ public class EntityDeathState : BaseState
 
         if(timer > 1f)
         {
-            entity.DestroyEntity();
+            entity.Die();
         }
     }
 

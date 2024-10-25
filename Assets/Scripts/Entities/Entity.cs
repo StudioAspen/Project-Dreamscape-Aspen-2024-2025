@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Windows;
+using UnityEngine.Pool;
 
-public class Entity : MonoBehaviour
+public class Entity : MonoBehaviour, IPoolableObject
 {
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
     [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
-    [SerializeField, Anywhere] private HitNumbers hitNumberPrefab;
 
     [field: Header("Entity: Settings")]
     [field: SerializeField] public int CurrentHealth { get; private set; }
@@ -30,15 +29,20 @@ public class Entity : MonoBehaviour
 
     public int Team { get; private set; }
 
-    protected private Entity lastHitSource;
+    protected private GameObject lastHitSource;
+    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
+    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
+    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
 
     #region States
     public BaseState CurrentState { get; private set; }
     public BaseState DefaultState { get; private set; }
-    public EntityEmptyState EntityEmptyState { get; private set; }
-    public EntityHitState EntityHitState { get; private set; }
-    public EntityDeathState EntityDeathState { get; private set; }
+    public EntityEmptyState EntityEmptyState { get; protected set; }
+    public EntityHitState EntityHitState { get; protected set; }
+    public EntityDeathState EntityDeathState { get; protected set; }
     #endregion
+
+    private ObjectPool<GameObject> pool;
 
     private void OnValidate()
     {
@@ -58,6 +62,28 @@ public class Entity : MonoBehaviour
         InitializeStates();
     }
 
+    private void OnEnable()
+    {
+        OnOnEnable();
+    }
+
+    protected virtual void OnOnEnable()
+    {
+        SetStartState(EntityEmptyState);
+
+        CurrentHealth = MaxHealth;
+    }
+
+    private void OnDisable()
+    {
+        OnOnDisable();
+    }
+
+    protected virtual void OnOnDisable()
+    {
+
+    }
+
     private void Start()
     {
         OnStart();
@@ -66,11 +92,8 @@ public class Entity : MonoBehaviour
     protected virtual void OnStart()
     {
         SetDefaultState(EntityEmptyState);
-        SetStartState(EntityEmptyState);
 
         IgnoreMyOwnColliders();
-
-        CurrentHealth = MaxHealth;
     }
 
     private void Update()
@@ -131,7 +154,24 @@ public class Entity : MonoBehaviour
 
     protected virtual void OnDeath()
     {
+        OnEntityDeath?.Invoke(lastHitSource);
+
+        AttemptToNotifyKiller();
+
         ChangeState(EntityDeathState);
+    }
+
+    public virtual void Die()
+    {
+        pool.Release(gameObject);
+    }
+
+    protected virtual void AttemptToNotifyKiller()
+    {
+        Entity killer = lastHitSource.GetComponent<Entity>();
+        if (killer == null) return;
+
+        killer.OnKill(this);
     }
 
     private void HandleHealth()
@@ -139,25 +179,35 @@ public class Entity : MonoBehaviour
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
     }
 
-    public void TakeDamage(int dmg, Vector3 hitPoint, Entity source)
+    public void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
         ChangeState(DefaultState);
         ChangeState(EntityHitState);
 
-        HitNumbers hitNumber = Instantiate(hitNumberPrefab, hitPoint, Quaternion.identity);
-        hitNumber.ActivateHitNumberText(dmg);
+        AttemptToSpawnHitNumbers(dmg, hitPoint);
 
         CurrentHealth -= dmg;
 
         lastHitSource = source;
+
+        OnEntityTakeDamage?.Invoke(hitPoint, source);
 
         //after calculating current health, check if the player has taken enough damage to die
         if(CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
         }
+    }
+
+    private void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
+    {
+        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
+        if (spawner == null) return;
+
+        HitNumbers hitNumber = spawner.SpawnObject().GetComponent<HitNumbers>();
+        hitNumber.ActivateHitNumberText(dmg, hitPoint);
     }
 
     public void Heal(int health)
@@ -167,7 +217,7 @@ public class Entity : MonoBehaviour
 
     public void Kill()
     {
-        TakeDamage(int.MaxValue, transform.position, this);
+        TakeDamage(int.MaxValue, transform.position, gameObject);
     }
 
     public void ChangeTeam(int newTeam)
@@ -200,9 +250,9 @@ public class Entity : MonoBehaviour
         animator.CrossFadeInFixedTime(animation, transitionDuration, animator.GetLayerIndex(layer));
     }
 
-    public void DestroyEntity()
+    public virtual void OnKill(Entity entity)
     {
-        Destroy(gameObject);
+        OnKillEntity?.Invoke(entity);
     }
 
     public virtual void LookAt(Vector3 target)
@@ -283,5 +333,10 @@ public class Entity : MonoBehaviour
                 Physics.IgnoreCollision(c1, c2, true);
             }
         }
+    }
+
+    public void SetObjectPool(ObjectPool<GameObject> objectPool)
+    {
+        pool = objectPool;
     }
 }

@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
@@ -26,8 +27,8 @@ public class Enemy : Entity
     public Entity Target { get; private set; }
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; private set; }
-    public EnemyChaseState EnemyChaseState { get; private set; }
+    public EnemyIdleState EnemyIdleState { get; protected set; }
+    public EnemyChaseState EnemyChaseState { get; protected set; }
     #endregion
 
     protected override void OnAwake()
@@ -116,12 +117,12 @@ public class Enemy : Entity
         if(path.Count < 2) return;
 
         #region Debug
-/*        Vector3 prevCorner = transform.position;
+        Vector3 prevCorner = transform.position;
         foreach (Vector3 wayPoint in path)
         {
             Debug.DrawLine(prevCorner, wayPoint, Color.red);
             prevCorner = wayPoint;
-        }*/
+        }
         #endregion
 
         Vector3 currDest = path[1];

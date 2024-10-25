@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : Entity
 {
@@ -61,7 +62,7 @@ public class Player : Entity
     #endregion
 
     [SerializeField] private float nearbyEntityRadius = 2.5f;
-    public List<Entity> NearbyEntities; 
+    public List<Entity> NearbyEntities;
 
     private void OnEnable()
     {
@@ -112,7 +113,7 @@ public class Player : Entity
 
         HandleAnimations();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position, this);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position, gameObject);
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
     }
@@ -406,5 +407,10 @@ public class Player : Entity
     public void SetComboAnimationSpeed(float speed)
     {
         animator.SetFloat("ComboAnimationSpeed", speed);
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 }
