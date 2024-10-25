@@ -3,43 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
+    [field: SerializeField, Self] public NavMeshAgent NavMeshAgent { get; protected set; }
     [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
-    [SerializeField, Child] private TMP_Text debugStateText;
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
+    [SerializeField] private TMP_Text debugStateText;
 
-    [field : Header("Enemy: Settings")]
-    [field: SerializeField] public int Cost { get; protected set; }
+    [field: Header("Enemy: Settings")]
     public float MovementSpeed => SpeedModifier * baseSpeed;
     private float totalSpeedModifierForAnimation;
-
-    public Vector3 Destination {  get; protected set; }
-    private List<Vector3> path;
-    private bool lookAtPath;
-
-    public Entity Target { get; private set; }
-    private EnemySpawner spawner;
-
-    [HideInInspector] public bool IsAttackAnimationPlaying;
+    [field:SerializeField] public Entity Target { get; private set; }
+    [field: SerializeField] public int CircleEntityCountThreshold { get; private set; }  = 2;
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; protected set; }
-    public EnemyChaseState EnemyChaseState { get; protected set; }
+    public EnemyIdleState EnemyIdleState { get; private set; }
+    public EnemyChaseState EnemyChaseState { get; private set; }
+    public EnemyCircleState EnemyCircleState { get; private set; }
     #endregion
-
-    public void Init(EnemySpawner e)
-    {
-        spawner = e;
-    }
 
     protected override void OnAwake()
     {
@@ -48,27 +33,14 @@ public class Enemy : Entity
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
-    protected override void OnOnEnable()
-    {
-        base.OnOnEnable();
-
-        SetStartState(EnemyIdleState);
-    }
-
-    protected override void OnOnDisable()
-    {
-        base.OnOnDisable();
-    }
-
     protected override void OnStart()
     {
         base.OnStart();
 
         ChangeTeam(1);
 
-        SetDefaultState(EnemyIdleState);
-
-        Weapon.DisableTriggers();
+        SetStartState(EnemyCircleState);
+        SetDefaultState(EnemyCircleState);
     }
 
     protected override void OnUpdate()
@@ -76,33 +48,17 @@ public class Enemy : Entity
         base.OnUpdate();
 
         HandleAnimations();
+        HandleNavAgentSpeed();
     }
 
     protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        
-        MoveTowardsDestination();
     }
 
     private void LateUpdate()
     {
         DebugState();
-    }
-
-    private void OnAnimatorMove()
-    {
-        OnOnAnimatorMove();
-    }
-
-    protected virtual void OnOnAnimatorMove()
-    {
-        if (!IsAttackAnimationPlaying) return;
-
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        //desiredAnimationMovement.y = 0f;
-
-        rigidBody.MovePosition(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -116,6 +72,7 @@ public class Enemy : Entity
 
         EnemyIdleState = new EnemyIdleState(this);
         EnemyChaseState = new EnemyChaseState(this);
+        EnemyCircleState = new EnemyCircleState(this);
     }
 
     protected override void CheckGrounded()
@@ -130,71 +87,28 @@ public class Enemy : Entity
         debugStateText.text = $"{CurrentState.GetType()}";
     }
 
+    private void HandleNavAgentSpeed()
+    {
+        NavMeshAgent.speed = MovementSpeed;
+    }
+
     private void HandleAnimations()
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 5f * Time.deltaTime);
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, NavMeshAgent.acceleration * Time.deltaTime);
 
         animator.SetFloat("MovementSpeed", MovementSpeed);
-    }
-
-    private List<Vector3> GetPathToDestination(Vector3 dest)
-    {
-        NavMeshPath path = new NavMeshPath();
-
-        bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
-
-        if (!hasPath) return null;
-        if(path.corners.Length == 0) return null;
-
-        return path.corners.ToList();
-    }
-
-    private void MoveTowardsDestination()
-    {
-        if (path == null) return;
-        if(path.Count < 2) return;
-
-        #region Debug
-/*        Vector3 prevCorner = transform.position;
-        foreach (Vector3 wayPoint in path)
-        {
-            Debug.DrawLine(prevCorner, wayPoint, Color.red);
-            prevCorner = wayPoint;
-        }*/
-        #endregion
-
-        Vector3 currDest = path[1];
-        if (lookAtPath) LookAt(currDest);
-
-        Vector3 dir = currDest - transform.position;
-        dir.y = 0f;
-        dir.Normalize();
-
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
-
-        if (Distance(currDest) < 0.05f)
-        {
-            path.RemoveAt(0);
-        }
-    }
-
-    public void SetDestination(Vector3 dest, bool lookAtPath)
-    {
-        Destination = dest;
-        path = GetPathToDestination(dest);
-        this.lookAtPath = lookAtPath;
     }
 
     protected override void OnDeath()
     {
         base.OnDeath();
+
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
     }
 
-    public override void Die()
+    public void LaunchUpwards(float magnitude)
     {
-        base.Die();
-        spawner.RemoveEnemyFromList(this);
+        rigidBody.AddForce(magnitude * Vector3.up, ForceMode.Impulse);
     }
 
     protected virtual void AssignTarget()
@@ -207,31 +121,5 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
-    }
-
-    public override void LookAt(Vector3 target)
-    {
-        Vector3 dir = target - transform.position;
-
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
-    }
-
-    public virtual void EnableWeaponTriggers()
-    {
-        Weapon.EnableTriggers();
-    }
-
-    public virtual void DisableWeaponTriggers()
-    {
-        Weapon.DisableTriggers();
     }
 }

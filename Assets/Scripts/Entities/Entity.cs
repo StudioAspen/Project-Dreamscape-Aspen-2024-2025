@@ -2,47 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Pool;
 
-public class Entity : MonoBehaviour, IPoolableObject
+public class Entity : MonoBehaviour
 {
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
     [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
+    [SerializeField, Anywhere] private HitNumbers hitNumberPrefab;
 
     [field: Header("Entity: Settings")]
     [field: SerializeField] public int CurrentHealth { get; private set; }
     [field: SerializeField] public int MaxHealth { get; private set; }
     [field: SerializeField] public int Level { get; private set; }
-
     [HideInInspector] public bool IsGrounded;
+
+    [SerializeField] protected float baseSpeed = 3f;
+    public float SpeedModifier { get; protected set; } = 1f;
+    [SerializeField] protected private Vector3 velocity;
+    [SerializeField] private protected float targetDetectionRadius = 10f;
     protected private float inAirTimer;
     protected private bool fallVelocityApplied;
 
-    public float SpeedModifier { get; protected set; } = 1f;
-    [SerializeField] protected private float baseSpeed = 3f;
-    [SerializeField] protected private Vector3 velocity;
-    [SerializeField] protected private float rotationSpeed = 5f;
-
-    [SerializeField] private protected float targetDetectionRadius = 10f;
-
     public int Team { get; private set; }
-
-    protected private GameObject lastHitSource;
-    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
-    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
-    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
 
     #region States
     public BaseState CurrentState { get; private set; }
     public BaseState DefaultState { get; private set; }
-    public EntityEmptyState EntityEmptyState { get; protected set; }
-    public EntityHitState EntityHitState { get; protected set; }
-    public EntityDeathState EntityDeathState { get; protected set; }
+    public EntityEmptyState EntityEmptyState { get; private set; }
+    public EntityHitState EntityHitState { get; private set; }
+    public EntityDeathState EntityDeathState { get; private set; }
     #endregion
-
-    private ObjectPool<GameObject> pool;
 
     private void OnValidate()
     {
@@ -51,37 +40,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Awake()
     {
-        //We have to make custom OnAwake and OnStart functions
-        //because you cannot override the regular Awake() and Start() methods
-        //using inheritance
         OnAwake();
     }
 
     protected virtual void OnAwake()
     {
         InitializeStates();
-    }
-
-    private void OnEnable()
-    {
-        OnOnEnable();
-    }
-
-    protected virtual void OnOnEnable()
-    {
-        CurrentHealth = MaxHealth;
-
-        SetStartState(EntityEmptyState);
-    }
-
-    private void OnDisable()
-    {
-        OnOnDisable();
-    }
-
-    protected virtual void OnOnDisable()
-    {
-
     }
 
     private void Start()
@@ -92,8 +56,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     protected virtual void OnStart()
     {
         SetDefaultState(EntityEmptyState);
+        SetStartState(EntityEmptyState);
 
         IgnoreMyOwnColliders();
+
+        CurrentHealth = MaxHealth;
     }
 
     private void Update()
@@ -103,8 +70,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     protected virtual void OnUpdate()
     {
-        //if CurrentState isn't null, run it's Update function
-        //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.Update();
 
         CheckGrounded();
@@ -122,7 +87,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     protected virtual void InitializeStates()
     {
-        //makes new state scripts for the entity to use
         EntityEmptyState = new EntityEmptyState(this);
         EntityHitState = new EntityHitState(this);
         EntityDeathState = new EntityDeathState(this);
@@ -150,34 +114,14 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState.OnEnter();
     }
 
-    protected virtual void CheckGrounded() { }
+    protected virtual void CheckGrounded()
+    {
+
+    }
 
     protected virtual void OnDeath()
     {
-        OnEntityDeath?.Invoke(lastHitSource);
-
-        AttemptToNotifyKiller();
-
         ChangeState(EntityDeathState);
-    }
-
-    public virtual void Die()
-    {
-        if(pool == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        pool.Release(gameObject);
-    }
-
-    protected virtual void AttemptToNotifyKiller()
-    {
-        Entity killer = lastHitSource.GetComponent<Entity>();
-        if (killer == null) return;
-
-        killer.OnKill(this);
     }
 
     private void HandleHealth()
@@ -185,35 +129,22 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
     }
 
-    public void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    public void TakeDamage(int dmg, Vector3 hitPoint)
     {
         if (CurrentState == EntityDeathState) return;
 
         ChangeState(DefaultState);
         ChangeState(EntityHitState);
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        HitNumbers hitNumber = Instantiate(hitNumberPrefab, hitPoint, Quaternion.identity);
+        hitNumber.ActivateHitNumberText(dmg);
 
         CurrentHealth -= dmg;
 
-        lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
-        //after calculating current health, check if the player has taken enough damage to die
         if(CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
         }
-    }
-
-    private void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
-    {
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        HitNumbers hitNumber = spawner.SpawnObject().GetComponent<HitNumbers>();
-        hitNumber.ActivateHitNumberText(dmg, hitPoint);
     }
 
     public void Heal(int health)
@@ -223,7 +154,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     public void Kill()
     {
-        TakeDamage(int.MaxValue, transform.position, gameObject);
+        TakeDamage(int.MaxValue, transform.position);
     }
 
     public void ChangeTeam(int newTeam)
@@ -256,24 +187,14 @@ public class Entity : MonoBehaviour, IPoolableObject
         animator.CrossFadeInFixedTime(animation, transitionDuration, animator.GetLayerIndex(layer));
     }
 
-    public virtual void OnKill(Entity entity)
+    public void DestroyEntity()
     {
-        OnKillEntity?.Invoke(entity);
+        Destroy(gameObject);
     }
 
-    public virtual void LookAt(Vector3 target)
+    public float Distance(Transform transform)
     {
-        Vector3 dir = target - transform.position;
-
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-    }
-
-    public float Distance(Vector3 target)
-    {
-        return Vector3.Distance(target, transform.position);
+        return Vector3.Distance(transform.position, this.transform.position);
     }
 
     public float Distance(Entity entity)
@@ -285,7 +206,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         List<Entity> targets = new List<Entity>();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, targetDetectionRadius, LayerMask.GetMask("Entity"));
+        Collider[] hits = Physics.OverlapSphere(transform.position, targetDetectionRadius);
         if (hits == null) return targets;
         if (hits.Length == 0) return targets;
 
@@ -304,7 +225,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         List<Entity> targets = new List<Entity>();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, radius, LayerMask.GetMask("Entity"));
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius);
         if (hits == null) return targets;
         if (hits.Length == 0) return targets;
 
@@ -339,10 +260,5 @@ public class Entity : MonoBehaviour, IPoolableObject
                 Physics.IgnoreCollision(c1, c2, true);
             }
         }
-    }
-
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
-    {
-        pool = objectPool;
     }
 }

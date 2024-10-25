@@ -17,7 +17,6 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player);
         playerCombat.Weapon.ClearEnemiesHitList();
 
         playerCombat.Weapon.SetDamageRange(ComboData.ComboDamageRange);
@@ -34,7 +33,6 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnExit()
     {
-        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player);
         playerCombat.IsAnimationPlaying = false;
         player.ApplyRootMotion = false;
         playerCombat.DisableWeaponTriggers();

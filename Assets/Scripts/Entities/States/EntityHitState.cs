@@ -18,7 +18,8 @@ public class EntityHitState : BaseState
 
         timer = 0f;
 
-        entity.SetSpeedModifier(0);
+        Player player = entity as Player;
+        if (player != null) player.SetSpeedModifier(0);
     }
 
     public override void OnExit()

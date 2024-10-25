@@ -3,47 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Pool;
-using DG.Tweening;
 
-public class HitNumbers : MonoBehaviour, IPoolableObject
+public class HitNumbers : MonoBehaviour
 {
-    [Header("Settings")]
     [SerializeField] private TMP_Text numberText;
     [SerializeField] private float minTextSize = 200f;
     [SerializeField] private float maxTextSize = 400f;
     [SerializeField] private int maxDamage = 10000;
-
-    private ObjectPool<GameObject> pool;
 
     private void LateUpdate()
     {
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
-    public void ActivateHitNumberText(int damage, Vector3 spawnPoint)
+    public void ActivateHitNumberText(int damage)
     {
-        transform.position = spawnPoint;
-
         numberText.text = damage.ToString();
         numberText.fontSize = (maxTextSize - minTextSize) * (damage / (float)maxDamage) + minTextSize;
 
-        FloatUpAndFade(2f, 1f);
+        StartCoroutine(FloatUpAndFadeCoroutine(2f, 0.5f));
     }
 
-    private void FloatUpAndFade(float duration, float distance)
+    private IEnumerator FloatUpAndFadeCoroutine(float duration, float speed)
     {
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(numberText.DOColor(Color.red, duration / 2f)).SetUpdate(true).OnComplete(() => {
-            transform.DOMoveY(transform.position.y + distance, duration / 2f).SetUpdate(true);
-        });
-        sequence.Append(numberText.DOFade(0f, duration / 2f)).SetUpdate(true);
+        float fullColorDuration = duration / 2;
 
-        sequence.OnComplete(() => { pool.Release(gameObject); });
-    }
+        for(float t = 0; t < fullColorDuration; t += Time.unscaledDeltaTime)
+        {
+            numberText.color = Color.red;
+            transform.Translate(speed * Vector3.up * Time.unscaledDeltaTime);
+            yield return null;
+        }
 
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
-    {
-        pool = objectPool;
+        for(float t = 0; t < fullColorDuration; t += Time.unscaledDeltaTime)
+        {
+            transform.Translate(speed * Vector3.up * Time.unscaledDeltaTime);
+            numberText.color = new Color(255f, 0f, 0f, 1 - Mathf.Pow(t / fullColorDuration, 2));
+            yield return null;
+        }
+        numberText.color = Color.clear;
+
+        Destroy(gameObject);
     }
 }
