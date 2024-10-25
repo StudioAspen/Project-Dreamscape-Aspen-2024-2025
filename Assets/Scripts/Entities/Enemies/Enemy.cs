@@ -20,10 +20,19 @@ public class Enemy : Entity
     [field:SerializeField] public Entity Target { get; private set; }
     [field: SerializeField] public int CircleEntityCountThreshold { get; private set; }  = 2;
 
+    [Header("Charger Settings")]    //Variables for Charger State. Will be moved to a new charger.cs?
+    public float chargingProcRadius = 10f;
+    public float chargingEndRadius = 3f; 
+    public float chargeSpeed = 7f;
+    public float slowDownDuration = 2f; 
+    public float rotationSpeed = 3f;
+    public float chargeDuration = 5f;
+
     #region States
     public EnemyIdleState EnemyIdleState { get; private set; }
     public EnemyChaseState EnemyChaseState { get; private set; }
     public EnemyCircleState EnemyCircleState { get; private set; }
+    public ChargerFarAttackState ChargerFarAttackState { get; private set; } //inclusion of new state.
     #endregion
 
     protected override void OnAwake()
@@ -49,6 +58,11 @@ public class Enemy : Entity
 
         HandleAnimations();
         HandleNavAgentSpeed();
+
+        if (ChargingActive()) //test charging logic.
+        {
+            ChangeState(ChargerFarAttackState);
+        }
     }
 
     protected override void OnFixedUpdate()
@@ -73,6 +87,7 @@ public class Enemy : Entity
         EnemyIdleState = new EnemyIdleState(this);
         EnemyChaseState = new EnemyChaseState(this);
         EnemyCircleState = new EnemyCircleState(this);
+        ChargerFarAttackState = new ChargerFarAttackState(this, chargeSpeed, slowDownDuration, rotationSpeed, chargeDuration); //inclusion of new state.
     }
 
     protected override void CheckGrounded()
@@ -121,5 +136,16 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
+    }
+
+    private bool ChargingActive() //New function to test charging logic.
+    {
+        var nearestTarget = GetNearbyTargets();
+        if (nearestTarget.Count > 0)
+        {
+            float distanceToTarget = Distance(nearestTarget[0]);
+            return distanceToTarget <= chargingProcRadius; 
+        }
+        return false;
     }
 }
