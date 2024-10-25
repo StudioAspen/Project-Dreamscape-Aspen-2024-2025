@@ -1394,7 +1394,7 @@ GameObject:
   - component: {fileID: 5104155415629920173}
   - component: {fileID: 7040962192565468748}
   - component: {fileID: 2887334564502808265}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 8852926688546275590}
   debugText: {fileID: 1721648083386111821}
-  baseTimeBetween: 7.5
+  baseTimeBetween: 10
   timeBetweenMultiplier: 0.975
 --- !u!114 &3702187593430642151
 MonoBehaviour:

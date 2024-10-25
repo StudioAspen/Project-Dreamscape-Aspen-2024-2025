@@ -9,7 +9,7 @@ public class Weapon : MonoBehaviour
     [Header("Weapon: References")]
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Anywhere] private GameObject trailObject;
-    [SerializeField, Parent] private Entity holderEntity;
+    [SerializeField] private Entity holderEntity;
     private Animator animator;
 
     [Header("Weapon: Settings")]
@@ -32,7 +32,7 @@ public class Weapon : MonoBehaviour
 
     [Header("Weapon: Impact Frames")]
     [SerializeField] private float impactFramesDuration = 0.15f;
-    private List<Entity> enemiesHitByCurrentAttack = new List<Entity>();
+    private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void OnValidate()
     {
@@ -42,10 +42,11 @@ public class Weapon : MonoBehaviour
     private void Awake()
     {
         animator = GetComponentInParent<Animator>();
+        holderEntity = GetComponentInParent<Entity>();
 
         AssignColliderStartEndPositions();
 
-        animator.runtimeAnimatorController = overrideAnimator;
+        if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
     }
 
     private void Update()
@@ -121,8 +122,8 @@ public class Weapon : MonoBehaviour
         if (victim.Team == holderEntity.Team) return;
         if (victim.CurrentState == victim.EntityDeathState) return;
 
-        if (enemiesHitByCurrentAttack.Contains(victim)) return;
-        enemiesHitByCurrentAttack.Add(victim);
+        if (entitiesHitByCurrentAttack.Contains(victim)) return;
+        entitiesHitByCurrentAttack.Add(victim);
 
         HitEnemy(victim, hitPoint, fromTrigger);
     }
@@ -152,6 +153,8 @@ public class Weapon : MonoBehaviour
 
     private void StartImpactFrames(float timeScale)
     {
+        if (impactFramesDuration <= 0) return;
+
         DOTween.Kill("ImpactFrames");
         Time.timeScale = 1f;
 
@@ -170,7 +173,7 @@ public class Weapon : MonoBehaviour
 
     public void ClearEnemiesHitList()
     {
-        enemiesHitByCurrentAttack.Clear();
+        entitiesHitByCurrentAttack.Clear();
     }
 
     public void EnableTriggers()
