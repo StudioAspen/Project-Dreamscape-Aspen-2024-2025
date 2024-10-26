@@ -12,7 +12,7 @@ using UnityEngine.Pool;
 public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
+    [field: SerializeField, Self] public Rigidbody RigidBody { get; protected set; }
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
     [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
@@ -102,7 +102,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        rigidBody.MovePosition(desiredAnimationMovement);
+        RigidBody.MovePosition(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -170,7 +170,7 @@ public class Enemy : Entity
         dir.y = 0f;
         dir.Normalize();
 
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        RigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
 
         if (Distance(currDest) < 0.05f)
         {
@@ -197,7 +197,7 @@ public class Enemy : Entity
         spawner.RemoveEnemyFromList(this);
     }
 
-    protected virtual void AssignTarget()
+    public virtual void AssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
         if (targets.Count == 0)
@@ -216,7 +216,7 @@ public class Enemy : Entity
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+        RigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
     public void FinishAnimation()

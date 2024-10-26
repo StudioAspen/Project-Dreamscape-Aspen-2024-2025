@@ -12,7 +12,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
 
     [field: Header("Entity: Settings")]
-    [field: SerializeField] public int CurrentHealth { get; private set; }
+    [field: SerializeField] public int CurrentHealth { get; protected set; }
     [field: SerializeField] public int MaxHealth { get; private set; }
     [field: SerializeField] public int Level { get; private set; }
 
@@ -185,7 +185,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
     }
 
-    public void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    public virtual void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -207,7 +207,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
     }
 
-    private void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
+    private protected void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
     {
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
