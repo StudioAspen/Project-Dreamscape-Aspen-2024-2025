@@ -1,6 +1,9 @@
-using System.Collections;
+
 using System.Collections.Generic;
+using TMPro;
+using KBCore.Refs;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 
 
@@ -18,7 +21,20 @@ public enum EventType
 
 public class EventManager : MonoBehaviour
 {
-    EventType CURRENT_EVENT;
+    private WorldManager worldManager;
+    private bool eventActive = true;
+
+    [Header("Event: Debug UI")]
+    [SerializeField] private TMP_Text eventText;
+
+    public EventType CURRENT_EVENT;
+
+    // Awake is called when the script instance is being loaded
+    void Awake()
+    {
+        worldManager = FindObjectOfType<WorldManager>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +44,22 @@ public class EventManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if()
+        //Event Debug UI
+        eventText.text = "Event: " + CURRENT_EVENT.ToString();
+
+        //idk yet lol, all code in WorldManager so far
+        if(CURRENT_EVENT == EventType.START)
+        {
+            
+        }
+    }
+
+
+
+    //return the current event ENUM
+    public EventType GetCurrentEvent()
+    {
+        return CURRENT_EVENT;
     }
 }
+

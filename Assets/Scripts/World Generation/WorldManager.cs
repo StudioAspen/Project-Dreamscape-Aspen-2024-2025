@@ -5,6 +5,8 @@ using TMPro;
 
 public class WorldManager : MonoBehaviour
 {
+    [Header("References")]
+    private EventManager eventManager;
     private MasterLevelManager masterLevelManager;
 
     [Header("Misc Controls")]
@@ -18,34 +20,81 @@ public class WorldManager : MonoBehaviour
     private void Awake()
     {
         masterLevelManager = FindAnyObjectByType<MasterLevelManager>();
+        eventManager = FindAnyObjectByType<EventManager>();
     }
 
     void Update()
     {
-        if (AreAllWavesFinished() && !IsSelecting)
+        if (eventManager.GetCurrentEvent() == EventType.START) //if the event is START, check for all enemies killed
         {
-            IsSelecting = true;
+            //check if all enemies have been killed
+            if (AreAllWavesFinished() && !IsSelecting)
+            {
+                IsSelecting = true;
 
-            FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
-            //masterLevelManager.SpawnSelectionSpheres();
+                FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
+            }
         }
-      
-/*        if (Input.GetKeyDown(KeyCode.Q) && isInSkyView == false) 
+        else if (eventManager.GetCurrentEvent() == EventType.VISIT_ALL) //if the event is VISIT_ALL, check for all islands visited
         {
-            islandTimertext.SetActive(true);
-            islandSelectCamera.SetActive(true);
-            playerCamera.SetActive(false);
-            isInSkyView = true;
+            //check if all islands have been visited
+            bool VISITED_ALL = true;
+            for (int i = 0; i < masterLevelManager.SpawnedIslands.Count; i++)
+            {
+                if (masterLevelManager.SpawnedIslands[i].IsVisited == false)
+                {
+                    VISITED_ALL = false;
+                }
+
+            }
+            //if all islands have been visited, start the selection
+            if (VISITED_ALL && !IsSelecting)
+            {
+                IsSelecting = true;
+
+                FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
+            }
+        }
+        else if (eventManager.GetCurrentEvent() == EventType.ZONES) //if the event is ZONES, check for all enemies killed in the 3x3 grid
+        {
+            //TODO: Check if all enemies in the 3x3 grid have been killed
+        }
+        else if (eventManager.GetCurrentEvent() == EventType.SURVIVAL) //if the event is SURVIVAL, check for timer to end
+        {
+            //TODO: Check if the timer has ended
+        }
+        else if (eventManager.GetCurrentEvent() == EventType.PRIORITIES) //if the event is PRIORITIES, check for all enemies killed in the 3 highest level islands
+        {
+            //TODO: Check if all enemies in the 3 highest level islands have been killed
+        }
+        else if (eventManager.GetCurrentEvent() == EventType.ESCORT) //if the event is ESCORT, check for timer to end AND NPC survival
+        {
+            //TODO: Check if the timer has ended AND NPC survival
+        }
+        else if (eventManager.GetCurrentEvent() == EventType.DEFEND) //if the event is DEFEND, check for timer to end AND object survival
+        {
+            //TODO: Check if the timer has ended AND object survival
+        }else
+        {
+            Debug.Log("No event is active");
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && isInSkyView == true)
-        {
-           
-            islandSelectCamera.SetActive(false);
-            playerCamera.SetActive(true);
-            islandTimertext.SetActive(false);
-            isInSkyView = false;
-        }*/
+        /*        if (Input.GetKeyDown(KeyCode.Q) && isInSkyView == false) 
+                {
+                    islandTimertext.SetActive(true);
+                    islandSelectCamera.SetActive(true);
+                    playerCamera.SetActive(false);
+                    isInSkyView = true;
+                }
+
+                if (Input.GetKeyDown(KeyCode.E) && isInSkyView == true)
+                {
+
+                    islandSelectCamera.SetActive(false);
+                    playerCamera.SetActive(true);
+                    islandTimertext.SetActive(false);
+                    isInSkyView = false;
+                }*/
     }
 
     private bool AreAllWavesFinished()

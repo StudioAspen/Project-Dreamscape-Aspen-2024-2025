@@ -11,6 +11,8 @@ public class IslandManager : MonoBehaviour
     [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
 
+    public bool IsVisited; //if the player has visited the island this wave
+
     [Header("Square Stats")]
     private MasterLevelManager masterLevelManager;
     [SerializeField] public int level;
@@ -53,7 +55,19 @@ public class IslandManager : MonoBehaviour
         Ray rayLeft = new Ray(transform.position, transform.TransformDirection(Vector3.left));
         Ray rayBack = new Ray(transform.position, transform.TransformDirection(Vector3.back));
 
-        
+        //isVisited check, has player stepped on the island
+        RaycastHit hit;
+        if (Physics.Raycast(rayFront, out hit, 1f, WallLayerMask) ||
+            Physics.Raycast(rayRight, out hit, 1f, WallLayerMask) ||
+            Physics.Raycast(rayLeft, out hit, 1f, WallLayerMask) ||
+            Physics.Raycast(rayBack, out hit, 1f, WallLayerMask))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                IsVisited = true;
+            }
+        }
+
     }
 
     private IEnumerator OnCompleteSpawn()

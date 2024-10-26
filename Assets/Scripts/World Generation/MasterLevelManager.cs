@@ -89,7 +89,8 @@ public class MasterLevelManager : MonoBehaviour
     {
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
 
-        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * y, -15f, islandScale * x) , Quaternion.identity, transform);
+        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * y, -15f, islandScale * x), Quaternion.identity, transform);
+        spawnedIsland.gameObject.tag = "Island"; // Set tag to Island
         spawnedIsland.Init(x, y);
 
         SpawnedIslands.Add(spawnedIsland);
