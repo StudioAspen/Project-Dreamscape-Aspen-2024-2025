@@ -174,10 +174,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     protected virtual void AttemptToNotifyKiller()
     {
-        Entity killer = lastHitSource.GetComponent<Entity>();
-        if (killer == null) return;
+        if (lastHitSource == null) return;
 
-        killer.OnKill(this);
+        if(lastHitSource.TryGetComponent(out Entity killer))
+        {
+            killer.OnKill(this);
+        }        
     }
 
     private void HandleHealth()
@@ -202,6 +204,25 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         //after calculating current health, check if the player has taken enough damage to die
         if(CurrentHealth <= 0 && MaxHealth > 0)
+        {
+            OnDeath();
+        }
+    }
+
+    public virtual void TakeDamageWithoutState(int dmg, Vector3 hitPoint, GameObject source)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        AttemptToSpawnHitNumbers(dmg, hitPoint);
+
+        CurrentHealth -= dmg;
+
+        lastHitSource = source;
+
+        OnEntityTakeDamage?.Invoke(hitPoint, source);
+
+        //after calculating current health, check if the player has taken enough damage to die
+        if (CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
         }
@@ -374,6 +395,11 @@ public class Entity : MonoBehaviour, IPoolableObject
                 Physics.IgnoreCollision(c1, c2, true);
             }
         }
+    }
+
+    public Vector3 GetColliderCenterPosition()
+    {
+        return GetComponent<Collider>().bounds.center;
     }
 
     public void SetObjectPool(ObjectPool<GameObject> objectPool)

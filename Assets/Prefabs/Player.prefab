@@ -1389,6 +1389,7 @@ GameObject:
   - component: {fileID: 5620550920081884860}
   - component: {fileID: 2191053302705418715}
   - component: {fileID: 3702187593430642151}
+  - component: {fileID: 190817825332574508}
   - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
@@ -1626,6 +1627,21 @@ MonoBehaviour:
   playerCombat: {fileID: 5620550920081884860}
   debugText: {fileID: 6870328943161982194}
   timeBetween: 2
+--- !u!114 &190817825332574508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entity: {fileID: 8852926688546275590}
+  damagePerTick: 1
+  tickDuration: 0.5
 --- !u!95 &2171180168782530629
 Animator:
   serializedVersion: 5
