@@ -12,9 +12,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
 
     [field: Header("Entity: Settings")]
-    [field: SerializeField] public int CurrentHealth { get; private set; }
-    [field: SerializeField] public int MaxHealth { get; private set; }
-    [field: SerializeField] public int Level { get; private set; }
+    [field: SerializeField] public int CurrentHealth { get; protected set; }
+    [field: SerializeField] public int MaxHealth { get; protected set; }
+    [field: SerializeField] public int Level { get; protected set; }
 
     [HideInInspector] public bool IsGrounded;
     protected private float inAirTimer;
@@ -185,7 +185,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
     }
 
-    public void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    public virtual void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -207,12 +207,12 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
     }
 
-    private void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
+    private protected void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
     {
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
 
-        HitNumbers hitNumber = spawner.SpawnObject().GetComponent<HitNumbers>();
+        HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
         hitNumber.ActivateHitNumberText(dmg, hitPoint);
     }
 
@@ -281,7 +281,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         return Vector3.Distance(entity.transform.position, transform.position);
     }
 
-    private protected List<Entity> GetNearbyTargets()
+    public List<Entity> GetNearbyTargets()
     {
         List<Entity> targets = new List<Entity>();
 
@@ -300,7 +300,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         return targets.OrderBy(target => Vector3.SqrMagnitude(transform.position - target.transform.position)).ToList();
     }
 
-    private protected List<Entity> GetNearbyTargets(float radius)
+    public List<Entity> GetNearbyEntities(float radius)
     {
         List<Entity> targets = new List<Entity>();
 
@@ -317,6 +317,41 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
 
         return targets.OrderBy(target => Vector3.SqrMagnitude(transform.position - target.transform.position)).ToList();
+    }
+
+    public List<T> GetNearbyEntitiesByType<T>(float radius) where T : Entity
+    {
+        List<T> targets = new List<T>();
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, radius, LayerMask.GetMask("Entity"));
+        if (hits == null) return targets;
+        if (hits.Length == 0) return targets;
+
+        foreach (Collider hit in hits)
+        {
+            Entity potentialTarget = hit.GetComponent<Entity>();
+            if (potentialTarget == null) continue;
+            if(potentialTarget.GetType() != typeof(T)) continue;
+            if (potentialTarget.Team == Team) continue;
+
+            T potentialTargetT = potentialTarget as T;
+
+            targets.Add(potentialTargetT);
+        }
+
+        return targets.OrderBy(target => Vector3.SqrMagnitude(transform.position - target.transform.position)).ToList();
+    }
+
+    public bool IsBlockedFromEntity(Entity entity)
+    {
+        LayerMask ignoreLayers = ~LayerMask.GetMask("Entity", "Damageable Entity", "Damage Collider", "SelectionSphere");
+
+        RaycastHit hit;
+        Physics.Raycast(transform.position, entity.transform.position - transform.position, out hit, Distance(entity), ignoreLayers);
+
+        if (hit.collider == null) return false;
+
+        return true;
     }
 
     private void IgnoreMyOwnColliders()

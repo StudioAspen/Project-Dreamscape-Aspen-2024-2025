@@ -6,6 +6,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
 
@@ -68,7 +69,7 @@ public class Enemy : Entity
 
         SetDefaultState(EnemyIdleState);
 
-        Weapon.DisableTriggers();
+        FinishAnimation(); // disable attack animation
     }
 
     protected override void OnUpdate()
@@ -102,7 +103,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        rigidBody.MovePosition(desiredAnimationMovement);
+        Move(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -167,15 +168,19 @@ public class Enemy : Entity
         if (lookAtPath) LookAt(currDest);
 
         Vector3 dir = currDest - transform.position;
-        dir.y = 0f;
         dir.Normalize();
 
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        Move(dir);
 
         if (Distance(currDest) < 0.05f)
         {
             path.RemoveAt(0);
         }
+    }
+
+    public void Move(Vector3 dir)
+    {
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -219,7 +224,7 @@ public class Enemy : Entity
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
-    public void FinishAnimation()
+    public virtual void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
         DisableWeaponTriggers();
