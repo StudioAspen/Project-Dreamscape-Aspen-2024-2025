@@ -1,25 +1,30 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
-public class PivotAlignment_window : EditorWindow
+public class PivotAlignmentWindow : EditorWindow
 {
-    private static PivotAlignment_window win;
+    private static PivotAlignmentWindow win;
     private GameObject gameObject;
     private MeshRenderer renderer;
     private string[] options = new string[] { "Original", "Center", "Min", "Max" };
-    private int selectedIndexX = 0;
-    private int selectedIndexY = 0;
-    private int selectedIndexZ = 0;
-    private float xPos;
-    private float yPos;
-    private float zPos;
+    private enum optionsIndex { Original, Center, Min, Max };
+    private optionsIndex selectedAlignmentX;
+    private optionsIndex selectedAlignmentY;
+    private optionsIndex selectedAlignmentZ;
     private float xOffset;
     private float yOffset;
     private float zOffset;
 
+    [MenuItem("Dreamscape/PivotAlignment")]
+    public static void InitPivotAlignmentTool()
+    {
+        InitWindow();
+    }
+
     public static void InitWindow()
     {
-        win = EditorWindow.GetWindow<PivotAlignment_window>("Pivot Alignment");
+        win = EditorWindow.GetWindow<PivotAlignmentWindow>("Pivot Alignment");
         win.Show();
         // Subscribe to selection changed event
         Selection.selectionChanged += win.OnSelectionChanged;
@@ -53,39 +58,39 @@ public class PivotAlignment_window : EditorWindow
 
         // DropDown Menus
         EditorGUILayout.LabelField("Alignment Options", EditorStyles.boldLabel);
-        selectedIndexX = EditorGUILayout.Popup(new GUIContent("X", "Choose the alignment for X"), selectedIndexX, options);
+        selectedAlignmentX = (optionsIndex)EditorGUILayout.Popup(new GUIContent("X"), (int)selectedAlignmentX, options);
         xOffset = EditorGUILayout.FloatField("X Offset:", xOffset);
-        selectedIndexY = EditorGUILayout.Popup(new GUIContent("Y", "Choose the alignment for Y"), selectedIndexY, options);
+        selectedAlignmentY = (optionsIndex)EditorGUILayout.Popup(new GUIContent("Y"), (int)selectedAlignmentY, options);
         yOffset = EditorGUILayout.FloatField("Y Offset:", yOffset);
-        selectedIndexZ = EditorGUILayout.Popup(new GUIContent("Z", "Choose the alignment for Z"), selectedIndexZ, options);
+        selectedAlignmentZ = (optionsIndex)EditorGUILayout.Popup(new GUIContent("Z"), (int)selectedAlignmentZ, options);
         zOffset = EditorGUILayout.FloatField("Z Offset:", zOffset);
 
         // Move GameObject Button
         if (GUILayout.Button("Apply Alignment", GUILayout.Height(35), GUILayout.ExpandWidth(true)))
         {
             gameObject.transform.position = gameObject.transform.parent.position;
-            xPos = DropDownSelection(selectedIndexX).x;
-            yPos = DropDownSelection(selectedIndexY).y;
-            zPos = DropDownSelection(selectedIndexZ).z;
-            gameObject.transform.position = new Vector3(xPos + xOffset, yPos + yOffset, zPos + zOffset);
+            float _xPos = DropDownSelection(selectedAlignmentX).x;
+            float _yPos = DropDownSelection(selectedAlignmentY).y;
+            float _zPos = DropDownSelection(selectedAlignmentZ).z;
+            gameObject.transform.position = new Vector3(_xPos + xOffset, _yPos + yOffset, _zPos + zOffset);
         }
     }
 
-    private Vector3 DropDownSelection(int selectedIndex)
+    private Vector3 DropDownSelection(optionsIndex _selectedAlignment)
     {
-        if (selectedIndex == 1)
+        switch (_selectedAlignment)
         {
-            return 2*gameObject.transform.parent.position - renderer.bounds.center;
+            case optionsIndex.Original:
+                return gameObject.transform.parent.position;
+            case optionsIndex.Center:
+                return 2 * gameObject.transform.parent.position - renderer.bounds.center;
+            case optionsIndex.Min:
+                return 2 * gameObject.transform.parent.position - renderer.bounds.center + renderer.bounds.size / 2;
+            case optionsIndex.Max:
+                return 2 * gameObject.transform.parent.position - renderer.bounds.center - renderer.bounds.size / 2;
+            default:
+                return gameObject.transform.parent.position;
         }
-        if (selectedIndex == 2)
-        {
-            return 2*gameObject.transform.parent.position - renderer.bounds.center + renderer.bounds.size/2;
-        }
-        if (selectedIndex == 3)
-        {
-            return 2*gameObject.transform.parent.position - renderer.bounds.center - renderer.bounds.size/2;
-        }
-        return gameObject.transform.parent.position;
     }
 
     private void OnDestroy()
@@ -94,3 +99,4 @@ public class PivotAlignment_window : EditorWindow
         Selection.selectionChanged -= OnSelectionChanged;
     }
 }
+#endif // UNITY_EDITOR
