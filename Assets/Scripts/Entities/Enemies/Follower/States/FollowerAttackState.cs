@@ -6,8 +6,6 @@ public class FollowerAttackState : EnemyBaseState
 
     private Vector3 attackDir;
 
-    private float pauseTimer;
-
     public FollowerAttackState(Follower enemy) : base(enemy)
     {
         follower = enemy;
@@ -32,8 +30,6 @@ public class FollowerAttackState : EnemyBaseState
         follower.IsAttackAnimationPlaying = true;
 
         follower.LookAt(follower.transform.position + attackDir);
-
-        pauseTimer = 0f;
     }
 
     public override void OnExit()
@@ -47,11 +43,7 @@ public class FollowerAttackState : EnemyBaseState
     {
         if (!follower.IsAttackAnimationPlaying)
         {
-            pauseTimer += Time.deltaTime;
-            if(pauseTimer > follower.AttackRecoverDuration)
-            {
-                follower.ChangeState(follower.DefaultState);
-            }  
+            follower.ChangeState(follower.FollowerAttackRecoverState);
             return;
         }
     }

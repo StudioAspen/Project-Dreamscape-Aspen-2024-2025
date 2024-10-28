@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3490398193883977143}
   - component: {fileID: -71318835558361112}
+  - component: {fileID: 5112144103742148319}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
@@ -71,9 +72,24 @@ MonoBehaviour:
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
-  weapon: {fileID: 7865493764376736012}
+  <Weapon>k__BackingField: {fileID: 7865493764376736012}
   <Cost>k__BackingField: 5
   IsAttackAnimationPlaying: 0
+--- !u!114 &5112144103742148319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entity: {fileID: -71318835558361112}
+  damagePerTick: 1
+  tickDuration: 0.5
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5

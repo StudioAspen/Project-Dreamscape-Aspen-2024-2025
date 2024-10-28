@@ -90,7 +90,7 @@ public class MasterLevelManager : MonoBehaviour
     {
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
 
-        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * y, -15f, islandScale * x) , Quaternion.identity, transform);
+        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * x, -15f, islandScale * y) , Quaternion.identity, transform);
         spawnedIsland.Init(x, y);
 
         SpawnedIslands.Add(spawnedIsland);
@@ -100,12 +100,15 @@ public class MasterLevelManager : MonoBehaviour
 
     public void SpawnSelectionSpheres() 
     {
+        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+
         DeleteAllSelectionSpheres(); //just in case spheres still exist
 
         for (int i = 0; i < bordersList.Count; i++)
         {
-            SelectionSphere newSphere = spherePooler.SpawnObject().GetComponent<SelectionSphere>();
-            newSphere.transform.position = bordersList[i].transform.position + selectorOffset;
+            Vector3 spherePos = islandScale * new Vector3(bordersList[i].WorldBorderPosition.x, 0f, bordersList[i].WorldBorderPosition.y);
+
+            SelectionSphere newSphere = spherePooler.SpawnObject<SelectionSphere>(spherePos + selectorOffset);
             newSphere.SetDesiredIslandSpawn(bordersList[i].WorldBorderPosition);
 
             CurrentSelectionSpheres.Add(newSphere);

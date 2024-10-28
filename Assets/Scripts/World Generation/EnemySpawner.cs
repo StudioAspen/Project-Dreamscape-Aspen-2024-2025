@@ -99,8 +99,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 enemyPooler.ChangePrefab(enemyPrefabs[i].gameObject);
 
-                Enemy e = enemyPooler.SpawnObject().GetComponent<Enemy>();
-                e.transform.position = islandManager.GetRandomEnemySpawn().position;
+                Enemy e = enemyPooler.SpawnObject<Enemy>(islandManager.GetRandomEnemySpawn().position);
                 e.Init(this);
 
                 enemiesSpawned.Add(e);
