@@ -9,6 +9,7 @@
         _SkyBoxFogDensity ("Sky Box Fog Density", Float) = 1 // Controls fog intensity
         _FogOffset ("Fog Offset", Float) = 1 // Distance from which fog starts to apply
         _SecondaryOffset ("Secondary Offset", Float) = 1
+         _GradientStrength("Gradient Strength", Float) = 0.7
     }
     SubShader
     {
@@ -40,6 +41,7 @@
             float _SkyBoxFogDensity;
             float _FogOffset;
             float _SecondaryOffset;
+            float _GradientStrength;
 
             v2f vert (appdata_t v)
             {
@@ -65,14 +67,13 @@
                 float fogFactor = (_FogDensity / sqrt(log(2))) * max(0.0f, viewDistance - _FogOffset);
                 fogFactor = exp2(-fogFactor * fogFactor);
 
-                // Calculate a distance factor for color interpolation
-                float distanceFactor = saturate((viewDistance - _FogOffset) / (_ProjectionParams.z - _FogOffset));
+
                 if (depth >= 1) {
                     float4 finalFogColor = lerp(sceneColor, _SFogColor, _SkyBoxFogDensity);
                     return finalFogColor;
                 }
-                
-
+                // Calculate a distance factor for color interpolation
+                float distanceFactor = pow(saturate((viewDistance - _FogOffset) / _SecondaryOffset),_GradientStrength);
                 // Interpolate between primary and secondary fog colors
                 float4 finalFogColor = lerp(_PFogColor, _SFogColor, distanceFactor);
 

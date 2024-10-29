@@ -65,6 +65,7 @@ public class FogEffectFeature : ScriptableRendererFeature
                 material.SetFloat("_SkyBoxFogDensity", fogEffect.skyBoxFogDensity.value);
                 material.SetFloat("_FogOffset", fogEffect.fogOffset.value);
                 material.SetFloat("_SecondaryOffset", fogEffect.secondaryOffset.value);
+                material.SetFloat("_GradientStrength", fogEffect.gradientStrength.value);
             }
 
             // Blit from source to destination
