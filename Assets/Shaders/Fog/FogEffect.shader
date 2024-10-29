@@ -6,7 +6,9 @@
         _PFogColor ("Primary Fog Color", Color) = (1,1,1,1)
         _SFogColor("Secondary Fog Color", Color) = (1,1,1,1)
         _FogDensity ("Fog Density", Float) = 0.1 // Controls fog intensity
+        _SkyBoxFogDensity ("Sky Box Fog Density", Float) = 1 // Controls fog intensity
         _FogOffset ("Fog Offset", Float) = 1 // Distance from which fog starts to apply
+        _SecondaryOffset ("Secondary Offset", Float) = 1
     }
     SubShader
     {
@@ -35,7 +37,9 @@
             float4 _PFogColor;
             float4 _SFogColor;
             float _FogDensity;
+            float _SkyBoxFogDensity;
             float _FogOffset;
+            float _SecondaryOffset;
 
             v2f vert (appdata_t v)
             {
@@ -61,8 +65,19 @@
                 float fogFactor = (_FogDensity / sqrt(log(2))) * max(0.0f, viewDistance - _FogOffset);
                 fogFactor = exp2(-fogFactor * fogFactor);
 
-                // Final fog blending
-                float4 finalColor = lerp(_PFogColor, sceneColor, saturate(fogFactor));
+                // Calculate a distance factor for color interpolation
+                float distanceFactor = saturate((viewDistance - _FogOffset) / (_ProjectionParams.z - _FogOffset));
+                if (depth >= 1) {
+                    float4 finalFogColor = lerp(sceneColor, _SFogColor, _SkyBoxFogDensity);
+                    return finalFogColor;
+                }
+                
+
+                // Interpolate between primary and secondary fog colors
+                float4 finalFogColor = lerp(_PFogColor, _SFogColor, distanceFactor);
+
+                // Final color blending
+                float4 finalColor = lerp(finalFogColor, sceneColor, saturate(fogFactor));
                 return finalColor;
             }
             ENDHLSL

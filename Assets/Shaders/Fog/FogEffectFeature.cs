@@ -60,8 +60,11 @@ public class FogEffectFeature : ScriptableRendererFeature
             if (fogEffect != null && fogEffect.IsActive())
             {
                 material.SetColor("_PFogColor", fogEffect.primaryFogColor.value);
+                material.SetColor("_SFogColor", fogEffect.secondaryFogColor.value);
                 material.SetFloat("_FogDensity", fogEffect.fogDensity.value);
+                material.SetFloat("_SkyBoxFogDensity", fogEffect.skyBoxFogDensity.value);
                 material.SetFloat("_FogOffset", fogEffect.fogOffset.value);
+                material.SetFloat("_SecondaryOffset", fogEffect.secondaryOffset.value);
             }
 
             // Blit from source to destination

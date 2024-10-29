@@ -11,8 +11,12 @@ public class FogEffectComponent : VolumeComponent, IPostProcessComponent
 {
 
     public ColorParameter primaryFogColor = new ColorParameter(Color.white, true, true, true);
+    public ColorParameter secondaryFogColor = new ColorParameter(Color.white, true, true, true);
     public MinFloatParameter fogDensity = new MinFloatParameter(0.0f, 0.0f);
+    public MinFloatParameter skyBoxFogDensity = new MinFloatParameter(0.0f, 0.0f);
     public FloatParameter fogOffset = new FloatParameter(1f);
+    public ClampedFloatParameter secondaryOffset = new ClampedFloatParameter(0f, 0f, 1f);
+
 
     public bool IsActive() => fogDensity != 0;
     public bool IsTileCompatible() => false;
