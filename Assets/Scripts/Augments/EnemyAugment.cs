@@ -18,12 +18,6 @@ public class EnemyAugment : Augment
         StartCoroutine(CheckforEnemyChanges());
     }
     
-    // REMOVE: when shifting to modular
-    public void Awake()
-    {
-        Branch = AugmentBranch.ENEMY_BRANCH;
-        Level = 1;
-    }
 
     // Refresh the list of enemies in the scene
     private IEnumerator CheckforEnemyChanges()
@@ -38,26 +32,15 @@ public class EnemyAugment : Augment
             {
                 Debug.Log("Number of spawned current_enemies: " + current_enemies.Count);
                 prev_count = current_enemies.Count;
-                ColorEnemies(current_enemies);
+                OnEnemiesChanged(current_enemies);
             }
         }
     }
 
-    // Placehold Function: This will be done in a subclass
-    private void ColorEnemies(List<Enemy> current_enemies)
+
+
+    protected virtual void OnEnemiesChanged(List<Enemy> enemies)
     {
-        foreach (var enemy in current_enemies)
-        {
-            if (enemy != null)
-            {
-                Renderer renderer = enemy.GetComponentInChildren<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.blue;
-                }
-            }
-        }
+
     }
-
-
 }

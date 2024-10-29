@@ -21,7 +21,7 @@ public class DummyAugmentInput : MonoBehaviour
             Debug.Log(augmentManager.AddAugment<JumpSoundAugment>() ? "success" : "failure");
         } if (Input.GetKeyDown("["))
         {
-            Debug.Log(augmentManager.AddAugment<EnemyAugment>() ? "success" : "failure");
+            Debug.Log(augmentManager.AddAugment<ColorEnemiesAugment>() ? "success" : "failure");
         }
     }
 }

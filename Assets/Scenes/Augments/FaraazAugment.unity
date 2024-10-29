@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1400,6 +1400,7 @@ GameObject:
   - component: {fileID: 1018934854}
   - component: {fileID: 1018934856}
   - component: {fileID: 1018934855}
+  - component: {fileID: 1018934857}
   m_Layer: 0
   m_Name: AugmentManager
   m_TagString: Untagged
@@ -1434,6 +1435,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ff356b9081f1604e87d8e04f2133925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Name>k__BackingField: 
+  <Icon>k__BackingField: {fileID: 0}
+  <Requirement>k__BackingField: 0
+  isActive: 0
+  Branch: 0
+  Level: 0
   jumpSound: {fileID: 8300000, guid: 0c3ac4f74258b1e42b5be9b157e2e751, type: 3}
 --- !u!114 &1018934856
 MonoBehaviour:
@@ -1448,6 +1455,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 780043833}
+--- !u!114 &1018934857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018934852}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08e01f08b0e90c2499052502406c9b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Name>k__BackingField: 
+  <Icon>k__BackingField: {fileID: 0}
+  <Requirement>k__BackingField: 0
+  isActive: 0
+  Branch: 0
+  Level: 0
 --- !u!1 &1156896643
 GameObject:
   m_ObjectHideFlags: 3
