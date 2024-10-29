@@ -19,6 +19,9 @@ public class DummyAugmentInput : MonoBehaviour
         if (Input.GetKeyDown("p"))
         {
             Debug.Log(augmentManager.AddAugment<JumpSoundAugment>() ? "success" : "failure");
+        } if (Input.GetKeyDown("["))
+        {
+            Debug.Log(augmentManager.AddAugment<EnemyAugment>() ? "success" : "failure");
         }
     }
 }

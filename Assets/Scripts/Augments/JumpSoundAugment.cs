@@ -31,6 +31,7 @@ public class JumpSoundAugment : Augment
         {
             audioSource.Play();
             soundTriggered = true;
+            Debug.Log("JUMP PLAYED");
         }
         else if (!player.IsJumping && soundTriggered)
         {

@@ -8,5 +8,6 @@ public enum AugmentBranch
     MARIO_BRANCH,
     DUMMY_BRANCH1,
     DUMMY_BRANCH2,
-    DUMMY_BRANCH3
+    DUMMY_BRANCH3,
+    ENEMY_BRANCH,
 };
