@@ -103,7 +103,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        Move(desiredAnimationMovement);
+        Displace(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -180,7 +180,12 @@ public class Enemy : Entity
 
     public void Move(Vector3 dir)
     {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        rigidBody.MovePosition(transform.position + dir.normalized * MovementSpeed * Time.fixedDeltaTime);
+    }
+
+    public void Displace(Vector3 displacement)
+    {
+        rigidBody.MovePosition(transform.position + displacement);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
