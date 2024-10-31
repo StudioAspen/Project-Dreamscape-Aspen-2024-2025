@@ -61,5 +61,17 @@ public class EventManager : MonoBehaviour
     {
         return CURRENT_EVENT;
     }
+
+    //return the current event ENUM as string
+    public string GetCurrentEventString()
+    {
+        return CURRENT_EVENT.ToString();
+    }
+
+    //set the current event ENUM
+    public void SetCurrentEvent(EventType newEvent)
+    {
+        CURRENT_EVENT = newEvent;
+    }
 }
 

@@ -3,6 +3,7 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class IslandManager : MonoBehaviour
@@ -27,6 +28,10 @@ public class IslandManager : MonoBehaviour
     [field: SerializeField] public GameObject EnemySpawnPoint3 { get; private set; }
     [field: SerializeField] public GameObject EnemySpawnPoint4 { get; private set; }
 
+    //VISIT_ALL DEBUGGING: for IsVisited bool check to be visible, player may need visuals to know which islands they need to visit
+    public GameObject BaseVisitBall;
+    public GameObject VisitCheckBall { get; private set; }
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -44,10 +49,10 @@ public class IslandManager : MonoBehaviour
 
         InitializeBorders();
 
-        transform.DOMoveY(-5, 0.5f).SetEase(Ease.InBounce).OnComplete(()=>StartCoroutine(OnCompleteSpawn()));
+        transform.DOMoveY(-5, 0.5f).SetEase(Ease.InBounce).OnComplete(() => StartCoroutine(OnCompleteSpawn()));
     }
 
-    
+
     void FixedUpdate()
     {
         Ray rayFront = new Ray(transform.position, transform.TransformDirection(Vector3.forward));
@@ -68,6 +73,8 @@ public class IslandManager : MonoBehaviour
             }
         }
 
+        //Visit Debugging
+        VisitBall();
     }
 
     private IEnumerator OnCompleteSpawn()
@@ -83,7 +90,7 @@ public class IslandManager : MonoBehaviour
 
     private void InitializeBorders()
     {
-        foreach(IslandBorder border in borders)
+        foreach (IslandBorder border in borders)
         {
             border.SetWorldBorderPosition(GridPosition);
             masterLevelManager.AddBorder(border);
@@ -100,6 +107,71 @@ public class IslandManager : MonoBehaviour
     public void Init(int x, int y)
     {
         GridPosition = new Vector2Int(x, y);
+
+        //// Event System - Visit_All debugging
+        // Create a sphere GameObject and assign it to the VisitCheckBall field
+        VisitCheckBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        VisitCheckBall.transform.SetParent(transform);
+        VisitCheckBall.transform.localPosition = new Vector3(0, 1.55f, 0); // Adjust position as needed
+
+        // Optionally, customize the sphere (e.g., size, color)
+        VisitCheckBall.transform.localScale = new Vector3(0.03333334f, 0.1f,  0.03333334f); // Adjust size as needed
+        VisitCheckBall.GetComponent<Renderer>().material.color = Color.red; // Initial color
+
+        // Optionally, disable the collider if not needed
+        Destroy(VisitCheckBall.GetComponent<Collider>());
+    }
+
+    //VISIT_ALL DEBUGGING: for IsVisited bool check to be visible, player may need visuals to know which islands they need to visit
+    public void VisitBall()
+    {
+        if (masterLevelManager.VisitAllDebugging == false)
+        {
+            if(gameObject.name == "BaseCube")
+            {
+                BaseVisitBall.SetActive(false);
+            }
+            else
+            {
+                VisitCheckBall.SetActive(false);
+            }
+            return;
+        }
+        else
+        {
+            if (gameObject.name == "BaseCube")
+            {
+                BaseVisitBall.SetActive(true);
+            }
+            else
+            {
+                VisitCheckBall.SetActive(true);
+            }
+        }
+
+        // base island
+        if (gameObject.name == "BaseCube")
+        {
+            if (IsVisited)
+            {
+                BaseVisitBall.GetComponent<Renderer>().material.color = Color.green; // visited color
+            }
+            else
+            {
+                BaseVisitBall.GetComponent<Renderer>().material.color = Color.red; // not visited color
+            }
+            return;
+        }
+
+        // spawned island
+        if (IsVisited)
+        {
+            VisitCheckBall.GetComponent<Renderer>().material.color = Color.green; // visited color
+        }
+        else
+        {
+            VisitCheckBall.GetComponent<Renderer>().material.color = Color.red; // not visited color
+        }
     }
 }
     

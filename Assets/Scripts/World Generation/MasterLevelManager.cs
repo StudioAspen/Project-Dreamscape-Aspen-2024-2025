@@ -22,6 +22,9 @@ public class MasterLevelManager : MonoBehaviour
     [SerializeField] private Vector3 selectorOffset;
     public List<SelectionSphere> CurrentSelectionSpheres { get; private set; } = new List<SelectionSphere>();
 
+    //VISIT_ALL DEBUGGING: for IsVisited bool check to be visible, player may need visuals to know which islands they need to visit
+    public bool VisitAllDebugging = false;
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -80,7 +83,7 @@ public class MasterLevelManager : MonoBehaviour
             SpawnIsland(selectionSphere.DesiredIslandSpawnPosition.x, selectionSphere.DesiredIslandSpawnPosition.y);
             DeleteAllSelectionSpheres();
 
-            worldManager.IsSelecting = false;
+            worldManager.IsIslandSelecting = false;
             worldManager.PrepareForNextWave();
         }
     }
@@ -90,12 +93,15 @@ public class MasterLevelManager : MonoBehaviour
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
 
         IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * y, -15f, islandScale * x), Quaternion.identity, transform);
-        spawnedIsland.gameObject.tag = "Island"; // Set tag to Island
+        spawnedIsland.gameObject.tag = "Island"; // Set tag to Island (for collision detection of VISIT_ALL event)
         spawnedIsland.Init(x, y);
 
         SpawnedIslands.Add(spawnedIsland);
 
         FindObjectOfType<IslandSelectUI>().RemoveAllCards();
+
+        //Island selected, on to Event Selection
+        worldManager.IslandSelectComplete();
     }
 
     public void SpawnSelectionSpheres() 

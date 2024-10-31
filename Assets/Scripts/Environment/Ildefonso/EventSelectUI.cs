@@ -1,33 +1,33 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IslandSelectUI : MonoBehaviour
+//SCRIPT IS A DUPLICATE OF IslandSelectUI.cs,
+//I ILDEFONSO MARRERO BRANCHING OFF OF THAT SCRIPT TO IMPLEMENT THE EVENT SELECT UI
+//I DO NOT TAKE CREDIT FOR MOST OF THIS CODE
+
+public class EventSelectUI : MonoBehaviour
 {
     [Header("References")]
+    private EventManager eventManager;
     private WorldManager worldManager;
-
-    [System.Serializable]
-    public class Island
-    {
-        public string islandName; // Name of the island
-        public Sprite islandImage; // Image for the island (optional)
-    }
+    private MasterLevelManager masterLevelManager;
 
     [SerializeField]
-    public Island[] availableIslands; // Array of available islands
-    public Button[] isSelectPlaceHolder; // UI Buttons to display the islands
+    public EventType[] availableEvents; // Array of available events
+    public Button[] isSelectPlaceHolder; // UI Buttons to display the events
     public float animationDuration = 1f; // Duration of the animation
     public float spacing = 10f;  // Space between buttons
     public float bounceDuration = 5f; // Duration of the bounce
 
     private void Awake()
     {
+        eventManager = FindObjectOfType<EventManager>();
         worldManager = FindObjectOfType<WorldManager>();
+        masterLevelManager = FindObjectOfType<MasterLevelManager>();
     }
 
     void Start()
@@ -44,24 +44,24 @@ public class IslandSelectUI : MonoBehaviour
 
     }
 
-    public void PrepareIslandSelection()
+    public void PrepareEventSelection()
     {
-        Debug.Log("Preparing Island Select");
+        Debug.Log("Preparing Event Select");
         Time.timeScale = 0f; // Freeze the game
 
         Cursor.lockState = CursorLockMode.None; // Unlock the mouse
         Cursor.visible = true; // Show the cursor
         ///deal 4 random islands 
-        Island[] selectedIslands = GetRandomIslands(4);
+        EventType[] selectedEvents = GetEvents(4);
 
         //Set up buttons with selected islands 
         for (int i = 0; i < isSelectPlaceHolder.Length; i++)
         {
-            ///Set the button text anmd image 
+            ///Set the button text and image 
             Button button = isSelectPlaceHolder[i];
-            Island island = selectedIslands[i];
-            button.GetComponentInChildren<TMP_Text>().text = island.islandName;
-            button.image.sprite = island.islandImage; // Set button image if you have one
+            EventType selected_event = selectedEvents[i];
+            button.GetComponentInChildren<TMP_Text>().text = selected_event.ToString();
+            //button.image.sprite = event.eventImage; // Set button image if you have one
             button.interactable = false;
 
             // Set initial position to a random off-screen point
@@ -83,33 +83,32 @@ public class IslandSelectUI : MonoBehaviour
 
             // Add listener for selection
             button.gameObject.SetActive(true); // Enable the button here
-            button.onClick.AddListener(() => OnButtonSelected(button, island));
+            button.onClick.AddListener(() => OnButtonSelected(button, selected_event));
         }
     }
 
-    Island[] GetRandomIslands(int count)
+    EventType[] GetEvents(int count)
     {
-        Island[] selectedIslands = new Island[count];
-        List<Island> availableList = new List<Island>(availableIslands); // Create a copy of the available islands
+        EventType[] selectedEvents = new EventType[count];
+        List<EventType> availableList = new List<EventType>(availableEvents);
 
+        // Shuffle the list of available events
         for (int i = 0; i < count; i++)
         {
-            if (availableList.Count == 0) break; // Break if no islands are left
             int randomIndex = Random.Range(0, availableList.Count);
-            selectedIslands[i] = availableList[randomIndex];
-            availableList.RemoveAt(randomIndex); // Remove the selected island to avoid duplicates
+            selectedEvents[i] = availableList[randomIndex];
+            availableList.RemoveAt(randomIndex);
         }
 
-        //print out the selected islands
-        Debug.Log("Selected Islands: " + selectedIslands.Count());
-        return selectedIslands;
+        Debug.Log("Selected Events: " + string.Join(", ", selectedEvents));
+        return selectedEvents;
     }
 
-    public void OnButtonSelected(Button selectedButton, Island selectedIsland)
+    public void OnButtonSelected(Button selectedButton, EventType selectedEvent)
     {
         Time.timeScale = 1f;
 
-        Debug.Log(selectedIsland.islandName + " selected!");
+        Debug.Log(selectedEvent.ToString() + " selected!");
 
         // Move the selected button to the top middle of the screen
         Vector3 targetPosition = new Vector3(0, Screen.height / 2, 0); // Adjust Y position as needed
@@ -117,8 +116,8 @@ public class IslandSelectUI : MonoBehaviour
         // Animate the selected button
         selectedButton.transform.DOLocalMove(targetPosition, 0.5f).SetEase(Ease.OutBack).SetUpdate(true);
 
-        // Perform the action based on the selected island
-        AssignIslandToSpheres(selectedIsland);
+        // Perform the action based on the selected event
+        eventManager.SetCurrentEvent(selectedEvent);
 
         // Hide other buttons
         foreach (Button button in isSelectPlaceHolder)
@@ -129,13 +128,19 @@ public class IslandSelectUI : MonoBehaviour
                 button.gameObject.SetActive(false);
             }
         }
-    }
-    void AssignIslandToSpheres(Island selectedIsland)
-    {
-        // Drop the spheres
-        FindObjectOfType<MasterLevelManager>().SpawnSelectionSpheres();
-    }
 
+        //if VISIT_ALL event is selected, reset all islands to unvisited
+        if (selectedEvent == EventType.VISIT_ALL)
+        {
+            foreach (IslandManager island in masterLevelManager.SpawnedIslands)
+            {
+                island.IsVisited = false;
+            }
+        }
+
+        // set IsEventSelecting to false since we are done selecting
+        worldManager.IsEventSelecting = false;
+    }
 
     public void RemoveAllCards()
     {
@@ -148,3 +153,4 @@ public class IslandSelectUI : MonoBehaviour
         }
     }
 }
+

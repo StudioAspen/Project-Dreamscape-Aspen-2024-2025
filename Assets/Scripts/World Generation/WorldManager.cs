@@ -15,7 +15,8 @@ public class WorldManager : MonoBehaviour
     [Header("Island Selection")]
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject islandSelectCamera;
-    public bool IsSelecting;
+    public bool IsIslandSelecting;
+    public bool IsEventSelecting;
 
     private void Awake()
     {
@@ -25,13 +26,14 @@ public class WorldManager : MonoBehaviour
 
     void Update()
     {
+        //EVENT SYSTEM - Ildefonso Marrero
+        /*START COMPLETE*/
         if (eventManager.GetCurrentEvent() == EventType.START) //if the event is START, check for all enemies killed
         {
-            //check if all enemies have been killed
-            if (AreAllWavesFinished() && !IsSelecting)
+            //check if all enemies have been killed, if so, start the island selection
+            if (AreAllWavesFinished() && !IsIslandSelecting && !IsEventSelecting)
             {
-                IsSelecting = true;
-
+                IsIslandSelecting = true;
                 FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
             }
         }
@@ -45,13 +47,11 @@ public class WorldManager : MonoBehaviour
                 {
                     VISITED_ALL = false;
                 }
-
             }
-            //if all islands have been visited, start the selection
-            if (VISITED_ALL && !IsSelecting)
+            //if all islands have been visited, start the island selection
+            if (VISITED_ALL && !IsIslandSelecting && !IsEventSelecting)
             {
-                IsSelecting = true;
-
+                IsIslandSelecting = true;
                 FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
             }
         }
@@ -76,7 +76,7 @@ public class WorldManager : MonoBehaviour
             //TODO: Check if the timer has ended AND object survival
         }else
         {
-            Debug.Log("No event is active");
+            Debug.Log("ERROR: No event is active");
         }
 
         /*        if (Input.GetKeyDown(KeyCode.Q) && isInSkyView == false) 
@@ -118,5 +118,12 @@ public class WorldManager : MonoBehaviour
             island.LevelUp();
             island.EnemySpawner.WaveReset();
         }
+    }
+
+    public void IslandSelectComplete()
+    {
+        IsIslandSelecting = false;
+        IsEventSelecting = true;
+        FindObjectOfType<EventSelectUI>().PrepareEventSelection();
     }
 }
