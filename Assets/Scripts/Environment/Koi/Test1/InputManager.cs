@@ -1,15 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     [SerializeField]
     private Camera sceneCamera;
+
     private Vector3 lastPosition;
+
     [SerializeField]
     private LayerMask placementLayermask;
 

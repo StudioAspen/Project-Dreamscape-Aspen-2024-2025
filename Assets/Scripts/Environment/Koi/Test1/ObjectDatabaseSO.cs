@@ -1,15 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-
-public class ObjectDatabaseSO : ScriptableObject
+public class ObjectsDatabaseSO : ScriptableObject
 {
     public List<ObjectData> objectsData;
 }
 
-[System.Serializable]
+[Serializable]
 public class ObjectData
 {
     [field: SerializeField]
@@ -21,5 +21,3 @@ public class ObjectData
     [field: SerializeField]
     public GameObject Prefab { get; private set; }
 }
-
-
