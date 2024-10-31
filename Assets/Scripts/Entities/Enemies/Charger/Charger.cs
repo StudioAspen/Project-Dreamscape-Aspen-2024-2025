@@ -5,10 +5,11 @@ public class Charger : Enemy
     [field: Header("Charger: Attack Settings")]
     [field: SerializeField] public float ChargingProcRadius { get; private set; } = 11f;
     [field: SerializeField] public float ChargeSpeed { get; private set; } = 8f;
-    [field: SerializeField] public float ChargeDuration { get; private set; } = 3f;
+    [field: SerializeField] public float ChargeDuration { get; private set; } = 5f;
     [field: SerializeField] public float SlowDownDuration { get; private set; } = 2f;
     [field: SerializeField] public float HitboxRadius { get; private set; } = 3f;
     [field: SerializeField] public float RotationSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float KnockbackForce { get; private set; } = 2f;
 
 
     #region States
@@ -85,6 +86,4 @@ public class Charger : Enemy
             OnDeath();
         }
     }
-
-
 }

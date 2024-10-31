@@ -10,6 +10,9 @@ public class ChargerFarAttackState : EnemyBaseState
 
     private float currentSpeed;
 
+    private float chargeTime;
+    private float slowdownTime;
+
     private bool isCharging = false;
     private bool isSlowingDown = false;
 
@@ -20,15 +23,21 @@ public class ChargerFarAttackState : EnemyBaseState
         charger = enemy;
     }
 
-    public override void OnEnter()
+    public override void OnEnter() //when state is switched to.
     {
         isCharging = false;
         isSlowingDown = false;
-        StartCharging();
-        //enemy.AssignTarget(); 
+
+        charger.AssignTarget(); 
+
+        if (enemy.Target != null)
+        {
+            Debug.Log("Setting Charge!");
+            SetCharge();
+        }  
     }
 
-    public override void OnExit()
+    public override void OnExit() //when state is switched out.
     {
         isCharging = false;
         isSlowingDown = false;
@@ -36,28 +45,28 @@ public class ChargerFarAttackState : EnemyBaseState
 
     public override void Update()
     {
-        //continuously look for a target.
         if (charger.Target == null)  
         {
-            charger.ChangeState(charger.ChargerFarAttackState);
+            Debug.Log("No Target in range!");
+            charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
             return;
         }
 
-        float distanceToTarget = enemy.Distance(enemy.Target);
-
-        Vector3 moveDirection = (enemy.Target.transform.position - enemy.transform.position).normalized;
-        enemy.RigidBody.MovePosition(moveDirection * currentSpeed * Time.deltaTime);
-
-        //if distance to target is within charging range.
-        //if (distanceToTarget <= charger.ChargingProcRadius && !isCharging && !isSlowingDown)
-        //{
-        //    StartCharging();  //[When other states are done, this is the only thing needed in update]
-        // }
-
-        //while charging checks for collisions.
         if (isCharging || isSlowingDown)
         {
             CheckForHits();
+        }
+
+        if (isCharging)
+        {
+            Debug.Log("Charging!");
+            StartCharging();
+        }
+
+        if (isSlowingDown)
+        {
+            Debug.Log("Slowing Down!");
+            StartSlowingDown();
         }
     }
 
@@ -65,53 +74,68 @@ public class ChargerFarAttackState : EnemyBaseState
     {
         if (charger.Target == null)
         {
-            charger.ChangeState(charger.ChargerFarAttackState);
+            charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
             return;
         }
 
-        Vector3 moveDirection = (enemy.Target.transform.position - enemy.transform.position).normalized;
-        enemy.RigidBody.MovePosition(enemy.transform.position + moveDirection * currentSpeed * Time.deltaTime);
+        //while charging checks moves towards player.
+        if (isCharging || isSlowingDown)
+        {
+            Vector3 moveDirection = (enemy.Target.transform.position - enemy.transform.position).normalized;
+            enemy.RigidBody.MovePosition(enemy.transform.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+        }
+    
+    }
+
+    private void SetCharge()
+    {
+        isCharging = true;
+
+        currentSpeed = 0f; 
+        chargeTime = Time.time; //remains constant. 
     }
 
     private void StartCharging()
     {
-        isCharging = true;
-        currentSpeed = 0f; 
+        float elapsedChargeTime = Time.time - chargeTime;
 
-        if (enemy.Target == null) return; 
+        if (elapsedChargeTime <= charger.ChargeDuration)
+        {
+            //Speed will be from 0 to ChargeSpeed, in the length of the charge duration. 
+            currentSpeed = Mathf.Lerp(0, charger.ChargeSpeed, (Time.time - chargeTime) / charger.ChargeDuration);
+        }
+        else
+        {
+            isCharging = false;
+            Debug.Log("Setting Slowdown!");
+            SetSlowDown();
+        } 
+    }
 
-        //charging towards the target.
-        DOTween.To(() => currentSpeed, x => currentSpeed = x, charger.ChargeSpeed, charger.ChargeDuration)
-            .SetEase(Ease.InCubic)
-            .OnComplete(() => 
-            {
-                StartSlowingDown(); //start slowing down when charging is done.
-            }
-        );
+    private void SetSlowDown()
+    {
+        isSlowingDown = true;
+
+        currentSpeed = charger.ChargeSpeed; 
+        slowdownTime = Time.time; //remains constant.
     }
 
     private void StartSlowingDown()
     {
-        isCharging = false;
-        isSlowingDown = true;
-        currentSpeed = charger.ChargeSpeed;
+        float elapsedSlowTime = Time.time - slowdownTime;
 
-        //moves forward slowing down.
-        DOTween.To(() => currentSpeed, x => currentSpeed = x, 0, charger.SlowDownDuration)
-            .SetEase(Ease.OutCubic)
-            .OnUpdate(() =>
-            {
-                enemy.transform.position += enemy.transform.forward * currentSpeed * Time.deltaTime; 
-            })
-            .OnComplete(() =>
-            {
-                isSlowingDown = false;
-
-                //enter wind-down state.
-            }
-        );
+        if (elapsedSlowTime <= charger.SlowDownDuration)
+        {
+            //Speed will be from ChargeSpeed to 0, in the length of the slowdown duration.
+            currentSpeed = Mathf.Lerp(currentSpeed, 0, (Time.time - slowdownTime) / charger.SlowDownDuration);
+        }
+        else
+        {
+            isSlowingDown = false;
+            //Enter Wind-down State.
+            Debug.Log("Entering Wind-down State!");
+        }
     }
-
 
     private void CheckForHits()
     {
@@ -125,39 +149,46 @@ public class ChargerFarAttackState : EnemyBaseState
             //in the case no entity was hit, but hit a wall.
             if (hitCollider.gameObject.layer == LayerMask.GetMask("Wall"))
             {
-
                 //take self damage.
+                
                 //tiny knockback.
+                Vector3 knockbackDirection = (charger.transform.position - hitCollider.transform.position).normalized;
+                ApplyKnockback(charger, knockbackDirection, charger.KnockbackForce);
+                
 
                 //enter dazed state.
-
-
             }
 
             //if both entities are on the same team [enemy]
             if (hitEntity.Team == enemy.Team) 
             {
-
-               //knockback other enemy in charge direction.
+                //knockback other enemy in charge direction.
+                Vector3 knockbackDirection = (hitEntity.transform.position - charger.transform.position).normalized;
+                ApplyKnockback(hitEntity, knockbackDirection, charger.KnockbackForce); 
 
             }
             //else if not on the same team [player]
             else
             {
-                    
-               //damage player.
-               //knockback to player.
+                //damage player.
 
-               //enter wind-down state.
+                //knockback to player.
+                Vector3 knockbackDirection = (hitEntity.transform.position - charger.transform.position).normalized;
+                ApplyKnockback(hitEntity, knockbackDirection, charger.KnockbackForce);
+
+                //enter wind-down state.
             }
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void ApplyKnockback(Entity target, Vector3 direction, float force)
     {
-        //visual for "chargingProcRadius".
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(enemy.transform.position, charger.ChargingProcRadius);
+        Rigidbody targetRigidbody = target.GetComponent<Rigidbody>();
+
+        if (targetRigidbody != null)
+        {
+            targetRigidbody.AddForce(direction * force, ForceMode.Impulse);
+        }
     }
 
     /* -[OLD LOGIC]-
