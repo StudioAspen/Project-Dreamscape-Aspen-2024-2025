@@ -7,19 +7,20 @@ public class Leaper : Enemy
     // variables for attack go here 
     // follower has a couple of them already but I dont think leaper needs all of them
     [field: Header("Leaper: Attack Settings")]
-    [field: SerializedField] public float AttackRange{ get; private set; } = 1f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     // reminder to change the value bellow if you need to
-    [field: SerializedField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
+    [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
 
 
     // add all states here 
     // add as they get created
     #region States
 
-    public LeaperAttackState LeaperAttackState{ get; private set; }
-    public LeaperHopState LeaperHopState{ get; private set; }
-    public LeaperChaseState LeaperChaseState{ get; private set; }
-
+    // public LeaperAttackState LeaperAttackState{ get; private set; }
+    // public LeaperHopState LeaperHopState{ get; private set; }
+    // public LeaperChaseState LeaperChaseState{ get; private set; }
+    
+    #endregion
 
     protected override void OnAwake()
     {
@@ -64,9 +65,10 @@ public class Leaper : Enemy
         // Initialize new states here 
         // currently only 3 
         // add more as they get created
-        LeaperAttackState = new LeaperAttackState(this);
-        LeaperHopState = new LeaperHopState(this);
-        LeaperChaseState = new LeaperChaseState(this);
+
+        // LeaperAttackState = new LeaperAttackState(this);
+        // LeaperHopState = new LeaperHopState(this);
+        // LeaperChaseState = new LeaperChaseState(this);
 
 
     }
