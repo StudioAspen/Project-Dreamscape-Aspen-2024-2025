@@ -1,39 +1,89 @@
+using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MomentumSystem : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField, Self] private Player player;
+    [SerializeField] private TMP_Text debugText;
+
+    [Header("Settings")]
+    [SerializeField] private float baseTimeBetween = 5f;
+    [SerializeField] private float timeBetweenMultiplier = 0.975f;
+    private float timer;
+    private float timeBetween;
+
     private int momentum;
     public int Momentum => momentum;
 
-    private float timer;
-    [SerializeField] private float baseTimeBetween = 3f;
-    [SerializeField] private float timeBetweenMultiplier = 0.975f;
-    private float timeBetween;
-
-    public void AddMomentum() {
-        momentum++;
-        timer = 0;
-        timeBetween = timeBetween*timeBetweenMultiplier;
+    private void OnValidate()
+    {
+        this.ValidateRefs();
     }
 
-    private void Reset() {
-        timer = 0;
-        timeBetween = baseTimeBetween;
-        momentum = 0;
+    void Start()
+    {
+        Reset();
     }
-    void Start() {
-        timeBetween = baseTimeBetween;
+
+    private void OnEnable()
+    {
+        player.OnEntityTakeDamage.AddListener(Player_OnEntityTakeDamage);
+        player.OnKillEntity.AddListener(Player_OnKillEntity);
     }
-    // Update is called once per frame
+
+    private void OnDisable()
+    {
+        player.OnEntityTakeDamage.RemoveListener(Player_OnEntityTakeDamage);
+        player.OnKillEntity.RemoveListener(Player_OnKillEntity);
+    }
+
     void Update()
     {
-        if (momentum > 0) {
-            timer+=Time.deltaTime; 
+        HandleMomentum();
+    }
+
+    private void Player_OnEntityTakeDamage(Vector3 hitPoint, GameObject source)
+    {
+        Reset();
+    }
+
+    private void Player_OnKillEntity(Entity victim)
+    {
+        AddMomentum();
+    }
+
+    private void HandleMomentum()
+    {
+        if (momentum > 0)
+        {
+            timer += Time.deltaTime;
         }
-        if (timer > timeBetween) {
+        if (timer > timeBetween)
+        {
             Reset();
         }
     }
+
+    private void AddMomentum()
+    {
+        momentum++;
+        timer = 0;
+        timeBetween = timeBetween * timeBetweenMultiplier;
+
+        debugText.text = $"Momentum: {momentum}";
+    }
+
+    private void Reset()
+    {
+        timer = 0;
+        timeBetween = baseTimeBetween;
+        momentum = 0;
+
+        debugText.text = $"Momentum: {momentum}";
+    }
+
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class EntityHitState : BaseState
 {
@@ -18,8 +19,7 @@ public class EntityHitState : BaseState
 
         timer = 0f;
 
-        Player player = entity as Player;
-        if (player != null) player.SetSpeedModifier(0);
+        entity.SetSpeedModifier(0);
     }
 
     public override void OnExit()

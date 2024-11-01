@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -164,6 +165,7 @@ public class PlayerCombat : MonoBehaviour
     private void ExecuteCombo(ComboDataSO combo)
     {
         if (player.CurrentState == player.PlayerSlideState) return;
+        if (player.CurrentState == player.EntityHitState) return;
 
         player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);

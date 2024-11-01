@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -18,7 +19,7 @@ public class MasterLevelManager : MonoBehaviour
     [Header("Player Selection")]
     [SerializeField] private LayerMask selectionLayer;
     [SerializeField] private IslandManager islandToSpawnPrefab;
-    [SerializeField] private SelectionSphere selectionSpherePrefab;
+    [SerializeField] private ObjectPooler spherePooler;
     [SerializeField] private Vector3 selectorOffset;
     public List<SelectionSphere> CurrentSelectionSpheres { get; private set; } = new List<SelectionSphere>();
 
@@ -89,7 +90,7 @@ public class MasterLevelManager : MonoBehaviour
     {
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
 
-        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * y, -15f, islandScale * x) , Quaternion.identity, transform);
+        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * x, -15f, islandScale * y) , Quaternion.identity, transform);
         spawnedIsland.Init(x, y);
 
         SpawnedIslands.Add(spawnedIsland);
@@ -99,12 +100,17 @@ public class MasterLevelManager : MonoBehaviour
 
     public void SpawnSelectionSpheres() 
     {
-        DeleteAllSelectionSpheres();
+        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+
+        DeleteAllSelectionSpheres(); //just in case spheres still exist
 
         for (int i = 0; i < bordersList.Count; i++)
         {
-            SelectionSphere newSphere = Instantiate(selectionSpherePrefab, bordersList[i].transform.position + selectorOffset, Quaternion.identity);
+            Vector3 spherePos = islandScale * new Vector3(bordersList[i].WorldBorderPosition.x, 0f, bordersList[i].WorldBorderPosition.y);
+
+            SelectionSphere newSphere = spherePooler.SpawnObject<SelectionSphere>(spherePos + selectorOffset);
             newSphere.SetDesiredIslandSpawn(bordersList[i].WorldBorderPosition);
+
             CurrentSelectionSpheres.Add(newSphere);
         }
 
@@ -112,9 +118,9 @@ public class MasterLevelManager : MonoBehaviour
 
     private void DeleteAllSelectionSpheres()
     {
-        foreach(var sphere in new List<SelectionSphere>(CurrentSelectionSpheres))
+        foreach(SelectionSphere sphere in new List<SelectionSphere>(CurrentSelectionSpheres))
         {
-            Destroy(sphere.gameObject);
+            spherePooler.ReleaseObject(sphere.gameObject);
         }
 
         CurrentSelectionSpheres.Clear();
