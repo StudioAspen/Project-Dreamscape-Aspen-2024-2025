@@ -9,10 +9,29 @@ public class OpenMenu : MonoBehaviour
 
     // public Button openMenu, closeMenu;
     public GameObject menu;
+    public KeyCode openUIKeycode;
     private bool isOpen = false;
 
     public void Start() {
 
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(openUIKeycode))
+            isOpen = !isOpen;
+
+        if (isOpen)
+        {
+            PauseGame();
+            menu.SetActive(true);
+        }
+
+        else
+        {
+            ResumeGame();
+            menu.SetActive(false);
+        }
     }
 
     public void PauseGame() {
@@ -23,21 +42,5 @@ public class OpenMenu : MonoBehaviour
     public void ResumeGame() {
         Debug.Log("Resumed");
         Time.timeScale = 1;
-    }
-
-    public void Update() {
-        if (Input.GetKeyDown("m")) {
-            isOpen = !isOpen;
-        }
-
-        if (isOpen) {
-            PauseGame();
-            menu.SetActive(true);
-        }
-
-        else {
-            ResumeGame();
-            menu.SetActive(false);
-        }
     }
 }
