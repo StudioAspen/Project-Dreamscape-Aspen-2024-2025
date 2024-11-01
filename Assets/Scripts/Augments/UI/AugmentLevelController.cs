@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AugmenTreeController : MonoBehaviour
+public class AugmentLevelController : MonoBehaviour
 {
 
     public GameObject augmentSlots;

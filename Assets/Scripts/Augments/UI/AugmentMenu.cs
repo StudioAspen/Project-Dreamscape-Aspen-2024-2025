@@ -4,33 +4,31 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class OpenMenu : MonoBehaviour
+public class AugmentMenu : MonoBehaviour
 {
+    [Header("Setters")]
+    public GameObject currentAugmentMenu; // current augments and levels
+    public KeyCode openCurrentAugmentMenu; // button for opening menu
 
-    // public Button openMenu, closeMenu;
-    public GameObject menu;
-    public KeyCode openUIKeycode;
+    [Header("Trackers")]
     private bool isOpen = false;
-
-    public void Start() {
-
-    }
 
     public void Update()
     {
-        if (Input.GetKeyDown(openUIKeycode))
+        // turns on/off menu
+        if (Input.GetKeyDown(openCurrentAugmentMenu))
             isOpen = !isOpen;
 
         if (isOpen)
         {
             PauseGame();
-            menu.SetActive(true);
+            currentAugmentMenu.SetActive(true);
         }
 
         else
         {
             ResumeGame();
-            menu.SetActive(false);
+            currentAugmentMenu.SetActive(false);
         }
     }
 
