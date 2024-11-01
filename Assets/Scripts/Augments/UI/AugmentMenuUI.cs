@@ -4,14 +4,32 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class AugmentMenu : MonoBehaviour
+public class AugmentMenuUI : MonoBehaviour
 {
     [Header("Setters")]
+    public GameObject augmentManager; // check for all augments possible
     public GameObject currentAugmentMenu; // current augments and levels
     public KeyCode openCurrentAugmentMenu; // button for opening menu
 
     [Header("Trackers")]
     private bool isOpen = false;
+
+    /*
+    private void Start()
+    {
+        // gets all augments possible for player to get
+        var allAugments = augmentManager.GetComponentsInChildren<Augment>();
+
+        for(int i = 0; i < allAugments.Length; i++)
+        {
+            Debug.Log("AUGMENT " + i + ": " + allAugments[i].ToString()); // prints all augments possible
+            
+            // prints augments if they are active
+            if (allAugments[i].isActive)
+                Debug.Log("AUGMENT active: " + allAugments[i].ToString());
+        }
+    }
+    */
 
     public void Update()
     {

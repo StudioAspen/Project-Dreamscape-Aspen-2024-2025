@@ -6,35 +6,30 @@ using UnityEngine.UI;
 
 public class AugmentLevelController : MonoBehaviour
 {
+    [Header("Setters")]
+    public GameObject augmentManager; // check for all augments possible
+    public TextMeshProUGUI augmentsListText; // textbox
 
-    public GameObject augmentSlots;
-    public GameObject slotBranches;
-    public Button augment1;
-    public Button augment2;
-    public Button augment3;
-    public Button closeWindow;
-    public TextMeshProUGUI currAugment;
+    public Augment[] allAugments;
 
     void Start()
     {
-        augment1.onClick.AddListener(() => {OpenBranches(augment1); });
-        augment2.onClick.AddListener(() => {OpenBranches(augment2); });
-        augment3.onClick.AddListener(() => {OpenBranches(augment3); });
-        closeWindow.onClick.AddListener(CloseBranches);
+        // gets all augments possible for player to get
+        allAugments = augmentManager.GetComponentsInChildren<Augment>();
+
+        for (int i = 0; i < allAugments.Length; i++)
+        {
+            // prints all possible augments
+            augmentsListText.text += allAugments[i].ToString() + " \n";
+
+            // prints augments if they are active
+            if (allAugments[i].isActive)
+                Debug.Log("AUGMENT active: " + allAugments[i].ToString());
+        }
     }
 
-    public void OpenBranches(Button button)
+    private void Update()
     {
-        //take in the augment or slot name so we can render to correct data that corresponds to that augment
-        augmentSlots.SetActive(false);
-        slotBranches.SetActive(true);
-        currAugment.text = button.name;
-    }
 
-    public void CloseBranches()
-    {
-        slotBranches.SetActive(false);
-        augmentSlots.SetActive(true);
-        Debug.Log("Clicked");
     }
 }
