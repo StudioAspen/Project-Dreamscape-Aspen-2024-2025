@@ -1890,7 +1890,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354898057}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -2866,6 +2866,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2017864769}
   - component: {fileID: 2017864768}
+  - component: {fileID: 2017864770}
   m_Layer: 5
   m_Name: Minimap
   m_TagString: Untagged
@@ -2901,6 +2902,23 @@ RectTransform:
   m_AnchoredPosition: {x: 1032.958, y: 579.0743}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2017864770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017864767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75dd167e653b0d344b5665a60d526551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimapRectTransform: {fileID: 528456260}
+  maximizedSize: {x: 300, y: 300}
+  m_Camera: {fileID: 1987318875}
+  zoom: 80
+  minimap_opacity: 0.8
 --- !u!1 &2105726250
 GameObject:
   m_ObjectHideFlags: 0
