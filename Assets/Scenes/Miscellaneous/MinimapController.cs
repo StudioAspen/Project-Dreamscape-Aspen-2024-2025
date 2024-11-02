@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-// TODO: Consolidate Logic into Two Paths
 
 public class MinimapController : MonoBehaviour
 {
@@ -19,82 +18,84 @@ public class MinimapController : MonoBehaviour
 
     [SerializeField] private Vector2 maximizedSize = new Vector2(300, 300);
     [SerializeField] private Camera m_Camera;
-    [SerializeField] private int zoom = 80;
-    [SerializeField] private float minimap_opacity = 0.75f;
+    [SerializeField] private int maximizedZoom = 80;
+    [Range(0.0f, 1.0f)] [SerializeField] private float minimap_opacity = 0.75f;
 
-    public void ToggleMinimap()
-    {
-        Mask mask = GetComponentInChildren<Mask>();
-        if (mask != null) {
-            mask.enabled = !mask.enabled;
-            mask.GetComponent<Image>().enabled = !mask.GetComponent<Image>().enabled;
-        }
-        if (m_Camera.TryGetComponent(out UniversalAdditionalCameraData cameraData)) {
-            cameraData.renderPostProcessing = !cameraData.renderPostProcessing;
-        }
-        if(transform.childCount > 0)
-        {
-            Transform border = transform.GetChild(0).Find("Border");
-            if (border != null)
-            {
-                border.gameObject.SetActive(isMaximized);
-            }
-            else
-            {
-                Debug.Log("BORDER NOT FOUND?");
-            }
-        }
+    private CinemachineVirtualCamera virtualCamera;
+    private Cinemachine3rdPersonFollow thirdPersonFollow;
+    private Mask mask;
+    private RawImage image;
+    private Transform border;
 
-        if (isMaximized) {
-            minimapRectTransform.sizeDelta = normalSize;
-            minimapRectTransform.anchoredPosition = normalPosition;
-        } else {
-            minimapRectTransform.sizeDelta = maximizedSize;
-            minimapRectTransform.anchoredPosition = centeredPosition;
-        }
-
-        CinemachineVirtualCamera virtualCamera = m_Camera.GetComponent<CinemachineVirtualCamera>();
-        Cinemachine3rdPersonFollow thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
-        if (isMaximized) {
-            thirdPersonFollow.VerticalArmLength = originalZoom;
-        } else {
-            thirdPersonFollow.VerticalArmLength = zoom;
-        }
-
-        RawImage image = mask.GetComponentInChildren<RawImage>();
-        if (!isMaximized) {
-            if (image != null) {
-                Color newColor = image.color;
-                newColor.a = minimap_opacity;
-                image.color = newColor;
-            }
-        } else {
-            Color newColor = image.color;
-            newColor.a = 1.0f;
-            image.color = newColor;
-        }
-
-
-        isMaximized = !isMaximized;
-    }
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        // Cache Components
         normalSize = minimapRectTransform.sizeDelta;
         normalPosition = minimapRectTransform.anchoredPosition;
+        originalZoom = m_Camera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine3rdPersonFollow>().VerticalArmLength;
 
         RectTransform canvasRT = GetComponentInChildren<Canvas>().GetComponent<RectTransform>();
         centeredPosition = new Vector2(-(canvasRT.rect.width / 2), canvasRT.rect.height / 2);
 
-        originalZoom = m_Camera.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine3rdPersonFollow>().VerticalArmLength;
+        mask = GetComponentInChildren<Mask>();
+        virtualCamera = m_Camera.GetComponent<CinemachineVirtualCamera>();
+        thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        image = mask.GetComponentInChildren<RawImage>();
+        border = transform.GetChild(0).Find("Border");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.M))
-        {
+        if(Input.GetKeyUp(KeyCode.M)){
             ToggleMinimap();
         }
+    }
+
+    public void ToggleMinimap()
+    {
+        // Toggle Mask and Border
+        if (mask != null) {
+            mask.enabled = !mask.enabled;
+            mask.GetComponent<Image>().enabled = !mask.GetComponent<Image>().enabled;
+        }
+        if (border != null) {
+            border.gameObject.SetActive(isMaximized);
+        }
+
+        // Toggle Solid Color Background of Minimap
+        if (m_Camera.TryGetComponent(out UniversalAdditionalCameraData cameraData)) {
+            cameraData.renderPostProcessing = !cameraData.renderPostProcessing;
+        }
+
+        // Map is Maximized --> Minimize map
+        if (isMaximized) {
+            // Make Minimap smaller and move into corner
+            minimapRectTransform.sizeDelta = normalSize;
+            minimapRectTransform.anchoredPosition = normalPosition;
+            thirdPersonFollow.VerticalArmLength = originalZoom;
+
+            Color newColor = image.color;
+            newColor.a = 1.0f;
+            image.color = newColor;
+        }
+        // Map is Minimized --> Maximize Map
+        else {
+            if (image != null) {
+                Color newColor = image.color;
+                newColor.a = minimap_opacity;
+                image.color = newColor;
+            }
+
+            // Center Map and Increaes Size
+            minimapRectTransform.sizeDelta = maximizedSize;
+            minimapRectTransform.anchoredPosition = centeredPosition;
+
+            thirdPersonFollow.VerticalArmLength = maximizedZoom;
+        }
+
+        isMaximized = !isMaximized;
+        Debug.Log("Minimap Switched");
     }
 }
