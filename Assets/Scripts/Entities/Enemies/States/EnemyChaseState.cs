@@ -12,7 +12,7 @@ public class EnemyChaseState : EnemyBaseState
     {
         enemy.DefaultTransitionToAnimation("FlatMovement");
 
-        enemy.SetSpeedModifier(0.75f);
+        enemy.SetSpeedModifier(1f);
     }
 
     public override void OnExit()

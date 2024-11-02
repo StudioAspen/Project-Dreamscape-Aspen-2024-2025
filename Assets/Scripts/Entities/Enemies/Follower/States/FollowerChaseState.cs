@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class FollowerChaseState : EnemyChaseState
 {
@@ -37,28 +39,28 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
+        if(follower.Distance(follower.Target) < follower.CircleRadius)
+        {
+            CheckCanCircle();
+        }
+    }
+
+    private void CheckCanCircle()
+    {
         if (follower.Target.TryGetComponent(out Player player))
         {
-            if (player.NearbyEntities.Count > 0)
+            List<Follower> playerNearbyFollowers = player.GetNearbyEntitiesByType<Follower>(follower.CircleRadius + 1f);
+
+            foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
             {
-                bool qualifiedToChase = false;
-
-                for (int i = 0; i < Mathf.Min(follower.CircleEntityCountThreshold, player.NearbyEntities.Count); i++)
-                {
-                    if (player.NearbyEntities[i].gameObject == follower.gameObject)
-                    {
-                        qualifiedToChase = true;
-                    }
-                }
-
-                if (!qualifiedToChase)
-                {
-                    if (follower.Distance(follower.Target) < follower.MaxCircleRadius)
-                    {
-                        follower.ChangeState(follower.FollowerCircleState);
-                    }
-                }
+                if (f.CurrentState == f.EntityDeathState) playerNearbyFollowers.Remove(f);
             }
+
+            playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
+
+            if (playerNearbyFollowers.Contains(follower)) return;
+
+            follower.ChangeState(follower.FollowerCircleState);
         }
     }
 

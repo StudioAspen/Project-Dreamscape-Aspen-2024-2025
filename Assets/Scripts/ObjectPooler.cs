@@ -48,15 +48,47 @@ public class ObjectPooler : MonoBehaviour
         Destroy(pooledObject);
     }
 
-    public GameObject SpawnObject()
+    #region Factory
+    public T SpawnObject<T>() where T : Component
     {
-        return objectPool.Get();
+        GameObject spawnedObject = objectPool.Get();
+        T component = spawnedObject.GetComponent<T>();
+        
+        Debug.Assert(component != null, $"Prefab is missing {component.GetType()} component");
+
+        return component;
+    }
+
+    public T SpawnObject<T>(Vector3 position) where T : Component
+    {
+        GameObject spawnedObject = objectPool.Get();
+        spawnedObject.transform.position = position;
+
+        T component = spawnedObject.GetComponent<T>();
+
+        Debug.Assert(component != null, $"Prefab is missing {component.GetType()} component");
+
+        return component;
+    }
+
+    public T SpawnObject<T>(Vector3 position, Transform parent) where T : Component
+    {
+        GameObject spawnedObject = objectPool.Get();
+        spawnedObject.transform.position = position;
+        spawnedObject.transform.SetParent(parent);
+
+        T component = spawnedObject.GetComponent<T>();
+
+        Debug.Assert(component != null, $"Prefab is missing {component.GetType()} component");
+
+        return component;
     }
 
     public void ReleaseObject(GameObject pooledObject)
     {
         objectPool.Release(pooledObject);
     }
+    #endregion
 }
 
 public interface IPoolableObject
