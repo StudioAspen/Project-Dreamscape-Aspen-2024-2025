@@ -194,7 +194,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         ChangeState(DefaultState);
         ChangeState(EntityHitState);
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        AttemptToSpawnHitNumbers(dmg, hitPoint, Color.red);
 
         CurrentHealth -= dmg;
 
@@ -213,7 +213,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        AttemptToSpawnHitNumbers(dmg, hitPoint, Color.red);
 
         CurrentHealth -= dmg;
 
@@ -228,18 +228,19 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
     }
 
-    private protected void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
+    private protected void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint, Color color)
     {
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
 
         HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
-        hitNumber.ActivateHitNumberText(dmg, hitPoint);
+        hitNumber.ActivateHitNumberText(dmg, hitPoint, color);
     }
 
     public void Heal(int health)
     {
         CurrentHealth += health;
+        AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
     }
 
     public void Kill()

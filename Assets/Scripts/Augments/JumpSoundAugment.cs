@@ -11,17 +11,18 @@ public class JumpSoundAugment : Augment
     [Header("Augment Parameters")]
     [SerializeField] private AudioClip jumpSound;
 
+    protected void Awake()
+    {
+        Branch = AugmentBranch.MARIO_BRANCH;
+        Level = 1;
+    }
+
+
     protected override void Start()
     {
         base.Start();
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = jumpSound;
-    }
-
-    protected void Awake()
-    {
-        Branch = AugmentBranch.MARIO_BRANCH;
-        Level = 1;
     }
 
     // Update is called once per frame

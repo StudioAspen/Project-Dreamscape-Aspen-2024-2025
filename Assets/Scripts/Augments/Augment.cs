@@ -10,8 +10,21 @@ public abstract class Augment : MonoBehaviour
 
     protected Player player;
 
+
+    protected virtual void Awake()
+    {
+
+    }
+
+
     protected virtual void Start()
     {
         player = GetComponent<AugmentManager>().Player.GetComponent<Player>();
+    }
+
+
+    protected virtual void OnEnable()
+    {
+
     }
 }
