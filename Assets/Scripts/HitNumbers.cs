@@ -13,7 +13,7 @@ public class HitNumbers : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+        //transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
     public void ActivateHitNumberText(int damage)

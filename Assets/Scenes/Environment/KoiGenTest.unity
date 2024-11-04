@@ -154,7 +154,6 @@ Transform:
   m_Children:
   - {fileID: 97703270}
   - {fileID: 443116726}
-  - {fileID: 1675041087}
   - {fileID: 1628098517}
   - {fileID: 637086427}
   - {fileID: 754548514}
@@ -741,9 +740,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 678045661}
   - {fileID: 373853275}
   - {fileID: 794967691}
+  - {fileID: 678045661}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &678045657
@@ -1568,7 +1567,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1989413915}
-  m_Father: {fileID: 17970553}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1675041088
 MonoBehaviour:
@@ -1768,6 +1767,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1675041087}
   - {fileID: 17970553}
   - {fileID: 657163285}
   - {fileID: 1832457528}

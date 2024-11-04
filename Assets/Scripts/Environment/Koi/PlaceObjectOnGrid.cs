@@ -16,8 +16,8 @@ public class PlaceObjectOnGrid : MonoBehaviour
     private Plane plane;
     private Vector3 mousePosition;
 
-    [Header("Linked Scripts")]
-    [SerializeField] public TileManager tileManager;
+    //[Header("Linked Scripts")]
+    //[SerializeField] public TileManager tileManager;
     
     // Start is called before the first frame update
     void Start()
@@ -29,13 +29,13 @@ public class PlaceObjectOnGrid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(tileManager.IsSelecting = true)
-        {
+        //if(tileManager.IsSelecting = true)
+        //{
             GetMousePositionOnGrid();
-        }
+        //}
     }
 
-    void GetMousePositionOnGrid()
+    private void GetMousePositionOnGrid()
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
@@ -64,10 +64,12 @@ public class PlaceObjectOnGrid : MonoBehaviour
 
     public void OnMouseClickOnUI()
     {
+        Debug.Log("click");
         if (onMousePrefab == null)
         {
+            Debug.Log("click");
             onMousePrefab = Instantiate(cube, mousePosition, Quaternion.identity);
-            tileManager.StopPlacing();
+            //tileManager.StopPlacing();
         }
     }
 
