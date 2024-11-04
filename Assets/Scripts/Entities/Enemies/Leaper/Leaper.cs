@@ -11,6 +11,9 @@ public class Leaper : Enemy
     // reminder to change the value bellow if you need to
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
 
+    [field: Header("Leaper: Hop Settings")]
+    [SerializeField] private float hopHeight = 2f;
+
 
     // add all states here 
     // add as they get created
@@ -19,7 +22,7 @@ public class Leaper : Enemy
     // public LeaperAttackState LeaperAttackState{ get; private set; }
     // public LeaperHopState LeaperHopState{ get; private set; }
     // public LeaperChaseState LeaperChaseState{ get; private set; }
-    
+
     #endregion
 
     protected override void OnAwake()
@@ -56,6 +59,12 @@ public class Leaper : Enemy
     protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
+    }
+
+    public void Jump()
+    {
+        velocity.y = Mathf.Sqrt(hopHeight * -2f * physicsSettings.Gravity);
+        inAirTimer = 0.01f;
     }
 
     protected override void InitializeStates()

@@ -1,18 +1,37 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class LeaperHopState : MonoBehaviour
+public class LeaperHopState : EnemyBaseState
 {
-    // Start is called before the first frame update
-    void Start()
+    private Leaper leaper;
+
+    public LeaperHopState(Leaper enemy) : base(enemy)
     {
-        
+        leaper = enemy;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnEnter()
     {
-        
+        leaper.DefaultTransitionToAnimation("Hop");
+
+        leaper.Jump();
+    }
+
+    public override void OnExit()
+    {
+
+    }
+
+    public override void Update()
+    {
+
+    }
+
+    public override void FixedUpdate()
+    {
+        //enemy jumps backwards twice
+        //
     }
 }
+
