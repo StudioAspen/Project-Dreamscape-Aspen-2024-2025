@@ -9,6 +9,7 @@ public class TileManager : MonoBehaviour
     [Header("Linked Scripts")]
     [SerializeField] public GameObject placeObjectOnGrid;
     [SerializeField] public GameObject objFollowMouse;
+    [SerializeField] public GameObject player;
     [Header("Misc Controls")]
     [SerializeField] public bool isInSkyView;
     [SerializeField] private GameObject playerCamera;
@@ -37,6 +38,7 @@ public class TileManager : MonoBehaviour
     
     public void StartPlacing()
     {
+        player.SetActive(false);
         placeObjectOnGrid.SetActive(true);
         objFollowMouse.SetActive(true);
         playerCamera.SetActive(false);
@@ -47,8 +49,9 @@ public class TileManager : MonoBehaviour
     {
         placeObjectOnGrid.SetActive(false);
         objFollowMouse.SetActive(false);
-        //playerCamera.SetActive(true);
-        //tileCamera.SetActive(false);
+        playerCamera.SetActive(true);
+        tileCamera.SetActive(false);
+        player.SetActive(true);
     }
 
     private bool AreAllWavesFinished()
