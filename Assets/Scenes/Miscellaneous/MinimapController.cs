@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
@@ -48,20 +49,20 @@ public class MinimapController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.M)){
-            ToggleMinimap();
-        }
+
     }
 
     public void ToggleMinimap()
     {
         // Toggle Mask and Border
-        if (mask != null) {
-            mask.enabled = !mask.enabled;
-            mask.GetComponent<Image>().enabled = !mask.GetComponent<Image>().enabled;
-        }
         if (border != null) {
             border.gameObject.SetActive(isMaximized);
+        }
+
+        if (mask != null)
+        {
+            mask.enabled = !mask.enabled;
+            mask.GetComponent<Image>().enabled = !mask.GetComponent<Image>().enabled;
         }
 
         // Toggle Solid Color Background of Minimap
@@ -96,6 +97,6 @@ public class MinimapController : MonoBehaviour
         }
 
         isMaximized = !isMaximized;
-        Debug.Log("Minimap Switched");
+        Debug.Log("Minimap Toggled");
     }
 }
