@@ -7,8 +7,8 @@ public class TileManager : MonoBehaviour
 {
     private MasterLevelManager masterLevelManager;
     [Header("Linked Scripts")]
-    [SerializeField] public PlaceObjectOnGrid placeObjectOnGrid;
-    [SerializeField] public ObjFollowMouse objFollowMouse;
+    [SerializeField] public GameObject placeObjectOnGrid;
+    [SerializeField] public GameObject objFollowMouse;
     [Header("Misc Controls")]
     [SerializeField] public bool isInSkyView;
     [SerializeField] private GameObject playerCamera;
@@ -19,8 +19,8 @@ public class TileManager : MonoBehaviour
     {
         IsSelecting = false;
         masterLevelManager = FindAnyObjectByType<MasterLevelManager>();
-        placeObjectOnGrid.enabled = false;
-        objFollowMouse.enabled = false;
+        placeObjectOnGrid.SetActive(false);
+        objFollowMouse.SetActive(false);
         playerCamera.SetActive(true);
         tileCamera.SetActive(false);
     }
@@ -31,22 +31,22 @@ public class TileManager : MonoBehaviour
         if (AreAllWavesFinished() && IsSelecting == false)
         {
             IsSelecting = true;
+            StartPlacing();
         }
-        StartPlacing();
     }
     
     public void StartPlacing()
     {
-        placeObjectOnGrid.enabled = true;
-        objFollowMouse.enabled = true;
-        //playerCamera.SetActive(false);
-        //tileCamera.SetActive(true);
+        placeObjectOnGrid.SetActive(true);
+        objFollowMouse.SetActive(true);
+        playerCamera.SetActive(false);
+        tileCamera.SetActive(true);
     }
 
     public void StopPlacing()
     {
-        placeObjectOnGrid.enabled = false;
-        objFollowMouse.enabled = false;
+        placeObjectOnGrid.SetActive(false);
+        objFollowMouse.SetActive(false);
         //playerCamera.SetActive(true);
         //tileCamera.SetActive(false);
     }
