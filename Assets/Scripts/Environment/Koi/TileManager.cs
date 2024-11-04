@@ -39,16 +39,16 @@ public class TileManager : MonoBehaviour
     {
         placeObjectOnGrid.enabled = true;
         objFollowMouse.enabled = true;
-        playerCamera.SetActive(false);
-        tileCamera.SetActive(true);
+        //playerCamera.SetActive(false);
+        //tileCamera.SetActive(true);
     }
 
     public void StopPlacing()
     {
         placeObjectOnGrid.enabled = false;
         objFollowMouse.enabled = false;
-        playerCamera.SetActive(true);
-        tileCamera.SetActive(false);
+        //playerCamera.SetActive(true);
+        //tileCamera.SetActive(false);
     }
 
     private bool AreAllWavesFinished()
