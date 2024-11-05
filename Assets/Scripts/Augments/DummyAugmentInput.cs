@@ -18,10 +18,11 @@ public class DummyAugmentInput : MonoBehaviour
     {
         if (Input.GetKeyDown("p"))
         {
-            Debug.Log(augmentManager.AddAugment<JumpSoundAugment>() ? "success" : "failure");
-        } if (Input.GetKeyDown("["))
+            Debug.Log(augmentManager.AddAugment<JumpSoundAugment>() ? "[DummyAugmentInput] jump sound add success" : "[DummyAugmentInput] jump sound add failure");
+        }
+        if (Input.GetKeyDown("o"))
         {
-            Debug.Log(augmentManager.AddAugment<ColorEnemiesAugment>() ? "success" : "failure");
+            Debug.Log(augmentManager.AddAugment<SimpleLifestealAugment>() ? "[DummyAugmentInput] lifesteal add success" : "[DummyAugmentInput] lifesteal add failure");
         }
     }
 }

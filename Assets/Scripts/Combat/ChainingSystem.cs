@@ -43,7 +43,7 @@ public class ChainingSystem : MonoBehaviour
         HandleChaining();
     }
 
-    private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint)
+    private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
         AddChain();
     }

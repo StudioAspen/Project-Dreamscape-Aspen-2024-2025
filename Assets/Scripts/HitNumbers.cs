@@ -21,20 +21,20 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
-    public void ActivateHitNumberText(int damage, Vector3 spawnPoint)
+    public void ActivateHitNumberText(int damage, Vector3 spawnPoint, Color color)
     {
         transform.position = spawnPoint;
 
         numberText.text = damage.ToString();
         numberText.fontSize = (maxTextSize - minTextSize) * (damage / (float)maxDamage) + minTextSize;
 
-        FloatUpAndFade(2f, 1f);
+        FloatUpAndFade(2f, 1f, color);
     }
 
-    private void FloatUpAndFade(float duration, float distance)
+    private void FloatUpAndFade(float duration, float distance, Color color)
     {
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(numberText.DOColor(Color.red, duration / 2f)).SetUpdate(true).OnComplete(() => {
+        sequence.Append(numberText.DOColor(color, duration / 2f)).SetUpdate(true).OnComplete(() => {
             transform.DOMoveY(transform.position.y + distance, duration / 2f).SetUpdate(true);
         });
         sequence.Append(numberText.DOFade(0f, duration / 2f)).SetUpdate(true);
