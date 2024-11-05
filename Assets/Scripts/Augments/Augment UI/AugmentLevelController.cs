@@ -23,8 +23,8 @@ public class AugmentLevelController : MonoBehaviour
             augmentsListText.text += allAugments[i].ToString() + " \n";
 
             // prints augments if they are active
-            if (allAugments[i].isActive)
-                Debug.Log("AUGMENT active: " + allAugments[i].ToString());
+            //if (allAugments[i].isActive)
+                //Debug.Log("AUGMENT active: " + allAugments[i].ToString());
         }
     }
 

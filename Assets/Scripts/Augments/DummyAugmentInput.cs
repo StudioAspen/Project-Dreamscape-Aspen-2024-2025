@@ -24,5 +24,9 @@ public class DummyAugmentInput : MonoBehaviour
         {
             Debug.Log(augmentManager.AddAugment<SimpleLifestealAugment>() ? "[DummyAugmentInput] lifesteal add success" : "[DummyAugmentInput] lifesteal add failure");
         }
+        if (Input.GetKeyDown("i"))
+        {
+            Debug.Log(augmentManager.AddAugment<AOEAugment>() ? "[DummyAugmentInput] aoe add success" : "[DummyAugmentInput] aoe add failure");
+        }
     }
 }

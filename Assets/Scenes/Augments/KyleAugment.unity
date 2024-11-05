@@ -129,6 +129,53 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5022736743094610833}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &29104502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29104497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b70910019b1f44b83a79797ca7ffb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &29104503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29104497}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21e3474b6bc887145b2c33c70ed8a800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Branch: 0
+  AugmentName: 
+  Level: 0
+  <aoeExplosionRadius>k__BackingField: 0
+  <aoeDamage>k__BackingField: 0.2
+--- !u!114 &29104504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29104497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25a347e850b37274283e07aa3d32e577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Branch: 0
+  AugmentName: 
+  Level: 0
+  <InitialPercent>k__BackingField: 0
+  <MaxPercent>k__BackingField: 0.2
+  <LifestealStep>k__BackingField: 0.05
 --- !u!1 &82197373
 GameObject:
   m_ObjectHideFlags: 0
@@ -2856,7 +2903,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3887865426549973141, guid: 7c1364606c8006e44b507f9914c38b68,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 29104503}
+    - targetCorrespondingSourceObject: {fileID: 3887865426549973141, guid: 7c1364606c8006e44b507f9914c38b68,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 29104504}
+    - targetCorrespondingSourceObject: {fileID: 3887865426549973141, guid: 7c1364606c8006e44b507f9914c38b68,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 29104502}
   m_SourcePrefab: {fileID: 100100000, guid: 7c1364606c8006e44b507f9914c38b68, type: 3}
 --- !u!20 &5235712871567466880
 Camera:

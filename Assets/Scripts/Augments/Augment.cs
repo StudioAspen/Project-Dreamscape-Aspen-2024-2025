@@ -6,6 +6,7 @@ public abstract class Augment : MonoBehaviour
 {
     [Header("Augment Attributes")]
     [SerializeField] public AugmentBranch Branch;
+    [SerializeField] public string AugmentName;
     [SerializeField] public int Level;
 
     protected Player player;

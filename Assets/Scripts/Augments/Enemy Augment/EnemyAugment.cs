@@ -11,7 +11,7 @@ public class EnemyAugment : Augment
     private List<Enemy> current_enemies; 
     private int prev_count = 0;
 
-    public override void Start()
+    public void Start()
     {
         base.Start();
         current_enemies = new List<Enemy>(FindObjectsOfType<Enemy>());
