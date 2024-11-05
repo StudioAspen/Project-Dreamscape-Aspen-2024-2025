@@ -238,6 +238,45 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "UI",
+            "id": "bd4f2812-fade-4326-a4eb-5ee51807be6d",
+            "actions": [
+                {
+                    "name": "OpenSettings",
+                    "type": "Button",
+                    "id": "7c6709c6-0631-4a33-87c5-4d2cefcb69ad",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8c88e63d-2598-4fbf-aa6f-a90204cb6a75",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "OpenSettings",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da5651bc-3fb6-4fc1-9f65-58f771c8f484",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "OpenSettings",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

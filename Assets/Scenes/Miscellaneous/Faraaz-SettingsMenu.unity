@@ -854,6 +854,7 @@ GameObject:
   - component: {fileID: 285266366}
   - component: {fileID: 285266365}
   - component: {fileID: 285266371}
+  - component: {fileID: 285266372}
   m_Layer: 5
   m_Name: UI Menus
   m_TagString: Untagged
@@ -957,6 +958,77 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInput: {fileID: 6646361409428001888}
+--- !u!114 &285266372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285266364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: c295c894e6e34544a94ebeed5421e59f,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b0d41093-f5c1-400f-abb5-138bcdbb365e
+    m_ActionName: Gameplay/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 560c6455-832a-44d1-826b-83f40ab84f3a
+    m_ActionName: Gameplay/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8df375f3-89b0-4f6c-89c9-c6853e0611be
+    m_ActionName: Gameplay/Sprint[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3adb18b7-5ef0-425c-95e9-4b88fd31ff3f
+    m_ActionName: Gameplay/Attack1[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cf046295-d184-4d0a-b328-115600037407
+    m_ActionName: Gameplay/Attack2[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dd863170-060b-4c82-b313-30b4ce93d62a
+    m_ActionName: Gameplay/CameraLook[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 285266371}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: ToggleMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7c6709c6-0631-4a33-87c5-4d2cefcb69ad
+    m_ActionName: UI/OpenSettings[/Keyboard/o]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: UI
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &367718398
 GameObject:
   m_ObjectHideFlags: 0
