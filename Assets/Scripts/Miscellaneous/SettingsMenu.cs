@@ -26,6 +26,34 @@ public class SettingsMenu : MonoBehaviour
         {
             Debug.Log("Settings Menu Canvas not Found");
         }
+
+        // Load Fullscreen
+        if (!PlayerPrefs.HasKey("fullscreenOn"))
+        {
+            PlayerPrefs.SetInt("fullscreenOn", 0);
+        }
+        else
+        {
+            if(PlayerPrefs.GetInt("fullscreenOn") == 1)
+            {
+                fullscreenToggle.isOn = true;
+                ToggleFullscreen();
+            }
+        }
+
+        // Load VSync
+        if (!PlayerPrefs.HasKey("vsyncOn"))
+        {
+            PlayerPrefs.SetInt("vsyncOn", 0);
+        }
+        else
+        {
+            if (PlayerPrefs.GetInt("vsyncOn") == 1)
+            {
+                vsyncToggle.isOn = true;
+                ToggleVsync();
+            }
+        }
     }
 
     public void ToggleMenu() {
