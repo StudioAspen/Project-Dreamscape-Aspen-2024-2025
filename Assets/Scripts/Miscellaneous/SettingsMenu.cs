@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class SettingsMenu : MonoBehaviour
 {
     private GameObject SettingsCanvas;
+    [SerializeField] private PlayerInput playerInput;
 
     // Start is called before the first frame update
     void Start()
@@ -26,14 +28,14 @@ public class SettingsMenu : MonoBehaviour
     {
         if(Input.GetKeyUp(KeyCode.O)) {
             ToggleMenu();
-            Debug.Log("MENU OPENED");
         }
     }
 
     public void ToggleMenu() {
+        Debug.Log("MENU OPENED");
         if (SettingsCanvas != null)
         {
-            // If Canvas is on screen already
+            // Resume
             if (SettingsCanvas.activeSelf)
             {
                 SettingsCanvas.SetActive(false);
@@ -41,7 +43,9 @@ public class SettingsMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook").Enable();
             }
+            // Pause
             else
             {
                 SettingsCanvas.SetActive(true);
@@ -49,6 +53,7 @@ public class SettingsMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook").Disable();
             }
         }
     }
