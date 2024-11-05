@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
     {
         if(CurrentState == newState) return;
 
-        print($"GameManager: Going from {CurrentState} to {newState}");
+        //print($"GameManager: Going from {CurrentState} to {newState}");
 
         switch (newState)
         {

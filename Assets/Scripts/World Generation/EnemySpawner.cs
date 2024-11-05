@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
-    [SerializeField, Self] private LandManager islandManager;
+    [SerializeField, Self] private LandManager landManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     private ObjectPooler enemyPooler;
     private List<float> enemyNormalizedWeights = new List<float>();
@@ -98,7 +98,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 enemyPooler.ChangePrefab(enemyPrefabs[i].gameObject);
 
-                Enemy e = enemyPooler.SpawnObject<Enemy>(islandManager.GetRandomEnemySpawn().position);
+                Enemy e = enemyPooler.SpawnObject<Enemy>(landManager.GetRandomEnemySpawn().position);
                 e.Init(this);
 
                 enemiesSpawned.Add(e);
@@ -126,15 +126,13 @@ public class EnemySpawner : MonoBehaviour
 
     public void WaveReset() 
     {
-        if (islandManager.Level <= 0)
+        if (landManager.Level <= 0)
         {
-            CanSpawn = false;
-            maxShopCurrency = 0;
-            currentShopCurrency = 0;
+            ClearWave();
             return;
         }
 
-        maxShopCurrency = baseCurrency + (growthFactor * Mathf.Pow(islandManager.Level,polynomialDegree));
+        maxShopCurrency = baseCurrency + (growthFactor * Mathf.Pow(landManager.Level, polynomialDegree));
         currentShopCurrency = maxShopCurrency;
 
         CanSpawn = true;

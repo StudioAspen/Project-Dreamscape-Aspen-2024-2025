@@ -15,17 +15,20 @@ public class WorldManager : MonoBehaviour
 
     [field: Header("Pseudo Grid")]
     public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>(); // a list of all currently spawned lands
-    private List<IslandBorder> bordersList = new List<IslandBorder>();
+    private List<LandBorder> bordersList = new List<LandBorder>();
     private int activeLandCount;
 
     [Header("Land Position Selection")]
-    [SerializeField] private LandManager islandToSpawnPrefab;
+    [SerializeField] private LandManager landToSpawnPrefab;
     [SerializeField] private Transform ghostLandTransform;
     [SerializeField] private Material redTransparentMaterial;
     [SerializeField] private Material greenTransparentMaterial;
 
     [field: Header("Biome Selection")]
-    private Biome currentlySelectedBiome = Biome.DREAM;
+    private Biome currentBiomeSelection = Biome.DREAM;
+
+    [field: Header("Event Selection")]
+    private WorldEvent currentEventSelection = WorldEvent.EVENT1;
 
     [field: Header("Progression")]
     [field: SerializeField] public int EmpowerTokens { get; private set; }
@@ -57,37 +60,54 @@ public class WorldManager : MonoBehaviour
         
     }
 
+    #region Grid Functions
+    public LandManager GetLand(int x, int y)
+    {
+        foreach (LandManager land in new List<LandManager>(SpawnedLands))
+        {
+            if (land.GridPosition.x == x && land.GridPosition.y == y) return land;
+        }
+
+        return null;
+    }
+
     public Vector2Int GetGridPosition(Vector3 worldPos)
     {
-        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+        float landScale = landToSpawnPrefab.transform.localScale.x;
 
-        Vector3 floatGridPosition = worldPos / islandScale;
+        Vector3 floatGridPosition = worldPos / landScale;
 
         return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
     }
 
     public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
     {
-        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+        float landScale = landToSpawnPrefab.transform.localScale.x;
 
-        return new Vector3(islandScale * gridPosition.x, height, islandScale * gridPosition.y);
+        return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
     }
+    #endregion
 
-    public LandManager GetLand(int x, int y)
+    private bool CanNewLandSpawnAt(Vector2Int gridPos)
     {
-        foreach(LandManager island in new List<LandManager>(SpawnedLands))
+        bool isPositionValid = false;
+        for (int i = 0; i < bordersList.Count; i++)
         {
-            if(island.GridPosition.x == x && island.GridPosition.y == y) return island;
+            if (bordersList[i].WorldBorderPosition == gridPos)
+            {
+                isPositionValid = true;
+                break;
+            }
         }
 
-        return null;
+        return isPositionValid;
     }
 
     private void SpawnLand(int x, int y)
     {
-        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+        float landScale = landToSpawnPrefab.transform.localScale.x;
 
-        LandManager spawnedLand = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * x, -5f, islandScale * y) , Quaternion.identity, transform);
+        LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * x, -5f, landScale * y) , Quaternion.identity, transform);
         spawnedLand.Init(x, y);
 
         SpawnedLands.Add(spawnedLand);
@@ -109,57 +129,10 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
     }
 
-    public void TryEmpowerLandAtGhost()
-    {
-        if (EmpowerTokens <= 0)
-        {
-            Debug.Log("No more empower tokens");
-            return;
-        }
-
-        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
-
-        if (hoveredLand == null)
-        {
-            Debug.Log("Can't empower at this ghost position");
-            return;
-        }
-
-        hoveredLand.AddLevel(1);
-        EmpowerTokens--;
-    }
-
-    public void TryWeakenLandAtGhost()
-    {
-        if (WeakenTokens <= 0)
-        {
-            Debug.Log("No more weaken tokens");
-            return;
-        }
-
-        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
-
-        if (hoveredLand == null)
-        {
-            Debug.Log("Can't weaken at this ghost position");
-            return;
-        }
-
-        hoveredLand.AddLevel(-1);
-        WeakenTokens--;
-    }
-
-    public bool CanProceedFromEmpowerment()
-    {
-        return EmpowerTokens + WeakenTokens <= 0;
-    }
-
     public void ContinueToEventSelection()
     {
+        ResetLandLevelDifferences();
+
         gameManager.ChangeState(GameState.EVENT_SELECTION);
     }
 
@@ -168,18 +141,18 @@ public class WorldManager : MonoBehaviour
         navMeshSurface.BuildNavMesh();
     }
 
-    public void AddBorder(IslandBorder border)
+    public void AddBorder(LandBorder border)
     {
         bordersList.Add(border);
     }
 
     public void RemoveConnectedBorders()
     {
-        foreach (LandManager island in new List<LandManager>(SpawnedLands))
+        foreach (LandManager land in new List<LandManager>(SpawnedLands))
         {
-            foreach (IslandBorder border in new List<IslandBorder>(bordersList))
+            foreach (LandBorder border in new List<LandBorder>(bordersList))
             {
-                if (island.GridPosition == border.WorldBorderPosition)
+                if (land.GridPosition == border.WorldBorderPosition)
                 {
                     Destroy(border.gameObject);
                     bordersList.Remove(border);
@@ -191,9 +164,9 @@ public class WorldManager : MonoBehaviour
     public void PrepareForNextWave()
     {
         activeLandCount = SpawnedLands.Count;
-        foreach (LandManager island in SpawnedLands)
+        foreach (LandManager land in SpawnedLands)
         {
-            island.EnemySpawner.WaveReset();
+            land.EnemySpawner.WaveReset();
         }
     }
 
@@ -208,31 +181,18 @@ public class WorldManager : MonoBehaviour
 
     public void AssignBiomeToSpawnNext(Biome biome)
     {
-        currentlySelectedBiome = biome;
+        currentBiomeSelection = biome;
 
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
     public void AssignNextEvent(WorldEvent worldEvent)
     {
+        currentEventSelection = worldEvent;
+
         PrepareForNextWave();
 
         gameManager.ChangeState(GameState.PLAYING);
-    }
-
-    private bool CanNewLandSpawnAt(Vector2Int gridPos)
-    {
-        bool isPositionValid = false;
-        for (int i = 0; i < bordersList.Count; i++)
-        {
-            if (bordersList[i].WorldBorderPosition == gridPos)
-            {
-                isPositionValid = true;
-                break;
-            }
-        }
-
-        return isPositionValid;
     }
 
     #region Ghost Land Functions
@@ -288,6 +248,86 @@ public class WorldManager : MonoBehaviour
         EmpowerTokens = Mathf.CeilToInt(landCount / 2f);
         WeakenTokens = Mathf.FloorToInt(landCount / 2f);
     }
+
+    public void TryEmpowerLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
+        {
+            Debug.Log("Can't empower at this land");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
+        {
+            Debug.Log("Not enough empower tokens");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference < 0) // if already been weakened
+        {
+            WeakenTokens++;
+            EmpowerTokens++;
+        }
+
+        hoveredLand.AddLevel(1);
+        EmpowerTokens--;
+    }
+
+    public void TryWeakenLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
+        {
+            Debug.Log("Can't weaken at this land");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
+        {
+            Debug.Log("Not enough weaken tokens");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference > 0) // if already been empowered
+        {
+            EmpowerTokens++;
+            WeakenTokens++;
+        }
+
+        hoveredLand.AddLevel(-1);
+        WeakenTokens--;
+    }
+
+    public bool CanProceedFromEmpowerment()
+    {
+        return EmpowerTokens + WeakenTokens <= 0;
+    }
+
+    private void ResetLandLevelDifferences()
+    {
+        foreach(LandManager land in SpawnedLands)
+        {
+            land.ResetLevelDifference();
+        }
+    }
+
+    public void ResetProgressionChanges()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            if (land.LevelDifference > 0) EmpowerTokens += Mathf.Abs(land.LevelDifference);
+            if (land.LevelDifference < 0) WeakenTokens += Mathf.Abs(land.LevelDifference);
+
+            land.UndoLevelChanges();
+        }
+    }
     #endregion
 }
 
@@ -295,10 +335,14 @@ public enum Biome
 {
     DREAM,
     FIRE,
-    FOOD
+    FOOD,
+    BIOME3
 }
 
 public enum WorldEvent
 {
-    TEST
+    EVENT1,
+    EVENT2,
+    EVENT3,
+    EVENT4
 }

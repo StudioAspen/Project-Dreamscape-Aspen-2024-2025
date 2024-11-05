@@ -25,8 +25,8 @@ public class ProgressionUI : MonoBehaviour
 
     private void HandleTokensTexts()
     {
-        empowerTokensText.text = $"Q - Empower Tokens: {worldManager.EmpowerTokens}";
-        weakenTokensText.text = $"E - Weaken Tokens: {worldManager.WeakenTokens}";
+        empowerTokensText.text = $"M1 - Empower: {worldManager.EmpowerTokens}";
+        weakenTokensText.text = $"M2 - Weaken: {worldManager.WeakenTokens}";
 
         empowerTokensText.color = worldManager.EmpowerTokens > 0 ? Color.green : Color.red;
         weakenTokensText.color = worldManager.WeakenTokens > 0 ? Color.green : Color.red;

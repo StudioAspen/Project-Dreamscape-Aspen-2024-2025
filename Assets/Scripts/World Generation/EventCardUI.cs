@@ -45,7 +45,7 @@ public class EventCardUI : MonoBehaviour
         button.interactable = false;
     }
 
-    public void AssignCardBiome(WorldEvent worldEvent)
+    public void AssignCardEvent(WorldEvent worldEvent)
     {
         CurrentEvent = worldEvent;
 

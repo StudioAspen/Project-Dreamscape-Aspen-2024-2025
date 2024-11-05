@@ -13,16 +13,24 @@ public class LandManager : MonoBehaviour
     [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
     [SerializeField] private TMP_Text levelText;
-    [SerializeField] private IslandBorder[] borders;
+    [SerializeField] private LandBorder[] borders;
     [SerializeField] private List<Transform> enemySpawnPoints;
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
-    [field:SerializeField] public int Level { get; private set; }
+    [field: SerializeField] public int Level { get; private set; }
+
+    [field: Header("Progression Tracking")]
+    [field: SerializeField] public int LevelDifference { get; private set; } = 0;
 
     private void OnValidate()
     {
         this.ValidateRefs();
+    }
+
+    public void Init(int x, int y)
+    {
+        GridPosition = new Vector2Int(x, y);
     }
 
     void Start()
@@ -50,7 +58,7 @@ public class LandManager : MonoBehaviour
 
     private void InitializeBorders()
     {
-        foreach(IslandBorder border in borders)
+        foreach(LandBorder border in borders)
         {
             border.SetWorldBorderPosition(GridPosition);
             worldManager.AddBorder(border);
@@ -60,13 +68,30 @@ public class LandManager : MonoBehaviour
     public void AddLevel(int amount)
     {
         Level += amount;
+        LevelDifference += amount;
 
         levelText.text = $"{Level}";
+        
+        if(Mathf.Abs(LevelDifference) > 0)
+        {
+            levelText.color = LevelDifference > 0 ? Color.green : Color.red;
+        }
+        else
+        {
+            levelText.color = Color.black;
+        }
     }
 
-    public void Init(int x, int y)
+    public void ResetLevelDifference()
     {
-        GridPosition = new Vector2Int(x, y);
+        LevelDifference = 0;
+        levelText.color = Color.black;
+    }
+
+    public void UndoLevelChanges()
+    {
+        AddLevel(-LevelDifference);
+        ResetLevelDifference();
     }
 
     public Transform GetRandomEnemySpawn()

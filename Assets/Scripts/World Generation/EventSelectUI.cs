@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class EventSelectUI : MonoBehaviour
 {
@@ -59,11 +60,17 @@ public class EventSelectUI : MonoBehaviour
 
     private void AssignRandomEventsToCards()
     {
+        List<WorldEvent> potentialEvents = System.Enum.GetValues(typeof(WorldEvent)).Cast<WorldEvent>().ToList();
+
         foreach (EventCardUI card in eventCards)
         {
-            WorldEvent randomEvent = (WorldEvent)Random.Range(0, System.Enum.GetValues(typeof(WorldEvent)).Length);
+            int randomIndex = Random.Range(0, potentialEvents.Count);
 
-            card.AssignCardBiome(randomEvent);
+            WorldEvent randomEvent = potentialEvents[randomIndex];
+
+            card.AssignCardEvent(randomEvent);
+
+            potentialEvents.RemoveAt(randomIndex);
         }
     }
 

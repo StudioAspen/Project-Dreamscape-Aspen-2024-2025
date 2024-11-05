@@ -2,6 +2,7 @@ using DG.Tweening;
 using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,11 +63,17 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void AssignRandomBiomesToCards()
     {
-        foreach(BiomeCardUI card in biomeCards)
+        List<Biome> potentialBiomes = System.Enum.GetValues(typeof(Biome)).Cast<Biome>().ToList();
+
+        foreach (BiomeCardUI card in biomeCards)
         {
-            Biome randomBiome = (Biome)Random.Range(0, System.Enum.GetValues(typeof(Biome)).Length);
+            int randomIndex = Random.Range(0, potentialBiomes.Count);
+
+            Biome randomBiome = potentialBiomes[randomIndex];
 
             card.AssignCardBiome(randomBiome);
+
+            potentialBiomes.RemoveAt(randomIndex);
         }
     }
 

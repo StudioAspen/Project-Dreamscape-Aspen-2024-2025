@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
-public class InputReader : MonoBehaviour
+public class PlayerInputReader : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private PlayerInput playerInput;

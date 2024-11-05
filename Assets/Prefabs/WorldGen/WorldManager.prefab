@@ -296,6 +296,7 @@ MonoBehaviour:
   - {fileID: 1438332592807634786}
   <GridPosition>k__BackingField: {x: 0, y: 0}
   <Level>k__BackingField: 1
+  <LevelDifference>k__BackingField: 0
 --- !u!114 &4989347814375761403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldManager: {fileID: 0}
-  islandManager: {fileID: 2541097385260147981}
+  landManager: {fileID: 2541097385260147981}
   enemyPrefabs:
   - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
   weightingSkewFactor: 2.2
@@ -488,7 +489,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8938620608541455539}
-  - component: {fileID: 2301888397907337442}
+  - component: {fileID: 3128816349656449460}
   - component: {fileID: 8002973263680581614}
   m_Layer: 0
   m_Name: WorldManager
@@ -510,12 +511,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2271509735994833020}
+  - {fileID: 4562900200964922340}
   - {fileID: 6633974859025615411}
   - {fileID: 7186845640020004704}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2301888397907337442
+--- !u!114 &3128816349656449460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -524,14 +525,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3004667545289962807}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
+  m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
   navMeshSurface: {fileID: 8002973263680581614}
-  islandToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
+  landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
-  ghostLandTransform: {fileID: 2271509735994833020}
+  ghostLandTransform: {fileID: 4562900200964922340}
   redTransparentMaterial: {fileID: 2100000, guid: 804d411a54fdfcd49a13fc9f397690a7,
     type: 2}
   greenTransparentMaterial: {fileID: 2100000, guid: 81b768abece8a534c9941ce0ad6296e1,
@@ -569,7 +570,7 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
---- !u!1 &4666612255623008723
+--- !u!1 &4234291265968565083
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -577,46 +578,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2271509735994833020}
-  - component: {fileID: 1759894817259325926}
-  - component: {fileID: 2934426111590470239}
+  - component: {fileID: 4562900200964922340}
+  - component: {fileID: 1961736996311736296}
+  - component: {fileID: 3275221143741702070}
   m_Layer: 0
   m_Name: GhostLand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &2271509735994833020
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4562900200964922340
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4666612255623008723}
+  m_GameObject: {fileID: 4234291265968565083}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 30, y: 10, z: 30}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
+  m_LocalScale: {x: 30, y: 1, z: 30}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8938620608541455539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1759894817259325926
+--- !u!33 &1961736996311736296
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4666612255623008723}
+  m_GameObject: {fileID: 4234291265968565083}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &2934426111590470239
+--- !u!23 &3275221143741702070
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4666612255623008723}
+  m_GameObject: {fileID: 4234291265968565083}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1

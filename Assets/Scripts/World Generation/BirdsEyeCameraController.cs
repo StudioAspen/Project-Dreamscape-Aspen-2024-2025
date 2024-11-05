@@ -49,10 +49,14 @@ public class BirdsEyeCameraController : MonoBehaviour
     {
         HandleMoveInput();
         HandleZoomInput();
-        HandlePlaceLandInput();
+
         HandleEmpowerInput();
         HandleWeakenInput();
         HandleContinueInput();
+        HandleResetProgressionChangesInput();
+
+        HandlePlaceLandInput();
+
 
         HandleGhostLand();
     }
@@ -113,7 +117,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             worldManager.TryEmpowerLandAtGhost();
         }
@@ -123,7 +127,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             worldManager.TryWeakenLandAtGhost();
         }
@@ -134,9 +138,19 @@ public class BirdsEyeCameraController : MonoBehaviour
         if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
         if (!worldManager.CanProceedFromEmpowerment()) return;
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             worldManager.ContinueToEventSelection();
+        }
+    }
+
+    private void HandleResetProgressionChangesInput()
+    {
+        if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            worldManager.ResetProgressionChanges();
         }
     }
 
