@@ -13,6 +13,7 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
         PauseCanvas = transform.Find("PauseMenu")?.gameObject;
+        cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
         if (PauseCanvas != null)
         {

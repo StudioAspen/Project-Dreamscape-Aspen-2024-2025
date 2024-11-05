@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class SettingsMenu : MonoBehaviour
 {
     private GameObject SettingsCanvas;
+    private GameObject PauseCanvas;
     private InputAction cameraLook;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] Toggle fullscreenToggle;
@@ -15,6 +16,7 @@ public class SettingsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PauseCanvas = transform.Find("PauseMenu")?.gameObject;
         SettingsCanvas = transform.Find("SettingsMenu")?.gameObject;
         cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
@@ -63,6 +65,7 @@ public class SettingsMenu : MonoBehaviour
             // Display Canvas, Freeze Time, Show Cursor, Disable Lookaround
             if (!SettingsCanvas.activeSelf)
             {
+                PauseCanvas.SetActive(false);
                 SettingsCanvas.SetActive(true);
                 Time.timeScale = 0;
 
