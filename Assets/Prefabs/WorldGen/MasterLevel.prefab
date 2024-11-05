@@ -95,14 +95,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   navMeshSurface: {fileID: 3068986308050647118}
-  selectionLayer:
-    serializedVersion: 2
-    m_Bits: 16384
   islandToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
   spherePooler: {fileID: 1361265049838183735}
-  selectorOffset: {x: 0, y: 20, z: 0}
 --- !u!114 &3068986308050647118
 MonoBehaviour:
   m_ObjectHideFlags: 0
