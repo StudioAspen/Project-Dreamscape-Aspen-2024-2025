@@ -71,7 +71,6 @@ public class SettingsMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                cameraLook.Disable();
                 Debug.Log("Settings Menu Opened");
             }
             // Close Settings Menu
@@ -83,7 +82,6 @@ public class SettingsMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                cameraLook.Enable();
                 Debug.Log("Settings Menu Closed");
             }
         }

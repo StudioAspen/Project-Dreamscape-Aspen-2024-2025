@@ -37,7 +37,6 @@ public class PauseMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                cameraLook.Disable();
                 Debug.Log("Pause Menu Opened");
             }
             else
@@ -47,7 +46,6 @@ public class PauseMenu : MonoBehaviour
 
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                cameraLook.Enable();
                 Debug.Log("Pause Menu Closed");
             }
         }
