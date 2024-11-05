@@ -12,7 +12,6 @@ public class WorldManager : MonoBehaviour
     [Header("References")]
     [SerializeField, Scene] private GameManager gameManager;
     [SerializeField, Self] private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
-    [SerializeField, Self] private ProgressionManager progressionManager; // nav mesh surface for pathfinding
 
     [field: Header("Pseudo Grid")]
     public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>(); // a list of all currently spawned lands
@@ -21,14 +20,16 @@ public class WorldManager : MonoBehaviour
 
     [Header("Land Position Selection")]
     [SerializeField] private LandManager islandToSpawnPrefab;
-    [SerializeField] private ObjectPooler spherePooler;
     [SerializeField] private Transform ghostLandTransform;
     [SerializeField] private Material redTransparentMaterial;
     [SerializeField] private Material greenTransparentMaterial;
-    public List<SelectionSphere> CurrentSelectionSpheres { get; private set; } = new List<SelectionSphere>(); // a list of all currently spawned spheres
 
     [field: Header("Biome Selection")]
     private Biome currentlySelectedBiome = Biome.DREAM;
+
+    [field: Header("Progression")]
+    [field: SerializeField] public int EmpowerTokens { get; private set; }
+    [field: SerializeField] public int WeakenTokens { get; private set; }
 
     private void OnValidate()
     {
@@ -53,7 +54,7 @@ public class WorldManager : MonoBehaviour
 
     void Update()
     {
-        HandleMouseInput();
+        
     }
 
     public Vector2Int GetGridPosition(Vector3 worldPos)
@@ -82,35 +83,6 @@ public class WorldManager : MonoBehaviour
         return null;
     }
 
-    private SelectionSphere GetMouseLookSelectionSphere()
-    {
-        Vector3 mousePos = Input.mousePosition;
-        Ray mouseRay = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-
-        bool didHit = Physics.Raycast(mouseRay, out hit, Mathf.Infinity, LayerMask.GetMask("SelectionSphere"));
-
-        if (!didHit) return null;
-
-        return hit.transform.GetComponent<SelectionSphere>();
-    }
-
-    private void HandleMouseInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            SelectionSphere selectionSphere = GetMouseLookSelectionSphere();
-
-            if (selectionSphere == null) return;
-            if (!selectionSphere.CanBeSelected) return;
-
-            SpawnLand(selectionSphere.DesiredIslandSpawnPosition.x, selectionSphere.DesiredIslandSpawnPosition.y);
-            DeleteAllSelectionSpheres();
-
-            PrepareForNextWave();
-        }
-    }
-
     private void SpawnLand(int x, int y)
     {
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
@@ -119,8 +91,6 @@ public class WorldManager : MonoBehaviour
         spawnedLand.Init(x, y);
 
         SpawnedLands.Add(spawnedLand);
-
-        PrepareForNextWave();
     }
 
     public void TrySpawnLandAtGhost()
@@ -135,48 +105,62 @@ public class WorldManager : MonoBehaviour
         DisableGhostLand();
         SpawnLand(spawnPosition.x, spawnPosition.y);
 
+        RestockTokens(SpawnedLands.Count);
         gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
     }
 
     public void TryEmpowerLandAtGhost()
     {
+        if (EmpowerTokens <= 0)
+        {
+            Debug.Log("No more empower tokens");
+            return;
+        }
+
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-        if (GetLand(spawnPosition.x, spawnPosition.y) == null)
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
         {
             Debug.Log("Can't empower at this ghost position");
             return;
         }
 
-        //gameManager.ChangeState(GameState.EVENT_SELECTION);
-        gameManager.ChangeState(GameState.PLAYING);
+        hoveredLand.AddLevel(1);
+        EmpowerTokens--;
     }
 
-    public void SpawnSelectionSpheres() 
+    public void TryWeakenLandAtGhost()
     {
-        float islandScale = islandToSpawnPrefab.transform.localScale.x;
-
-        DeleteAllSelectionSpheres(); //just in case spheres still exist
-
-        for (int i = 0; i < bordersList.Count; i++)
+        if (WeakenTokens <= 0)
         {
-            Vector3 spherePos = islandScale * new Vector3(bordersList[i].WorldBorderPosition.x, 0f, bordersList[i].WorldBorderPosition.y);
-
-            SelectionSphere newSphere = spherePooler.SpawnObject<SelectionSphere>(spherePos + 20f * Vector3.up);
-            newSphere.SetDesiredIslandSpawn(bordersList[i].WorldBorderPosition);
-
-            CurrentSelectionSpheres.Add(newSphere);
+            Debug.Log("No more weaken tokens");
+            return;
         }
 
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
+        {
+            Debug.Log("Can't weaken at this ghost position");
+            return;
+        }
+
+        hoveredLand.AddLevel(-1);
+        WeakenTokens--;
     }
 
-    private void DeleteAllSelectionSpheres()
+    public bool CanProceedFromEmpowerment()
     {
-        foreach(SelectionSphere sphere in new List<SelectionSphere>(CurrentSelectionSpheres))
-        {
-            spherePooler.ReleaseObject(sphere.gameObject);
-        }
+        return EmpowerTokens + WeakenTokens <= 0;
+    }
 
-        CurrentSelectionSpheres.Clear();
+    public void ContinueToEventSelection()
+    {
+        gameManager.ChangeState(GameState.EVENT_SELECTION);
     }
 
     public void BuildNavMesh()
@@ -229,6 +213,29 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
+    public void AssignNextEvent(WorldEvent worldEvent)
+    {
+        PrepareForNextWave();
+
+        gameManager.ChangeState(GameState.PLAYING);
+    }
+
+    private bool CanNewLandSpawnAt(Vector2Int gridPos)
+    {
+        bool isPositionValid = false;
+        for (int i = 0; i < bordersList.Count; i++)
+        {
+            if (bordersList[i].WorldBorderPosition == gridPos)
+            {
+                isPositionValid = true;
+                break;
+            }
+        }
+
+        return isPositionValid;
+    }
+
+    #region Ghost Land Functions
     public void EnableGhostLand()
     {
         ghostLandTransform.gameObject.SetActive(true);
@@ -255,22 +262,9 @@ public class WorldManager : MonoBehaviour
             ghostLandTransform.GetComponent<MeshRenderer>().material = GetLand(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
         }
     }
+    #endregion
 
-    private bool CanNewLandSpawnAt(Vector2Int gridPos)
-    {
-        bool isPositionValid = false;
-        for (int i = 0; i < bordersList.Count; i++)
-        {
-            if (bordersList[i].WorldBorderPosition == gridPos)
-            {
-                isPositionValid = true;
-                break;
-            }
-        }
-
-        return isPositionValid;
-    }
-
+    #region Land Level Texts
     public void EnableLandLevelTexts()
     {
         foreach(LandManager land in SpawnedLands)
@@ -286,6 +280,15 @@ public class WorldManager : MonoBehaviour
             land.DisableLevelText();
         }
     }
+    #endregion
+
+    #region Progression Functions
+    private void RestockTokens(int landCount)
+    {
+        EmpowerTokens = Mathf.CeilToInt(landCount / 2f);
+        WeakenTokens = Mathf.FloorToInt(landCount / 2f);
+    }
+    #endregion
 }
 
 public enum Biome
@@ -293,4 +296,9 @@ public enum Biome
     DREAM,
     FIRE,
     FOOD
+}
+
+public enum WorldEvent
+{
+    TEST
 }

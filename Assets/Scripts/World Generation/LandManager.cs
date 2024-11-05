@@ -57,9 +57,9 @@ public class LandManager : MonoBehaviour
         }
     }
 
-    public void LevelUp()
+    public void AddLevel(int amount)
     {
-        Level += 1;
+        Level += amount;
 
         levelText.text = $"{Level}";
     }

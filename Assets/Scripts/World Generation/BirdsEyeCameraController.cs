@@ -52,6 +52,7 @@ public class BirdsEyeCameraController : MonoBehaviour
         HandlePlaceLandInput();
         HandleEmpowerInput();
         HandleWeakenInput();
+        HandleContinueInput();
 
         HandleGhostLand();
     }
@@ -124,7 +125,18 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            worldManager.TryWeakenLandAtGhost();
+        }
+    }
 
+    private void HandleContinueInput()
+    {
+        if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
+        if (!worldManager.CanProceedFromEmpowerment()) return;
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            worldManager.ContinueToEventSelection();
         }
     }
 
