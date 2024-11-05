@@ -2,21 +2,22 @@ using DG.Tweening;
 using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.AI.Navigation;
 using UnityEngine;
 
-public class IslandManager : MonoBehaviour
+public class LandManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
     [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
-    [SerializeField] private WorldManager masterLevelManager;
-    [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
+    [SerializeField] private TMP_Text levelText;
     [SerializeField] private IslandBorder[] borders;
     [SerializeField] private List<Transform> enemySpawnPoints;
 
     [field: Header("Settings")]
+    [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [field:SerializeField] public int Level { get; private set; }
 
     private void OnValidate()
@@ -24,27 +25,25 @@ public class IslandManager : MonoBehaviour
         this.ValidateRefs();
     }
 
-    private void Awake()
-    {
-        masterLevelManager = GetComponentInParent<WorldManager>();
-    }
-
     void Start()
     {
         Level = 1;
 
+        levelText.text = $"{Level}";
+
         InitializeBorders();
 
-        transform.DOMoveY(-5, 0.5f).SetEase(Ease.InBounce).OnComplete(()=>StartCoroutine(OnCompleteSpawn()));
+        //transform.DOMoveY(-5, 0.5f).SetEase(Ease.InBounce).OnComplete(()=>StartCoroutine(OnCompleteSpawn()));
+        StartCoroutine(OnCompleteSpawn());
     }
 
     private IEnumerator OnCompleteSpawn()
     {
-        masterLevelManager.RemoveConnectedBorders();
+        worldManager.RemoveConnectedBorders();
 
         yield return null;
 
-        masterLevelManager.BuildNavMesh();
+        worldManager.BuildNavMesh();
 
         EnemySpawner.CanSpawn = true;
     }
@@ -54,13 +53,15 @@ public class IslandManager : MonoBehaviour
         foreach(IslandBorder border in borders)
         {
             border.SetWorldBorderPosition(GridPosition);
-            masterLevelManager.AddBorder(border);
+            worldManager.AddBorder(border);
         }
     }
 
     public void LevelUp()
     {
         Level += 1;
+
+        levelText.text = $"{Level}";
     }
 
     public void Init(int x, int y)
@@ -72,6 +73,16 @@ public class IslandManager : MonoBehaviour
     {
         int randomIndex = Random.Range(0, enemySpawnPoints.Count);
         return enemySpawnPoints[randomIndex];
+    }
+
+    public void EnableLevelText()
+    {
+        levelText.gameObject.SetActive(true);
+    }
+
+    public void DisableLevelText()
+    {
+        levelText.gameObject.SetActive(false);
     }
 }
     

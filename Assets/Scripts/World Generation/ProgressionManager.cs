@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
 {
-    private int empowerTokens;
-    private int weakenTokens;
+    public int EmpowerTokens { get; private set; }
+    public int WeakenTokens { get; private set; }
 
     public void RestockTokens(int landCount)
     {
-        empowerTokens = landCount / 2;
-        weakenTokens = landCount / 2;
+        EmpowerTokens = landCount / 2;
+        WeakenTokens = landCount / 2;
     }
 
     public void ConsumeWeakenToken()
     {
-        weakenTokens--;
+        WeakenTokens--;
     }
 
     public void ConsumeEmpowerToken()
     {
-        empowerTokens--;
+        EmpowerTokens--;
     }
 }

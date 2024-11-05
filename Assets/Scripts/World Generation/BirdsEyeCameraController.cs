@@ -9,13 +9,17 @@ public class BirdsEyeCameraController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private GameManager gameManager;
+    [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField] private GameObject landPlacementUIObject;
+    [SerializeField] private GameObject landEmpowermentUIObject;
 
     [Header("Settings")]
-    [SerializeField] private float moveSpeed = 30f;
+    [SerializeField] private float minMoveSpeed = 30f;
+    [SerializeField] private float maxMoveSpeed = 100f;
     [SerializeField] private float zoomSpeed = 500f;
-    [SerializeField] private float minZoom = 10f;
+    [SerializeField] private float minZoom = 25f;
     [SerializeField] private float maxZoom = 100f;
-    private float zoom;
+    private float currentMoveSpeed;
 
     private void OnValidate()
     {
@@ -34,31 +38,48 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Start()
     {
-        gameObject.SetActive(false);
+        Disable();
+        landPlacementUIObject.SetActive(false);
+        landEmpowermentUIObject.SetActive(false);
+
+        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom)/(maxZoom - minZoom));
     }
 
     private void Update()
     {
         HandleMoveInput();
         HandleZoomInput();
+        HandlePlaceLandInput();
+        HandleEmpowerInput();
+        HandleWeakenInput();
+
+        HandleGhostLand();
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        if(newState != GameState.LAND_PLACEMENT)
+        Disable();
+        landPlacementUIObject.SetActive(false);
+        landEmpowermentUIObject.SetActive(false);
+
+        if(newState == GameState.LAND_PLACEMENT)
         {
-            gameObject.SetActive(false);
-            return;
+            Enable();
+            landPlacementUIObject.SetActive(true);
         }
         
-        gameObject.SetActive(true);
+        if (newState == GameState.LAND_EMPOWERMENT)
+        {
+            Enable();
+            landEmpowermentUIObject.SetActive(true);
+        }    
     }
 
     private void HandleMoveInput()
     {
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
-        transform.Translate(moveSpeed * Time.unscaledDeltaTime * moveDirection, Space.World);
+        transform.Translate(currentMoveSpeed * Time.unscaledDeltaTime * moveDirection, Space.World);
     }
 
     private void HandleZoomInput()
@@ -72,18 +93,59 @@ public class BirdsEyeCameraController : MonoBehaviour
         float yPosition = transform.position.y;
         yPosition = Mathf.Clamp(yPosition, minZoom, maxZoom);
         transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
+
+        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom) / (maxZoom - minZoom));
     }
 
-    private SelectionSphere GetMouseLookSelectionSphere()
+    private void HandlePlaceLandInput()
     {
-        Vector3 mousePos = Input.mousePosition;
-        Ray mouseRay = Camera.main.ScreenPointToRay(mousePos);
-        RaycastHit hit;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if(gameManager.CurrentState != GameState.LAND_PLACEMENT) return;
 
-        bool didHit = Physics.Raycast(mouseRay, out hit, Mathf.Infinity, LayerMask.GetMask("SelectionSphere"));
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            worldManager.TrySpawnLandAtGhost();
+        }
+    }
 
-        if (!didHit) return null;
+    private void HandleEmpowerInput()
+    {
+        if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
 
-        return hit.transform.GetComponent<SelectionSphere>();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            worldManager.TryEmpowerLandAtGhost();
+        }
+    }
+
+    private void HandleWeakenInput()
+    {
+        if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+
+        }
+    }
+
+    private void HandleGhostLand()
+    {
+        worldManager.SetGhostLandPosition(transform.position);
+    }
+
+    public void Enable()
+    {
+        gameObject.SetActive(true);
+
+        worldManager.EnableLandLevelTexts();
+        worldManager.EnableGhostLand();
+    }
+
+    public void Disable()
+    {
+        gameObject.SetActive(false);
+
+        worldManager.DisableLandLevelTexts();
+        worldManager.DisableGhostLand();
     }
 }

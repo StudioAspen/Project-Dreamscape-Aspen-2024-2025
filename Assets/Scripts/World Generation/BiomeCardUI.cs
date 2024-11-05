@@ -50,6 +50,21 @@ public class BiomeCardUI : MonoBehaviour
         CurrentBiome = biome;
 
         nameText.text = $"{CurrentBiome.ToString()}";
+
+        switch (biome)
+        {
+            case Biome.DREAM:
+                image.color = Color.magenta;
+                break;
+            case Biome.FIRE:
+                image.color = Color.red;
+                break;
+            case Biome.FOOD:
+                image.color = new Color(1f, 192f/255f, 203f/255f, 1f);
+                break;
+            default:
+                break;
+        }
     }
 
     private void OnClickCard()

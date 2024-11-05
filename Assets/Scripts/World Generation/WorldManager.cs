@@ -12,17 +12,20 @@ public class WorldManager : MonoBehaviour
     [Header("References")]
     [SerializeField, Scene] private GameManager gameManager;
     [SerializeField, Self] private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
+    [SerializeField, Self] private ProgressionManager progressionManager; // nav mesh surface for pathfinding
 
     [field: Header("Pseudo Grid")]
-    public List<IslandManager> SpawnedLands { get; private set; } = new List<IslandManager>(); // a list of all currently spawned lands
+    public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>(); // a list of all currently spawned lands
     private List<IslandBorder> bordersList = new List<IslandBorder>();
     private int activeLandCount;
 
     [Header("Land Position Selection")]
-    [SerializeField] private IslandManager islandToSpawnPrefab;
+    [SerializeField] private LandManager islandToSpawnPrefab;
     [SerializeField] private ObjectPooler spherePooler;
+    [SerializeField] private Transform ghostLandTransform;
+    [SerializeField] private Material redTransparentMaterial;
+    [SerializeField] private Material greenTransparentMaterial;
     public List<SelectionSphere> CurrentSelectionSpheres { get; private set; } = new List<SelectionSphere>(); // a list of all currently spawned spheres
-    private bool isSelecting;
 
     [field: Header("Biome Selection")]
     private Biome currentlySelectedBiome = Biome.DREAM;
@@ -39,11 +42,13 @@ public class WorldManager : MonoBehaviour
 
     void Start()
     {
-        SpawnedLands.Add(GetComponentInChildren<IslandManager>());
+        SpawnedLands.Add(GetComponentInChildren<LandManager>());
 
         BuildNavMesh();
 
         activeLandCount = 1;
+
+        DisableGhostLand();
     }
 
     void Update()
@@ -51,9 +56,25 @@ public class WorldManager : MonoBehaviour
         HandleMouseInput();
     }
 
-    public IslandManager GetIsland(int x, int y)
+    public Vector2Int GetGridPosition(Vector3 worldPos)
     {
-        foreach(IslandManager island in new List<IslandManager>(SpawnedLands))
+        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+
+        Vector3 floatGridPosition = worldPos / islandScale;
+
+        return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
+    }
+
+    public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
+    {
+        float islandScale = islandToSpawnPrefab.transform.localScale.x;
+
+        return new Vector3(islandScale * gridPosition.x, height, islandScale * gridPosition.y);
+    }
+
+    public LandManager GetLand(int x, int y)
+    {
+        foreach(LandManager island in new List<LandManager>(SpawnedLands))
         {
             if(island.GridPosition.x == x && island.GridPosition.y == y) return island;
         }
@@ -83,22 +104,51 @@ public class WorldManager : MonoBehaviour
             if (selectionSphere == null) return;
             if (!selectionSphere.CanBeSelected) return;
 
-            SpawnIsland(selectionSphere.DesiredIslandSpawnPosition.x, selectionSphere.DesiredIslandSpawnPosition.y);
+            SpawnLand(selectionSphere.DesiredIslandSpawnPosition.x, selectionSphere.DesiredIslandSpawnPosition.y);
             DeleteAllSelectionSpheres();
 
-            isSelecting = false;
             PrepareForNextWave();
         }
     }
 
-    private void SpawnIsland(int x, int y)
+    private void SpawnLand(int x, int y)
     {
         float islandScale = islandToSpawnPrefab.transform.localScale.x;
 
-        IslandManager spawnedIsland = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * x, -15f, islandScale * y) , Quaternion.identity, transform);
-        spawnedIsland.Init(x, y);
+        LandManager spawnedLand = Instantiate(islandToSpawnPrefab, new Vector3(islandScale * x, -5f, islandScale * y) , Quaternion.identity, transform);
+        spawnedLand.Init(x, y);
 
-        SpawnedLands.Add(spawnedIsland);
+        SpawnedLands.Add(spawnedLand);
+
+        PrepareForNextWave();
+    }
+
+    public void TrySpawnLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+        if (!CanNewLandSpawnAt(spawnPosition))
+        {
+            Debug.Log("Can't spawn new land at this ghost position");
+            return;
+        }
+
+        DisableGhostLand();
+        SpawnLand(spawnPosition.x, spawnPosition.y);
+
+        gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
+    }
+
+    public void TryEmpowerLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+        if (GetLand(spawnPosition.x, spawnPosition.y) == null)
+        {
+            Debug.Log("Can't empower at this ghost position");
+            return;
+        }
+
+        //gameManager.ChangeState(GameState.EVENT_SELECTION);
+        gameManager.ChangeState(GameState.PLAYING);
     }
 
     public void SpawnSelectionSpheres() 
@@ -141,7 +191,7 @@ public class WorldManager : MonoBehaviour
 
     public void RemoveConnectedBorders()
     {
-        foreach (IslandManager island in new List<IslandManager>(SpawnedLands))
+        foreach (LandManager island in new List<LandManager>(SpawnedLands))
         {
             foreach (IslandBorder border in new List<IslandBorder>(bordersList))
             {
@@ -157,7 +207,7 @@ public class WorldManager : MonoBehaviour
     public void PrepareForNextWave()
     {
         activeLandCount = SpawnedLands.Count;
-        foreach (IslandManager island in SpawnedLands)
+        foreach (LandManager island in SpawnedLands)
         {
             island.EnemySpawner.WaveReset();
         }
@@ -168,8 +218,6 @@ public class WorldManager : MonoBehaviour
         activeLandCount--;
         if (activeLandCount == 0)
         {
-            isSelecting = true;
-
             gameManager.ChangeState(GameState.BIOME_SELECTION);
         }
     }
@@ -179,6 +227,64 @@ public class WorldManager : MonoBehaviour
         currentlySelectedBiome = biome;
 
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
+    }
+
+    public void EnableGhostLand()
+    {
+        ghostLandTransform.gameObject.SetActive(true);
+    }
+
+    public void DisableGhostLand()
+    {
+        ghostLandTransform.gameObject.SetActive(false);
+    }
+
+    public void SetGhostLandPosition(Vector3 worldPos)
+    {
+        Vector2Int gridPosition = GetGridPosition(worldPos);
+
+        ghostLandTransform.position = GetLandPosition(gridPosition, ghostLandTransform.position.y);
+
+        if(gameManager.CurrentState == GameState.LAND_PLACEMENT)
+        {
+            ghostLandTransform.GetComponent<MeshRenderer>().material = CanNewLandSpawnAt(gridPosition) ? greenTransparentMaterial : redTransparentMaterial;
+        }
+
+        if(gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
+        {
+            ghostLandTransform.GetComponent<MeshRenderer>().material = GetLand(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
+        }
+    }
+
+    private bool CanNewLandSpawnAt(Vector2Int gridPos)
+    {
+        bool isPositionValid = false;
+        for (int i = 0; i < bordersList.Count; i++)
+        {
+            if (bordersList[i].WorldBorderPosition == gridPos)
+            {
+                isPositionValid = true;
+                break;
+            }
+        }
+
+        return isPositionValid;
+    }
+
+    public void EnableLandLevelTexts()
+    {
+        foreach(LandManager land in SpawnedLands)
+        {
+            land.EnableLevelText();
+        }
+    }
+
+    public void DisableLandLevelTexts()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            land.DisableLevelText();
+        }
     }
 }
 

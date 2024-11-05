@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
-    [SerializeField, Self] private IslandManager islandManager;
+    [SerializeField, Self] private LandManager islandManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     private ObjectPooler enemyPooler;
     private List<float> enemyNormalizedWeights = new List<float>();
