@@ -21,7 +21,6 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int polynomialDegree;
     private float maxShopCurrency;
     private float currentShopCurrency;
-    public bool IsWaveFinished => currentShopCurrency <= 0 && enemiesSpawned.Count <= 0;
 
     [HideInInspector] public bool CanSpawn = false;
     private List<Enemy> enemiesSpawned = new List<Enemy>();

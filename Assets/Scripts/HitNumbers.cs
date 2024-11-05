@@ -18,7 +18,7 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
 
     private void LateUpdate()
     {
-        //transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
+        transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
     public void ActivateHitNumberText(int damage, Vector3 spawnPoint)

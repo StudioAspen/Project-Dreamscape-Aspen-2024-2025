@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TileManager : MonoBehaviour
 {
-    private MasterLevelManager masterLevelManager;
+    private WorldManager masterLevelManager;
     [Header("Linked Scripts")]
     [SerializeField] public GameObject placeObjectOnGrid;
     [SerializeField] public GameObject objFollowMouse;
@@ -19,7 +19,7 @@ public class TileManager : MonoBehaviour
     private void Awake()
     {
         IsSelecting = false;
-        masterLevelManager = FindAnyObjectByType<MasterLevelManager>();
+        masterLevelManager = FindAnyObjectByType<WorldManager>();
         placeObjectOnGrid.SetActive(false);
         objFollowMouse.SetActive(false);
         playerCamera.SetActive(true);
@@ -29,11 +29,11 @@ public class TileManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (AreAllWavesFinished() && IsSelecting == false)
+/*        if (AreAllWavesFinished() && IsSelecting == false)
         {
             IsSelecting = true;
             StartPlacing();
-        }
+        }*/
     }
     
     public void StartPlacing()
@@ -54,11 +54,11 @@ public class TileManager : MonoBehaviour
         player.SetActive(true);
     }
 
-    private bool AreAllWavesFinished()
+/*    private bool AreAllWavesFinished()
     {
         bool finished = true;
 
-        foreach(IslandManager island in masterLevelManager.SpawnedIslands)
+        foreach(IslandManager island in masterLevelManager.SpawnedLands)
         {
             EnemySpawner enemyManager = island.EnemySpawner;
 
@@ -66,5 +66,5 @@ public class TileManager : MonoBehaviour
         }
 
         return finished;
-    }
+    }*/
 }

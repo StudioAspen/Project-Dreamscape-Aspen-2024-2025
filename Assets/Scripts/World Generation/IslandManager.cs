@@ -10,7 +10,7 @@ public class IslandManager : MonoBehaviour
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
     [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
-    [SerializeField] private MasterLevelManager masterLevelManager;
+    [SerializeField] private WorldManager masterLevelManager;
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
     [SerializeField] private IslandBorder[] borders;
@@ -26,7 +26,7 @@ public class IslandManager : MonoBehaviour
 
     private void Awake()
     {
-        masterLevelManager = GetComponentInParent<MasterLevelManager>();
+        masterLevelManager = GetComponentInParent<WorldManager>();
     }
 
     void Start()
