@@ -18,6 +18,7 @@ public class Charger : Enemy
     #region States
     public ChargerIdleState ChargerIdleState { get; private set; }
     public ChargerDazedState ChargerDazedState { get; private set; }
+    public ChargerWanderState ChargerWanderState { get; private set; }
 
     protected override void InitializeStates()
     {
@@ -25,6 +26,7 @@ public class Charger : Enemy
 
         ChargerIdleState = new ChargerIdleState(this);
         ChargerDazedState = new ChargerDazedState(this);
+        ChargerWanderState = new ChargerWanderState(this);
     }
     #endregion
 

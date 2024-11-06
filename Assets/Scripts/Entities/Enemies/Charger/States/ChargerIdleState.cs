@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class ChargerIdleState : EnemyIdleState
 {
-    private Coroutine wanderCoroutine;
+    private Coroutine wanderTimerCoroutine;
     private Charger charger;
 
     public ChargerIdleState(Charger enemy) : base(enemy)
@@ -17,23 +17,26 @@ public class ChargerIdleState : EnemyIdleState
     public override void OnEnter()
     {
         base.OnEnter();
-        charger.SetSpeedModifier(1f);
-        wanderCoroutine = charger.StartCoroutine(WanderCoroutine());
-        //Debug.Log("Started charger wander coroutine");
+        enemy.DefaultTransitionToAnimation("Idle");
+        charger.SetSpeedModifier(0f);
+        wanderTimerCoroutine = charger.StartCoroutine(WanderTimerCoroutine());
+
+
     }
 
     public override void OnExit()
     {
-        if (wanderCoroutine != null)
+        if (wanderTimerCoroutine != null)
         {
-            charger.StopCoroutine(wanderCoroutine);
-            wanderCoroutine = null;
-            //Debug.Log("Stopped charger wander coroutine");
+            charger.StopCoroutine(wanderTimerCoroutine);
+            wanderTimerCoroutine = null;
+     
         }
     }
 
     public override void Update()
     {
+
         if (charger.Target != null)
         {
             //charger.ChangeState(charger.ChargerPlayerDetectedState);
@@ -41,22 +44,19 @@ public class ChargerIdleState : EnemyIdleState
     }
 
 
-    public override void FixedUpdate() { }
-
-
-    private IEnumerator WanderCoroutine()
+    private IEnumerator WanderTimerCoroutine()
     {
         while (charger.CurrentState == this)
         {
             yield return new WaitForSeconds(Random.Range(charger.WanderWaitMin, charger.WanderWaitMax));
-            GoToRandomWanderPoint();
+            charger.ChangeState(charger.ChargerWanderState);
         }
+        yield return null;
     }
 
-    private void GoToRandomWanderPoint()
-    {
-        Vector3 randomPoint = (Random.insideUnitSphere * charger.WanderRadius) + charger.transform.position;
-        charger.SetDestination(randomPoint, true);
-    }
+    public override void FixedUpdate() { }
+
+
+    
 
 }
