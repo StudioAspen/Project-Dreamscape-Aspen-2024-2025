@@ -2,7 +2,7 @@
 {
     private protected Enemy enemy;
 
-    public EnemyBaseState(Enemy enemy) : base(enemy)
+    public EnemyBaseState(Enemy enemy)
     {
         this.enemy = enemy;
     }

@@ -8,7 +8,7 @@ public class EntityHitState : BaseState
 
     private float timer = 0f;
 
-    public EntityHitState(Entity entity) : base(entity)
+    public EntityHitState(Entity entity)
     {
         this.entity = entity;
     }
