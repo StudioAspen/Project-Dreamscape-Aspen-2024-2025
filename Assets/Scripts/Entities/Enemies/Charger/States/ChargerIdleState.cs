@@ -48,7 +48,7 @@ public class ChargerIdleState : EnemyIdleState
     {
         while (charger.CurrentState == this)
         {
-            yield return new WaitForSeconds(Random.Range(charger.WanderWaitMin, charger.WanderWaitMax));
+            yield return new WaitForSeconds(Random.Range(charger.IdleWanderWaitMin, charger.IdleWanderWaitMax));
             charger.ChangeState(charger.ChargerWanderState);
         }
         yield return null;

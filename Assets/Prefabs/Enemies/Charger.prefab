@@ -147,9 +147,14 @@ MonoBehaviour:
   IsAttackAnimationPlaying: 0
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
-  <WanderRadius>k__BackingField: 10
-  <WanderWaitMin>k__BackingField: 1
-  <WanderWaitMax>k__BackingField: 3
+  <IdleWanderWaitMin>k__BackingField: 1
+  <IdleWanderWaitMax>k__BackingField: 3
+  <WanderMaxRadius>k__BackingField: 8
+  <WanderMinRadius>k__BackingField: 2
+  WanderRaycastDownMaxDistance: 15
+  WanderEndDistanceThreshold: 1.25
+  WanderTimeout: 10
+  WanderNavMeshSampleRadius: 0.1
   <DazedDuration>k__BackingField: 5
 --- !u!1 &4081677794897434292
 GameObject:

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿                    using UnityEngine;
 
 public class Charger : Enemy
 {
@@ -8,9 +8,23 @@ public class Charger : Enemy
     
 
     [field: Header("Charger: Idle Settings")]
-    [field: SerializeField] public float WanderRadius { get; private set; } = 5f;
-    [field: SerializeField] public float WanderWaitMin { get; private set; } = 1f;
-    [field: SerializeField] public float WanderWaitMax { get; private set; } = 3f;
+   
+    [field: SerializeField] public float IdleWanderWaitMin { get; private set; } = 1f;
+    [field: SerializeField] public float IdleWanderWaitMax { get; private set; } = 3f;
+
+
+    [field: Header("Charger: Wander Settings")]
+    [field: SerializeField] public float WanderMaxRadius { get; private set; } = 5f;
+    [field: SerializeField] public float WanderMinRadius { get; private set; } = 1.5f;
+
+
+   
+    [field: Header("Charger: Advanced Wander Settings")]
+    [field: SerializeField] public float WanderRaycastDownMaxDistance = 15f;
+    [field: SerializeField] public float WanderEndDistanceThreshold = 1.25f;
+    [field: SerializeField] public float WanderTimeout = 10f;
+    [field: SerializeField] public float WanderNavMeshSampleRadius = .1f;
+
 
     [field: Header("Charger: Dazed Settings")]
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
@@ -36,7 +50,7 @@ public class Charger : Enemy
     }
 
     protected override void OnFixedUpdate()
-    {
+    {                 
         base.OnFixedUpdate();
     }
 
