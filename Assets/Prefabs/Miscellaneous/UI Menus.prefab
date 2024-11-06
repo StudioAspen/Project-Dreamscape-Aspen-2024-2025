@@ -3495,6 +3495,10 @@ MonoBehaviour:
     m_ActionId: dd863170-060b-4c82-b313-30b4ce93d62a
     m_ActionName: Gameplay/CameraLook[/Mouse/delta]
   - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1b02d0f8-1456-47c8-9920-270553edc714
+    m_ActionName: UI/Minimap Toggle[/Keyboard/m]
+  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9219241249078938968}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
@@ -3508,7 +3512,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 7c6709c6-0631-4a33-87c5-4d2cefcb69ad
+    m_ActionId: 77b60454-e697-4a6a-84e5-77d3febbcfd0
     m_ActionName: UI/OpenSettings[/Keyboard/o]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
