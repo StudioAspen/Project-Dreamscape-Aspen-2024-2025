@@ -28,14 +28,14 @@ public class EventSelectUI : MonoBehaviour
 
     private void Start()
     {
-        Disable();
+        gameObject.SetActive(false);
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
+        Disable();
         if (newState != GameState.EVENT_SELECTION)
         {
-            Disable();
             return;
         }
 
