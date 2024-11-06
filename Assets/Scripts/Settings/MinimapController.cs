@@ -28,7 +28,6 @@ public class MinimapController : MonoBehaviour
     private RawImage image;
     private Transform border;
 
-    // Start is called before the first frame update
     void Start()
     {   
         // Cache Components
@@ -46,7 +45,6 @@ public class MinimapController : MonoBehaviour
         border = transform.GetChild(0).Find("Border");
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -97,6 +95,6 @@ public class MinimapController : MonoBehaviour
         }
 
         isMaximized = !isMaximized;
-        Debug.Log("Minimap Toggled");
+        //Debug.Log("Minimap Toggled");
     }
 }
