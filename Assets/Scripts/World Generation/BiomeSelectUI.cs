@@ -31,7 +31,7 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void Start()
     {
-        Disable();
+        gameObject.SetActive(false);
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
