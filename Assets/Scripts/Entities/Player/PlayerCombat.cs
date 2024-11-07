@@ -13,7 +13,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private TMP_Text comboText;
 
     [Header("References")]
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
     [SerializeField, Self] private Player player;
     [SerializeField, Self] private Animator animator;
 

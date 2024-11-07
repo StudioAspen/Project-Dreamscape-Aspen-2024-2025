@@ -4,7 +4,7 @@ public class EntityDeathState : BaseState
 {
     private Entity entity;
 
-    public EntityDeathState(Entity entity) : base(entity)
+    public EntityDeathState(Entity entity)
     {
         this.entity = entity;
     }

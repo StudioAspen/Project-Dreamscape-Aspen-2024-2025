@@ -11,7 +11,7 @@ public class Player : Entity
 
     [Header("Player: References")]
     [SerializeField, Self] private CharacterController controller;
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
