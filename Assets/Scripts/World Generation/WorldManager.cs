@@ -1,129 +1,348 @@
+using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEngine;
-using TMPro;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.Events;
 
 public class WorldManager : MonoBehaviour
 {
     [Header("References")]
-    private EventManager eventManager;
-    private MasterLevelManager masterLevelManager;
+    [SerializeField, Scene] private GameManager gameManager;
+    [SerializeField, Self] private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
 
-    [Header("Misc Controls")]
-    [SerializeField] public bool isInSkyView;
+    [field: Header("Pseudo Grid")]
+    public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>(); // a list of all currently spawned lands
+    private List<LandBorder> bordersList = new List<LandBorder>();
+    private int activeLandCount;
 
-    [Header("Island Selection")]
-    [SerializeField] private GameObject playerCamera;
-    [SerializeField] private GameObject islandSelectCamera;
-    public bool IsIslandSelecting;
-    public bool IsEventSelecting;
+    [Header("Land Position Selection")]
+    [SerializeField] private LandManager landToSpawnPrefab;
+    [SerializeField] private Transform ghostLandTransform;
+    [SerializeField] private Material redTransparentMaterial;
+    [SerializeField] private Material greenTransparentMaterial;
+
+    [field: Header("Biome Selection")]
+    private Biome currentBiomeSelection = Biome.DREAM;
+
+    [field: Header("Event Selection")]
+    private WorldEvent currentEventSelection = WorldEvent.EVENT1;
+
+    [field: Header("Progression")]
+    [field: SerializeField] public int EmpowerTokens { get; private set; }
+    [field: SerializeField] public int WeakenTokens { get; private set; }
+
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
 
     private void Awake()
     {
-        masterLevelManager = FindAnyObjectByType<MasterLevelManager>();
-        eventManager = FindAnyObjectByType<EventManager>();
+        
+    }
+
+    void Start()
+    {
+        SpawnedLands.Add(GetComponentInChildren<LandManager>());
+
+        BuildNavMesh();
+
+        activeLandCount = 1;
+
+        DisableGhostLand();
     }
 
     void Update()
     {
-        //EVENT SYSTEM - Ildefonso Marrero
-        /*START COMPLETE*/
-        if (eventManager.GetCurrentEvent() == EventType.START) //if the event is START, check for all enemies killed
+        
+    }
+
+    #region Grid Functions
+    public LandManager GetLand(int x, int y)
+    {
+        foreach (LandManager land in new List<LandManager>(SpawnedLands))
         {
-            //check if all enemies have been killed, if so, start the island selection
-            if (AreAllWavesFinished() && !IsIslandSelecting && !IsEventSelecting)
+            if (land.GridPosition.x == x && land.GridPosition.y == y) return land;
+        }
+
+        return null;
+    }
+
+    public Vector2Int GetGridPosition(Vector3 worldPos)
+    {
+        float landScale = landToSpawnPrefab.transform.localScale.x;
+
+        Vector3 floatGridPosition = worldPos / landScale;
+
+        return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
+    }
+
+    public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
+    {
+        float landScale = landToSpawnPrefab.transform.localScale.x;
+
+        return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
+    }
+    #endregion
+
+    private bool CanNewLandSpawnAt(Vector2Int gridPos)
+    {
+        bool isPositionValid = false;
+        for (int i = 0; i < bordersList.Count; i++)
+        {
+            if (bordersList[i].WorldBorderPosition == gridPos)
             {
-                IsIslandSelecting = true;
-                FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
+                isPositionValid = true;
+                break;
             }
         }
-        else if (eventManager.GetCurrentEvent() == EventType.VISIT_ALL) //if the event is VISIT_ALL, check for all islands visited
+
+        return isPositionValid;
+    }
+
+    private void SpawnLand(int x, int y)
+    {
+        float landScale = landToSpawnPrefab.transform.localScale.x;
+
+        LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * x, -5f, landScale * y) , Quaternion.identity, transform);
+        spawnedLand.Init(x, y);
+
+        SpawnedLands.Add(spawnedLand);
+    }
+
+    public void TrySpawnLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+        if (!CanNewLandSpawnAt(spawnPosition))
         {
-            //check if all islands have been visited
-            bool VISITED_ALL = true;
-            for (int i = 0; i < masterLevelManager.SpawnedIslands.Count; i++)
+            Debug.Log("Can't spawn new land at this ghost position");
+            return;
+        }
+
+        DisableGhostLand();
+        SpawnLand(spawnPosition.x, spawnPosition.y);
+
+        RestockTokens(SpawnedLands.Count);
+        gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
+    }
+
+    public void ContinueToEventSelection()
+    {
+        ResetLandLevelDifferences();
+
+        gameManager.ChangeState(GameState.EVENT_SELECTION);
+    }
+
+    public void BuildNavMesh()
+    {
+        navMeshSurface.BuildNavMesh();
+    }
+
+    public void AddBorder(LandBorder border)
+    {
+        bordersList.Add(border);
+    }
+
+    public void RemoveConnectedBorders()
+    {
+        foreach (LandManager land in new List<LandManager>(SpawnedLands))
+        {
+            foreach (LandBorder border in new List<LandBorder>(bordersList))
             {
-                if (masterLevelManager.SpawnedIslands[i].IsVisited == false)
+                if (land.GridPosition == border.WorldBorderPosition)
                 {
-                    VISITED_ALL = false;
+                    Destroy(border.gameObject);
+                    bordersList.Remove(border);
                 }
             }
-            //if all islands have been visited, start the island selection
-            if (VISITED_ALL && !IsIslandSelecting && !IsEventSelecting)
-            {
-                IsIslandSelecting = true;
-                FindObjectOfType<IslandSelectUI>().PrepareIslandSelection();
-            }
         }
-        else if (eventManager.GetCurrentEvent() == EventType.ZONES) //if the event is ZONES, check for all enemies killed in the 3x3 grid
-        {
-            //TODO: Check if all enemies in the 3x3 grid have been killed
-        }
-        else if (eventManager.GetCurrentEvent() == EventType.SURVIVAL) //if the event is SURVIVAL, check for timer to end
-        {
-            //TODO: Check if the timer has ended
-        }
-        else if (eventManager.GetCurrentEvent() == EventType.PRIORITIES) //if the event is PRIORITIES, check for all enemies killed in the 3 highest level islands
-        {
-            //TODO: Check if all enemies in the 3 highest level islands have been killed
-        }
-        else if (eventManager.GetCurrentEvent() == EventType.ESCORT) //if the event is ESCORT, check for timer to end AND NPC survival
-        {
-            //TODO: Check if the timer has ended AND NPC survival
-        }
-        else if (eventManager.GetCurrentEvent() == EventType.DEFEND) //if the event is DEFEND, check for timer to end AND object survival
-        {
-            //TODO: Check if the timer has ended AND object survival
-        }else
-        {
-            Debug.Log("ERROR: No event is active");
-        }
-
-        /*        if (Input.GetKeyDown(KeyCode.Q) && isInSkyView == false) 
-                {
-                    islandTimertext.SetActive(true);
-                    islandSelectCamera.SetActive(true);
-                    playerCamera.SetActive(false);
-                    isInSkyView = true;
-                }
-
-                if (Input.GetKeyDown(KeyCode.E) && isInSkyView == true)
-                {
-
-                    islandSelectCamera.SetActive(false);
-                    playerCamera.SetActive(true);
-                    islandTimertext.SetActive(false);
-                    isInSkyView = false;
-                }*/
     }
 
-    private bool AreAllWavesFinished()
+    public void PrepareForNextWave()
     {
-        bool finished = true;
-
-        foreach(IslandManager island in masterLevelManager.SpawnedIslands)
+        activeLandCount = SpawnedLands.Count;
+        foreach (LandManager land in SpawnedLands)
         {
-            EnemySpawner enemyManager = island.EnemySpawner;
-
-            if (!enemyManager.IsWaveFinished) finished = false;
-        }
-
-        return finished;
-    }
-
-    public void PrepareForNextWave() 
-    {
-        foreach (IslandManager island in masterLevelManager.SpawnedIslands) 
-        {
-            island.LevelUp();
-            island.EnemySpawner.WaveReset();
+            land.EnemySpawner.WaveReset();
         }
     }
 
-    public void IslandSelectComplete()
+    public void DecrementActiveLandCount()
     {
-        IsIslandSelecting = false;
-        IsEventSelecting = true;
-        FindObjectOfType<EventSelectUI>().PrepareEventSelection();
+        activeLandCount--;
+        if (activeLandCount == 0)
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+        }
     }
+
+    public void AssignBiomeToSpawnNext(Biome biome)
+    {
+        currentBiomeSelection = biome;
+
+        gameManager.ChangeState(GameState.LAND_PLACEMENT);
+    }
+
+    public void AssignNextEvent(WorldEvent worldEvent)
+    {
+        currentEventSelection = worldEvent;
+
+        PrepareForNextWave();
+
+        gameManager.ChangeState(GameState.PLAYING);
+    }
+
+    #region Ghost Land Functions
+    public void EnableGhostLand()
+    {
+        ghostLandTransform.gameObject.SetActive(true);
+    }
+
+    public void DisableGhostLand()
+    {
+        ghostLandTransform.gameObject.SetActive(false);
+    }
+
+    public void SetGhostLandPosition(Vector3 worldPos)
+    {
+        Vector2Int gridPosition = GetGridPosition(worldPos);
+
+        ghostLandTransform.position = GetLandPosition(gridPosition, ghostLandTransform.position.y);
+
+        if(gameManager.CurrentState == GameState.LAND_PLACEMENT)
+        {
+            ghostLandTransform.GetComponent<MeshRenderer>().material = CanNewLandSpawnAt(gridPosition) ? greenTransparentMaterial : redTransparentMaterial;
+        }
+
+        if(gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
+        {
+            ghostLandTransform.GetComponent<MeshRenderer>().material = GetLand(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
+        }
+    }
+    #endregion
+
+    #region Land Level Texts
+    public void EnableLandLevelTexts()
+    {
+        foreach(LandManager land in SpawnedLands)
+        {
+            land.EnableLevelText();
+        }
+    }
+
+    public void DisableLandLevelTexts()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            land.DisableLevelText();
+        }
+    }
+    #endregion
+
+    #region Progression Functions
+    private void RestockTokens(int landCount)
+    {
+        EmpowerTokens = Mathf.CeilToInt(landCount / 2f);
+        WeakenTokens = Mathf.FloorToInt(landCount / 2f);
+    }
+
+    public void TryEmpowerLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
+        {
+            Debug.Log("Can't empower at this land");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
+        {
+            Debug.Log("Not enough empower tokens");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference < 0) // if already been weakened
+        {
+            WeakenTokens++;
+            EmpowerTokens++;
+        }
+
+        hoveredLand.AddLevel(1);
+        EmpowerTokens--;
+    }
+
+    public void TryWeakenLandAtGhost()
+    {
+        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
+
+        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+
+        if (hoveredLand == null)
+        {
+            Debug.Log("Can't weaken at this land");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
+        {
+            Debug.Log("Not enough weaken tokens");
+            return;
+        }
+
+        if (hoveredLand.LevelDifference > 0) // if already been empowered
+        {
+            EmpowerTokens++;
+            WeakenTokens++;
+        }
+
+        hoveredLand.AddLevel(-1);
+        WeakenTokens--;
+    }
+
+    public bool CanProceedFromEmpowerment()
+    {
+        return EmpowerTokens + WeakenTokens <= 0;
+    }
+
+    private void ResetLandLevelDifferences()
+    {
+        foreach(LandManager land in SpawnedLands)
+        {
+            land.ResetLevelDifference();
+        }
+    }
+
+    public void ResetProgressionChanges()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            if (land.LevelDifference > 0) EmpowerTokens += Mathf.Abs(land.LevelDifference);
+            if (land.LevelDifference < 0) WeakenTokens += Mathf.Abs(land.LevelDifference);
+
+            land.UndoLevelChanges();
+        }
+    }
+    #endregion
+}
+
+public enum Biome
+{
+    DREAM,
+    FIRE,
+    FOOD,
+    BIOME3
+}
+
+public enum WorldEvent
+{
+    EVENT1,
+    EVENT2,
+    EVENT3,
+    EVENT4
 }
