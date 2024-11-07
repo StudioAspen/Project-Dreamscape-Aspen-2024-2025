@@ -454,6 +454,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247482180}
   m_CullTransparentMesh: 1
+--- !u!1 &367062822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 367062823}
+  m_Layer: 10
+  m_Name: Augments
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &367062823
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367062822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 883199901}
+  m_Father: {fileID: 6646361409428001876}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &377689864 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3617256968821117999, guid: 19dae7578bc56674dae55670ec5dfbf5,
@@ -1154,8 +1186,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ff356b9081f1604e87d8e04f2133925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Branch: 0
-  Level: 0
+  <Level>k__BackingField: 0
+  <AugmentName>k__BackingField: 
+  <AugmentIcon>k__BackingField: {fileID: 0}
   jumpSound: {fileID: 8300000, guid: 0c3ac4f74258b1e42b5be9b157e2e751, type: 3}
 --- !u!114 &883199900
 MonoBehaviour:
@@ -1178,12 +1211,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883199898}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1082.0259, y: 640.7051, z: -10.952209}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 367062823}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &883199902
 MonoBehaviour:
@@ -1192,13 +1225,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 883199898}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25a347e850b37274283e07aa3d32e577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Branch: 0
-  Level: 0
+  <Level>k__BackingField: 1
+  <AugmentName>k__BackingField: Lifesteal
+  <AugmentIcon>k__BackingField: {fileID: 0}
   <InitialPercent>k__BackingField: 0
   <MaxPercent>k__BackingField: 0.2
   <LifestealStep>k__BackingField: 0.05
@@ -2768,6 +2802,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 200363031}
+    - targetCorrespondingSourceObject: {fileID: 7536978621657743438, guid: 19dae7578bc56674dae55670ec5dfbf5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 367062823}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19dae7578bc56674dae55670ec5dfbf5, type: 3}
 --- !u!114 &4018753642331799964
@@ -3074,7 +3112,6 @@ SceneRoots:
   - {fileID: 657163285}
   - {fileID: 754548514}
   - {fileID: 1708381925}
-  - {fileID: 883199901}
   - {fileID: 754822213}
   - {fileID: 6241208953379200291}
   - {fileID: 637086427}

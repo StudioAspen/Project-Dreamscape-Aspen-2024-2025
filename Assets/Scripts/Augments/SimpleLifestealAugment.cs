@@ -17,8 +17,6 @@ public class SimpleLifestealAugment : Augment
     protected void Awake()
     {
         base.Awake();
-        Branch = AugmentBranch.PLAYER_AUGMENT;
-        Level = 1;
         weapon = GetComponent<AugmentManager>().Player.GetComponentInChildren<Weapon>();
         chaining = GetComponent<AugmentManager>().Player.GetComponentInChildren<ChainingSystem>();
     }
@@ -53,3 +51,4 @@ public class SimpleLifestealAugment : Augment
         }
     }
 }
+ 
