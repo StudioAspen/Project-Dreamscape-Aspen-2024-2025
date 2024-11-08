@@ -28,13 +28,7 @@ public class ChargerFarAttackState : EnemyBaseState
         isCharging = false;
         isSlowingDown = false;
 
-        charger.AssignTarget(); 
-
-        if (enemy.Target != null)
-        {
-            Debug.Log("Setting Charge!");
-            SetCharge();
-        }  
+        charger.AssignTarget();
     }
 
     public override void OnExit() //when state is switched out.
@@ -45,10 +39,15 @@ public class ChargerFarAttackState : EnemyBaseState
 
     public override void Update()
     {
-        if (charger.Target == null)  
+        if (enemy.Target != null)
         {
-            Debug.Log("No Target in range!");
-            charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
+            Debug.Log("Target has been set to: " + enemy.Target + "([1]");
+            SetCharge();
+        }
+        else
+        {
+            Debug.Log("No Target in range! [0]");
+            //charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
             return;
         }
 
@@ -59,13 +58,12 @@ public class ChargerFarAttackState : EnemyBaseState
 
         if (isCharging)
         {
-            Debug.Log("Charging!");
+            
             StartCharging();
         }
 
         if (isSlowingDown)
         {
-            Debug.Log("Slowing Down!");
             StartSlowingDown();
         }
     }
@@ -74,21 +72,22 @@ public class ChargerFarAttackState : EnemyBaseState
     {
         if (charger.Target == null)
         {
-            charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
+            //charger.ChangeState(charger.ChargerFarAttackState); //will be set to default state (goes into same state for testing).
             return;
         }
 
-        //while charging checks moves towards player.
         if (isCharging || isSlowingDown)
         {
             Vector3 moveDirection = (enemy.Target.transform.position - enemy.transform.position).normalized;
-            enemy.RigidBody.MovePosition(enemy.transform.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+            charger.RigidBody.MovePosition(enemy.transform.position + moveDirection * currentSpeed * Time.fixedDeltaTime);
+
+            Debug.Log("**Movement is working**");
         }
-    
     }
 
     private void SetCharge()
     {
+        Debug.Log("Reading Charge [2]");
         isCharging = true;
 
         currentSpeed = 0f; 
@@ -97,23 +96,31 @@ public class ChargerFarAttackState : EnemyBaseState
 
     private void StartCharging()
     {
-        float elapsedChargeTime = Time.time - chargeTime;
+        Debug.Log("Charge! [3]");
 
-        if (elapsedChargeTime <= charger.ChargeDuration)
+        float elapsedChargeTime = 0;
+
+        while (elapsedChargeTime < charger.ChargeDuration)
         {
-            //Speed will be from 0 to ChargeSpeed, in the length of the charge duration. 
-            currentSpeed = Mathf.Lerp(0, charger.ChargeSpeed, (Time.time - chargeTime) / charger.ChargeDuration);
+            //Speed will be from 0 to ChargeSpeed, in the length of the charge duration.
+
+            currentSpeed = Mathf.Lerp(0, charger.ChargeSpeed, Time.fixedDeltaTime * charger.ChargeDuration);
+            elapsedChargeTime += Time.fixedDeltaTime;
+
+            Debug.Log("Charging in Motion! [4]");
+
         }
-        else
-        {
-            isCharging = false;
-            Debug.Log("Setting Slowdown!");
-            SetSlowDown();
-        } 
+        
+        
+        Debug.Log("Charging is Complete! [5]");
+        isCharging = false;
+        SetSlowDown();
+       
     }
 
     private void SetSlowDown()
     {
+        Debug.Log("Reading Slowdown [6]");
         isSlowingDown = true;
 
         currentSpeed = charger.ChargeSpeed; 
@@ -122,12 +129,15 @@ public class ChargerFarAttackState : EnemyBaseState
 
     private void StartSlowingDown()
     {
+        Debug.Log("Slowing down [7]");
+
         float elapsedSlowTime = Time.time - slowdownTime;
 
         if (elapsedSlowTime <= charger.SlowDownDuration)
         {
+            Debug.Log("Slowing in Motion![8]");
             //Speed will be from ChargeSpeed to 0, in the length of the slowdown duration.
-            currentSpeed = Mathf.Lerp(currentSpeed, 0, (Time.time - slowdownTime) / charger.SlowDownDuration);
+            currentSpeed = Mathf.Lerp(currentSpeed, 0, charger.SlowDownDuration);
         }
         else
         {
@@ -137,7 +147,7 @@ public class ChargerFarAttackState : EnemyBaseState
         }
     }
 
-    private void CheckForHits()
+    public void CheckForHits()
     {
         Collider[] hitColliders = Physics.OverlapSphere(enemy.transform.position, charger.HitboxRadius, hitLayer);
 

@@ -35,6 +35,7 @@ Transform:
   m_Children:
   - {fileID: 4150967214179094889}
   - {fileID: 2996173690986891309}
+  - {fileID: 7561753293560522081}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8807432624826645152
@@ -57,7 +58,7 @@ MonoBehaviour:
   IsGrounded: 0
   baseSpeed: 2
   velocity: {x: 0, y: 0, z: 0}
-  rotationSpeed: 5
+  rotationSpeed: 3
   targetDetectionRadius: Infinity
   OnEntityTakeDamage:
     m_PersistentCalls:
@@ -68,18 +69,21 @@ MonoBehaviour:
   OnKillEntity:
     m_PersistentCalls:
       m_Calls: []
-  rigidBody: {fileID: 3915645929625153338}
+  <RigidBody>k__BackingField: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
   <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 2
   IsAttackAnimationPlaying: 0
-  <ChargingProcRadius>k__BackingField: 11
-  <ChargeSpeed>k__BackingField: 8
-  <ChargeDuration>k__BackingField: 3
+  <ChargeSpeed>k__BackingField: 7
+  <ChargeDuration>k__BackingField: 2
   <SlowDownDuration>k__BackingField: 2
-  <HitboxRadius>k__BackingField: 3
-  <RotationSpeed>k__BackingField: 5
+  <hitLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1024
+  <HitBoxLocation>k__BackingField: {fileID: 5034018352243513692}
+  <HitboxRadius>k__BackingField: 1.3
+  <KnockbackForce>k__BackingField: 35
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
@@ -253,6 +257,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &5034018352243513692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7561753293560522081}
+  m_Layer: 10
+  m_Name: HitBoxLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7561753293560522081
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5034018352243513692}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3490398193883977143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8635036427719670934
 GameObject:
   m_ObjectHideFlags: 0

@@ -281,7 +281,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         return Vector3.Distance(entity.transform.position, transform.position);
     }
 
-    private protected List<Entity> GetNearbyTargets()
+    public List<Entity> GetNearbyTargets()
     {
         List<Entity> targets = new List<Entity>();
 
