@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ColorEnemiesAugment : EnemyAugment
+public class ColorEnemiesAugment : Augment
 {
 
 
@@ -14,14 +14,16 @@ public class ColorEnemiesAugment : EnemyAugment
 
     public void Awake()
     {
-        Branch = AugmentBranch.COLOR_BRANCH;
         Level = 1;
     }
 
+    /* 
+     * using EnemyAugment script that is obsolete due to Entity script
     protected override void OnEnemiesChanged(List<Enemy> enemies)
     {
         ColorEnemies(enemies);
     }
+    */
 
     private void ColorEnemies(List<Enemy> current_enemies)
     {

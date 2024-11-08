@@ -14,10 +14,9 @@ public class AOEAugment : Augment
     private Entity entity;
 
 
-    protected void Awake()
+    protected override void Awake()
     {
         base.Awake();
-        Branch = AugmentBranch.WEAPON_AUGMENT;
         Level = 1;
 
         // gets weapon script off player to apply aoe dmg
@@ -33,7 +32,7 @@ public class AOEAugment : Augment
         base.Start();
     }
 
-    protected void OnEnable()
+    protected override void OnEnable()
     {
         base.OnEnable();
         weapon.OnWeaponHit.AddListener(AOEHit);
