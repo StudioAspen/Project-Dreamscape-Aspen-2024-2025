@@ -1,4 +1,5 @@
 using KBCore.Refs;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ public class MemorySystem : MonoBehaviour
 {
     [SerializeField, Self] private Player player;
     [SerializeField]private int barMaximum; //amount of memory points to fill the memory bar
-    Dictionary<string, int> memories = new Dictionary<string, int>(); //dictionary so we can add new memory types whenever
+    Dictionary<Type, int> memories = new Dictionary<Type, int>(); //dictionary so we can add new memory types whenever
 
 
     private void OnEnable()
@@ -24,7 +25,7 @@ public class MemorySystem : MonoBehaviour
         memories.Clear();
     }
 
-    private void GainMemory(string type, int memoryGained) //add memory and check if meter is full 
+    private void GainMemory(Type type, int memoryGained) //add memory and check if meter is full 
     {
         if (memories.ContainsKey(type))
         {
@@ -45,7 +46,7 @@ public class MemorySystem : MonoBehaviour
     private bool MemoryIsFull() //true if full false if not
     {
         int totalMemory = 0;
-        foreach (string memory in memories.Keys)
+        foreach (Type memory in memories.Keys)
         {
             totalMemory += memories[memory];
             //adds all of them up together for comparison
@@ -59,12 +60,12 @@ public class MemorySystem : MonoBehaviour
         return false;
     }
 
-    private string MemoryEarned()
+    private Type MemoryEarned()
     {
         //not sure how best to order memories in terms of priority in case two have the same value when meter is full
         //OH DESIGNERRRSSS (rings bell)
         //also probably the function we'd bestow the buff/item/whatever it was on
-        string memoryType = memories.Max(x => x.Key); //idk how this line works :p
+        Type memoryType = memories.Max(x => x.Key); //idk how this line works :p
         memories.Clear();
         return memoryType;
     }
