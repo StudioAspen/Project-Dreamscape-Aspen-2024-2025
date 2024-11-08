@@ -7,6 +7,7 @@ public class PlayerCollisionDetector : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Check if the player stepped on an island
+        /*
         if (other.CompareTag("Island"))
         {
             IslandManager islandManager = other.GetComponent<IslandManager>();
@@ -17,5 +18,6 @@ public class PlayerCollisionDetector : MonoBehaviour
                 islandManager.IsVisited = true;
             }
         }
+        */
     }
 }
