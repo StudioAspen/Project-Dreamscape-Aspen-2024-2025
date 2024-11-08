@@ -13,8 +13,7 @@ public class JumpSoundAugment : Augment
 
     protected void Awake()
     {
-        Branch = AugmentBranch.MARIO_BRANCH;
-        Level = 1;
+
     }
 
 

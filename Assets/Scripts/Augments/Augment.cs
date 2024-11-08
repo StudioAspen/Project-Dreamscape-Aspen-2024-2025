@@ -4,10 +4,13 @@ using UnityEngine;
 
 public abstract class Augment : MonoBehaviour
 {
-    [Header("Augment Attributes")]
-    [SerializeField] public AugmentBranch Branch;
-    [SerializeField] public string AugmentName;
-    [SerializeField] public int Level;
+    [field: Header("Augment Attributes")]
+    // [field: SerializeField] public AugmentBranch Branch { get; private set }
+    [field: SerializeField] public int Level { get; protected set; }
+    [field: SerializeField] public string AugmentName { get; protected set; }
+    [field: SerializeField] public Sprite AugmentIcon { get; protected set; }
+    
+    protected bool isActive;
 
     protected Player player;
 

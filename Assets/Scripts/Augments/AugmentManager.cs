@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AugmentManager : MonoBehaviour
 {
-    private AugmentBranch currentBranch = AugmentBranch.NONE;
+    private string currentAugment = null;
     private int unlockedLevel = 0;
     private int lastLevelAdded = 0;
 
@@ -26,13 +26,13 @@ public class AugmentManager : MonoBehaviour
             return false;
         }
 
-        if (currentBranch == AugmentBranch.NONE)
+        if (currentAugment == null)
         {
-            currentBranch = augment.Branch;
+            currentAugment = augment.AugmentName;
         }
-        else if (augment.Branch != currentBranch)
+        else if (augment.AugmentName != currentAugment)
         {
-            Debug.LogWarning("[AugmentManager] could not enable Augment: branch mismatch");
+            Debug.LogWarning("[AugmentManager] could not enable Augment: augment mismatch");
             return false;
         }
 
