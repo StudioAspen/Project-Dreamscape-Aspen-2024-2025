@@ -62,7 +62,7 @@ public class BiomeCardUI : MonoBehaviour
             case Biome.FOOD:
                 image.color = new Color(1f, 192f/255f, 203f/255f, 1f);
                 break;
-            case Biome.BIOME3:
+            case Biome.BIOME4:
                 image.color = Color.white;
                 break;
             default:

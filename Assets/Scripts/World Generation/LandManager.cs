@@ -19,6 +19,7 @@ public class LandManager : MonoBehaviour
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [field: SerializeField] public int Level { get; private set; }
+    [field: SerializeField] public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
