@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
-  m_Layer: 10
+  m_Layer: 16
   m_Name: Leaper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,18 +47,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0a88db7812ae7141b9015ffe227ebc2, type: 3}
+  m_Script: {fileID: 11500000, guid: 838c1900f811cba449eedf1336fa32f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 50
+  <MaxHealth>k__BackingField: 100
   <Level>k__BackingField: 0
   IsGrounded: 0
   baseSpeed: 3
   velocity: {x: 0, y: 0, z: 0}
-  rotationSpeed: 5
+  rotationSpeed: 20
   targetDetectionRadius: Infinity
   OnEntityTakeDamage:
     m_PersistentCalls:
@@ -77,6 +77,7 @@ MonoBehaviour:
   IsAttackAnimationPlaying: 0
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
+  <LungeDuration>k__BackingField: 2
 --- !u!114 &6700608577994973314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -414,6 +415,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -461,6 +477,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8183481454299698827, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
         type: 3}

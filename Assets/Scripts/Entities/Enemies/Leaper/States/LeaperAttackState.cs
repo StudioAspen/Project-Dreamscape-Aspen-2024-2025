@@ -27,6 +27,8 @@ public class LeaperAttackState : EnemyBaseState
         SetLungeDestination(leaper.Target.transform.position);
 
         timer = 0;
+
+        leaper.LookAt(destination);
     }
 
     public override void OnExit()
@@ -48,7 +50,7 @@ public class LeaperAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        Vector3 dir = (destination - leaper.transform.position).normalized;
+        Vector3 dir = (destination - leaper.transform.position);
 
         leaper.Move(dir);
     }

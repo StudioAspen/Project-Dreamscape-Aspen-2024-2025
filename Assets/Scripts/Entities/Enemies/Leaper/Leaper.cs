@@ -10,13 +10,14 @@ public class Leaper : Enemy
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     // reminder to change the value bellow if you need to
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
+    [field: SerializeField] public float LungeDuration { get; private set; } = 2f;
 
 
     // add all states here 
     // add as they get created
     #region States
 
-    // public LeaperAttackState LeaperAttackState{ get; private set; }
+    public LeaperAttackState LeaperAttackState{ get; private set; }
     // public LeaperHopState LeaperHopState{ get; private set; }
     // public LeaperChaseState LeaperChaseState{ get; private set; }
     
@@ -30,7 +31,7 @@ public class Leaper : Enemy
     protected override void OnOnEnable()
     {
         base.OnOnEnable();
-        // set start state
+        SetStartState(LeaperAttackState);
     }
 
     protected override void OnOnDisable()
@@ -46,6 +47,7 @@ public class Leaper : Enemy
     protected override void OnStart()
     {
         base.OnStart();
+        SetDefaultState(LeaperAttackState);
     } 
 
     protected override void OnUpdate()
@@ -66,7 +68,7 @@ public class Leaper : Enemy
         // currently only 3 
         // add more as they get created
 
-        // LeaperAttackState = new LeaperAttackState(this);
+        LeaperAttackState = new LeaperAttackState(this);
         // LeaperHopState = new LeaperHopState(this);
         // LeaperChaseState = new LeaperChaseState(this);
 
