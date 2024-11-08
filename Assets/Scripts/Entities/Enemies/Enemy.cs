@@ -6,6 +6,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
 
 public class Enemy : Entity
@@ -14,6 +16,7 @@ public class Enemy : Entity
     [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
+    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
@@ -26,6 +29,8 @@ public class Enemy : Entity
 
     public Entity Target { get; private set; }
     private EnemySpawner spawner;
+
+    [HideInInspector] public bool IsAttackAnimationPlaying;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -63,6 +68,8 @@ public class Enemy : Entity
         ChangeTeam(1);
 
         SetDefaultState(EnemyIdleState);
+
+        FinishAnimation(); // disable attack animation
     }
 
     protected override void OnUpdate()
@@ -82,6 +89,21 @@ public class Enemy : Entity
     private void LateUpdate()
     {
         DebugState();
+    }
+
+    private void OnAnimatorMove()
+    {
+        OnOnAnimatorMove();
+    }
+
+    protected virtual void OnOnAnimatorMove()
+    {
+        if (!IsAttackAnimationPlaying) return;
+
+        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        //desiredAnimationMovement.y = 0f;
+
+        Move(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -146,15 +168,19 @@ public class Enemy : Entity
         if (lookAtPath) LookAt(currDest);
 
         Vector3 dir = currDest - transform.position;
-        dir.y = 0f;
         dir.Normalize();
 
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        Move(dir);
 
         if (Distance(currDest) < 0.05f)
         {
             path.RemoveAt(0);
         }
+    }
+
+    public void Move(Vector3 dir)
+    {
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -196,5 +222,21 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+    }
+
+    public virtual void FinishAnimation()
+    {
+        IsAttackAnimationPlaying = false;
+        DisableWeaponTriggers();
+    }
+
+    public virtual void EnableWeaponTriggers()
+    {
+        Weapon.EnableTriggers();
+    }
+
+    public virtual void DisableWeaponTriggers()
+    {
+        Weapon.DisableTriggers();
     }
 }

@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class Follower : Enemy
 {
-    [field: Header("Follower: Settings")]
-    [field: SerializeField] public int CircleEntityCountThreshold { get; private set; } = 2;
+    [field: Header("Follower: Attack Settings")]
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
+    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
+
+
+    [field: Header("Follower: Circle Settings")]
+    [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
+    [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
+    [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
+    [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
+    [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
 
     #region States
+    public FollowerAttackState FollowerAttackState { get; private set; }
+    public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
+    public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
     public FollowerCircleState FollowerCircleState { get; private set; }
     #endregion
 
@@ -26,6 +40,11 @@ public class Follower : Enemy
     protected override void OnOnDisable()
     {
         base.OnOnDisable();
+    }
+
+    protected override void OnOnAnimatorMove()
+    {
+        base.OnOnAnimatorMove();
     }
 
     protected override void OnStart()
@@ -49,5 +68,8 @@ public class Follower : Enemy
 
         EnemyChaseState = new FollowerChaseState(this);
         FollowerCircleState = new FollowerCircleState(this);
+        FollowerAttackState = new FollowerAttackState(this);
+        FollowerReadyAttackState = new FollowerReadyAttackState(this);
+        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
     }
 }

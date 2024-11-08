@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class EntityHitState : BaseState
 {
@@ -7,7 +8,7 @@ public class EntityHitState : BaseState
 
     private float timer = 0f;
 
-    public EntityHitState(Entity entity) : base(entity)
+    public EntityHitState(Entity entity)
     {
         this.entity = entity;
     }

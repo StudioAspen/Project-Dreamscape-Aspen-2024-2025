@@ -11,7 +11,7 @@ public class Player : Entity
 
     [Header("Player: References")]
     [SerializeField, Self] private CharacterController controller;
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
@@ -61,19 +61,20 @@ public class Player : Entity
     public PlayerChargeState PlayerChargeState { get; private set; }
     #endregion
 
-    [SerializeField] private float nearbyEntityRadius = 2.5f;
-    public List<Entity> NearbyEntities;
-
-    private void OnEnable()
+    protected override void OnOnEnable()
     {
+        base.OnOnEnable();
+
         input.Jump.AddListener(HandleJumpInput);
         input.SprintHold.AddListener(HandleSprintInput);
         input.SprintRelease.AddListener(HandleSprintReleaseInput);
         input.Dash.AddListener(HandleDashInput);
     }
 
-    private void OnDisable()
+    protected override void OnOnDisable()
     {
+        base.OnOnDisable();
+
         input.Jump.RemoveListener(HandleJumpInput);
         input.SprintHold.RemoveListener(HandleSprintInput);
         input.SprintRelease.RemoveListener(HandleSprintReleaseInput);
@@ -102,8 +103,6 @@ public class Player : Entity
     {
         base.OnUpdate();
 
-        NearbyEntities = GetNearbyTargets(nearbyEntityRadius);
-
         CheckSlopeSliding();
 
         HandleGrounded();
@@ -112,8 +111,6 @@ public class Player : Entity
         HandleDashTrail();
 
         HandleAnimations();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position, gameObject);
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
     }
@@ -143,6 +140,8 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
+        EntityHitState = new PlayerHitState(this);
+        EntityDeathState = new PlayerDeathState(this);
     }
 
     protected override void CheckGrounded()
@@ -171,8 +170,9 @@ public class Player : Entity
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
+        if (CurrentState == EntityHitState) return;
 
-
+        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
         ChangeState(PlayerJumpState);
     }
 
@@ -194,6 +194,7 @@ public class Player : Entity
         if (dashDelayTimer < dashDelayDuration) return;
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
+        if (CurrentState == EntityHitState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
@@ -341,8 +342,6 @@ public class Player : Entity
 
     public void Jump()
     {
-        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
-
         IsJumping = true;
         IsGrounded = false;
 
@@ -412,5 +411,31 @@ public class Player : Entity
     public override void Die()
     {
         Destroy(gameObject);
+    }
+
+    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        AttemptToSpawnHitNumbers(dmg, hitPoint);
+
+        CurrentHealth -= dmg;
+
+        lastHitSource = source;
+
+        OnEntityTakeDamage?.Invoke(hitPoint, source);
+
+        //after calculating current health, check if the player has taken enough damage to die
+        if (CurrentHealth <= 0 && MaxHealth > 0)
+        {
+            OnDeath();
+        }
+
+        if (CurrentState == PlayerDashState) return;
+        if (CurrentState == PlayerChargeState) return;
+        if (CurrentState == PlayerAttackState) return;
+
+        ChangeState(EntityEmptyState);
+        ChangeState(EntityHitState);
     }
 }
