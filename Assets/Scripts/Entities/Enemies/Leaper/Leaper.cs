@@ -11,7 +11,9 @@ public class Leaper : Enemy
     // reminder to change the value bellow if you need to
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
     [field: SerializeField] public float LungeDuration { get; private set; } = 2f;
-
+    [field: SerializeField] public float HitBoxRadius { get; private set; } = 2f;
+    [field: SerializeField] public GameObject HitBoxLocation { get; private set; }
+    [field: SerializeField] public LayerMask HitLayer { get; private set; }
 
     // add all states here 
     // add as they get created
@@ -74,4 +76,32 @@ public class Leaper : Enemy
 
 
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(HitBoxLocation.transform.position, HitBoxRadius);
+    }
+    public void CheckForHits()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(HitBoxLocation.transform.position, HitBoxRadius,HitLayer);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            Entity hitEntity = hitCollider.GetComponent<Entity>();
+
+            if (hitEntity != null)
+            {
+                if (hitEntity.Team != Team)
+                {
+                    //Damage Player
+                    Debug.Log("Player Hit");
+                    //ChangeState(EntityEmptyState);
+                    //ChangeState(LeaperAttackState);
+                }
+            }
+        }
+    }
+
+
 }

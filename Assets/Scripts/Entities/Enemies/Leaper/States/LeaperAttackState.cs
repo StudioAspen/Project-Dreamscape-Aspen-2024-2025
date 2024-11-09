@@ -8,6 +8,9 @@ public class LeaperAttackState : EnemyBaseState
 
     private float timer;
 
+    private GameObject HitBoxLocation;
+    private float HitBoxRadius;
+
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -38,14 +41,7 @@ public class LeaperAttackState : EnemyBaseState
 
     public override void Update()
     {
-        CheckForHits();
-        timer += Time.deltaTime;
-        if (timer > leaper.LungeDuration)
-        {
-            leaper.ChangeState(leaper.EntityEmptyState);
-            leaper.ChangeState(leaper.LeaperAttackState);
-            return;
-        }
+        
     }
 
     public override void FixedUpdate()
@@ -53,10 +49,16 @@ public class LeaperAttackState : EnemyBaseState
         Vector3 dir = (destination - leaper.transform.position);
 
         leaper.Move(dir);
+        
+        leaper.CheckForHits();
+        timer += Time.deltaTime;
+        /**if (timer > leaper.LungeDuration)
+        {
+            return;
+        }
+        **/
     }
 
-    private void CheckForHits()
-    {
 
-    }
+
 }
