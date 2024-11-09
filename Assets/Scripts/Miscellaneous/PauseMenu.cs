@@ -2,17 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     private GameObject PauseCanvas;
     private InputAction cameraLook;
+    private GameObject SettingsCanvas;
     [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private GameManager gameManager;
+
+    private void Awake()
+    {
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+    private void OnDestroy()
+    {
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (gameManager.CurrentState == GameState.PAUSED) {
+                gameManager.ChangeState(GameState.PLAYING);
+                SettingsCanvas.SetActive(false);
+
+            }
+            else if (gameManager.CurrentState == GameState.PLAYING)
+            {
+                gameManager.ChangeState(GameState.PAUSED);
+            }
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
         PauseCanvas = transform.Find("PauseMenu")?.gameObject;
+        SettingsCanvas = transform.Find("SettingsMenu")?.gameObject;
         cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
         if (PauseCanvas != null)
@@ -25,29 +55,42 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+
+    private void Enable()
+    {
+        PauseCanvas.SetActive(true);
+        Debug.Log("Pause Menu Opened");
+    }
+
+    private void Disable()
+    {
+        PauseCanvas.SetActive(false);
+        Debug.Log("Pause Menu Closed");
+    }
+
+
+    private void GameManager_OnGameStateChanged(GameState newState)
+    {
+        if (newState != GameState.PAUSED)
+        {
+            Disable();
+            return;
+        }
+
+        Enable();
+    }
+
     public void TogglePauseMenu()
     {
-        if (PauseCanvas != null)
+        if (gameManager.CurrentState == GameState.PAUSED)
         {
-            // Open Pause Menu
-            if(!PauseCanvas.activeSelf)
-            {
-                PauseCanvas.SetActive(true);
-                Time.timeScale = 0;
-
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                Debug.Log("Pause Menu Opened");
-            }
-            else
-            {
-                PauseCanvas.SetActive(false);
-                Time.timeScale = 1;
-
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                Debug.Log("Pause Menu Closed");
-            }
+            Disable();
+            gameManager.ChangeState(GameState.PLAYING);
+        }
+        else if (gameManager.CurrentState == GameState.PLAYING)
+        {
+            Enable();
+            gameManager.ChangeState(GameState.PAUSED);
         }
     }
 

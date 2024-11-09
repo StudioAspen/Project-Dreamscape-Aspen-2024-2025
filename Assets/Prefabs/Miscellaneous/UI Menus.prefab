@@ -3441,6 +3441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bfc5b6b1ecb16498a5bbe9afb90ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
   playerInput: {fileID: 5888495502084904767}
   fullscreenToggle: {fileID: 8492206091228718061}
   vsyncToggle: {fileID: 8989624723848041615}
@@ -3532,6 +3533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInput: {fileID: 5888495502084904767}
+  gameManager: {fileID: 0}
 --- !u!1 &6405190425351839288
 GameObject:
   m_ObjectHideFlags: 0
@@ -4241,7 +4243,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3100332561144547471
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4310,7 +4312,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5354708273387548581
 MonoBehaviour:
   m_ObjectHideFlags: 0

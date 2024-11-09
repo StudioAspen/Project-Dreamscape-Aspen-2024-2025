@@ -9,6 +9,7 @@ public class SettingsMenu : MonoBehaviour
     private GameObject SettingsCanvas;
     private GameObject PauseCanvas;
     private InputAction cameraLook;
+    [SerializeField] GameManager gameManager;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] Toggle fullscreenToggle;
     [SerializeField] Toggle vsyncToggle;
@@ -62,27 +63,19 @@ public class SettingsMenu : MonoBehaviour
         if (SettingsCanvas != null)
         {
             // Open Settings Menu
-            // Display Canvas, Freeze Time, Show Cursor, Disable Lookaround
             if (!SettingsCanvas.activeSelf)
             {
+                gameManager.ChangeState(GameState.PAUSED);
                 PauseCanvas.SetActive(false);
                 SettingsCanvas.SetActive(true);
-                Time.timeScale = 0;
-
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
                 Debug.Log("Settings Menu Opened");
             }
             // Close Settings Menu
-            // Hide Canvas, Resume Time, Hide Cursor, Enable Lookaround
             else
             {
                 SettingsCanvas.SetActive(false);
-                Time.timeScale = 1;
-
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
                 Debug.Log("Settings Menu Closed");
+                gameManager.ChangeState(GameState.PLAYING);
             }
         }
     }
