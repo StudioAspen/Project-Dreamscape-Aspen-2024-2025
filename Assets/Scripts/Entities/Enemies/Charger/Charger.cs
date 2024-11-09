@@ -6,15 +6,20 @@ public class Charger : Enemy
 {
     [field: Header("Charger: Attack Settings")]
 
-    [field: SerializeField] public float ChargeSpeed { get; private set; } = 3f;
+    [field: SerializeField] public float ChargeSpeed { get; private set; } = 9f;
+    [field: SerializeField] public float SpeedHoldTime { get; private set; } = 1f;
 
-    [field: SerializeField] public float ChargeDuration { get; private set; } = 2f;
+
+    [field: SerializeField] public float ChargeDuration { get; private set; } = 1f;
+    [field: SerializeField] public float ChargeTurnRate { get; private set; } = 45f;
+
     [field: SerializeField] public float SlowDownDuration { get; private set; } = 1f;
+    [field: SerializeField] public float SlowDownTurnRate { get; private set; } = 25f;
 
     [field: SerializeField] public LayerMask hitLayer { get; private set; }
     [field: SerializeField] public GameObject HitBoxLocation { get; private set; }
-    [field: SerializeField] public float HitboxRadius { get; private set; } = 5f;
-    [field: SerializeField] public float KnockbackForce { get; private set; } = 10f;
+    [field: SerializeField] public float HitboxRadius { get; private set; } = 1.4f;
+    [field: SerializeField] public float KnockbackForce { get; private set; } = 35f;
 
 
 

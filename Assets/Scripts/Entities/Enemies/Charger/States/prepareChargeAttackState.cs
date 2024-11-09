@@ -15,6 +15,9 @@ public class prepareChargeAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
+        enemy.DefaultTransitionToAnimation("FlatMovement");
+        enemy.SetSpeedModifier(0f);
+
         completeLookAt = false;
     }
 
@@ -37,14 +40,14 @@ public class prepareChargeAttackState : EnemyBaseState
         if (charger.Target != null)
         {
             //looks towards target direction.
-            Debug.Log("The Target is: " + enemy.Target);
             charger.LookAt(charger.Target.transform.position);
 
 
             //formula to check the angle between charger forward and the target.
             float approxAngle = Vector3.Angle(charger.transform.forward, (charger.Target.transform.position - charger.transform.position).normalized);
 
-            if (approxAngle < 5f)
+            //within 15 degrees from looking directly at the player.
+            if (approxAngle < 15f)
             {
                 completeLookAt = true;
             }

@@ -11,8 +11,6 @@ public class SlowdownChargeAttackState : EnemyBaseState
     private bool hasStopped = false;
 
     private float slowAcceleration;
-    private float turnRateSlowing = 10f; //can be moved into charger.cs
-
 
     public SlowdownChargeAttackState(Charger enemy) : base(enemy)
     {
@@ -21,6 +19,9 @@ public class SlowdownChargeAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
+        enemy.DefaultTransitionToAnimation("FlatMovement");
+        enemy.SetSpeedModifier(0.75f);
+
         currentSpeed = charger.ChargeSpeed;
         hasStopped = false;
 
@@ -55,7 +56,7 @@ public class SlowdownChargeAttackState : EnemyBaseState
         Vector3 dir = (charger.Target.transform.position - charger.transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(dir);
 
-        charger.transform.rotation = Quaternion.RotateTowards(charger.transform.rotation, targetRotation, turnRateSlowing * Time.fixedDeltaTime);
+        charger.transform.rotation = Quaternion.RotateTowards(charger.transform.rotation, targetRotation, charger.SlowDownTurnRate * Time.fixedDeltaTime);
 
         //movement.
         charger.transform.position += charger.transform.forward * currentSpeed * Time.fixedDeltaTime;

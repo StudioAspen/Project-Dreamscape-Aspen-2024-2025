@@ -75,15 +75,18 @@ MonoBehaviour:
   <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 2
   IsAttackAnimationPlaying: 0
-  <ChargeSpeed>k__BackingField: 7
-  <ChargeDuration>k__BackingField: 2
-  <SlowDownDuration>k__BackingField: 2
+  <ChargeSpeed>k__BackingField: 9
+  <SpeedHoldTime>k__BackingField: 1
+  <ChargeDuration>k__BackingField: 1
+  <ChargeTurnRate>k__BackingField: 45
+  <SlowDownDuration>k__BackingField: 1
+  <SlowDownTurnRate>k__BackingField: 25
   <hitLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 1024
   <HitBoxLocation>k__BackingField: {fileID: 5034018352243513692}
-  <HitboxRadius>k__BackingField: 1.3
-  <KnockbackForce>k__BackingField: 35
+  <HitboxRadius>k__BackingField: 1.4
+  <KnockbackForce>k__BackingField: 100
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
@@ -282,7 +285,7 @@ Transform:
   m_GameObject: {fileID: 5034018352243513692}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

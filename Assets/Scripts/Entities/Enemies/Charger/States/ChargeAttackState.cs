@@ -8,15 +8,11 @@ public class ChargeAttackState : EnemyBaseState
 
     private float currentSpeed = 0f;
 
-    private float holdMaxSpeedTime = 1f; //can be moved into charger.cs
     private float holdMaxSpeedCurrentTime = 0f;
 
     private bool atMaxSpeed = false;
 
     private float acceleration;
-
-    private float turnRate = 30f; //can be moved into charger.cs
-
 
     //IF Player was hit, go into WINDDOWN STATE
 
@@ -28,6 +24,7 @@ public class ChargeAttackState : EnemyBaseState
     public override void OnEnter()
     {
         enemy.DefaultTransitionToAnimation("FlatMovement");
+        enemy.SetSpeedModifier(1.5f);
 
         currentSpeed = 0;
         holdMaxSpeedCurrentTime = 0;
@@ -65,7 +62,7 @@ public class ChargeAttackState : EnemyBaseState
         Vector3 dir = (charger.Target.transform.position - charger.transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(dir);
 
-        charger.transform.rotation = Quaternion.RotateTowards(charger.transform.rotation, targetRotation, turnRate * Time.fixedDeltaTime);
+        charger.transform.rotation = Quaternion.RotateTowards(charger.transform.rotation, targetRotation, charger.ChargeTurnRate * Time.fixedDeltaTime);
 
         //movement.
         charger.transform.position += charger.transform.forward * currentSpeed * Time.fixedDeltaTime;
@@ -85,7 +82,7 @@ public class ChargeAttackState : EnemyBaseState
             holdMaxSpeedCurrentTime += Time.fixedDeltaTime;
 
             //after max speed is held for x seconds, goes into slow down state.
-            if (holdMaxSpeedCurrentTime >=holdMaxSpeedTime)
+            if (holdMaxSpeedCurrentTime >= charger.SpeedHoldTime)
             {
                 charger.ChangeState(charger.SlowdownChargeAttackState);
             }
