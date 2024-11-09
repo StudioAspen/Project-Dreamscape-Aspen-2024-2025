@@ -25,15 +25,7 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
-            if (gameManager.CurrentState == GameState.PAUSED) {
-                gameManager.ChangeState(GameState.PLAYING);
-                SettingsCanvas.SetActive(false);
-
-            }
-            else if (gameManager.CurrentState == GameState.PLAYING)
-            {
-                gameManager.ChangeState(GameState.PAUSED);
-            }
+            TogglePauseMenu();
         }
     }
 
@@ -74,6 +66,7 @@ public class PauseMenu : MonoBehaviour
         if (newState != GameState.PAUSED)
         {
             Disable();
+            SettingsCanvas.SetActive(false);
             return;
         }
 
@@ -84,12 +77,10 @@ public class PauseMenu : MonoBehaviour
     {
         if (gameManager.CurrentState == GameState.PAUSED)
         {
-            Disable();
             gameManager.ChangeState(GameState.PLAYING);
         }
         else if (gameManager.CurrentState == GameState.PLAYING)
         {
-            Enable();
             gameManager.ChangeState(GameState.PAUSED);
         }
     }

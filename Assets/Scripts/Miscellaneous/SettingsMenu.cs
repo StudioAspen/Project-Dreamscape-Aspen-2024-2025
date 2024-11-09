@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.UI;
+using KBCore.Refs;
 
 public class SettingsMenu : MonoBehaviour
 {
     private GameObject SettingsCanvas;
     private GameObject PauseCanvas;
     private InputAction cameraLook;
-    [SerializeField] GameManager gameManager;
+    [SerializeField, Scene] GameManager gameManager;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] Toggle fullscreenToggle;
     [SerializeField] Toggle vsyncToggle;
+
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,12 +38,9 @@ public class SettingsMenu : MonoBehaviour
         }
 
         // Load Fullscreen
-        if (!PlayerPrefs.HasKey("fullscreenOn"))
-        {
+        if (!PlayerPrefs.HasKey("fullscreenOn")) {
             PlayerPrefs.SetInt("fullscreenOn", 0);
-        }
-        else
-        {
+        } else {
             if(PlayerPrefs.GetInt("fullscreenOn") == 1)
             {
                 fullscreenToggle.isOn = true;
@@ -45,12 +49,9 @@ public class SettingsMenu : MonoBehaviour
         }
 
         // Load VSync
-        if (!PlayerPrefs.HasKey("vsyncOn"))
-        {
+        if (!PlayerPrefs.HasKey("vsyncOn")) {
             PlayerPrefs.SetInt("vsyncOn", 0);
-        }
-        else
-        {
+        } else {
             if (PlayerPrefs.GetInt("vsyncOn") == 1)
             {
                 vsyncToggle.isOn = true;
