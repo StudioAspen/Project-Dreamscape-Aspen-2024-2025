@@ -7,21 +7,25 @@ public class AspectNodeNode : Node
     [Input] public AspectNodeNode Parent;
     [Output(connectionType = ConnectionType.Multiple)] public List<AspectNodeNode> Children;
 
-    public bool IsApplied { get; protected set; }
+    [field:SerializeField] public bool IsApplied { get; protected set; }
 
     private void OnValidate()
     {
-        GetParent();
-        GetChildren();
+        ManualInit();
     }
 
     protected override void Init()
     {
-        GetParent();
-        GetChildren();
+        ManualInit();
     }
 
-    private void GetChildren()
+    public void ManualInit()
+    {
+        AssignParent();
+        AssignChildren();
+    }
+
+    private void AssignChildren()
     {
         Children = new List<AspectNodeNode>();
         foreach (NodePort port in GetOutputPort("Children").GetConnections())
@@ -34,7 +38,7 @@ public class AspectNodeNode : Node
         }
     }
 
-    private void GetParent()
+    private void AssignParent()
     {
         List<NodePort> parentConnections = GetInputPort("Parent").GetConnections();
         if(parentConnections.Count == 0) return;
