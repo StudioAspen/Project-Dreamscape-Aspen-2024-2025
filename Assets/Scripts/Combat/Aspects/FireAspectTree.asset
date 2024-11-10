@@ -48,6 +48,51 @@ MonoBehaviour:
   Children:
   - {fileID: 1643917686470230961}
   <IsApplied>k__BackingField: 0
+--- !u!114 &-7455690001946071980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -232, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -7455690001946071980}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -7455690001946071980}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: 8247460885218808866}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 0}
+  Children: []
+  <ComboData>k__BackingField: {fileID: 11400000, guid: 01e6af0b21754fc43adb0d93d75b39fb,
+    type: 2}
 --- !u!114 &-4132167589209538199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,8 +229,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
+  Parent: {fileID: 7150007548013897645}
+  Children:
+  - {fileID: 6974334021266902621}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,12 +245,8 @@ MonoBehaviour:
   m_Name: FireAspectTree
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: 7150007548013897645}
-  - {fileID: 2259007310136989218}
-  - {fileID: -726455910705711072}
-  - {fileID: 6974334021266902621}
-  - {fileID: 4895660182837341922}
-  - {fileID: 9099372145359390449}
+  - {fileID: -7455690001946071980}
+  - {fileID: 8247460885218808866}
 --- !u!114 &1042310103740925462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,8 +432,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
+  Parent: {fileID: 7150007548013897645}
+  Children:
+  - {fileID: 6974334021266902621}
 --- !u!114 &4788847601863739574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -477,8 +520,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
+  Parent: {fileID: 6974334021266902621}
+  Children:
+  - {fileID: 9099372145359390449}
 --- !u!114 &6974334021266902621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,8 +570,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
+  Parent: {fileID: -726455910705711072}
+  Children:
+  - {fileID: 4895660182837341922}
 --- !u!114 &7150007548013897645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,8 +618,56 @@ MonoBehaviour:
       _typeConstraint: 0
       _dynamic: 0
   Parent: {fileID: 0}
+  Children:
+  - {fileID: 2259007310136989218}
+  - {fileID: -726455910705711072}
+  <ComboData>k__BackingField: {fileID: 11400000, guid: 046e4e3432103fc45a6c198aaf95c3a9,
+    type: 2}
+--- !u!114 &8247460885218808866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 72, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 8247460885218808866}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -7455690001946071980}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 8247460885218808866}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -7455690001946071980}
   Children: []
-  <ComboData>k__BackingField: {fileID: 0}
+  <ComboData>k__BackingField: {fileID: 11400000, guid: 046e4e3432103fc45a6c198aaf95c3a9,
+    type: 2}
 --- !u!114 &9099372145359390449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,6 +709,6 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
+  Parent: {fileID: 4895660182837341922}
   Children: []
   <ComboData>k__BackingField: {fileID: 0}

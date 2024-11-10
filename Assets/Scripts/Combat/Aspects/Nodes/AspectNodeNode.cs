@@ -15,6 +15,12 @@ public class AspectNodeNode : Node
         GetChildren();
     }
 
+    protected override void Init()
+    {
+        GetParent();
+        GetChildren();
+    }
+
     private void GetChildren()
     {
         Children = new List<AspectNodeNode>();
@@ -30,41 +36,19 @@ public class AspectNodeNode : Node
 
     private void GetParent()
     {
-        AspectNodeNode parent = GetInputValue<AspectNodeNode>("Parent");
-        if (parent == null) return;
+        List<NodePort> parentConnections = GetInputPort("Parent").GetConnections();
+        if(parentConnections.Count == 0) return;
 
-        Parent = parent;
+        Parent = parentConnections[0].node as AspectNodeNode;
     }
 
-    public virtual void ApplyAspect()
+    public virtual void ApplyAspect(AspectsManager aspectsManager)
     {
         IsApplied = true;
     }
-}
 
-public class ComboAspectNodeNode : AspectNodeNode
-{
-    [field: Header("Combo")]
-    [field: SerializeField] public ComboDataSO ComboData { get; private set; }
-
-    public override void ApplyAspect()
+    public override object GetValue(NodePort port)
     {
-        base.ApplyAspect();
-    }
-}
-
-public class AugmentAspectNodeNode : AspectNodeNode
-{
-    public override void ApplyAspect()
-    {
-        base.ApplyAspect();
-    }
-}
-
-public class BuffAspectNodeNode : AspectNodeNode
-{
-    public override void ApplyAspect()
-    {
-        base.ApplyAspect();
+        return null;
     }
 }
