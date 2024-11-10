@@ -7,7 +7,7 @@
     private bool bungus;
     private bool pingus;
 
-    public EntityEmptyState(Entity entity) : base(entity)
+    public EntityEmptyState(Entity entity)
     {
         this.entity = entity;
     }

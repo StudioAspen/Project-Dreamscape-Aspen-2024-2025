@@ -13,7 +13,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private TMP_Text comboText;
 
     [Header("References")]
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
     [SerializeField, Self] private Player player;
     [SerializeField, Self] private Animator animator;
 
@@ -165,6 +165,7 @@ public class PlayerCombat : MonoBehaviour
     private void ExecuteCombo(ComboDataSO combo)
     {
         if (player.CurrentState == player.PlayerSlideState) return;
+        if (player.CurrentState == player.EntityHitState) return;
 
         player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);
