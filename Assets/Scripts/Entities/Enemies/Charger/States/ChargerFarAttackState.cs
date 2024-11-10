@@ -132,7 +132,7 @@ public class ChargerFarAttackState : EnemyBaseState
         else
         {
             isSlowingDown = false;
-            //Enter Wind-down State.
+            charger.ChangeState(charger.ChargerWindDownState);
             Debug.Log("Entering Wind-down State!");
         }
     }

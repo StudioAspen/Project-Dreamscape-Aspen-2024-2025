@@ -5,7 +5,7 @@ using UnityEngine;
 public class ChargerChaseState : EnemyChaseState
 {
     private Charger charger;
-
+    
     public ChargerChaseState(Charger enemy) : base(enemy)
     {
         charger = enemy;
@@ -35,39 +35,21 @@ public class ChargerChaseState : EnemyChaseState
         // for charger have another if statement to check if too close for
         // long range attack
 
-        if (charger.Distance(charger.Target) < charger.AttackRange)
+        if (charger.Distance(charger.Target) > charger.MinFarAttackRange && charger.Distance(charger.Target) < charger.MaxFarAttackRange)
         {
-
-            // Vector3 attackDir = charger.Target.transform.position - charger.transform.position;
-            // charger.ChargerFarAttackState.SetAttackDirection(attackDir);
+            Debug.Log("moving to Far Attack State");
+            Vector3 attackDir = charger.Target.transform.position - charger.transform.position;
+            
             charger.ChangeState(charger.ChargerFarAttackState);
         }
-
-        /// Not sure if we want to circle but ill write it anyway
-
-        if (charger.Distance(charger.Target) < charger.CircleRadius)
+        else if (charger.Distance(charger.Target) <= charger.AttackRange)
         {
-            CheckCanCircle();
+            Debug.Log("less than min attack range");
+            charger.ChangeState(charger.ChargerCloseAttackState);
         }
+
     }
 
-    private void CheckCanCircle()
-    {
-        if (charger.Target.TryGetComponent(out Player player))
-        {
-            List<Charger> playerNearbyChargers = player.GetNearbyEntitiesByType<Charger>(charger.CircleRadius + 1f);
-
-            foreach (Charger c in new List<Charger>(playerNearbyChargers))
-            {
-                if(c.CurrentState == c.EntityDeathState) playerNearbyChargers.Remove(c);
-            }
-
-            // playerNearbyChargers = playerNearbyChargers.Take(charger.CircleChargerCountThreshold).ToList();
-
-            if (playerNearbyChargers.Contains(charger)) return;
-            // charger.ChangeState(charger.ChargerCircleState);
-        }
-    }
 
     public override void FixedUpdate()
     {

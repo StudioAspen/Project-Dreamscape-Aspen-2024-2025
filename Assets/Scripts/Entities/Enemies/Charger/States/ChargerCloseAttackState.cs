@@ -7,6 +7,8 @@ public class ChargerCloseAttackState : EnemyBaseState
     private Charger charger;
     private Vector3 attackDir;
 
+    private float closeAttackTimer;
+
     public ChargerCloseAttackState(Charger enemy):base(enemy)
     {
         charger = enemy;
@@ -19,6 +21,7 @@ public class ChargerCloseAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
+        closeAttackTimer = 0;
         charger.IsInterrupted = false;
         charger.LookAt(charger.transform.position + attackDir);
     }
@@ -27,13 +30,19 @@ public class ChargerCloseAttackState : EnemyBaseState
 
     public override void Update()
     {
-        if (charger.IsInterrupted)
+        closeAttackTimer += Time.deltaTime;
+        if (charger.IsHit)
         {
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.IsHit = false;
+            Debug.Log("close attack to dazed");
+            charger.ChangeState(charger.ChargerDazedState);
             return;
         }
-        else
-        charger.ChangeState(charger.ChargerFarAttackState);
+        else if (closeAttackTimer >= 4)
+        {
+            charger.ChangeState(charger.ChargerChaseState);
+            return;
+        }
     }
 
     public override void FixedUpdate()

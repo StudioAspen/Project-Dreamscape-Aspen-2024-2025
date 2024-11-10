@@ -3,22 +3,26 @@ public class Charger : Enemy
 {   
     [field: Header("Charger: Wind Down and Damaged Settings")]
     [field: SerializeField] public float WindDownDuration;
-    [field: SerializeField] public float DamagedStateDuration;
+    [field: SerializeField] public float DamagedStateDuration = 4f;
     [field: SerializeField] public bool IsDazed;
 
 
-    [field: Header("Charger: Close Attack Settings")]
-    [field: SerializeField] public bool IsInterrupted;
+    [field: Header("Charger: New Attack Settings")]
+    // just to not mess with the old ones yet
+    [field: SerializeField] public bool IsInterrupted = false;
+    [field: SerializeField] public bool InDamagedState = false;
+    [field: SerializeField] public bool IsHit = false;
+    [field: SerializeField] public float MaxFarAttackRange = 8;
+    [field: SerializeField] public float MinFarAttackRange = 6;
+
     
     
     
     [field: Header("Charger: Movement Setttings")]
-    [field: SerializeField] public int CircleChargerCountThreshold {get; private set;} = 2;
+    
+    [field: SerializeField] public int WanderChargerCountThreshold {get; private set;} = 2;
     [field: SerializeField] public float ChangeDirectionInterval {get; private set;} = 0.5f;
-    [field: SerializeField] public int ChangeDirectionReciprocal {get; private set;} = 50;
-    [field: SerializeField] public float CircleRadius {get; private set;} = 5f;
-    [field: SerializeField] public float MaxCircleRadius {get; private set;} = 0f;
-
+    
     // Charger Attack Far from Joshua
     [field: Header("Charger: Attack Settings")]
     [field: SerializeField] public float ChargingProcRadius { get; private set; } = 11f;
@@ -32,7 +36,7 @@ public class Charger : Enemy
 
     // Enemy Idle and Dazed States from John
     [field: Header("Follower: Attack Settings")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 5f;
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10, 15);
     
 
@@ -59,20 +63,33 @@ public class Charger : Enemy
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     #region States
+    
+    // Starter / Default States
     public ChargerIdleState ChargerIdleState { get; private set; }
-    public ChargerDazedState ChargerDazedState { get; private set; }
-    public ChargerFarAttackState ChargerFarAttackState { get; private set; }
     public ChargerWanderState ChargerWanderState { get; private set; }
-
+    public ChargerChaseState ChargerChaseState { get; private set; }
+    
+    // Combat States
+    public ChargerFarAttackState ChargerFarAttackState { get; private set; }
+    public ChargerCloseAttackState ChargerCloseAttackState{ get; private set; }
+    public ChargerDazedState ChargerDazedState { get; private set; }
+    public ChargerWindDownState ChargerWindDownState { get; private set; }
+    public ChargerDamagedState ChargerDamagedState { get; private set;}
 
     protected override void InitializeStates()
     {
         base.InitializeStates();
-
+        // Starter / Default States
         ChargerIdleState = new ChargerIdleState(this);
-        ChargerDazedState = new ChargerDazedState(this);
-        ChargerFarAttackState = new ChargerFarAttackState(this);
         ChargerWanderState = new ChargerWanderState(this);
+        ChargerChaseState = new ChargerChaseState(this);
+        
+        // Combat States
+        ChargerFarAttackState = new ChargerFarAttackState(this);
+        ChargerCloseAttackState = new ChargerCloseAttackState(this);
+        ChargerDazedState = new ChargerDazedState(this);
+        ChargerWindDownState = new ChargerWindDownState(this);
+        ChargerDamagedState = new ChargerDamagedState(this);
     }
     #endregion
 
@@ -118,19 +135,29 @@ public class Charger : Enemy
     {
         if(CurrentState == EntityDeathState) return;
 
-        if (CurrentState != ChargerFarAttackState)
+        // if (CurrentState != ChargerFarAttackState)
+        // {
+        //     ChangeState(DefaultState);
+        //     ChangeState(EntityHitState);
+        // }
+
+        if(InDamagedState)
         {
-            ChangeState(DefaultState);
-            ChangeState(EntityHitState);
+            IsHit = true;
+            Debug.Log(IsHit);
+            int newDamage = dmg += 5;
+            AttemptToSpawnHitNumbers(newDamage, hitPoint);
+            CurrentHealth -= newDamage;
         }
-
-
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
-
-        CurrentHealth -= dmg;
-
+        else
+        {
+            IsHit = true;
+            Debug.Log(IsHit);
+            AttemptToSpawnHitNumbers(dmg, hitPoint);
+            CurrentHealth -= dmg;
+        }
+        
         lastHitSource = source;
-
         OnEntityTakeDamage?.Invoke(hitPoint, source);
 
         //after calculating current health, check if the player has taken enough damage to die

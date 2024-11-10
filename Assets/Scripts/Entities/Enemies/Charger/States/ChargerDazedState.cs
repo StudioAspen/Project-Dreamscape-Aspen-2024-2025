@@ -7,6 +7,7 @@ public class ChargerDazedState : EnemyBaseState
     private Coroutine dazedCoroutine;
     private float healthWhenEnterDazed;
     private Charger charger;
+    private float dazeTimer;
 
     public ChargerDazedState(Charger enemy) : base(enemy)
     {
@@ -15,36 +16,56 @@ public class ChargerDazedState : EnemyBaseState
     public override void OnEnter()
     {
         charger.SetSpeedModifier(0f);
-        dazedCoroutine = charger.StartCoroutine(DazedCoroutine());
-        healthWhenEnterDazed = charger.CurrentHealth;
+        // dazedCoroutine = charger.StartCoroutine(DazedCoroutine());
+        // healthWhenEnterDazed = charger.CurrentHealth;
         //Debug.Log("Enter charger dazed coroutine");
+        dazeTimer = 0f;
     }
 
     public override void OnExit()
     {
-        if (dazedCoroutine != null)
-        {
-            charger.StopCoroutine(dazedCoroutine);
-            dazedCoroutine = null;
-        }
+        // if (dazedCoroutine != null)
+        // {
+        //     // charger.StopCoroutine(dazedCoroutine);
+        //     dazedCoroutine = null;
+        // }
     }
 
     public override void Update()
     {
-        if (charger.CurrentHealth < healthWhenEnterDazed)
+        // if (charger.CurrentHealth < healthWhenEnterDazed)
+        // {
+        //     // charger took damage while dazed!
+        //     //Debug.Log("Charger took damage while dazed! Entering damaged state.");
+        //     //charger.ChangeState(charger.ChargerDamagedState); 
+        // }
+
+        dazeTimer += Time.deltaTime;
+
+
+        if(charger.IsHit)
         {
-            // charger took damage while dazed!
-            //Debug.Log("Charger took damage while dazed! Entering damaged state.");
-            //charger.ChangeState(charger.ChargerDamagedState); 
+            Debug.Log($"damaged from dazed {charger.IsHit}");
+            charger.ChangeState(charger.ChargerDamagedState);
+            charger.IsHit = false;
         }
+        else if(dazeTimer >= charger.DazedDuration)
+        {
+            Debug.Log("timer has run out");
+            charger.ChangeState(charger.ChargerIdleState);
+            charger.IsHit = false;
+        }
+        
     }
 
     public override void FixedUpdate() { }
 
-    private IEnumerator DazedCoroutine()
-    {
-        yield return new WaitForSeconds(charger.DazedDuration);
-        //Debug.Log("Charger dazed timer is over!");
-        enemy.ChangeState(charger.ChargerIdleState);
-    }
+    // private IEnumerator DazedCoroutine()
+    // {
+    //     yield return new WaitForSeconds(charger.DazedDuration);
+        
+        
+    //     //Debug.Log("Charger dazed timer is over!");
+    //     enemy.ChangeState(charger.ChargerIdleState);
+    // }
 }

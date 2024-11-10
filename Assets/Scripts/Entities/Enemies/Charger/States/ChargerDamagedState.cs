@@ -13,7 +13,8 @@ public class ChargerDamagedState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.IsDazed = true;
+        Debug.Log("entering damaged state");
+        charger.InDamagedState = true;
         damagedStateTimer = 0f;
     }
     public override void OnExit()
@@ -22,7 +23,8 @@ public class ChargerDamagedState : EnemyBaseState
     public override void Update()
     {
         damagedStateTimer += Time.deltaTime;
-
+        Debug.Log(damagedStateTimer);
+        Debug.Log(charger.DamagedStateDuration);
         if (damagedStateTimer > charger.DamagedStateDuration)
         {
             charger.IsDazed = false;

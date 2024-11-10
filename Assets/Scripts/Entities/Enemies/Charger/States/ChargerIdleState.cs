@@ -35,10 +35,13 @@ public class ChargerIdleState : EnemyIdleState
 
     public override void Update()
     {
-
+        // NOTE: should probably remove since WanderTimerCoroutine runs first
+        // and changes to WanderState instantly 
+        // Update that is not the case lol
         if (charger.Target != null)
         {
-            //charger.ChangeState(charger.ChargerPlayerDetectedState);
+            Debug.Log("change to chase");
+            charger.ChangeState(charger.ChargerChaseState);
         }
     }
 
@@ -47,6 +50,7 @@ public class ChargerIdleState : EnemyIdleState
     {
         while (charger.CurrentState == this)
         {
+            Debug.Log("change to wander from idle");
             yield return new WaitForSeconds(Random.Range(charger.IdleWanderWaitMin, charger.IdleWanderWaitMax));
             charger.ChangeState(charger.ChargerWanderState);
         }

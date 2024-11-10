@@ -16,6 +16,7 @@ public class ChargerWindDownState : EnemyBaseState
     public override void OnEnter()
     {
         windDownTimer = 0f;
+        
     }
 
     public override void OnExit()
@@ -26,9 +27,11 @@ public class ChargerWindDownState : EnemyBaseState
     public override void Update()
     {
         windDownTimer += Time.deltaTime;
+        // Debug.Log(windDownTimer);
 
         if (windDownTimer > charger.WindDownDuration)
         {
+            Debug.Log("Moving to idle from wind down");
             charger.ChangeState(charger.ChargerIdleState);
             return;
         }

@@ -2,47 +2,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 
 public class ChargerWanderState : EnemyBaseState
-{
+{	
     private Charger charger;
 	private Vector3 wanderDestination;
 	private float wanderTimeElapsed;
 
+	private float canChaseTimer;
+	private float canChaseCooldown = 2f;
 	public ChargerWanderState(Charger enemy) : base(enemy) 
 	{
 		charger = enemy;
 	}
 	public override void OnEnter()
 	{
+		canChaseTimer = 0f;
 		enemy.DefaultTransitionToAnimation("FlatMovement");
 		charger.SetSpeedModifier(1f);
 		wanderTimeElapsed = 0f;
 		wanderDestination = charger.transform.position;
 		GoToRandomWanderPoint();
+
+		Ticker.Instance.OnTick.AddListener(Ticker_OnTick);
 	}
 
-	public override void OnExit() {}
+	public override void OnExit() {
+
+		Ticker.Instance.OnTick.RemoveListener(Ticker_OnTick);
+	}
+
+	private void Ticker_OnTick()
+	{
+		targetPlayer();
+	}
 
 	public override void Update()
 	{
 		wanderTimeElapsed += Time.deltaTime;
-
+		canChaseTimer += Time.deltaTime;
+		
 		bool exitCondition = CloseEnoughToPoint(wanderDestination) || wanderTimeElapsed > charger.WanderTimeout;
 
 		if (exitCondition) 
 		{
+			Debug.Log("change to idle from wander by exitCondition");
 			charger.ChangeState(charger.ChargerIdleState);
 			return;
 		}
 
 		charger.SetDestination(wanderDestination, true);
 
-		// When charger sees player, change state to ChargerPlayerDetectedState
-		if (charger.Target != null) 
-		{
-			//charger.ChangeState(charger.ChargerPlayerDetectedState);
-		}
+		
+
 
 	}
 
@@ -98,8 +111,9 @@ public class ChargerWanderState : EnemyBaseState
 		if (!success) 
 		{
 			#region Debug
-			//Debug.Log("Tried " + (currTry) + " times but failed to raycast down!");
+			// Debug.Log("Tried " + (currTry) + " times but failed to raycast down!");
 			#endregion
+			Debug.Log("!success");
 			charger.ChangeState(charger.ChargerIdleState);
 			return;
 		}
@@ -111,4 +125,47 @@ public class ChargerWanderState : EnemyBaseState
 		//charger.StartCoroutine(CreateDebugPoint(wanderDestination));
 	}
 
+	private void targetPlayer()
+	{
+		Debug.Log("try target player");
+		// When charger sees player, change state to ChargerPlayerDetectedState
+		
+		if (charger.Target == null) return;
+
+		if (charger.Distance(charger.Target) > charger.WanderMaxRadius)
+		{
+			Debug.Log("switch to chase from wander");
+			charger.ChangeState(charger.ChargerChaseState);
+			return;
+		}
+		if (charger.Distance(charger.Target) < charger.AttackRange)
+		{
+			Debug.Log("Switch to Close Attack from wander");
+			charger.ChangeState(charger.ChargerCloseAttackState);
+			return;
+		}
+		TryToChasePlayer();
+
+	}
+
+	private void TryToChasePlayer()
+    {
+        if (canChaseTimer < canChaseCooldown) return;
+
+        if (charger.Target.TryGetComponent(out Player player))
+        {
+            List<Charger> playerNearbyChargers = player.GetNearbyEntitiesByType<Charger>(charger.WanderMinRadius + 1f);
+
+            foreach (Charger c in new List<Charger>(playerNearbyChargers)) // filter so that we only look for followers that are alive
+            {
+                if (c.CurrentState == c.EntityDeathState) playerNearbyChargers.Remove(c);
+            }
+
+            playerNearbyChargers = playerNearbyChargers.Take(charger.WanderChargerCountThreshold).ToList();
+
+            if (!playerNearbyChargers.Contains(charger)) return;
+
+            charger.ChangeState(charger.ChargerChaseState);
+        }
+    }
 }
