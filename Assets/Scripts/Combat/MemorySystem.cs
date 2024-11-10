@@ -20,11 +20,11 @@ public class MemorySystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            
+            GainMemory(typeof(Follower), 10);
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
-
+            GainMemory(typeof(Player), 10);
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -61,7 +61,7 @@ public class MemorySystem : MonoBehaviour
 
         if (MemoryIsFull())
         {
-            Debug.Log(MemoryEarned());
+            Debug.Log("hey bro change the Type type to string teehee");
         }
     }
 
@@ -87,7 +87,7 @@ public class MemorySystem : MonoBehaviour
         //not sure how best to order memories in terms of priority in case two have the same value when meter is full
         //OH DESIGNERRRSSS (rings bell)
         //also probably the function we'd bestow the buff/item/whatever it was on
-        Type memoryType = memories.Max(x => x.Key); //idk how this line works :p
+        Type memoryType = memories.Max(x => x.Key.GetType()); //idk how this line works :p
         memories.Clear();
         return memoryType;
     }
