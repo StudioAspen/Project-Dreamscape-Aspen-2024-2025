@@ -7,18 +7,14 @@ public class AspectsManager : MonoBehaviour
 {
     [SerializeField] private List<AspectTree> aspectTrees = new List<AspectTree>();
 
-    [field:SerializeField] public AspectTree CurrentAspectTree { get; private set; }
+    public AspectTree CurrentAspectTree { get; private set; }
+    [field: SerializeField] public int AspectTokens { get; private set; } = 10;
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
             SetCurrentAspectTree(aspectTrees[0]);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            ApplyNextFirstAspectNode();
         }
     }
 
@@ -29,19 +25,8 @@ public class AspectsManager : MonoBehaviour
         Debug.Log($"Set current aspect tree to {CurrentAspectTree.name}");
     }
 
-    public void ApplyNextFirstAspectNode()
+    public void ConsumeAspectToken()
     {
-        List<AspectNodeNode> targetNodes = CurrentAspectTree.GetNextUnappliedNodes();
-        if(targetNodes.Count == 0)
-        {
-            Debug.Log("No more nodes to apply");
-            return;
-        }
-
-        AspectNodeNode targetNode = targetNodes[0];
-
-        Debug.Log($"Applying aspect {targetNode.name}");
-
-        targetNode.ApplyAspect(this);
+        AspectTokens--;
     }
 }

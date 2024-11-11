@@ -22,6 +22,7 @@ public class AspectTree : NodeGraph
             Node.graphHotfix = graph;
             Node node = Instantiate(nodes[i]) as Node;
             node.graph = graph;
+            node.name = nodes[i].name;
             graph.nodes.Add(node);
         }
 
@@ -41,6 +42,8 @@ public class AspectTree : NodeGraph
             AspectNodeNode aspectNode = node as AspectNodeNode;
             aspectNode.ManualInit();
         }
+
+        graph.name = name;
 
         return graph;
     }
@@ -98,5 +101,57 @@ public class AspectTree : NodeGraph
         }
 
         return recentlyAppliedNode.Children;
+    }
+
+    // gets the list of nodes that are at the specified level, empty if there are no nodes at that level
+    public List<AspectNodeNode> GetNodesAtLevel(int level)
+    {
+        if (level == 0) return new List<AspectNodeNode>() { GetRootNode() };
+
+        AspectNodeNode currentNode = GetRootNode();
+        for(int i = 0; i < level-1; i++)
+        {
+            if (currentNode.Children.Count == 0)
+            {
+                Debug.LogError($"No nodes at level {level+1}");
+                return currentNode.Children;
+            }
+
+            currentNode = currentNode.Children[0];
+        }
+
+        if (currentNode.Children.Count == 0) Debug.LogError($"No nodes at level {level + 1}");
+
+        return currentNode.Children;
+    }
+
+    // gets total number of levels in the tree
+    public int GetTotalLevels()
+    {
+        int totalLevels = 1;
+        AspectNodeNode currentNode = GetRootNode();
+
+        while (currentNode.Children.Count > 0)
+        {
+            totalLevels++;
+            currentNode = currentNode.Children[0];
+        }
+
+        return totalLevels;
+    }
+
+    // gets the level of the specified node as a Vector2Int, x is the level, y is the index of the node at that level, returns (-1, -1) if the node is not in the tree
+    public Vector2Int GetNodeLevel(AspectNodeNode node)
+    {
+        for(int i = 0; i < GetTotalLevels(); i++)
+        {
+            List<AspectNodeNode> nodes = GetNodesAtLevel(i);
+            if (nodes.Contains(node))
+            {
+                return new Vector2Int(i, nodes.IndexOf(node));
+            }
+        }
+
+        return new Vector2Int(-1, -1);
     }
 }

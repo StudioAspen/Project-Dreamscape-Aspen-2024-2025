@@ -1,4 +1,5 @@
-﻿using KBCore.Refs;
+﻿using DG.Tweening.Core.Easing;
+using KBCore.Refs;
 using System;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ public enum GameState
     BIOME_SELECTION,
     LAND_PLACEMENT,
     LAND_EMPOWERMENT,
-    EVENT_SELECTION
+    EVENT_SELECTION,
+    ASPECT_SELECTION
 }
 
 public class GameManager : MonoBehaviour
@@ -30,6 +32,12 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateState(CurrentState);
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (CurrentState == GameState.PLAYING) ChangeState(GameState.ASPECT_SELECTION);
+            else if (CurrentState == GameState.ASPECT_SELECTION) ChangeState(GameState.PLAYING);
+        }
     }
 
     #region State Machine Functions
@@ -48,6 +56,8 @@ public class GameManager : MonoBehaviour
             case GameState.LAND_EMPOWERMENT:
                 break;
             case GameState.EVENT_SELECTION:
+                break;
+            case GameState.ASPECT_SELECTION:
                 break;
             default:
                 break;
@@ -87,6 +97,11 @@ public class GameManager : MonoBehaviour
                 LockCursor();
                 break;
             case GameState.EVENT_SELECTION:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.ASPECT_SELECTION:
                 Time.timeScale = 0f;
 
                 UnlockCursor();
