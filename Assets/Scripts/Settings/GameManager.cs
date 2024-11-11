@@ -79,12 +79,12 @@ public class GameManager : MonoBehaviour
             case GameState.LAND_PLACEMENT:
                 Time.timeScale = 0f;
 
-                UnlockCursor();
+                LockCursor();
                 break;
             case GameState.LAND_EMPOWERMENT:
                 Time.timeScale = 0f;
 
-                UnlockCursor();
+                LockCursor();
                 break;
             case GameState.EVENT_SELECTION:
                 Time.timeScale = 0f;
