@@ -27,11 +27,6 @@ public class PauseMenu : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void Update()
-    {
-
-    }
-
     void Start()
     {
         PauseCanvas = transform.Find("PauseMenu")?.gameObject;
@@ -48,13 +43,11 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
-
     private void Enable()
     {
         PauseCanvas.SetActive(true);
         Debug.Log("Pause Menu Opened");
     }
-
     private void Disable()
     {
         PauseCanvas.SetActive(false);
@@ -64,6 +57,7 @@ public class PauseMenu : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
+        // If game isn't paused, hide Pause Menu
         if (newState != GameState.PAUSED)
         {
             Disable();
@@ -71,9 +65,11 @@ public class PauseMenu : MonoBehaviour
             return;
         }
 
+        // On Pause -> Display Pause Menu
         Enable();
     }
 
+    // Toggles Game State between Paused <-> Playing
     public void TogglePauseMenu()
     {
         if (gameManager.CurrentState == GameState.PAUSED)
