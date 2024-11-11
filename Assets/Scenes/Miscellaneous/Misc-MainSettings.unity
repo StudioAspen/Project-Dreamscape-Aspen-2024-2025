@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1908,6 +1908,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9219241249078938968, guid: 6250cea07000bf547a78f52c1bd7cf51,
+        type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1177002767}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2564,7 +2569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca8e771affcdbda4aba8f5789022b227, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1177002767}
+  gameManager: {fileID: 487855562}
   panel: {fileID: 1148220367}
   eventCards:
   - {fileID: 1461370046}
@@ -4278,7 +4283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7927719707eec4c8bcc45b1f3a725b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1177002767}
+  gameManager: {fileID: 487855562}
   worldManager: {fileID: 1416371478039211752}
   landPlacementUIObject: {fileID: 595291656}
   landEmpowermentUIObject: {fileID: 1401723641}
@@ -4639,7 +4644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06bdd953341903b40830c8427f7a3aa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1177002767}
+  gameManager: {fileID: 487855562}
   panel: {fileID: 1873184809}
   biomeCards:
   - {fileID: 719982916}

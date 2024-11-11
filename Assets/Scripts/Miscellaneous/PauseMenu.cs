@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using KBCore.Refs;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PauseMenu : MonoBehaviour
     private InputAction cameraLook;
     private GameObject SettingsCanvas;
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField] private GameManager gameManager;
+    [SerializeField, Scene] private GameManager gameManager;
 
     private void Awake()
     {
