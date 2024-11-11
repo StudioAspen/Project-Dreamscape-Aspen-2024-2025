@@ -146,12 +146,13 @@ public class ChargerFarAttackState : EnemyBaseState {
         float stepSize = .5f;
         float downRayDistance = 10f;
         float navMeshSampleRadius = .2f;
+        float chargerHeight = 1.65f;
        
 
-        Vector3 origin = charger.transform.position;
+        Vector3 origin = charger.transform.position + charger.transform.forward;
         Vector3 furthestGroundPoint = origin;
         for (float distance = 0; distance < charger.MaxChargeDistance; distance += stepSize) {
-            Vector3 forwardPoint = origin + (Vector3.up * .75f) + (charger.transform.forward * distance);
+            Vector3 forwardPoint = origin + (Vector3.up * chargerHeight) + (charger.transform.forward * distance);
             RaycastHit rayHit = new();
 
             bool raycastSuccess = Physics.Raycast(forwardPoint, Vector3.down, out rayHit, downRayDistance, LayerMask.GetMask("Ground"));
@@ -171,12 +172,13 @@ public class ChargerFarAttackState : EnemyBaseState {
             if (navmeshFail) {
                 break;
             } else {
-                furthestGroundPoint = rayHit.point;
+                furthestGroundPoint = (rayHit.point == Vector3.zero ) ? furthestGroundPoint : rayHit.point;
             }
         }
 
         
         Debug.DrawRay(furthestGroundPoint, Vector3.up * 10, Color.yellow, 5f);
+
         return furthestGroundPoint;
 
     }

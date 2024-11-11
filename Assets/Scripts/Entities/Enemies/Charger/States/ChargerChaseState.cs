@@ -11,6 +11,7 @@ public class ChargerChaseState : EnemyChaseState {
 
     public override void OnEnter() {
         base.OnEnter();
+        charger.SetSpeedModifier(charger.ChaseSpeed);
     }
 
     public override void OnExit() {
@@ -40,7 +41,16 @@ public class ChargerChaseState : EnemyChaseState {
 
             // Vector3 attackDir = charger.Target.transform.position - charger.transform.position;
             // charger.ChargerFarAttackState.SetAttackDirection(attackDir);
-            charger.ChangeState(charger.ChargerFarAttackState);
+            RaycastHit hit;
+            bool inLineOfSight = ConeRaycast(64);
+
+            
+
+            if (inLineOfSight) {
+                charger.ChangeState(charger.ChargerFarAttackState);
+            }
+
+          
         }
 
         /// Not sure if we want to circle but ill write it anyway
@@ -63,6 +73,22 @@ public class ChargerChaseState : EnemyChaseState {
             if (playerNearbyChargers.Contains(charger)) return;
             // charger.ChangeState(charger.ChargerCircleState);
         }
+    }
+
+    private bool ConeRaycast(int numRays) {
+        float coneAngle = 15f;
+        for (int i = 0; i < numRays; i++) {
+            Vector3 randomDirection = Random.insideUnitSphere;
+            randomDirection.z = Mathf.Abs(randomDirection.z);
+            randomDirection = Quaternion.Euler(Random.Range(-coneAngle, coneAngle), Random.Range(-coneAngle, coneAngle), 0) * charger.transform.forward;
+
+            Debug.DrawRay(charger.transform.position, randomDirection * 50f, Color.yellow, 1f);
+            if (Physics.Raycast(charger.transform.position, randomDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Entity")) && hit.transform != charger.transform) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     public override void FixedUpdate() {

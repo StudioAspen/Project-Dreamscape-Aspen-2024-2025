@@ -8,6 +8,7 @@ public class Charger : Enemy
     [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
     [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
     [field: SerializeField] public float MaxCircleRadius { get; private set; } = 0f;
+    [field: SerializeField] public float ChaseSpeed { get; private set; } = 2f;
 
 
     [field: Header("Charger: Player Detected Settings")]
