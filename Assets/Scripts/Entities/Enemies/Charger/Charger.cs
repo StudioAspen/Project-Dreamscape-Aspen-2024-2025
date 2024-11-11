@@ -21,6 +21,12 @@ public class Charger : Enemy
     [field: SerializeField] public float HitboxRadius { get; private set; } = 1.4f;
     [field: SerializeField] public float KnockbackForce { get; private set; } = 35f;
 
+    [field: SerializeField] public int ChargeDamage { get; private set; } = 10;
+    [field: SerializeField] public int SelfDamage { get; private set; } = 2;
+
+    [field: SerializeField] public int DamageThreshold { get; private set; } = 40;
+    private int damageDuringCharge = 0;
+
 
 
     #region States
@@ -84,14 +90,17 @@ public class Charger : Enemy
         if (CurrentState == EntityDeathState) return;
 
         AttemptToSpawnHitNumbers(dmg, hitPoint);
-
         CurrentHealth -= dmg;
-
         lastHitSource = source;
-
         OnEntityTakeDamage?.Invoke(hitPoint, source);
 
-        //after calculating current health, check if the player has taken enough damage to die
+        //for superarmor checks.
+        if (CurrentState == ChargeAttackState || CurrentState == SlowdownChargeAttackState)
+        {
+            damageDuringCharge += dmg;
+            SuperArmorThreshold();
+        }
+
         if (CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
@@ -114,6 +123,7 @@ public class Charger : Enemy
         foreach (var hitCollider in hitColliders)
         {
             Entity hitEntity = hitCollider.GetComponent<Entity>();
+            Vector3 hitPoint = hitCollider.ClosestPointOnBounds(HitBoxLocation.transform.position);
 
             if (hitEntity != null)
             {
@@ -130,7 +140,7 @@ public class Charger : Enemy
                     Vector3 knockbackDirection = (hitEntity.transform.position - transform.position).normalized;
                     ApplyKnockback(hitEntity, knockbackDirection, KnockbackForce);
 
-                    //do dmg.
+                    hitEntity.TakeDamage(ChargeDamage, hitPoint, gameObject);
 
                     ChangeState(prepareChargeAttackState); ///done for testing (should be winddown state)
                 }
@@ -142,7 +152,7 @@ public class Charger : Enemy
                 Vector3 knockbackDirection = (transform.position - hitCollider.transform.position).normalized;
                 ApplyKnockback(this, knockbackDirection, KnockbackForce);
 
-                //take small self dmg.
+                TakeDamage(SelfDamage, hitPoint, gameObject);
 
                 ChangeState(prepareChargeAttackState); ///done for testing (should be winddown state)
             }
@@ -166,5 +176,20 @@ public class Charger : Enemy
                 targetRigidbody.AddForce(direction * force, ForceMode.Impulse);
             }
         }
+    }
+
+    private void SuperArmorThreshold()
+    {
+        if (damageDuringCharge >= DamageThreshold)
+        {
+            Debug.Log("Enemy has taken enough damage: Enter Damaged State");
+            ChangeState(prepareChargeAttackState); //done for testing (should be damaged state).
+        }
+    }
+
+    //called at the exit of slowdown so that it is not carried over during the next charge attack if applicable.
+    public void ResetDamageTracking()
+    {
+        damageDuringCharge = 0;
     }
 }

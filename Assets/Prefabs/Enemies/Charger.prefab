@@ -79,7 +79,7 @@ MonoBehaviour:
   <SpeedHoldTime>k__BackingField: 1
   <ChargeDuration>k__BackingField: 1
   <ChargeTurnRate>k__BackingField: 45
-  <SlowDownDuration>k__BackingField: 1
+  <SlowDownDuration>k__BackingField: 2
   <SlowDownTurnRate>k__BackingField: 25
   <hitLayer>k__BackingField:
     serializedVersion: 2
@@ -87,6 +87,9 @@ MonoBehaviour:
   <HitBoxLocation>k__BackingField: {fileID: 5034018352243513692}
   <HitboxRadius>k__BackingField: 1.4
   <KnockbackForce>k__BackingField: 100
+  <ChargeDamage>k__BackingField: 10
+  <SelfDamage>k__BackingField: 2
+  <DamageThreshold>k__BackingField: 40
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5

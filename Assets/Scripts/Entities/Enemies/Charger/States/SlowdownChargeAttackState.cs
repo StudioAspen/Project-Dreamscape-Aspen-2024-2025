@@ -31,7 +31,7 @@ public class SlowdownChargeAttackState : EnemyBaseState
 
     public override void OnExit()
     {
-
+        charger.ResetDamageTracking();
     }
 
     public override void Update()
