@@ -52,13 +52,13 @@ public class LeaperAttackState : EnemyBaseState
         
         leaper.CheckForHits();
         timer += Time.deltaTime;
-        /**if (timer > leaper.LungeDuration)
+        if (timer > leaper.LungeDuration)
         {
+            leaper.ChangeState(leaper.EntityEmptyState);
+            leaper.ChangeState(leaper.LeaperAttackState);
             return;
         }
-        **/
+        
     }
-
-
 
 }

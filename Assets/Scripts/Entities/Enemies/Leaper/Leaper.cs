@@ -96,8 +96,7 @@ public class Leaper : Enemy
                 {
                     //Damage Player
                     Debug.Log("Player Hit");
-                    //ChangeState(EntityEmptyState);
-                    //ChangeState(LeaperAttackState);
+                    ChangeState(EntityEmptyState);
                 }
             }
         }
