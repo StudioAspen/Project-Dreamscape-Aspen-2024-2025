@@ -13,7 +13,7 @@ using UnityEngine.Pool;
 public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
+    [field: SerializeField, Self] public Rigidbody RigidBody { get; protected set; }
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
     [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
@@ -103,7 +103,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        Move(desiredAnimationMovement);
+        RigidBody.MovePosition(desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -202,7 +202,7 @@ public class Enemy : Entity
         spawner.RemoveEnemyFromList(this);
     }
 
-    protected virtual void AssignTarget()
+    public virtual void AssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
         if (targets.Count == 0)
@@ -221,7 +221,7 @@ public class Enemy : Entity
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+        RigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
     public virtual void FinishAnimation()
