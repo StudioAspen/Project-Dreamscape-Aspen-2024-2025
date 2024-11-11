@@ -23,7 +23,7 @@ public class ChargerWindDownState : EnemyBaseState {
         windDownTimer += Time.deltaTime;
 
         if (windDownTimer > charger.WindDownDuration) {
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.ChangeState(charger.EnemyIdleState);
             return;
         }
     }

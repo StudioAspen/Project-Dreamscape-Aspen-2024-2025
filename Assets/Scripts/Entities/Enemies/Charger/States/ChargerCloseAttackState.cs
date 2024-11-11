@@ -22,7 +22,7 @@ public class ChargerCloseAttackState : EnemyBaseState {
 
     public override void Update() {
         if (charger.IsInterrupted) {
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.ChangeState(charger.EnemyIdleState);
             return;
         } else
             charger.ChangeState(charger.ChargerFarAttackState);

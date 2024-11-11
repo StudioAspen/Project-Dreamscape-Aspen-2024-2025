@@ -6,112 +6,83 @@ using UnityEngine.AI;
 
 public class ChargerWanderState : EnemyBaseState
 {
+    private Charger charger;
 
-	private Charger charger;
-	private Vector3 wanderDestination;
-	private float wanderTimeElapsed;
+    private float wanderTimeElapsed;
+    private float randomWanderIntervalDuration;
+    private Vector3 currentWanderDestination;
 
-	public ChargerWanderState(Charger enemy) : base(enemy) 
-	{
-		charger = enemy;
-	}
-	public override void OnEnter()
-	{
-		Debug.Log("enter wander");
-		enemy.DefaultTransitionToAnimation("FlatMovement");
-		charger.SetSpeedModifier(1f);
-		wanderTimeElapsed = 0f;
-		wanderDestination = charger.transform.position;
-		GoToRandomWanderPoint();
-	}
+    public ChargerWanderState(Charger enemy) : base(enemy)
+    {
+        charger = enemy;
+    }
+    public override void OnEnter()
+    {
+        enemy.DefaultTransitionToAnimation("FlatMovement");
 
-	public override void OnExit() {}
+        charger.SetSpeedModifier(1f);
 
-	public override void Update()
-	{
-		wanderTimeElapsed += Time.deltaTime;
+        wanderTimeElapsed = Mathf.Infinity;
+        randomWanderIntervalDuration = Random.Range(charger.WanderIntervalDurationRange.x, charger.WanderIntervalDurationRange.y);
+    }
 
-		bool exitCondition = CloseEnoughToPoint(wanderDestination) || wanderTimeElapsed > charger.WanderTimeout;
+    public override void OnExit()
+    {
+        charger.CancelPath();
+    }
 
-		if (exitCondition) 
-		{
-			charger.ChangeState(charger.ChargerIdleState);
-			return;
-		}
+    public override void Update()
+    {
+        wanderTimeElapsed += Time.deltaTime;
 
-		charger.SetDestination(wanderDestination, true);
+        if(wanderTimeElapsed > randomWanderIntervalDuration)
+        {
+            wanderTimeElapsed = 0f;
+            randomWanderIntervalDuration = Random.Range(charger.WanderIntervalDurationRange.x, charger.WanderIntervalDurationRange.y);
 
-		if (charger.Target != null) 
-		{
-			charger.ChangeState(charger.ChargerPlayerDetectedState);
-		}
+            currentWanderDestination = GetRandomWanderPoint();
+            charger.SetDestination(currentWanderDestination, true);
+        }
 
-	}
+        charger.SetSpeedModifier(CloseToPoint(currentWanderDestination, 0.05f) ? 0f : 1f);
 
-	public override void FixedUpdate() { }
+        if(charger.Target != null)
+        {
+            charger.ChangeState(charger.ChargerTargetDetectedState);
+            return;
+        }
+    }
 
-	private bool CloseEnoughToPoint(Vector3 point)
-	{
-		return (charger.transform.position - point).magnitude < charger.WanderEndDistanceThreshold;
-	}
+    public override void FixedUpdate() { }
 
+    private bool CloseToPoint(Vector3 point, float error)
+    {
+        return charger.Distance(point) < error;
+    }
 
-	#region Debug
-	//private IEnumerator CreateDebugPoint(Vector3 pos) {
-	//	// show destination point for debugging
-	//	GameObject hitPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-	//	hitPoint.transform.localScale = new Vector3(.2f, .2f, .2f);
-	//	hitPoint.transform.position = pos;
-	//	hitPoint.GetComponent<Collider>().enabled = false;
-	//	yield return new WaitForSeconds(charger.WanderTimeout);
-	//	GameObject.Destroy(hitPoint);
-	//	yield return null;
-	//}
-	#endregion
+    private Vector3 GetRandomWanderPoint()
+    {
+        // Raycast downwards to prevent charger from not wandering at all because it cannot reach
+        RaycastHit raycastHit;
 
+        int numTries = 16;
 
-	private void GoToRandomWanderPoint() 
-	{
-		// Raycast downwards to prevent charger from not wandering at all because it cannot reach
-		RaycastHit raycastHit = new();
-		bool success = false;
-		int numTries = 16;
-		int currTry = 0;
+        for(int i = 0; i < numTries; i++)
+        {
+            float randomRadius = Random.Range(charger.WanderRadiusRange.x, charger.WanderRadiusRange.y);
 
-		while (currTry <= numTries) 
-		{
-			currTry++;
+            Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
+            randomPointOnUnitCircle.y = 0;
 
-			Vector3 randomPoint = ((Random.onUnitSphere * charger.WanderMinRadius) + Random.insideUnitSphere * charger.WanderMaxRadius) + charger.transform.position;
-			randomPoint.y += charger.WanderMaxRadius; // Offset the y before downward raycast
+            Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + charger.transform.position;
 
-			// Success if raycast hits something and also hits NavMesh
-			success = Physics.Raycast(randomPoint, Vector3.down, out raycastHit, charger.WanderRaycastDownMaxDistance) && NavMesh.SamplePosition(raycastHit.point, out _, charger.WanderNavMeshSampleRadius, NavMesh.AllAreas);
-			#region Debug
-			//Debug.DrawRay(randomPoint, Vector3.down * charger.WanderRaycastDownMaxDistance, success ? Color.green : Color.red, charger.WanderTimeout);
-			#endregion
-			if (success) 
-			{
-				break;
-			}
-		}
+            bool isValidPoint = 
+                Physics.Raycast(randomPoint + 10f * Vector3.up, Vector3.down, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Ground"))
+                && NavMesh.SamplePosition(raycastHit.point, out _, 0.5f, NavMesh.AllAreas);
+            
+            if(isValidPoint) return raycastHit.point;
+        }
 
-		if (!success) 
-		{
-			#region Debug
-			//Debug.Log("Tried " + (currTry) + " times but failed to raycast down!");
-			#endregion
-			charger.ChangeState(charger.ChargerIdleState);
-			return;
-		}
-
-		#region Debug
-		//Debug.Log("Find wander point " + wanderDestination + " success; took " + (currTry) + (currTry > 1 ? " tries" : " try"));
-		#endregion
-		wanderDestination = raycastHit.point + Vector3.up; // Offset up a little so point is not on ground
-		//charger.StartCoroutine(CreateDebugPoint(wanderDestination));
-	}
-
-
-
+        return charger.transform.position;
+    }
 }

@@ -135,7 +135,7 @@ public class Enemy : Entity
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 5f * Time.deltaTime);
 
-        animator.SetFloat("MovementSpeed", MovementSpeed);
+        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
     }
 
     private List<Vector3> GetPathToDestination(Vector3 dest)
@@ -176,6 +176,11 @@ public class Enemy : Entity
         {
             path.RemoveAt(0);
         }
+    }
+
+    public void CancelPath()
+    {
+        path = null;
     }
 
     public void Move(Vector3 dir)

@@ -2,34 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargerChaseState : EnemyChaseState {
+public class ChargerChaseState : EnemyChaseState
+{
     private Charger charger;
 
-    public ChargerChaseState(Charger enemy) : base(enemy) {
+    public ChargerChaseState(Charger enemy) : base(enemy)
+    {
         charger = enemy;
     }
 
-    public override void OnEnter() {
+    public override void OnEnter()
+    {
         base.OnEnter();
-        charger.SetSpeedModifier(charger.ChaseSpeed);
+        
     }
 
-    public override void OnExit() {
-       
+    public override void OnExit()
+    {
+
     }
 
-    public override void Update() {
+    public override void Update()
+    {
         // setdestination and lookat cannot coexist if setdestination's second param is true!
 
-       
 
 
-        if (charger.Target == null) {
+
+        if (charger.Target == null)
+        {
             charger.ChangeState(charger.EnemyIdleState);
             return;
         }
 
-        if (charger.Target != null) {
+        if (charger.Target != null)
+        {
             enemy.SetDestination(enemy.Target.transform.position, true);
         }
 
@@ -37,34 +44,40 @@ public class ChargerChaseState : EnemyChaseState {
         // for charger have another if statement to check if too close for
         // long range attack
 
-        if (charger.Distance(charger.Target) < charger.ChargingProcRadius) {
+        if (charger.Distance(charger.Target) < charger.ChargingProcRadius)
+        {
 
             // Vector3 attackDir = charger.Target.transform.position - charger.transform.position;
             // charger.ChargerFarAttackState.SetAttackDirection(attackDir);
             RaycastHit hit;
             bool inLineOfSight = ConeRaycast(64);
 
-            
 
-            if (inLineOfSight) {
+
+            if (inLineOfSight)
+            {
                 charger.ChangeState(charger.ChargerFarAttackState);
             }
 
-          
+
         }
 
         /// Not sure if we want to circle but ill write it anyway
 
-        if (charger.Distance(charger.Target) < charger.CircleRadius) {
+/*        if (charger.Distance(charger.Target) < charger.CircleRadius)
+        {
             CheckCanCircle();
-        }
+        }*/
     }
 
-    private void CheckCanCircle() {
-        if (charger.Target.TryGetComponent(out Player player)) {
+    private void CheckCanCircle()
+    {
+/*        if (charger.Target.TryGetComponent(out Player player))
+        {
             List<Charger> playerNearbyChargers = player.GetNearbyEntitiesByType<Charger>(charger.CircleRadius + 1f);
 
-            foreach (Charger c in new List<Charger>(playerNearbyChargers)) {
+            foreach (Charger c in new List<Charger>(playerNearbyChargers))
+            {
                 if (c.CurrentState == c.EntityDeathState) playerNearbyChargers.Remove(c);
             }
 
@@ -72,18 +85,21 @@ public class ChargerChaseState : EnemyChaseState {
 
             if (playerNearbyChargers.Contains(charger)) return;
             // charger.ChangeState(charger.ChargerCircleState);
-        }
+        }*/
     }
 
-    private bool ConeRaycast(int numRays) {
+    private bool ConeRaycast(int numRays)
+    {
         float coneAngle = 15f;
-        for (int i = 0; i < numRays; i++) {
+        for (int i = 0; i < numRays; i++)
+        {
             Vector3 randomDirection = Random.insideUnitSphere;
             randomDirection.z = Mathf.Abs(randomDirection.z);
             randomDirection = Quaternion.Euler(Random.Range(-coneAngle, coneAngle), Random.Range(-coneAngle, coneAngle), 0) * charger.transform.forward;
 
             Debug.DrawRay(charger.transform.position, randomDirection * 50f, Color.yellow, 1f);
-            if (Physics.Raycast(charger.transform.position, randomDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Entity")) && hit.transform != charger.transform) {
+            if (Physics.Raycast(charger.transform.position, randomDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Entity")) && hit.transform != charger.transform)
+            {
                 return true;
             }
 
@@ -91,7 +107,8 @@ public class ChargerChaseState : EnemyChaseState {
         return false;
     }
 
-    public override void FixedUpdate() {
+    public override void FixedUpdate()
+    {
 
     }
 

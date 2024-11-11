@@ -33,7 +33,7 @@ public class ChargerFarAttackState : EnemyBaseState {
     public override void OnEnter() //when state is switched to.
     {
         if (enemy.Target == null) {
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.ChangeState(charger.EnemyIdleState);
             return;
         }
 
@@ -85,7 +85,7 @@ public class ChargerFarAttackState : EnemyBaseState {
 
 
         if (charger.Target == null) {
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.ChangeState(charger.EnemyIdleState);
             return;
         }
 
@@ -195,7 +195,7 @@ public class ChargerFarAttackState : EnemyBaseState {
         hitPoint.transform.position = pos;
         hitPoint.GetComponent<Collider>().enabled = false;
         hitPoint.GetComponent<Renderer>().material.color = color;
-        yield return new WaitForSeconds(charger.WanderTimeout);
+        yield return new WaitForSeconds(1f);
         GameObject.Destroy(hitPoint);
         yield return null;
     }

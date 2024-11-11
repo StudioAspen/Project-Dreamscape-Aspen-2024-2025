@@ -20,7 +20,7 @@ public class ChargerDamagedState : EnemyBaseState {
 
         if (damagedStateTimer > charger.DamagedStateDuration) {
             charger.IsDazed = false;
-            charger.ChangeState(charger.ChargerIdleState);
+            charger.ChangeState(charger.EnemyIdleState);
             return;
         }
     }

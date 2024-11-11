@@ -4,47 +4,47 @@ using UnityEngine;
 
 public class ChargerDazedState : EnemyBaseState
 {
-
-    private Coroutine dazedCoroutine;
-    private float healthWhenEnterDazed;
     private Charger charger;
+
+    private float healthWhenEnterDazed;
+    private float timer;
 
     public ChargerDazedState(Charger enemy) : base(enemy)
     {
         charger = enemy;
     }
+
     public override void OnEnter()
     {
+        charger.DefaultTransitionToAnimation("Hit");
+
         charger.SetSpeedModifier(0f);
-        dazedCoroutine = charger.StartCoroutine(DazedCoroutine());
+
         healthWhenEnterDazed = charger.CurrentHealth;
-        //Debug.Log("Enter charger dazed coroutine");
+
+        timer = 0f;
     }
 
     public override void OnExit()
     {
-        if (dazedCoroutine != null)
-        {
-            charger.StopCoroutine(dazedCoroutine);
-            dazedCoroutine = null;
-        }
+
     }
 
     public override void Update()
     {
+        timer += Time.deltaTime;
+        if(timer > charger.DazedDuration)
+        {
+            charger.ChangeState(charger.EnemyIdleState);
+            return;
+        }
+
         if (charger.CurrentHealth < healthWhenEnterDazed)
         {
             charger.ChangeState(charger.ChargerDamagedState);
+            return;
         }
     }
 
     public override void FixedUpdate() { }
-
-    private IEnumerator DazedCoroutine()
-    {
-        yield return new WaitForSeconds(charger.DazedDuration);
-        //Debug.Log("Charger dazed timer is over!");
-        enemy.ChangeState(charger.ChargerIdleState);
-    }
-
 }

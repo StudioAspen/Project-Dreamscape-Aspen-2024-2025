@@ -156,7 +156,7 @@ BlendTree:
   m_Name: Blend Tree
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -203655887218126122, guid: fa7cb5fdc3bae4846bd6b681a144ecd6,
+    m_Motion: {fileID: -203655887218126122, guid: 38ec1ec6c459bac40ad6c847cb28023b,
       type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
@@ -165,7 +165,7 @@ BlendTree:
     m_DirectBlendParameter: MovementSpeed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 6536522707908897095, guid: 5eb532550a80bbf45bf031b3d9918a1b,
+    m_Motion: {fileID: -203655887218126122, guid: 9a52a10740af594439d94f2cafbc8b8f,
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
@@ -174,7 +174,7 @@ BlendTree:
     m_DirectBlendParameter: MovementSpeed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: -4452440636216180258, guid: 7ae0a5d9769db55478a98ecf3d701a68,
+    m_Motion: {fileID: -203655887218126122, guid: 53fc5195d5fd19142bdf244b6341f1ef,
       type: 3}
     m_Threshold: 2
     m_Position: {x: 0, y: 0}
@@ -381,32 +381,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &5195591007439572691
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: Idle
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 94c75858633b4e04f9e28db3b52b2bba, type: 3}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1107 &7009601981894902340
 AnimatorStateMachine:
   serializedVersion: 6
@@ -437,9 +411,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -3325086301037228099}
     m_Position: {x: 410, y: -160, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 5195591007439572691}
-    m_Position: {x: 120, y: 100, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

@@ -17,11 +17,11 @@ public class ChargerIdleState : EnemyIdleState
     public override void OnEnter()
     {
         base.OnEnter();
-        enemy.DefaultTransitionToAnimation("Idle");
+        enemy.DefaultTransitionToAnimation("FlatMovement");
+
         charger.SetSpeedModifier(0f);
+
         wanderTimerCoroutine = charger.StartCoroutine(WanderTimerCoroutine());
-
-
     }
 
     public override void OnExit()
@@ -38,7 +38,7 @@ public class ChargerIdleState : EnemyIdleState
     {
         if (charger.Target != null)
         {
-            charger.ChangeState(charger.ChargerPlayerDetectedState);
+            charger.ChangeState(charger.ChargerTargetDetectedState);
         }
     }
 
