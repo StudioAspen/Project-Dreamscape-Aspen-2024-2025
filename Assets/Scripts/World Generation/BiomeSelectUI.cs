@@ -36,13 +36,15 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        if (newState != GameState.BIOME_SELECTION)
+        if (newState != GameState.BIOME_SELECTION && gameManager.PreviousState == GameState.BIOME_SELECTION)
         {
             Disable();
             return;
         }
-
-        Enable();
+        if (newState == GameState.BIOME_SELECTION)
+        {
+            Enable();
+        }
     }
 
     public void Enable()

@@ -33,13 +33,11 @@ public class EventSelectUI : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        Disable();
-        if (newState != GameState.EVENT_SELECTION)
+        if (newState == GameState.EVENT_SELECTION)
         {
-            return;
+            Enable();
         }
-
-        Enable();
+        
     }
 
     public void Enable()
@@ -67,6 +65,7 @@ public class EventSelectUI : MonoBehaviour
             int randomIndex = Random.Range(0, potentialEvents.Count);
 
             WorldEvent randomEvent = potentialEvents[randomIndex];
+
 
             card.AssignCardEvent(randomEvent);
 
