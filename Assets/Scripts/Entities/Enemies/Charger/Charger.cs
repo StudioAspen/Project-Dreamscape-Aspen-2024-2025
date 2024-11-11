@@ -164,7 +164,23 @@ public class Charger : Enemy
         //player is kinematic.
         if (target is Player player)
         {
-            player.transform.position += direction * force * Time.fixedDeltaTime;
+            float knockbackDistance = force * Time.fixedDeltaTime;
+            float collisionCheckDistance = knockbackDistance + 0.1f;
+
+            //raycast check so in the case the player collides with a wall, they are not pushed fully through.
+            RaycastHit hit;
+            bool isBlocked = Physics.Raycast(player.transform.position, direction, out hit, collisionCheckDistance);
+
+            //when the collisionCheck is hit.
+            if (isBlocked)
+            {
+                player.transform.position += direction * (hit.distance - 0.1f);
+            }
+            //if not apply full knockback as normal.
+            else
+            {
+                player.transform.position += direction * knockbackDistance;
+            }        
         }
         //enemies are not kinematic.
         else
