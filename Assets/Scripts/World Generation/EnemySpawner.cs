@@ -99,23 +99,8 @@ public class EnemySpawner : MonoBehaviour
 
                 if (worldManager.currentEventSelection == WorldEvent.PRIORITIES)
                 {
-                    if (IsPriority)
-                    {
-                        CreateEnemy(i);
-                        currentShopCurrency -= enemyPrefabs[i].Cost;
-                    }
-                    else //FOR THE TIME BEING, NON PRIORITY LANDS CAN ONLY SPAWN UP TO 10 ENEMIES AT A TIME
-                    {
-                        if(enemiesSpawned.Count < 10)
-                        {
-                            CreateEnemy(i);
-                        }
-                        else
-                        {
-                            Debug.Log("More than 10 enemies spawned");
-                        }
-                        
-                    }
+                    CreateEnemy(i);
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
                 if (worldManager.currentEventSelection == WorldEvent.ESCORT)

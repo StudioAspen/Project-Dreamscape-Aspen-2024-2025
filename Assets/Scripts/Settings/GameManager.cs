@@ -99,9 +99,6 @@ public class GameManager : MonoBehaviour
         PreviousState = CurrentState;
         CurrentState = newState;
 
-        Debug.Log(PreviousState);
-        Debug.Log(CurrentState);
-
         OnGameStateChanged?.Invoke(newState);
     }
     #endregion  

@@ -184,24 +184,54 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        if (currentEventSelection == WorldEvent.PRIORITIES) //FOR THE TIME BEING JUST CREATING 1 PRIORITY LAND
+        if (currentEventSelection == WorldEvent.PRIORITIES)
         {
-            activePrioritiesCount = 1;
-            LandManager highestLeveledLand = SpawnedLands[0];
-
-            for (int i = 1; i < SpawnedLands.Count; i++)
+            if (SpawnedLands.Count <= 3)
             {
-                if (SpawnedLands[i].Level > highestLeveledLand.Level)
+                foreach (LandManager land in SpawnedLands) //WAIT ACTUALLY, IF THERE ARE LESS THAN 4 LANDS, THEN THE WAVE FUNCTIONS THE EXACT SAME AS THE SURVIVAL WAVE, SO THIS CAN ALL BE SCRAPPED
                 {
-                    highestLeveledLand = SpawnedLands[i];
+                    activePrioritiesCount += 1;
+                    land.EnemySpawner.IsPriority = true;
+                    land.EnemySpawner.WaveReset();
                 }
+                Debug.Log(activePrioritiesCount);
             }
-
-            highestLeveledLand.EnemySpawner.IsPriority = true;
-
-            foreach (LandManager land in SpawnedLands)
+            else //There are at least 4 lands present
             {
-                land.EnemySpawner.WaveReset();
+                activePrioritiesCount = 3;
+
+                LandManager highestLevelLand = null;
+                LandManager secondHighestLevelLand = null;
+                LandManager thirdHighestLevelLand = null;
+
+                foreach (LandManager land in SpawnedLands)
+                {
+                    if (highestLevelLand == null || land.Level > highestLevelLand.Level)
+                    {
+                        thirdHighestLevelLand = secondHighestLevelLand;
+                        secondHighestLevelLand = highestLevelLand;
+                        highestLevelLand = land;
+                    }
+                    else if (secondHighestLevelLand == null || land.Level > highestLevelLand.Level)
+                    {
+                        thirdHighestLevelLand = secondHighestLevelLand;
+                        secondHighestLevelLand = land;
+                    }
+                    else if (thirdHighestLevelLand == null || land.Level > thirdHighestLevelLand.Level)
+                    {
+                        thirdHighestLevelLand = land;
+                    }
+                }
+
+                highestLevelLand.EnemySpawner.IsPriority = true;
+                secondHighestLevelLand.EnemySpawner.IsPriority = true;
+                thirdHighestLevelLand.EnemySpawner.IsPriority = true;
+
+                foreach (LandManager land in SpawnedLands)
+                {
+                    land.EnemySpawner.WaveReset();
+                }
+
             }
         }
 
@@ -232,6 +262,7 @@ public class WorldManager : MonoBehaviour
     // then transitions the game to biome selection.
     public void DecrementActivePrioritiesCount()
     {
+        Debug.Log("Decremented!!!!!");
         activePrioritiesCount--;
         if (activePrioritiesCount == 0)
         {
@@ -240,6 +271,10 @@ public class WorldManager : MonoBehaviour
                 if (!land.EnemySpawner.IsPriority)
                 {
                     land.EnemySpawner.DespawnAllEnemies();
+                }
+                else
+                {
+                    land.EnemySpawner.IsPriority = false;
                 }
             }
             gameManager.ChangeState(GameState.BIOME_SELECTION);

@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldManager: {fileID: 1416371478039211752}
+  eventSelectUI: {fileID: 1148220369}
   button: {fileID: 68945460}
   image: {fileID: 1150409913}
   nameText: {fileID: 1891613857}
@@ -1996,6 +1997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldManager: {fileID: 1416371478039211752}
+  eventSelectUI: {fileID: 1148220369}
   button: {fileID: 878057792}
   image: {fileID: 2120750626}
   nameText: {fileID: 1941833614}
@@ -3562,6 +3564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldManager: {fileID: 1416371478039211752}
+  eventSelectUI: {fileID: 1148220369}
   button: {fileID: 1461370043}
   image: {fileID: 864508893}
   nameText: {fileID: 1305073775}
@@ -5290,7 +5293,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1613189912748339658
@@ -5407,6 +5410,11 @@ PrefabInstance:
     - target: {fileID: 7536978621657743438, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8852926688546275590, guid: 19dae7578bc56674dae55670ec5dfbf5,
+        type: 3}
+      propertyPath: <MaxHealth>k__BackingField
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
