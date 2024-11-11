@@ -30,16 +30,15 @@ public class ChargerIdleState : EnemyIdleState
         {
             charger.StopCoroutine(wanderTimerCoroutine);
             wanderTimerCoroutine = null;
-     
+            Debug.LogWarning("exit idle");
         }
     }
 
     public override void Update()
     {
-
         if (charger.Target != null)
         {
-            //charger.ChangeState(charger.ChargerPlayerDetectedState);
+            charger.ChangeState(charger.ChargerPlayerDetectedState);
         }
     }
 

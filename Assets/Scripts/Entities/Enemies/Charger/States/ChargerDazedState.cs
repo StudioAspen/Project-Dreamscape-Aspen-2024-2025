@@ -34,9 +34,7 @@ public class ChargerDazedState : EnemyBaseState
     {
         if (charger.CurrentHealth < healthWhenEnterDazed)
         {
-            // charger took damage while dazed!
-            //Debug.Log("Charger took damage while dazed! Entering damaged state.");
-            //charger.ChangeState(charger.ChargerDamagedState); 
+            charger.ChangeState(charger.ChargerDamagedState);
         }
     }
 

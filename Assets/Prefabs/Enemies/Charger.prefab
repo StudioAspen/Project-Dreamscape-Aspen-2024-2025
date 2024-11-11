@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
   - component: {fileID: 3031659000538846661}
-  m_Layer: 10
+  m_Layer: 16
   m_Name: Charger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,8 +145,22 @@ MonoBehaviour:
   <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 3
   IsAttackAnimationPlaying: 0
-  <AttackRange>k__BackingField: 1
-  <AttackDamageRange>k__BackingField: {x: 10, y: 15}
+  <CircleChargerCountThreshold>k__BackingField: 2
+  <ChangeDirectionInterval>k__BackingField: 0.5
+  <ChangeDirectionReciprocal>k__BackingField: 50
+  <CircleRadius>k__BackingField: 5
+  <MaxCircleRadius>k__BackingField: 0
+  <PlayerDetectedDuration>k__BackingField: 2
+  <ChargingProcRadius>k__BackingField: 10
+  <ChargeSpeedMin>k__BackingField: 2
+  <ChargeSpeedMax>k__BackingField: 16
+  <ChargeAccelerationInterval>k__BackingField: 0.01
+  <HitboxRadius>k__BackingField: 3
+  <TargetFocusTime>k__BackingField: 2
+  <KnockbackForce>k__BackingField: 2
+  <MaxChargeDuration>k__BackingField: 4
+  <MaxChargeDistance>k__BackingField: 50
+  IsInterrupted: 0
   <IdleWanderWaitMin>k__BackingField: 1
   <IdleWanderWaitMax>k__BackingField: 3
   <WanderMaxRadius>k__BackingField: 8
@@ -155,7 +169,10 @@ MonoBehaviour:
   WanderEndDistanceThreshold: 1.25
   WanderTimeout: 10
   WanderNavMeshSampleRadius: 0.1
+  WindDownDuration: 0
+  DamagedStateDuration: 0
   <DazedDuration>k__BackingField: 5
+  IsDazed: 0
 --- !u!1 &4081677794897434292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1440,10 +1457,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 643238577905173981, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}
       propertyPath: m_Name
       value: FollowerFist
+      objectReference: {fileID: 0}
+    - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649179186203773579, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871507518177977818, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918874709248315491, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

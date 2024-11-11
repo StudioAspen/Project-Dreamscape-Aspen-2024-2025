@@ -17,6 +17,7 @@ public class ChargerWanderState : EnemyBaseState
 	}
 	public override void OnEnter()
 	{
+		Debug.Log("enter wander");
 		enemy.DefaultTransitionToAnimation("FlatMovement");
 		charger.SetSpeedModifier(1f);
 		wanderTimeElapsed = 0f;
@@ -40,10 +41,9 @@ public class ChargerWanderState : EnemyBaseState
 
 		charger.SetDestination(wanderDestination, true);
 
-		// When charger sees player, change state to ChargerPlayerDetectedState
 		if (charger.Target != null) 
 		{
-			//charger.ChangeState(charger.ChargerPlayerDetectedState);
+			charger.ChangeState(charger.ChargerPlayerDetectedState);
 		}
 
 	}
@@ -57,16 +57,15 @@ public class ChargerWanderState : EnemyBaseState
 
 
 	#region Debug
-	//private IEnumerator CreateDebugPoint(Vector3 pos)
-	//{
-	//    // show destination point for debugging
-	//    GameObject hitPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-	//    hitPoint.transform.localScale = new Vector3(.2f, .2f, .2f);
-	//    hitPoint.transform.position = pos;
-	//    hitPoint.GetComponent<Collider>().enabled = false;
-	//    yield return new WaitForSeconds(charger.WanderTimeout);
-	//    GameObject.Destroy(hitPoint);
-	//    yield return null;
+	//private IEnumerator CreateDebugPoint(Vector3 pos) {
+	//	// show destination point for debugging
+	//	GameObject hitPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+	//	hitPoint.transform.localScale = new Vector3(.2f, .2f, .2f);
+	//	hitPoint.transform.position = pos;
+	//	hitPoint.GetComponent<Collider>().enabled = false;
+	//	yield return new WaitForSeconds(charger.WanderTimeout);
+	//	GameObject.Destroy(hitPoint);
+	//	yield return null;
 	//}
 	#endregion
 
