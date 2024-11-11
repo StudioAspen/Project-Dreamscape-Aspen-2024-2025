@@ -15,6 +15,7 @@ public class PlayerAttackState : PlayerBaseState
         this.player = player;
     }
 
+
     public override void OnEnter()
     {
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player);
@@ -42,6 +43,7 @@ public class PlayerAttackState : PlayerBaseState
         player.InstantlySetSpeed(0f);
 
         if (ComboData.IsAirCombo) player.ResetYVelocity();
+        if (player.CurrentState == player.PlayerFallState) player.ResetYVelocity();
     }
 
     public override void Update()

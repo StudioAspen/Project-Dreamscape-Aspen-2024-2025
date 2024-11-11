@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class PlayerFallState : PlayerBaseState
 {
@@ -11,6 +12,7 @@ public class PlayerFallState : PlayerBaseState
     public override void OnEnter()
     {
         player.TransitionToAnimation("Falling", 0.25f);
+        player.Fall();
     }
 
     public override void OnExit()

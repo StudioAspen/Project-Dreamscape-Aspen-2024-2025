@@ -351,6 +351,11 @@ public class Player : Entity
         currentJumpCount++;
     }
 
+    public void Fall()
+    {
+        input.OnPlayerActionInput?.Invoke(PlayerActions.FALL);
+    }
+
     public void DashTrailSetActive(bool b)
     {
         dashTrailObject.SetActive(b);

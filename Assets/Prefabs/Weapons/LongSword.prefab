@@ -5112,6 +5112,12 @@ MonoBehaviour:
     m_Bits: 128
   colliderStartTransform: {fileID: 2382167382557116116}
   colliderEndTransform: {fileID: 2628417811129990337}
+  OnWeaponStartSwing:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWeaponEndSwing:
+    m_PersistentCalls:
+      m_Calls: []
   OnWeaponHit:
     m_PersistentCalls:
       m_Calls: []
@@ -5125,6 +5131,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2544063d1ad4634409b17d12c1501932, type: 2}
   - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}
   - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
+  - {fileID: 11400000, guid: 3e6baa2d33f411e41b19d151b8de8153, type: 2}
+  - {fileID: 11400000, guid: 970820706be7a7c42b6180260e945bb0, type: 2}
+  - {fileID: 11400000, guid: 2364d85d6848b74479ac7f7471b00984, type: 2}
+  - {fileID: 11400000, guid: 73dc2b1309980174cbbb6e089c9fee31, type: 2}
   impactFramesDuration: 0.15
 --- !u!136 &1259378818332639156
 CapsuleCollider:
