@@ -11,7 +11,12 @@ public class PauseMenu : MonoBehaviour
     private InputAction cameraLook;
     private GameObject SettingsCanvas;
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField, Scene] private GameManager gameManager;
+    [SerializeField, Scene] GameManager gameManager;
+
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
 
     private void Awake()
     {
@@ -30,13 +35,11 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
-
-    // Start is called before the first frame update
     void Start()
     {
         PauseCanvas = transform.Find("PauseMenu")?.gameObject;
         SettingsCanvas = transform.Find("SettingsMenu")?.gameObject;
-        cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
+        //cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
         if (PauseCanvas != null)
         {

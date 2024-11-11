@@ -3335,9 +3335,9 @@ GameObject:
   - component: {fileID: 2668360383642030344}
   - component: {fileID: 8222153193452270911}
   - component: {fileID: 5978405381912250941}
+  - component: {fileID: 9219241249078938968}
   - component: {fileID: 4130876613641290589}
   - component: {fileID: 5888495502084904767}
-  - component: {fileID: 9219241249078938968}
   m_Layer: 5
   m_Name: UI Menus
   m_TagString: Untagged
@@ -3429,6 +3429,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &9219241249078938968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329238285613449400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778fa1da17c08da4bb2c3c7dc860384b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInput: {fileID: 5888495502084904767}
+  gameManager: {fileID: 0}
 --- !u!114 &4130876613641290589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3508,20 +3522,6 @@ MonoBehaviour:
   m_DefaultActionMap: UI
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &9219241249078938968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6329238285613449400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 778fa1da17c08da4bb2c3c7dc860384b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerInput: {fileID: 5888495502084904767}
-  gameManager: {fileID: 0}
 --- !u!1 &6405190425351839288
 GameObject:
   m_ObjectHideFlags: 0
