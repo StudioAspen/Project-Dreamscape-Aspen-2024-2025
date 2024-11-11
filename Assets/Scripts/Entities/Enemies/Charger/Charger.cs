@@ -19,7 +19,7 @@ public class Charger : Enemy
     [field: SerializeField] public LayerMask hitLayer { get; private set; }
     [field: SerializeField] public GameObject HitBoxLocation { get; private set; }
     [field: SerializeField] public float HitboxRadius { get; private set; } = 1.4f;
-    [field: SerializeField] public float KnockbackForce { get; private set; } = 35f;
+    [field: SerializeField] public float KnockbackForce { get; private set; } = 10f;
 
     [field: SerializeField] public int ChargeDamage { get; private set; } = 10;
     [field: SerializeField] public int SelfDamage { get; private set; } = 2;
@@ -179,7 +179,7 @@ public class Charger : Enemy
             //if not apply full knockback as normal.
             else
             {
-                player.transform.position += direction * knockbackDistance;
+                player.transform.position += direction * knockbackDistance * 20;
             }        
         }
         //enemies are not kinematic.
