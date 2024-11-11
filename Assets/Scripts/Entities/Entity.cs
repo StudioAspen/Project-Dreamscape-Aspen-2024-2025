@@ -1,4 +1,5 @@
 ﻿using KBCore.Refs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +23,13 @@ public class Entity : MonoBehaviour
     [SerializeField] private protected float targetDetectionRadius = 10f;
     protected private float inAirTimer;
     protected private bool fallVelocityApplied;
-
+    private List<StatusEffector> statusEffectors = new List<StatusEffector>();
+    public enum EntityStats
+    {
+        MAXHEALTH,
+        SPEED,
+        ATTACKPOWER
+    }
     public int Team { get; private set; }
 
     #region States
@@ -166,6 +173,39 @@ public class Entity : MonoBehaviour
     public void ChangeTeam(int newTeam)
     {
         Team = newTeam;
+    }
+
+    public void ApplyEffector(StatusEffector status)
+    {
+        statusEffectors.Add(status);
+        ModifyStat(status);
+    }
+
+    protected void UpdateStatusEffects()
+    {
+        for (int i = statusEffectors.Count - 1; i >= 0; i--)
+        {
+            StatusEffector status = statusEffectors[i];
+            status.UpdateTime(Time.deltaTime);
+
+            if (status.IsExpired())
+            {
+                RevertStat(status);
+                statusEffectors.RemoveAt(i);
+            }
+        }
+    }
+
+    protected void ModifyStat(StatusEffector status)
+    {
+        if (status.StatAffected == Entity.EntityStats.SPEED)
+            SetSpeedModifier(SpeedModifier += status.IsDebuff ? -status.ModifierAmount : status.ModifierAmount);
+    }
+
+    private void RevertStat(StatusEffector status)
+    {
+        if (status.StatAffected == Entity.EntityStats.SPEED)
+            SetSpeedModifier(SpeedModifier -= status.IsDebuff ? -status.ModifierAmount : status.ModifierAmount);
     }
 
     public void SetSpeedModifier(float speed)

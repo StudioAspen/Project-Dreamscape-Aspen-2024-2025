@@ -29,7 +29,6 @@ public class Player : Entity
     public float baseAttackPower;
     private float currentMovementSpeed;
     private float currentAttackPower;
-    private List<PlayerBuff> activeBuffs = new List<PlayerBuff>();
 
     [Header("Player: Gravity")]
     [SerializeField] private float jumpHeight = 2f;
@@ -121,7 +120,7 @@ public class Player : Entity
         HandleDashDelay();
         HandleDashTrail();
 
-        UpdateBuffs();
+        UpdateStatusEffects();
 
         HandleAnimations();
 
@@ -130,43 +129,6 @@ public class Player : Entity
         //Cursor.lockState = CameraLocked ? CursorLockMode.Locked : CursorLockMode.None;
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
-    }
-
-    public void ApplyBuff(PlayerBuff buff)
-    {
-        activeBuffs.Add(buff);
-        ModifyStat(buff);
-    }
-
-    private void UpdateBuffs()
-    {
-        for (int i = activeBuffs.Count - 1; i >= 0; i--)
-        {
-            PlayerBuff buff = activeBuffs[i];
-            buff.UpdateTime(Time.deltaTime);
-
-            if (buff.IsExpired())
-            {
-                RevertStat(buff);
-                activeBuffs.RemoveAt(i);
-            }
-        }
-    }
-
-    private void ModifyStat(PlayerBuff buff)
-    {
-        if (buff.StatAffected == "MovementSpeed")
-            currentMovementSpeed += buff.IsDebuff ? -buff.ModifierAmount : buff.ModifierAmount;
-        else if (buff.StatAffected == "AttackPower")
-            currentAttackPower += buff.IsDebuff ? -buff.ModifierAmount : buff.ModifierAmount;
-    }
-
-    private void RevertStat(PlayerBuff buff)
-    {
-        if (buff.StatAffected == "MovementSpeed")
-            currentMovementSpeed -= buff.IsDebuff ? -buff.ModifierAmount : buff.ModifierAmount;
-        else if (buff.StatAffected == "AttackPower")
-            currentAttackPower -= buff.IsDebuff ? -buff.ModifierAmount : buff.ModifierAmount;
     }
 
     private void OnAnimatorMove()

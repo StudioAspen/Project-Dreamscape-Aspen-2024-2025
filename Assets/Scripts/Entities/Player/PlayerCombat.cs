@@ -271,22 +271,5 @@ public class PlayerCombat : MonoBehaviour
         IsAnimationPlaying = false;
     }
 
-    public void ApplySpeedBuff()
-    {
-        PlayerBuff speedBuff = new PlayerBuff("MovementSpeed", 2.0f, 5.0f); //Increases speed by 2 for 5 seconds
-        player.ApplyBuff(speedBuff);
-    }
-
-    public void ApplyWeaknessDebuff()
-    {
-        PlayerBuff weaknessDebuff = new PlayerBuff("AttackPower", -5.0f, 10.0f, true); //Reduces attack power by 5 for 10 seconds
-        player.ApplyBuff(weaknessDebuff);
-    }
-
-    public void ApplyStrengthBuff()
-    {
-        PlayerBuff strengthBuff = new PlayerBuff("AttackPower", 5.0f, 10.0f); //Reduces attack power by 5 for 10 seconds
-        player.ApplyBuff(strengthBuff);
-    }
 }
 
