@@ -1,0 +1,136 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Main
+
+#include "NMGComputeHelpers.hlsl"
+
+// Describes vertex on source mesh
+struct SourceVertex
+{
+    float3 positionOS; // Position in Object Space
+};
+
+// Source buffers, vertex buffer and index buffer
+StructuredBuffer<SourceVertex> _SourceVertices;
+StructuredBuffer<int> _SourceTriangles;
+
+// Describes vertex on the new generated mesh (By compute shader)
+struct DrawVertex
+{
+    float3 positionWS; // Position in World Space
+    float height; // The height of the vertex on the grass blade
+};
+
+// A triangle on the generated mesh
+struct DrawTriangle
+{
+    // A normal in world space to use for the lighting algorithm.
+    // Will be parallel to grass to give semi-translucent effect
+    float3 lightingNormalWS;
+    
+    DrawVertex vertices[3]; // The three points on each triangle
+};
+
+// Buffer containing generated mesh
+AppendStructuredBuffer<DrawTriangle> _DrawTriangles;
+
+// The indirect draw calls args
+struct IndirectArgs
+{
+    uint numVerticesPerInstance;
+    uint numInstances;
+    uint startVertexIndex;
+    uint startInstanceIndex;
+};
+
+// Kernel will count the # of vertices, so must be RW enabled
+RWStructuredBuffer<IndirectArgs> _IndirectArgsBuffer;
+
+///-///////////////////////////////////////////////////////////////////////////
+///
+/// Variables for the grass!
+///
+
+// Range is defined in C# Script
+// Must define buffer size
+#define GRASS_BLADES 10;
+#define GRASS_SEGMENTS 4;
+#define GRASS_NUM_VERTICES_PER_BLADE (GRASS_SEGMENTS * 2) + 1;
+
+// Variables are set by renderer
+int _NumSourceTriangles; // Num Triangles on Source Mesh
+float4x4 _LocalToWorld; // Local Space to World Space Transformation Matrix
+
+// Get the triangle's center and basis
+void GetCenterAndBasis(SourceVertex a, SourceVertex b, SourceVertex c,
+    out float3 positionWS, out float3 normalWS, out float3x3 tsToWs)
+{
+    // Convert each triangle point to world space
+    float3 positionA_WS = mul(_LocalToWorld, float4(a.positionOS, 1)).xyz;
+    float3 positionB_WS = mul(_LocalToWorld, float4(b.positionOS, 1)).xyz;
+    float3 positionC_WS = mul(_LocalToWorld, float4(c.positionOS, 1)).xyz;
+
+    // Find center of triangle. This is where the blade will root.
+    positionWS = GetTriangleCenter(positionA_WS, positionB_WS, positionC_WS);
+    
+    // Get normal vector & TS -> World Transformation Matrix
+    GetTriangleNormalAndTSToWSMatrix(positionA_WS, positionB_WS, positionC_WS, normalWS, tsToWs);
+}
+
+// Calculates values for output point
+DrawVertex SetupBladePoint(float3 anchorWS, float3x3 tsToWs, float2 uv)
+{
+    // Calculate offset in tangent space based on uv and width/height -> then to world space
+    float3 offsetTS = float3(uv.x - 0.5f, 0, uv.y); // Offset x by 1/2, so that the middle vertex (0.5) is center
+    float3 offsetWS = mul(tsToWs, offsetTS);
+
+    float3 positionWS = anchorWS + offsetWS;
+
+    DrawVertex outputPoint = (DrawVertex)0;
+    outputPoint.positionWS = positionWS;
+    outputPoint.height = uv.y;
+    return outputPoint;
+}
+
+// Main Kernel
+[numthreads(128, 1, 1)]
+void Main(uint3 id : SV_DispatchThreadID)
+{
+    // Avoid unnecessary computation if triangles are finished computing
+    if ((int)id.x >= _NumSourceTriangles)
+    {
+        return;
+    }
+
+    // Calculate the start index of this triangle in the index buffer
+    int triStart = id.x * 3;
+
+    // Get the triangle center, normal vector, and ts->ws t-matrix
+    float3 positionWS, normalWS;
+    float3x3 tsToWs;
+    GetCenterAndBasis(
+        _SourceVertices[_SourceTriangles[triStart]], // Get first vertex
+        _SourceVertices[_SourceTriangles[triStart + 1]], // Get second vertex
+        _SourceVertices[_SourceTriangles[triStart + 2]], // Get third vertex
+        positionWS, normalWS, tsToWs);
+
+    // Store new blade points
+    DrawVertex vertices[3];
+
+    // The order of the vertices is bottom up.
+    vertices[0] = SetupBladePoint(positionWS, tsToWs, float2(0, 0));
+    vertices[1] = SetupBladePoint(positionWS, tsToWs, float2(1, 0));     //\\ This is the
+    vertices[2] = SetupBladePoint(positionWS, tsToWs, float2(0.5, 1));  //__\\ triangle shape
+
+    // Add triangle to draw buffer
+    DrawTriangle tri = (DrawTriangle)0;
+    tri.lightingNormalWS = normalWS;
+    tri.vertices[0] = vertices[0];
+    tri.vertices[1] = vertices[1];
+    tri.vertices[2] = vertices[2];
+    _DrawTriangles.Append(tri);
+
+    // InterlockedAdd() is thread safe. We are storing the number of verts in indirectArgs.
+    // Is used to tell the renderer how many vertices are in the mesh for DrawProcedural
+    InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, 3);
+}
+
