@@ -10,6 +10,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
     [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
+    [SerializeField] private protected Transform model;
 
     [field: Header("Entity: Settings")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
@@ -34,12 +35,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
 
+    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+
     #region States
     public BaseState CurrentState { get; private set; }
     public BaseState DefaultState { get; private set; }
     public EntityEmptyState EntityEmptyState { get; protected set; }
-    public EntityHitState EntityHitState { get; protected set; }
+    public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
+    public EntityFlingState EntityFlingState { get; protected set; }
+
+    protected virtual void InitializeStates()
+    {
+        //makes new state scripts for the entity to use
+        EntityEmptyState = new EntityEmptyState(this);
+        EntityDeathState = new EntityDeathState(this);
+        EntityFlingState = new EntityFlingState(this);
+        EntityStaggeredState = new EntityStaggeredState(this);
+    }
     #endregion
 
     private ObjectPool<GameObject> pool;
@@ -118,14 +131,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
-    }
-
-    protected virtual void InitializeStates()
-    {
-        //makes new state scripts for the entity to use
-        EntityEmptyState = new EntityEmptyState(this);
-        EntityHitState = new EntityHitState(this);
-        EntityDeathState = new EntityDeathState(this);
     }
 
     protected void SetStartState(BaseState state)
@@ -208,7 +213,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        ForceChangeState(EntityHitState);
+        ForceChangeState(EntityStaggeredState);
 
         AttemptToSpawnHitNumbers(dmg, hitPoint);
 
@@ -421,5 +426,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetObjectPool(ObjectPool<GameObject> objectPool)
     {
         pool = objectPool;
+    }
+
+    public int GetRandomDamageFromRange(Vector2Int damageRange)
+    {
+        return Random.Range(damageRange.x, damageRange.y);
+    }
+
+    public virtual void Fling(Vector3 direction, float force, float stunDuration)
+    {
+        
     }
 }

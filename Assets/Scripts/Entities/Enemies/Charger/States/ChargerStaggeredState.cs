@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 
-public class ChargerStaggeredState : EnemyBaseState
+public class ChargerStaggeredState : EntityStaggeredState
 {
     private Charger charger;
-
-    private float timer;
 
     public ChargerStaggeredState(Charger enemy) : base(enemy)
     {
@@ -31,7 +29,7 @@ public class ChargerStaggeredState : EnemyBaseState
     {
         timer += Time.deltaTime;
 
-        if (timer > charger.StaggeredStateDuration)
+        if (timer > charger.StaggerDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;

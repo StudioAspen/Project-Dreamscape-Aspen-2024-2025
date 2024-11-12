@@ -29,7 +29,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.RightFistWeapon.ClearEnemiesHitList();
 
-            charger.RightFistWeapon.SetDamageRange(new Vector2Int(charger.JabDamageRange.x, charger.JabDamageRange.y));
+            charger.RightFistWeapon.SetDamageRange(charger.JabDamageRange);
         }
         else
         {
@@ -39,7 +39,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.LeftFistWeapon.ClearEnemiesHitList();
 
-            charger.LeftFistWeapon.SetDamageRange(new Vector2Int(charger.JabDamageRange.x, charger.JabDamageRange.y));
+            charger.LeftFistWeapon.SetDamageRange(charger.JabDamageRange);
         }
     }
 
@@ -62,6 +62,8 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void Update()
     {
+        charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
+
         charger.LookAt(rememberedTarget.transform.position);
 
         // blocks update until attack animation is done
@@ -69,7 +71,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
         if (charger.RemainingJabs <= 0)
         {
-            charger.ChangeState(charger.ChargerWanderState);
+            charger.ChangeState(charger.ChargerJabRecoverState);
             return;
         }
 

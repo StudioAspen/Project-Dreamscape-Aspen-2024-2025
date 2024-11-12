@@ -165,7 +165,7 @@ public class PlayerCombat : MonoBehaviour
     private void ExecuteCombo(ComboDataSO combo)
     {
         if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityHitState) return;
+        if (player.CurrentState == player.EntityStaggeredState) return;
 
         player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);

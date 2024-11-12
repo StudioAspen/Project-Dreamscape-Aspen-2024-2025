@@ -74,20 +74,28 @@ public class ChargerChargeState : EnemyBaseState
 
             if(DidChargerHitWall(hit))
             {
-                // change to dazed state
+                CameraShakeManager.Instance.ShakeCamera(10f, 0.5f);
+
                 charger.ChangeState(charger.ChargerDazedState);
                 return;
             }
 
             if(DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
-                // fling friendly entity
+                CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+
+                Vector3 flingDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
+                FlingEntity(friendlyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
             }
 
             if(DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
             {
-                // still need to fling enemy entity
-                enemyEntity.TakeDamage(charger.ChargeContactDamage, hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject);
+                CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+
+                Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
+                FlingEntity(enemyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
+
+                enemyEntity.TakeDamageWithoutState(charger.GetRandomDamageFromRange(charger.ChargeContactDamageRange), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject);
 
                 charger.ChangeState(charger.ChargerWindDownState);
                 return;
@@ -136,5 +144,11 @@ public class ChargerChargeState : EnemyBaseState
         }
 
         return false;
+    }
+
+    private void FlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
+    {
+        entity.EntityFlingState.SetFlingSettings(direction, force, stunDuration);
+        entity.ChangeState(entity.EntityFlingState);
     }
 }

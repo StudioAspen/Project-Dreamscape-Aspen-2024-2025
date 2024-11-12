@@ -98,7 +98,8 @@ public class Enemy : Entity
     {
         if (!UseRootMotion) return;
 
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        float modelScale = model.localScale.x;
+        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
         rigidBody.MovePosition(transform.position + desiredAnimationMovement);
@@ -251,39 +252,6 @@ public class Enemy : Entity
         Target = null;
     }
 
-    protected void DrawGizmosCone(Vector3 center, Vector3 direction, float halfAngle, float maxDistance)
-    {
-        // Normalize direction
-        direction = direction.normalized;
-
-        // Calculate the radius of the cone's base
-        float radius = Mathf.Tan(halfAngle * Mathf.Deg2Rad) * maxDistance;
-
-        // Get two perpendicular vectors to the direction
-        Vector3 up = Vector3.Cross(direction, Vector3.right).normalized * radius;
-        Vector3 right = Vector3.Cross(direction, up).normalized * radius;
-
-        // Calculate the tip of the cone
-        Vector3 tip = center + direction * maxDistance;
-
-        // Draw lines from center to base of the cone
-        Gizmos.DrawLine(center, tip);
-
-        // Draw the circle at the base of the cone
-        int segments = 24; // Number of segments to approximate the circle
-        float angleStep = 360f / segments;
-
-        Vector3 lastPoint = tip + up;
-        for (int i = 1; i <= segments; i++)
-        {
-            float angle = angleStep * i;
-            Vector3 nextPoint = tip + Quaternion.AngleAxis(angle, direction) * up;
-            Gizmos.DrawLine(lastPoint, nextPoint);
-            Gizmos.DrawLine(center, nextPoint); // Connect each segment to the center
-            lastPoint = nextPoint;
-        }
-    }
-
     public override void LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
@@ -292,5 +260,10 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+    }
+
+    public override void Fling(Vector3 direction, float force, float stunDuration)
+    {
+        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }
