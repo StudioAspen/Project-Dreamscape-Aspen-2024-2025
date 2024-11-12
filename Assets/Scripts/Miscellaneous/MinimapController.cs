@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using KBCore.Refs;
+using UnityEngine.InputSystem.LowLevel;
 
 
 public class MinimapController : MonoBehaviour
@@ -27,6 +29,20 @@ public class MinimapController : MonoBehaviour
     private Mask mask;
     private RawImage image;
     private Transform border;
+    [SerializeField, Scene] GameManager gameManager;
+
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
+    private void Awake()
+    {
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+    private void OnDestroy()
+    {
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
 
     void Start()
     {   
@@ -45,13 +61,14 @@ public class MinimapController : MonoBehaviour
         border = transform.GetChild(0).Find("Border");
     }
 
-    void Update()
-    {
-
-    }
-
     public void ToggleMinimap()
     {
+        // Disable the Toggle when the game isn't running
+        if ((gameManager.CurrentState != GameState.PLAYING) && !isMaximized)
+        {
+            return;
+        }
+
         // Toggle Mask and Border
         if (border != null) {
             border.gameObject.SetActive(isMaximized);
@@ -96,5 +113,16 @@ public class MinimapController : MonoBehaviour
 
         isMaximized = !isMaximized;
         //Debug.Log("Minimap Toggled");
+    }
+
+    private void GameManager_OnGameStateChanged(GameState newState)
+    {
+        // If the game isn't running, minimize map
+        if ((newState != GameState.PLAYING) && isMaximized)
+        {
+            ToggleMinimap();
+            return;
+        }
+
     }
 }
