@@ -29,8 +29,6 @@ public class FollowerAttackState : EnemyBaseState
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;
-
-        follower.LookAt(follower.transform.position + attackDir);
     }
 
     public override void OnExit()
@@ -43,6 +41,8 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void Update()
     {
+        follower.LookAt(follower.transform.position + attackDir);
+
         if (!follower.IsAttackAnimationPlaying)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);

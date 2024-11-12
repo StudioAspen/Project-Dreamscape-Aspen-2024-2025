@@ -23,14 +23,21 @@ public class Charger : Enemy
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
     [field: SerializeField] public float ChargeCollisionRadius { get; private set; } = 2f;
-    [field: SerializeField] public float ChargeCollisionOffsetDistance { get; private set; } = 0.5f;
+    [field: SerializeField] public float ChargeCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
     [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (capsuleCollider.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetDistance) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (capsuleCollider.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
     public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (capsuleCollider.height / 2 - ChargeCollisionRadius) * Vector3.up;
     private float originalRotationSpeed;
 
     [field: Header("Charger: Wind Down Settings")]
     [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
+
+    [field: Header("Charger: Jabbing Attack Settings")]
+    [field: SerializeField] public int JabCount { get; private set; } = 5;
+    [field: SerializeField] public Vector2Int JabDamageRange { get; private set; } = new Vector2Int(7, 13);
+    [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
+    [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
+    public int RemainingJabs { get; private set; }
 
     [field: Header("Charger: Dazed Settings")]
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
@@ -45,6 +52,7 @@ public class Charger : Enemy
     public ChargerWindDownState ChargerWindDownState { get; private set; }
     public ChargerDazedState ChargerDazedState { get; private set; }
     public ChargerStaggeredState ChargerStaggeredState { get; private set; }
+    public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
 
     protected override void InitializeStates()
     {
@@ -56,6 +64,7 @@ public class Charger : Enemy
         ChargerDazedState = new ChargerDazedState(this);
         ChargerWindDownState = new ChargerWindDownState(this);
         ChargerStaggeredState = new ChargerStaggeredState(this);
+        ChargerJabbingAttackState = new ChargerJabbingAttackState(this);
     }
     #endregion
 
@@ -80,6 +89,8 @@ public class Charger : Enemy
         base.OnStart();
 
         SetDefaultState(ChargerWanderState);
+
+        FinishAnimation();
 
         originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
@@ -163,8 +174,7 @@ public class Charger : Enemy
         {
             if(dmg >= staggerDamageThreshold)
             {
-                ChangeState(EntityEmptyState);
-                ChangeState(ChargerStaggeredState);
+                ForceChangeState(ChargerStaggeredState);
             }
             else
             {
@@ -173,8 +183,10 @@ public class Charger : Enemy
         }
         else
         {
-            ChangeState(EntityEmptyState);
-            ChangeState(ChargerStaggeredState);
+            if(CanBeStaggered())
+            {
+                ForceChangeState(ChargerStaggeredState);
+            }
         }
 
         CurrentHealth -= newDamage;
@@ -194,7 +206,46 @@ public class Charger : Enemy
 
     private bool HasSuperArmorActive()
     {
-        // remember to add close attack state
-        return CurrentState == ChargerChargeState;
+        return CurrentState == ChargerChargeState
+            || CurrentState == ChargerJabbingAttackState
+            || CurrentState == ChargerTargetDetectedState;
+    }
+
+    private bool CanBeStaggered()
+    {
+        return CurrentState == ChargerWanderState
+            || CurrentState == ChargerDazedState
+            || CurrentState == ChargerWindDownState;
+    }
+
+    public void ResetJabCount()
+    {
+        RemainingJabs = JabCount;
+    }
+
+    public void FinishAnimation()
+    {
+        IsAttackAnimationPlaying = false;
+        DisableWeaponTriggers();
+    }
+
+    public void EnableWeaponTriggers()
+    {
+        if (RemainingJabs % 2 == 1)
+        {
+            RightFistWeapon.EnableTriggers();
+        }
+        else
+        {
+            LeftFistWeapon.EnableTriggers();
+        }
+
+        RemainingJabs--;
+    }
+
+    public void DisableWeaponTriggers()
+    {
+        RightFistWeapon.DisableTriggers();
+        LeftFistWeapon.DisableTriggers();
     }
 }

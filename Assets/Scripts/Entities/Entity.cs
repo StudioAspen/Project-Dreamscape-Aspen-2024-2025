@@ -139,14 +139,31 @@ public class Entity : MonoBehaviour, IPoolableObject
         DefaultState = state;
     }
 
+    /// <summary>
+    /// Change the statemachine state to the specified new state if the current state is not the same as the new state.
+    /// </summary>
+    /// <param name="state">The new state to change to.</param>
     public void ChangeState(BaseState state)
     {
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == state) return;
-        //if (CurrentState.GetType() == state.GetType()) return;
 
         CurrentState.OnExit();
         CurrentState = state;
+        CurrentState.OnEnter();
+    }
+
+
+    /// <summary>
+    /// Forces a change of state to the specified new state even when in that same state.
+    /// </summary>
+    /// <param name="newState">The new state to change to.</param>
+    public void ForceChangeState(BaseState newState)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        CurrentState.OnExit();
+        CurrentState = newState;
         CurrentState.OnEnter();
     }
 
@@ -191,8 +208,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        ChangeState(DefaultState);
-        ChangeState(EntityHitState);
+        ForceChangeState(EntityHitState);
 
         AttemptToSpawnHitNumbers(dmg, hitPoint);
 

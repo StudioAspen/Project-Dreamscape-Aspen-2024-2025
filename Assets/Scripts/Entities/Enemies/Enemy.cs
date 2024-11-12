@@ -16,7 +16,6 @@ public class Enemy : Entity
     [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] protected CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
@@ -69,8 +68,6 @@ public class Enemy : Entity
         ChangeTeam(1);
 
         SetDefaultState(EnemyIdleState);
-
-        FinishAnimation(); // disable attack animation
     }
 
     protected override void OnUpdate()
@@ -104,7 +101,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        Move(desiredAnimationMovement);
+        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -220,7 +217,13 @@ public class Enemy : Entity
         Target = targets[0];
     }
 
-    // filter targets in a cone shape starting from the center of the collider with a total angle of 2 * coneHalfAngle
+    /// <summary>
+    /// Filters targets in a cone shape starting from the center of the collider with a total angle of 2 * coneHalfAngle.
+    /// </summary>
+    /// <param name="targets">The list of targets to filter.</param>
+    /// <param name="center">The center position of the collider.</param>
+    /// <param name="coneHalfAngle">Half of the total angle of the cone.</param>
+    /// <returns>The filtered list of targets.</returns>
     public virtual List<Entity> FilterTargetsInConeShape(List<Entity> targets, Vector3 center, float coneHalfAngle)
     {
         if (targets.Count == 0) return targets;
@@ -289,21 +292,5 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
-    }
-
-    public virtual void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
-    }
-
-    public virtual void EnableWeaponTriggers()
-    {
-        Weapon.EnableTriggers();
-    }
-
-    public virtual void DisableWeaponTriggers()
-    {
-        Weapon.DisableTriggers();
     }
 }

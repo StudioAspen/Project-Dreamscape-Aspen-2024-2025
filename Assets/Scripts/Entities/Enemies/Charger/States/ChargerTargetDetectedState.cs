@@ -26,6 +26,8 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
         charger.SetSpeedModifier(0f);
 
+        charger.ResetJabCount();
+
         timer = 0f;
     }
 
@@ -46,11 +48,8 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
             if(distanceToTarget < charger.NearbyAttackRadiusThreshold)
             {
-                // change to nearby attack state
-
-                // temporary for now
-                charger.ChargerChargeState.AssignCurrentRememberedTarget(rememberedTarget);
-                charger.ChangeState(charger.ChargerChargeState);
+                charger.ChargerJabbingAttackState.AssignCurrentRememberedTarget(rememberedTarget);
+                charger.ChangeState(charger.ChargerJabbingAttackState);
             }
             else
             {

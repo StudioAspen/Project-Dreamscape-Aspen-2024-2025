@@ -58,7 +58,7 @@ MonoBehaviour:
   baseSpeed: 1
   velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 7.5
-  targetDetectionRadius: 3
+  targetDetectionRadius: 2.25
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -71,7 +71,6 @@ MonoBehaviour:
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
-  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 3
   IsAttackAnimationPlaying: 0
   UseRootMotion: 0
@@ -79,20 +78,24 @@ MonoBehaviour:
   superArmorDamageReduction: 0.5
   <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
   <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
-  <DetectionDistance>k__BackingField: 10
-  <DetectionConeHalfAngle>k__BackingField: 25
+  <DetectionDistance>k__BackingField: 7.5
+  <DetectionConeHalfAngle>k__BackingField: 20
   <TargetDetectedDuration>k__BackingField: 2
-  <NearbyAttackRadiusThreshold>k__BackingField: 4
+  <NearbyAttackRadiusThreshold>k__BackingField: 5
   <ChargeContactDamage>k__BackingField: 30
   <ChargeSpeedModifier>k__BackingField: 5
   <ChargeDuration>k__BackingField: 10
-  <ChargeRotationSpeed>k__BackingField: 5
+  <ChargeRotationSpeed>k__BackingField: 15
   <ChargeCollisionRadius>k__BackingField: 0.4
-  <ChargeCollisionOffsetDistance>k__BackingField: 0.2
+  <ChargeCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <ChargeLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 320
-  <WindDownDuration>k__BackingField: 3
+  <WindDownDuration>k__BackingField: 3.5
+  <JabCount>k__BackingField: 5
+  <JabDamageRange>k__BackingField: {x: 7, y: 13}
+  <LeftFistWeapon>k__BackingField: {fileID: 3805667188454913111}
+  <RightFistWeapon>k__BackingField: {fileID: 3945500814101211304}
   <DazedDuration>k__BackingField: 3
   <StaggeredStateDuration>k__BackingField: 2
 --- !u!95 &5860220226555299953
@@ -136,9 +139,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.25
-  m_Height: 2.7126975
+  m_Height: 2.7039478
   m_Direction: 1
-  m_Center: {x: 0, y: 1.3739386, z: 0}
+  m_Center: {x: 0, y: 1.3695637, z: 0}
 --- !u!54 &3915645929625153338
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -402,6 +405,122 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1001 &4343171019667789133
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7218688675007161153}
+    m_Modifications:
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.031
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 618815233110515994, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: holderEntity
+      value: 
+      objectReference: {fileID: 3031659000538846661}
+    - target: {fileID: 643238577905173981, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Name
+      value: ChargerLeftFist
+      objectReference: {fileID: 0}
+    - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3649179186203773579, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871507518177977818, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918874709248315491, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 16906527d2f86ac4083742b94c6e3818, type: 3}
+--- !u!114 &3805667188454913111 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 618815233110515994, guid: 16906527d2f86ac4083742b94c6e3818,
+    type: 3}
+  m_PrefabInstance: {fileID: 4343171019667789133}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6783d80e507fcc4fb394fa75f758f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &4461951116654764761 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,
+    type: 3}
+  m_PrefabInstance: {fileID: 4343171019667789133}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4472509618577045122
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -833,6 +952,10 @@ PrefabInstance:
     - {fileID: 5866666021909216657, guid: 2be0c0643d1b0f54e92d2c57b2545ce5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6502182839619065283, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4461951116654764761}
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
         type: 3}
       insertIndex: -1
@@ -1325,6 +1448,12 @@ CapsuleCollider:
   m_Height: 0.38491467
   m_Direction: 1
   m_Center: {x: -9.2008157e-10, y: 0.06392918, z: 0.00000020506268}
+--- !u!4 &7218688675007161153 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4472509618577045122}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7726854304207880713 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3086436065929644917, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
@@ -1470,6 +1599,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 618815233110515994, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: holderEntity
+      value: 
+      objectReference: {fileID: 3031659000538846661}
     - target: {fileID: 643238577905173981, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}
       propertyPath: m_Layer
@@ -1478,7 +1612,7 @@ PrefabInstance:
     - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}
       propertyPath: m_Name
-      value: FollowerFist
+      value: ChargerRightFist
       objectReference: {fileID: 0}
     - target: {fileID: 784140094486146350, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}
