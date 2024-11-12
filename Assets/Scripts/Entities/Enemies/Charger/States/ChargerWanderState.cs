@@ -22,6 +22,8 @@ public class ChargerWanderState : EnemyBaseState
 
         charger.SetSpeedModifier(1f);
 
+        charger.ClearTarget();
+
         wanderTimeElapsed = Mathf.Infinity;
         randomWanderIntervalDuration = Random.Range(charger.WanderIntervalDurationRange.x, charger.WanderIntervalDurationRange.y);
     }
@@ -34,6 +36,8 @@ public class ChargerWanderState : EnemyBaseState
     public override void Update()
     {
         wanderTimeElapsed += Time.deltaTime;
+
+        charger.TryAssignTarget();
 
         if(wanderTimeElapsed > randomWanderIntervalDuration)
         {
@@ -48,6 +52,7 @@ public class ChargerWanderState : EnemyBaseState
 
         if(charger.Target != null)
         {
+            charger.ChargerTargetDetectedState.AssignCurrentRememberedTarget(charger.Target);
             charger.ChangeState(charger.ChargerTargetDetectedState);
             return;
         }

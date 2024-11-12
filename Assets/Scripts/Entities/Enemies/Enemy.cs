@@ -14,7 +14,7 @@ public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
     [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] private CapsuleCollider capsuleCollider;
+    [SerializeField, Self] protected CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
     [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
 
@@ -27,10 +27,11 @@ public class Enemy : Entity
     private List<Vector3> path;
     private bool lookAtPath;
 
-    public Entity Target { get; private set; }
+    public Entity Target { get; protected set; }
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
+    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -98,7 +99,7 @@ public class Enemy : Entity
 
     protected virtual void OnOnAnimatorMove()
     {
-        if (!IsAttackAnimationPlaying) return;
+        if (!UseRootMotion) return;
 
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
@@ -108,7 +109,7 @@ public class Enemy : Entity
 
     protected virtual void OnTick()
     {
-        AssignTarget();
+        TryAssignTarget();
     }
 
     protected override void InitializeStates()
@@ -207,7 +208,7 @@ public class Enemy : Entity
         spawner.RemoveEnemyFromList(this);
     }
 
-    protected virtual void AssignTarget()
+    public virtual void TryAssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
         if (targets.Count == 0)
@@ -217,6 +218,67 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
+    }
+
+    // filter targets in a cone shape starting from the center of the collider with a total angle of 2 * coneHalfAngle
+    public virtual List<Entity> FilterTargetsInConeShape(List<Entity> targets, Vector3 center, float coneHalfAngle)
+    {
+        if (targets.Count == 0) return targets;
+
+        List<Entity> filteredTargets = new List<Entity>();
+
+        Vector3 forwardDirection = transform.forward;
+
+        foreach (Entity target in targets)
+        {
+            Vector3 directionToTarget = target.GetColliderCenterPosition() - center;
+
+            // Calculate the angle between the forward direction and the direction to the target
+            float angle = Vector3.Angle(forwardDirection, directionToTarget.normalized);
+
+            // If angle is within half of the cone's angle, add to filtered targets
+            if (angle <= coneHalfAngle) filteredTargets.Add(target);
+        }
+
+        return filteredTargets;
+    }
+
+    public void ClearTarget()
+    {
+        Target = null;
+    }
+
+    protected void DrawGizmosCone(Vector3 center, Vector3 direction, float halfAngle, float maxDistance)
+    {
+        // Normalize direction
+        direction = direction.normalized;
+
+        // Calculate the radius of the cone's base
+        float radius = Mathf.Tan(halfAngle * Mathf.Deg2Rad) * maxDistance;
+
+        // Get two perpendicular vectors to the direction
+        Vector3 up = Vector3.Cross(direction, Vector3.right).normalized * radius;
+        Vector3 right = Vector3.Cross(direction, up).normalized * radius;
+
+        // Calculate the tip of the cone
+        Vector3 tip = center + direction * maxDistance;
+
+        // Draw lines from center to base of the cone
+        Gizmos.DrawLine(center, tip);
+
+        // Draw the circle at the base of the cone
+        int segments = 24; // Number of segments to approximate the circle
+        float angleStep = 360f / segments;
+
+        Vector3 lastPoint = tip + up;
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = angleStep * i;
+            Vector3 nextPoint = tip + Quaternion.AngleAxis(angle, direction) * up;
+            Gizmos.DrawLine(lastPoint, nextPoint);
+            Gizmos.DrawLine(center, nextPoint); // Connect each segment to the center
+            lastPoint = nextPoint;
+        }
     }
 
     public override void LookAt(Vector3 target)

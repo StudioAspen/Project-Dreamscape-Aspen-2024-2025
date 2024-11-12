@@ -1,37 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ChargerDazedState : EnemyBaseState
+public class ChargerStaggeredState : EnemyBaseState
 {
     private Charger charger;
 
     private float timer;
 
-    public ChargerDazedState(Charger enemy) : base(enemy)
+    public ChargerStaggeredState(Charger enemy) : base(enemy)
     {
         charger = enemy;
     }
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("Hit");
+        charger.DefaultTransitionToAnimation("GetUp");
 
         charger.SetSpeedModifier(0f);
 
         timer = 0f;
+
+        charger.UseRootMotion = true;
     }
 
     public override void OnExit()
     {
-
+        charger.UseRootMotion = false;
     }
 
     public override void Update()
     {
         timer += Time.deltaTime;
 
-        if(timer > charger.DazedDuration)
+        if (timer > charger.StaggeredStateDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;

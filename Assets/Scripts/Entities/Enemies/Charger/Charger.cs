@@ -1,72 +1,61 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Charger : Enemy
 {
+    [Header("Charger: Armor Settings")]
+    [SerializeField] private int staggerDamageThreshold = 40;
+    [SerializeField] private float superArmorDamageReduction = 0.5f; // takes (100 - superArmorDamageReduction)% of damage when hit
+
     [field: Header("Charger: Wander Settings")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
     [field: Header("Charger: Player Detected Settings")]
+    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
+    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
     [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
     [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
     [field: Header("Charger: Charge Settings")]
+    [field: SerializeField] public int ChargeContactDamage { get; private set; } = 30;
+    [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
     [field: SerializeField] public float ChargeCollisionRadius { get; private set; } = 2f;
+    [field: SerializeField] public float ChargeCollisionOffsetDistance { get; private set; } = 0.5f;
     [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (capsuleCollider.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetDistance) * Vector3.up;
+    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (capsuleCollider.height / 2 - ChargeCollisionRadius) * Vector3.up;
     private float originalRotationSpeed;
 
-    [field: SerializeField] public float ChargingProcRadius { get; private set; } = 11f;
-    [field: SerializeField] public float ChargeSpeedMin { get; private set; } = 8f;
-    [field: SerializeField] public float ChargeSpeedMax { get; private set; } = 16f;
-    [field: SerializeField] public float ChargeAccelerationInterval { get; private set; } = .05f;
-    [field: SerializeField] public float HitboxRadius { get; private set; } = 3f;
-    [field: SerializeField] public float TargetFocusTime { get; private set; } = 2f;
-    [field: SerializeField] public float KnockbackForce { get; private set; } = 2f;
-    [field: SerializeField] public float MaxChargeDuration { get; private set; } = 4f;
-    [field: SerializeField] public float MaxChargeDistance { get; private set; } = 25f;
-
-    [field: Header("Charger: Close Attack Settings")]
-    [field: SerializeField] public bool IsInterrupted;
-
-    [field: Header("Charger: Idle Settings")]
-    [field: SerializeField] public float IdleWanderWaitMin { get; private set; } = 1f;
-    [field: SerializeField] public float IdleWanderWaitMax { get; private set; } = 3f;
-
-
-
-
     [field: Header("Charger: Wind Down Settings")]
-    [field: SerializeField] public float WindDownDuration;
-    [field: SerializeField] public float DamagedStateDuration;
-
+    [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
 
     [field: Header("Charger: Dazed Settings")]
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
-    [field: SerializeField] public bool IsDazed;
+
+    [field: Header("Charger: Staggered State Settings")]
+    [field: SerializeField] public float StaggeredStateDuration { get; private set; } = 2f;
 
     #region States
-    public ChargerDazedState ChargerDazedState { get; private set; }
     public ChargerWanderState ChargerWanderState { get; private set; }
-    public ChargerChargeState ChargerChargeState { get; private set; }
-
-    public ChargerWindDownState ChargerWindDownState { get; private set; }
     public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
-    public ChargerDamagedState ChargerDamagedState { get; private set; }
+    public ChargerChargeState ChargerChargeState { get; private set; }
+    public ChargerWindDownState ChargerWindDownState { get; private set; }
+    public ChargerDazedState ChargerDazedState { get; private set; }
+    public ChargerStaggeredState ChargerStaggeredState { get; private set; }
 
     protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyIdleState = new ChargerIdleState(this);
-        EnemyChaseState = new ChargerChaseState(this);
-        ChargerDazedState = new ChargerDazedState(this);
         ChargerWanderState = new ChargerWanderState(this);
-        ChargerChargeState = new ChargerChargeState(this);
-        ChargerWindDownState = new ChargerWindDownState(this);
         ChargerTargetDetectedState = new ChargerTargetDetectedState(this);
-        ChargerDamagedState = new ChargerDamagedState(this);
+        ChargerChargeState = new ChargerChargeState(this);
+        ChargerDazedState = new ChargerDazedState(this);
+        ChargerWindDownState = new ChargerWindDownState(this);
+        ChargerStaggeredState = new ChargerStaggeredState(this);
     }
     #endregion
 
@@ -90,6 +79,8 @@ public class Charger : Enemy
     {
         base.OnStart();
 
+        SetDefaultState(ChargerWanderState);
+
         originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
 
@@ -103,10 +94,20 @@ public class Charger : Enemy
         base.OnFixedUpdate();
     }
 
+    protected override void OnTick()
+    {
+        
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(GetColliderCenterPosition(), ChargeCollisionRadius);
+        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomGizmos.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
+        CustomGizmos.DrawWireCone(ChargeCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+
+        Gizmos.color = Color.white;
+        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, ChargeCollisionTopPoint, ChargeCollisionRadius);
     }
 
     protected override void OnOnAnimatorMove()
@@ -124,19 +125,61 @@ public class Charger : Enemy
         rotationSpeed = originalRotationSpeed;
     }
 
+    public override void TryAssignTarget()
+    {
+        List<Entity> smallRadiusTargets = GetNearbyTargets();
+        List<Entity> largeRadiusTargets = GetNearbyEntities(DetectionDistance);
+        List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, ChargeCollisionTopPoint, DetectionConeHalfAngle);
+
+        if (largeRadiusTargets.Count == 0)
+        {
+            Target = null;
+            return;
+        }
+
+        if(filteredTargetsByCone.Count > 0)
+        {
+            Target = filteredTargetsByCone[0];
+            return;
+        }
+
+        if (smallRadiusTargets.Count > 0)
+        {
+            Target = smallRadiusTargets[0];
+            return;
+        }
+
+        Target = null;
+        return;
+    }
+
     public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
-        if (CurrentState != ChargerChargeState)
+        int newDamage = dmg;
+
+        if(HasSuperArmorActive())
         {
-            ChangeState(DefaultState);
-            ChangeState(EntityHitState);
+            if(dmg >= staggerDamageThreshold)
+            {
+                ChangeState(EntityEmptyState);
+                ChangeState(ChargerStaggeredState);
+            }
+            else
+            {
+                newDamage = Mathf.RoundToInt(superArmorDamageReduction * dmg);
+            }
+        }
+        else
+        {
+            ChangeState(EntityEmptyState);
+            ChangeState(ChargerStaggeredState);
         }
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        CurrentHealth -= newDamage;
 
-        CurrentHealth -= dmg;
+        AttemptToSpawnHitNumbers(newDamage, hitPoint);
 
         lastHitSource = source;
 
@@ -147,5 +190,11 @@ public class Charger : Enemy
         {
             OnDeath();
         }
+    }
+
+    private bool HasSuperArmorActive()
+    {
+        // remember to add close attack state
+        return CurrentState == ChargerChargeState;
     }
 }

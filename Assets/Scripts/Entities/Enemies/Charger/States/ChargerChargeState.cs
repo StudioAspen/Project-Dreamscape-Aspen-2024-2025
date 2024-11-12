@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
@@ -23,19 +24,19 @@ public class ChargerChargeState : EnemyBaseState
         rememberedTarget = target;
     }
 
-    public override void OnEnter() //when state is switched to.
+    public override void OnEnter() 
     {
         charger.DefaultTransitionToAnimation("FlatMovement");
         
-        charger.SetSpeedModifier(5f);
+        charger.SetSpeedModifier(charger.ChargeSpeedModifier);
         charger.SetRotationSpeed(charger.ChargeRotationSpeed);
 
         timer = 0f;
     }
 
-    public override void OnExit() //when state is switched out.
+    public override void OnExit() 
     {
-
+        charger.ResetRotationSpeed();
     }
 
     public override void Update()
@@ -43,9 +44,11 @@ public class ChargerChargeState : EnemyBaseState
         timer += Time.deltaTime;
         if(timer > charger.ChargeDuration)
         {
-            // change to wind down state
+            charger.ChangeState(charger.ChargerWindDownState);
             return;
         }
+
+        CheckCollisions();
 
         charger.LookAt(rememberedTarget.transform.position);
     }
@@ -57,6 +60,81 @@ public class ChargerChargeState : EnemyBaseState
 
     private void CheckCollisions()
     {
-        Collider[] hits = Physics.OverlapSphere(charger.GetColliderCenterPosition(), charger.ChargeCollisionRadius, charger.ChargeLayerMask);
+        // charge layer mask should only be ground and damageable entities
+        Collider[] hits = Physics.OverlapCapsule(charger.ChargeCollisionBottomPoint, charger.ChargeCollisionTopPoint, charger.ChargeCollisionRadius, charger.ChargeLayerMask);
+
+        if (hits == null) return;
+        if (hits.Length == 0) return;
+
+        List<Collider> orderedHits = hits.OrderBy(hit => charger.Distance(hit.ClosestPoint(charger.GetColliderCenterPosition()))).ToList();
+
+        foreach(Collider hit in orderedHits)
+        {
+            if(IsOwnDamageableEntityCollider(hit)) continue;
+
+            if(DidChargerHitWall(hit))
+            {
+                // change to dazed state
+                charger.ChangeState(charger.ChargerDazedState);
+                return;
+            }
+
+            if(DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
+            {
+                // fling friendly entity
+            }
+
+            if(DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
+            {
+                // still need to fling enemy entity
+                enemyEntity.TakeDamage(charger.ChargeContactDamage, hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject);
+
+                charger.ChangeState(charger.ChargerWindDownState);
+                return;
+            }
+        }
+    }
+
+    private bool IsOwnDamageableEntityCollider(Collider hit)
+    {
+        // check if hit is a child of charger's collider
+        Charger selfCharger = hit.GetComponentInParent<Charger>();
+
+        if(selfCharger == null) return false;
+        if (selfCharger == charger) return true;
+
+        return false;
+    }
+
+    private bool DidChargerHitFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if(entity == null) return false;
+        if (entity.Team != charger.Team) return false;
+
+        Debug.Log($"Fling friendly entity: {entity.gameObject.name}");
+
+        return true;
+    }
+
+    private bool DidChargerHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == charger.Team) return false;
+
+        return true;
+    }
+
+    private bool DidChargerHitWall(Collider hit)
+    {
+        if(hit.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

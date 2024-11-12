@@ -52,13 +52,13 @@ MonoBehaviour:
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 30
+  <MaxHealth>k__BackingField: 300
   <Level>k__BackingField: 1
   IsGrounded: 0
   baseSpeed: 1
   velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 7.5
-  targetDetectionRadius: 5
+  targetDetectionRadius: 3
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -74,32 +74,27 @@ MonoBehaviour:
   <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 3
   IsAttackAnimationPlaying: 0
+  UseRootMotion: 0
+  staggerDamageThreshold: 40
+  superArmorDamageReduction: 0.5
   <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
   <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+  <DetectionDistance>k__BackingField: 10
+  <DetectionConeHalfAngle>k__BackingField: 25
   <TargetDetectedDuration>k__BackingField: 2
-  <NearbyAttackRadiusThreshold>k__BackingField: 6
-  <ChargeDuration>k__BackingField: 20
+  <NearbyAttackRadiusThreshold>k__BackingField: 4
+  <ChargeContactDamage>k__BackingField: 30
+  <ChargeSpeedModifier>k__BackingField: 5
+  <ChargeDuration>k__BackingField: 10
   <ChargeRotationSpeed>k__BackingField: 5
-  <ChargeCollisionRadius>k__BackingField: 1.25
+  <ChargeCollisionRadius>k__BackingField: 0.4
+  <ChargeCollisionOffsetDistance>k__BackingField: 0.2
   <ChargeLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 320
-  <ChargingProcRadius>k__BackingField: 7
-  <ChargeSpeedMin>k__BackingField: 2
-  <ChargeSpeedMax>k__BackingField: 16
-  <ChargeAccelerationInterval>k__BackingField: 0.01
-  <HitboxRadius>k__BackingField: 3
-  <TargetFocusTime>k__BackingField: 2
-  <KnockbackForce>k__BackingField: 2
-  <MaxChargeDuration>k__BackingField: 4
-  <MaxChargeDistance>k__BackingField: 50
-  IsInterrupted: 0
-  <IdleWanderWaitMin>k__BackingField: 1
-  <IdleWanderWaitMax>k__BackingField: 3
-  WindDownDuration: 0
-  DamagedStateDuration: 0
-  <DazedDuration>k__BackingField: 5
-  IsDazed: 0
+  <WindDownDuration>k__BackingField: 3
+  <DazedDuration>k__BackingField: 3
+  <StaggeredStateDuration>k__BackingField: 2
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5

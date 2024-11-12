@@ -15,11 +15,16 @@ public class ChargerTargetDetectedState : EnemyBaseState
         charger = enemy;
     }
 
+    public void AssignCurrentRememberedTarget(Entity target)
+    {
+        rememberedTarget = target;
+    }
+
     public override void OnEnter()
     {
+        charger.DefaultTransitionToAnimation("TargetDetected");
+
         charger.SetSpeedModifier(0f);
-        
-        rememberedTarget = charger.Target;
 
         timer = 0f;
     }
@@ -42,6 +47,10 @@ public class ChargerTargetDetectedState : EnemyBaseState
             if(distanceToTarget < charger.NearbyAttackRadiusThreshold)
             {
                 // change to nearby attack state
+
+                // temporary for now
+                charger.ChargerChargeState.AssignCurrentRememberedTarget(rememberedTarget);
+                charger.ChangeState(charger.ChargerChargeState);
             }
             else
             {
