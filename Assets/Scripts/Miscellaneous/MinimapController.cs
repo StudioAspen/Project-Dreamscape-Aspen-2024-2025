@@ -29,6 +29,7 @@ public class MinimapController : MonoBehaviour
     private Mask mask;
     private RawImage image;
     private Transform border;
+    [SerializeField] private Canvas minimap_canvas;
     [SerializeField, Scene] GameManager gameManager;
 
     private void OnValidate()
@@ -117,11 +118,17 @@ public class MinimapController : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        // If the game isn't running, minimize map
-        if ((newState != GameState.PLAYING) && isMaximized)
+        // If the game isn't running, hide minimap
+        if ((newState != GameState.PLAYING))
         {
-            ToggleMinimap();
-            return;
+            if (isMaximized)
+            {
+                ToggleMinimap();
+            }
+            minimap_canvas.gameObject.SetActive(false);
+        } else 
+        {
+            minimap_canvas.gameObject.SetActive(true);
         }
 
     }
