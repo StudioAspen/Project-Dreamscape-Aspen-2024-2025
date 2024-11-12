@@ -31,8 +31,8 @@ public class WorldManager : MonoBehaviour
     private WorldEvent currentEventSelection = WorldEvent.EVENT1;
 
     [field: Header("Progression")]
-    [field: SerializeField] public int EmpowerTokens { get; private set; }
-    [field: SerializeField] public int WeakenTokens { get; private set; }
+    public int EmpowerTokens { get; private set; }
+    public int WeakenTokens { get; private set; }
 
     private void OnValidate()
     {

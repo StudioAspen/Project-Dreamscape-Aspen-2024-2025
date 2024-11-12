@@ -185,7 +185,7 @@ public class Enemy : Entity
 
     public void Move(Vector3 dir)
     {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)

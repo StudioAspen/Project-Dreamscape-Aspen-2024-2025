@@ -25,7 +25,7 @@ public class ChargerCloseAttackState : EnemyBaseState {
             charger.ChangeState(charger.EnemyIdleState);
             return;
         } else
-            charger.ChangeState(charger.ChargerFarAttackState);
+            charger.ChangeState(charger.ChargerChargeState);
     }
 
     public override void FixedUpdate() { }

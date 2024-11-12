@@ -56,7 +56,7 @@ public class ChargerChaseState : EnemyChaseState
 
             if (inLineOfSight)
             {
-                charger.ChangeState(charger.ChargerFarAttackState);
+                charger.ChangeState(charger.ChargerChargeState);
             }
 
 

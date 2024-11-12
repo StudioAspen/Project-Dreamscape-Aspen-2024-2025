@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 68945460}
   image: {fileID: 1150409913}
   nameText: {fileID: 1891613857}
@@ -834,7 +834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480c2cefc8134a24fa5e19b5f9cb0dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 412937922}
   image: {fileID: 1062435199}
   nameText: {fileID: 1071112866}
@@ -1440,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480c2cefc8134a24fa5e19b5f9cb0dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 719982913}
   image: {fileID: 657527045}
   nameText: {fileID: 247482182}
@@ -2001,7 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 878057792}
   image: {fileID: 2120750626}
   nameText: {fileID: 1941833614}
@@ -3373,7 +3373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9704770b878f6e14eaaafc2981e2ab71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   empowerTokensText: {fileID: 136049575}
   weakenTokensText: {fileID: 729709475}
   continueText: {fileID: 709035872}
@@ -3585,7 +3585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 1461370043}
   image: {fileID: 864508893}
   nameText: {fileID: 1305073775}
@@ -3724,7 +3724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480c2cefc8134a24fa5e19b5f9cb0dbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   button: {fileID: 1496102132}
   image: {fileID: 1802080321}
   nameText: {fileID: 721776689}
@@ -4131,7 +4131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 487855562}
-  worldManager: {fileID: 1416371478039211755}
+  worldManager: {fileID: 1416371478039211756}
   landPlacementUIObject: {fileID: 595291656}
   landEmpowermentUIObject: {fileID: 1401723641}
   minMoveSpeed: 30
@@ -5234,7 +5234,7 @@ PrefabInstance:
         type: 3}
       propertyPath: worldManager
       value: 
-      objectReference: {fileID: 1416371478039211755}
+      objectReference: {fileID: 1416371478039211756}
     - target: {fileID: 2866989536264367900, guid: db1275f617a255440bbd7838400968a9,
         type: 3}
       propertyPath: enemyPrefabs.Array.size
@@ -5265,7 +5265,7 @@ PrefabInstance:
         type: 3}
       propertyPath: worldManager
       value: 
-      objectReference: {fileID: 1416371478039211755}
+      objectReference: {fileID: 1416371478039211756}
     - target: {fileID: 8938620608541455539, guid: db1275f617a255440bbd7838400968a9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5356,8 +5356,18 @@ MonoBehaviour:
   ghostLandTransform: {fileID: 975229811}
   redTransparentMaterial: {fileID: 0}
   greenTransparentMaterial: {fileID: 0}
-  <EmpowerTokens>k__BackingField: 1
-  <WeakenTokens>k__BackingField: 1
+--- !u!114 &1416371478039211756 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7451146893933980580, guid: db1275f617a255440bbd7838400968a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1416371478039211751}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519028173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1613189912748339658
 GameObject:
   m_ObjectHideFlags: 0

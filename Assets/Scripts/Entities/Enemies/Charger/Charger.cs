@@ -10,8 +10,13 @@ public class Charger : Enemy
     [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
     [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
-    [field: Header("Charger: Far Attack Settings")]
-    [field: SerializeField] public float FarAttackDuration { get; private set; } = 20f;
+    [field: Header("Charger: Charge Settings")]
+    [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
+    [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float ChargeCollisionRadius { get; private set; } = 2f;
+    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
+    private float originalRotationSpeed;
+
     [field: SerializeField] public float ChargingProcRadius { get; private set; } = 11f;
     [field: SerializeField] public float ChargeSpeedMin { get; private set; } = 8f;
     [field: SerializeField] public float ChargeSpeedMax { get; private set; } = 16f;
@@ -44,7 +49,8 @@ public class Charger : Enemy
     #region States
     public ChargerDazedState ChargerDazedState { get; private set; }
     public ChargerWanderState ChargerWanderState { get; private set; }
-    public ChargerFarAttackState ChargerFarAttackState { get; private set; }
+    public ChargerChargeState ChargerChargeState { get; private set; }
+
     public ChargerWindDownState ChargerWindDownState { get; private set; }
     public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
     public ChargerDamagedState ChargerDamagedState { get; private set; }
@@ -57,7 +63,7 @@ public class Charger : Enemy
         EnemyChaseState = new ChargerChaseState(this);
         ChargerDazedState = new ChargerDazedState(this);
         ChargerWanderState = new ChargerWanderState(this);
-        ChargerFarAttackState = new ChargerFarAttackState(this);
+        ChargerChargeState = new ChargerChargeState(this);
         ChargerWindDownState = new ChargerWindDownState(this);
         ChargerTargetDetectedState = new ChargerTargetDetectedState(this);
         ChargerDamagedState = new ChargerDamagedState(this);
@@ -80,14 +86,11 @@ public class Charger : Enemy
         base.OnOnDisable();
     }
 
-    protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     protected override void OnStart()
     {
         base.OnStart();
+
+        originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
 
     protected override void OnUpdate()
@@ -100,11 +103,32 @@ public class Charger : Enemy
         base.OnFixedUpdate();
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(GetColliderCenterPosition(), ChargeCollisionRadius);
+    }
+
+    protected override void OnOnAnimatorMove()
+    {
+        base.OnOnAnimatorMove();
+    }
+
+    public void SetRotationSpeed(float newRotationSpeed)
+    {
+        rotationSpeed = newRotationSpeed;
+    }
+
+    public void ResetRotationSpeed()
+    {
+        rotationSpeed = originalRotationSpeed;
+    }
+
     public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
-        if (CurrentState != ChargerFarAttackState)
+        if (CurrentState != ChargerChargeState)
         {
             ChangeState(DefaultState);
             ChangeState(EntityHitState);

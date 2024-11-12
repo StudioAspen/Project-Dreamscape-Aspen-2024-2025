@@ -45,10 +45,9 @@ public class ChargerTargetDetectedState : EnemyBaseState
             }
             else
             {
-                // change to far attack state
+                charger.ChargerChargeState.AssignCurrentRememberedTarget(rememberedTarget);
+                charger.ChangeState(charger.ChargerChargeState);
             }
-
-            charger.ChangeState(charger.ChargerWanderState);
 
             return;
         }
