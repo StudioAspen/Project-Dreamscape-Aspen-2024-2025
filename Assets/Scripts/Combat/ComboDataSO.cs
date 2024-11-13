@@ -14,12 +14,14 @@ public class ComboDataSO : ScriptableObject
     [field: SerializeField] [field: Range(0.01f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
     [field: Header("[Filter Options]")]
-    [field: SerializeField] public bool AttackHasRootMotion { get; private set; } = true;
-    [field: SerializeField] public bool IsAirCombo { get; private set; }
-    //[field: SerializeField] public bool IsSprintCombo { get; private set; }
+    [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
+    [field: SerializeField] public bool WillIgnoreGravity { get; private set; }
+    [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
 
     [field: Header("[Hit Options]")]
     [field: SerializeField] public Vector2Int ComboDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: Tooltip("Upwards launch force on hit. Only works if IsAirCombo is true.")]
+    [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
 
     private void OnValidate()
     {

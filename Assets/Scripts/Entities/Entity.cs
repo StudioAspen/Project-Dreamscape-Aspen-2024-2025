@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
@@ -43,7 +44,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
-    public EntityFlingState EntityFlingState { get; protected set; }
+    public EntityLaunchState EntityLaunchState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -55,7 +56,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         //makes new state scripts for the entity to use
         EntityEmptyState = new EntityEmptyState(this);
         EntityDeathState = new EntityDeathState(this);
-        EntityFlingState = new EntityFlingState(this);
+        EntityLaunchState = new EntityLaunchState(this);
         EntityStaggeredState = new EntityStaggeredState(this);
     }
     #endregion
@@ -286,9 +287,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        TryChangeStaggeredState();
 
-        AttemptToSpawnHitNumbers(damage, hitPoint);
+        TrySpawnHitNumbers(damage, hitPoint);
 
         CurrentHealth -= damage;
 
@@ -317,7 +318,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        TrySpawnHitNumbers(dmg, hitPoint);
 
         CurrentHealth -= dmg;
 
@@ -333,12 +334,23 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Tries to change the state of the entity to the staggered state.
+    /// If the current state is already the fling state, it does nothing.
+    /// </summary>
+    private protected virtual void TryChangeStaggeredState()
+    {
+        if (CurrentState == EntityLaunchState) return;
+
+        ForceChangeState(EntityStaggeredState);
+    }
+
+    /// <summary>
     /// Attempts to spawn hit numbers at the hit point with the specified damage.
     /// Fails if the HitNumberPooler is not found.
     /// </summary>
     /// <param name="dmg">The amount of damage to display.</param>
     /// <param name="hitPoint">The point where the entity was hit.</param>
-    private protected void AttemptToSpawnHitNumbers(int dmg, Vector3 hitPoint)
+    private protected void TrySpawnHitNumbers(int dmg, Vector3 hitPoint)
     {
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
@@ -630,14 +642,46 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Applies a fling force to the entity in the specified direction with the given force and stun duration.
-    /// Override this function to add custom fling logic.
+    /// Applies a launch force to the entity in the specified direction with the given force and stun duration.
+    /// Override this function to add custom launch logic.
     /// </summary>
-    /// <param name="direction">The direction in which to apply the fling force.</param>
-    /// <param name="force">The force of the fling.</param>
-    /// <param name="stunDuration">The duration of the stun caused by the fling.</param>
-    public virtual void Fling(Vector3 direction, float force, float stunDuration)
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    public virtual void Launch(Vector3 direction, float force)
     {
 
+    }
+
+    /// <summary>
+    /// Tries to change the state of the entity to the launch state with the specified direction, force, and stun duration.
+    /// If the current state is the death state or already the launch state, it does nothing.
+    /// Override this function to modify the blocking states.
+    /// </summary>
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
+    public virtual void TryChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    {
+        if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntityLaunchState) return;
+
+        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
+        ChangeState(EntityLaunchState);
+    }
+
+    /// <summary>
+    /// Forces the state of the entity to the launch state with the specified direction, force, and stun duration.
+    /// If the current state is the death state, it does nothing.
+    /// Override this function to modify the blocking states.
+    /// </summary>
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
+    public virtual void ForceChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
+        ForceChangeState(EntityLaunchState);
     }
 }

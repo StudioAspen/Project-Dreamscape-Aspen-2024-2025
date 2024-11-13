@@ -75,6 +75,12 @@ public class Enemy : Entity
         base.OnUpdate();
 
         HandleAnimations();
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
+            ForceChangeState(EntityLaunchState);
+        }
     }
 
     protected override void OnFixedUpdate()
@@ -262,8 +268,9 @@ public class Enemy : Entity
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
-    public override void Fling(Vector3 direction, float force, float stunDuration)
+    public override void Launch(Vector3 direction, float force)
     {
+        rigidBody.velocity = Vector3.zero;
         rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }

@@ -193,7 +193,7 @@ public class Charger : Enemy
 
         CurrentHealth -= newDamage;
 
-        AttemptToSpawnHitNumbers(newDamage, hitPoint);
+        TrySpawnHitNumbers(newDamage, hitPoint);
 
         lastHitSource = source;
 

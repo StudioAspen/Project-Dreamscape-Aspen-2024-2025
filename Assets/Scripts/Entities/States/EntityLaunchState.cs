@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EntityFlingState : BaseState
+public class EntityLaunchState : BaseState
 {
     private Entity entity;
 
@@ -12,12 +12,12 @@ public class EntityFlingState : BaseState
 
     private protected bool touchedGround;
 
-    public EntityFlingState(Entity entity)
+    public EntityLaunchState(Entity entity)
     {
         this.entity = entity;
     }
 
-    public virtual void SetFlingSettings(Vector3 direction, float force, float stunDuration)
+    public virtual void SetLaunchSettings(Vector3 direction, float force, float stunDuration)
     {
         this.direction = direction;
         this.force = force;
@@ -33,7 +33,7 @@ public class EntityFlingState : BaseState
 
         entity.SetSpeedModifier(0);
 
-        entity.Fling(direction, force, stunDuration);
+        entity.Launch(direction, force);
     }
 
     public override void OnExit()

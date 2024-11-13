@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public class PlayerFlingState : EntityFlingState
+public class PlayerLaunchState : EntityLaunchState
 {
     private Player player;
 
-    public PlayerFlingState(Player entity) : base(entity)
+    public PlayerLaunchState(Player entity) : base(entity)
     {
         player = entity;
     }

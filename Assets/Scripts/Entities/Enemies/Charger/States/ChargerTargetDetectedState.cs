@@ -38,6 +38,12 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
     public override void Update()
     {
+        if (rememberedTarget == null)
+        {
+            charger.ChangeState(charger.ChargerWanderState);
+            return;
+        }
+
         timer += Time.deltaTime;
 
         charger.LookAt(rememberedTarget.transform.position);

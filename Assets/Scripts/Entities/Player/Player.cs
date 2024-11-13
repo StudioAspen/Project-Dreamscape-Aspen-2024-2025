@@ -76,7 +76,7 @@ public class Player : Entity
         PlayerChargeState = new PlayerChargeState(this);
         EntityStaggeredState = new PlayerStaggeredState(this);
         EntityDeathState = new PlayerDeathState(this);
-        EntityFlingState = new PlayerFlingState(this);
+        EntityLaunchState = new PlayerLaunchState(this);
     }
     #endregion
 
@@ -167,7 +167,7 @@ public class Player : Entity
     private void HandleJumpInput()
     {
         if (!IsGrounded && currentJumpCount >= maxJumpCount) return;
-        if(CurrentState == EntityFlingState) return;
+        if(CurrentState == EntityLaunchState) return;
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
@@ -196,7 +196,7 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
         if (CurrentState == EntityStaggeredState) return;
-        if (CurrentState == EntityFlingState) return;
+        if (CurrentState == EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
@@ -425,38 +425,22 @@ public class Player : Entity
         Destroy(gameObject);
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    private protected override void TryChangeStaggeredState()
     {
-        if (CurrentState == EntityDeathState) return;
-
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
-
-        CurrentHealth -= dmg;
-
-        lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
-        //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
-        {
-            OnDeath();
-        }
-
         if (CurrentState == PlayerDashState) return;
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
+        if (CurrentState == EntityLaunchState) return;
 
         ForceChangeState(EntityStaggeredState);
     }
 
     /// <summary>
-    /// Simulates flinging the player by performing a fake jump and launching them in the specified direction with the given force.
+    /// Simulates launching the player by performing a fake jump and launching them in the specified direction with the given force.
     /// </summary>
-    /// <param name="direction">The direction in which the player should be flung.</param>
-    /// <param name="force">The force with which the player should be flung.</param>
-    /// <param name="stunDuration">The duration of the stun caused by the fling.</param>
-    public override void Fling(Vector3 direction, float force, float stunDuration)
+    /// <param name="direction">The direction in which the player should be launched.</param>
+    /// <param name="force">The force with which the player should be launched.</param>
+    public override void Launch(Vector3 direction, float force)
     {
         // Calculate the resulting change in velocity from the impulse
         Vector3 deltaVelocity = (force * direction.normalized) / mass;
@@ -467,5 +451,10 @@ public class Player : Entity
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;
+    }
+
+    public void InvokeJumpActionInputForCombo()
+    {
+        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
     }
 }

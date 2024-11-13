@@ -41,6 +41,12 @@ public class ChargerChargeState : EnemyBaseState
 
     public override void Update()
     {
+        if(rememberedTarget == null)
+        {
+            charger.ChangeState(charger.ChargerWindDownState);
+            return;
+        }
+
         timer += Time.deltaTime;
         if(timer > charger.ChargeDuration)
         {
@@ -141,11 +147,8 @@ public class ChargerChargeState : EnemyBaseState
 
     private void TryFlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
     {
-        if(entity.CurrentState == entity.EntityDeathState) return;
-        if(entity.CurrentState == entity.EntityFlingState) return;
         if (entity.GetType() == typeof(Charger)) return;
 
-        entity.EntityFlingState.SetFlingSettings(direction, force, stunDuration);
-        entity.ChangeState(entity.EntityFlingState);
+        entity.TryChangeToLaunchState(direction, force, stunDuration);
     }
 }

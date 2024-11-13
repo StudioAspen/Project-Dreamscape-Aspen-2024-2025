@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class PlayerAttackState : PlayerBaseState
 {
@@ -27,9 +28,11 @@ public class PlayerAttackState : PlayerBaseState
         player.TransitionToAnimation("Combo", 0.05f);
 
         playerCombat.IsAnimationPlaying = true;
-        player.ApplyRootMotion = ComboData.AttackHasRootMotion;
+        player.ApplyRootMotion = ComboData.HasRootMotion;
 
         player.ApplyRotationToNextMovement();
+
+        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit);
     }
 
     public override void OnExit()
@@ -41,12 +44,14 @@ public class PlayerAttackState : PlayerBaseState
 
         player.InstantlySetGroundedSpeed(0f);
 
-        if (ComboData.IsAirCombo) player.ResetYVelocity();
+        if (ComboData.WillIgnoreGravity) player.ResetYVelocity();
+
+        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit);
     }
 
     public override void Update()
     {
-        if(!ComboData.IsAirCombo) player.ApplyGravity();
+        player.ApplyGravity();
 
         if (!playerCombat.IsAnimationPlaying) player.ChangeState(player.DefaultState);
 
@@ -69,6 +74,21 @@ public class PlayerAttackState : PlayerBaseState
     {
         this.playerCombat = playerCombat;
         ComboData = comboData;
+    }
+
+    private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint)
+    {
+        if (ComboData.WillIgnoreGravity)
+        {
+            victim.ForceChangeToLaunchState(Vector3.up, 5f, 2f);
+            source.Launch(Vector3.up, 5f);
+        }
+
+        if (ComboData.WillLaunchUpwards)
+        {
+            victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        }
+            
     }
 }
 

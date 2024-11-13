@@ -17,6 +17,8 @@ MonoBehaviour:
   <ComboClip>k__BackingField: {fileID: 6799651534840860903, guid: b8075c9babebc1a4a877c916f1b2fb05,
     type: 3}
   <ComboClipAnimationSpeed>k__BackingField: 2
-  <AttackHasRootMotion>k__BackingField: 0
-  <IsAirCombo>k__BackingField: 1
+  <HasRootMotion>k__BackingField: 0
+  <WillIgnoreGravity>k__BackingField: 1
+  <WillLaunchUpwards>k__BackingField: 0
   <ComboDamageRange>k__BackingField: {x: 10, y: 15}
+  <AirLaunchForce>k__BackingField: 7.5
