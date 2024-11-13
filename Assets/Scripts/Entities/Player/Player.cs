@@ -165,6 +165,7 @@ public class Player : Entity
 
 
         ChangeState(PlayerJumpState);
+        Debug.Log("EventforJump");
     }
 
     private void HandleSprintInput()
@@ -188,6 +189,7 @@ public class Player : Entity
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
+        Debug.Log("EventforDash");
     }
 
     public void GroundedMove()
@@ -238,7 +240,11 @@ public class Player : Entity
                 fallVelocityApplied = true;
                 velocity.y = physicsSettings.FallingStartingYVelocity;
 
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState) ChangeState(PlayerFallState);
+                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
+                {
+                    ChangeState(PlayerFallState);
+                    Debug.Log("EventforFall");
+                }
             }
             inAirTimer += Time.deltaTime;
             velocity.y += physicsSettings.Gravity * Time.deltaTime;
@@ -298,6 +304,7 @@ public class Player : Entity
 
             PlayerSlideState.SetSlideDirection(slideDirection);
             ChangeState(PlayerSlideState);
+            Debug.Log("EventforSlide");
         }
     }
 

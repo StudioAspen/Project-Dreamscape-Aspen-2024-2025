@@ -24,6 +24,8 @@ public class InputReader : MonoBehaviour
     [HideInInspector] public UnityEvent Attack2Charged;
     [HideInInspector] public UnityEvent Attack2Charging;
     [HideInInspector] public UnityEvent Attack1n2; //Simultaneous button press
+    [HideInInspector] public UnityEvent Attack1n2Charged; //Simultaneous button press
+    [HideInInspector] public UnityEvent Attack1n2Charging; //Simultaneous button press
 
     [HideInInspector] public UnityEvent<PlayerActions> OnPlayerActionInput;
 
@@ -89,6 +91,7 @@ public class InputReader : MonoBehaviour
         // Charging
         if(attack1HoldTimer > attackReleaseThreshold && !a1N2) Attack1Charging?.Invoke();
         if(attack2HoldTimer > attackReleaseThreshold && !a1N2) Attack2Charging?.Invoke();
+        if(attack2HoldTimer > attackReleaseThreshold && a1N2) Attack1n2Charging?.Invoke();
 
         // Releasing
         if (playerInput.actions["Sprint"].WasReleasedThisFrame())
@@ -97,7 +100,12 @@ public class InputReader : MonoBehaviour
             {
                 Dash?.Invoke();
             }
-            SprintRelease?.Invoke();
+            
+            else
+            {
+                SprintRelease?.Invoke();
+            }
+            
             sprintHoldTimer = 0f;
         }
 
@@ -117,6 +125,11 @@ public class InputReader : MonoBehaviour
             else if (attack1HoldTimer > attackReleaseThreshold)// charged swing
             {
                 Attack1Charged?.Invoke();
+            }
+            
+            else if (attack2HoldTimer > attackReleaseThreshold && a1N2) // charged 1+2 swing
+            {
+                Attack1n2Charged?.Invoke();
             }
             attack1HoldTimer = 0f;
             
@@ -140,6 +153,12 @@ public class InputReader : MonoBehaviour
             {
                 Attack2Charged?.Invoke();
             }
+            
+            else if (attack2HoldTimer > attackReleaseThreshold && a1N2) // charged 1+2 swing
+            {
+                Attack1n2Charged?.Invoke();
+            }
+            
             attack2HoldTimer = 0f;
         }
     }

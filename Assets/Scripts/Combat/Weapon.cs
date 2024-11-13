@@ -129,6 +129,7 @@ public class Weapon : MonoBehaviour
             CreateTempHitVisual(hitPoint, Color.red, 1.5f);
 
             enemy.TakeDamage(GetRandomDamage(), hitPoint);
+            
         }
     }
 
@@ -141,6 +142,7 @@ public class Weapon : MonoBehaviour
         temp.transform.position = pos;
         temp.GetComponent<Renderer>().material.color = color;
         Destroy(temp, duration);
+        
     }
 
     private void StartImpactFrames(float timeScale)

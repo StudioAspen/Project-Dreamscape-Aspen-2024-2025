@@ -89,6 +89,7 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerDashState) return;
             
         player.ChangeState(player.PlayerChargeState);
+        Debug.Log("EventforStartAttack");
     }
 
     private void HandleAttack2Input()
@@ -167,6 +168,7 @@ public class PlayerCombat : MonoBehaviour
 
         player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);
+        Debug.Log("EventforStartAttack");
 
         comboText.text = "Combo: " + combo.ComboName;
     }
@@ -269,5 +271,6 @@ public class PlayerCombat : MonoBehaviour
     public void FinishAnimation()
     {
         IsAnimationPlaying = false;
+        Debug.Log("EventforEndAttack");
     }
 }
