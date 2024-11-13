@@ -216,6 +216,11 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.PLAYING);
     }
 
+    public WorldEvent getCurrentEventSelection()
+    {
+        return currentEventSelection;
+    }
+
     #region Ghost Land Functions
     public void EnableGhostLand()
     {

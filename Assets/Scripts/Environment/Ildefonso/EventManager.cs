@@ -22,8 +22,6 @@ public class EventManager : MonoBehaviour
     [Header("Event: Debug UI")]
     [SerializeField] private TMP_Text eventText;
 
-    public WorldEvent CurrentEvent { get; private set; }
-
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -32,26 +30,20 @@ public class EventManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetCurrentEvent(WorldEvent.START);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         //Event Debug UI
-        eventText.text = $"Event: {CurrentEvent}";
+        eventText.text = $"Event: {worldManager.getCurrentEventSelection()}";
 
         //idk yet lol, all code in WorldManager so far
-        if(CurrentEvent == WorldEvent.START)
+        //if(CurrentEvent == WorldEvent.START)
         {
             
         }
-    }
-
-    //set the current event ENUM
-    public void SetCurrentEvent(WorldEvent newEvent)
-    {
-        CurrentEvent = newEvent;
     }
 }
 
