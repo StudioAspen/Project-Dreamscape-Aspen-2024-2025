@@ -39,7 +39,7 @@ public class PlayerJumpState : PlayerBaseState
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         timer += Time.deltaTime;
