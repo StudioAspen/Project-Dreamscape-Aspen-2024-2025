@@ -31,8 +31,8 @@ public class WorldManager : MonoBehaviour
     private WorldEvent currentEventSelection = WorldEvent.EVENT1;
 
     [field: Header("Progression")]
-    [field: SerializeField] public int EmpowerTokens { get; private set; }
-    [field: SerializeField] public int WeakenTokens { get; private set; }
+    public int EmpowerTokens { get; private set; }
+    public int WeakenTokens { get; private set; }
 
     private void OnValidate()
     {
@@ -245,8 +245,8 @@ public class WorldManager : MonoBehaviour
     #region Progression Functions
     private void RestockTokens(int landCount)
     {
-        EmpowerTokens = Mathf.CeilToInt(landCount / 2f);
-        WeakenTokens = Mathf.FloorToInt(landCount / 2f);
+        EmpowerTokens = Mathf.CeilToInt((landCount - 1) / 2f);
+        WeakenTokens = Mathf.FloorToInt((landCount - 1) / 2f);
     }
 
     public void TryEmpowerLandAtGhost()
