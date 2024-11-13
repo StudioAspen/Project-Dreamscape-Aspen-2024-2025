@@ -60,7 +60,6 @@ public class Player : Entity
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
-    public PlayerFlingState PlayerFlingState { get; private set; }
 
     protected override void InitializeStates()
     {

@@ -74,7 +74,7 @@ public class ChargerChargeState : EnemyBaseState
 
             if(DidChargerHitWall(hit))
             {
-                CameraShakeManager.Instance.ShakeCamera(10f, 0.5f);
+                CameraShakeManager.Instance.ShakeCamera(3f, 0.5f);
 
                 charger.ChangeState(charger.ChargerDazedState);
                 return;
@@ -82,18 +82,18 @@ public class ChargerChargeState : EnemyBaseState
 
             if(DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
                 Vector3 flingDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
-                FlingEntity(friendlyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
+                TryFlingEntity(friendlyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
             }
 
             if(DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
                 Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
-                FlingEntity(enemyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
+                TryFlingEntity(enemyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
 
                 enemyEntity.TakeDamageWithoutState(charger.GetRandomDamageFromRange(charger.ChargeContactDamageRange), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject);
 
@@ -121,8 +121,6 @@ public class ChargerChargeState : EnemyBaseState
         if(entity == null) return false;
         if (entity.Team != charger.Team) return false;
 
-        Debug.Log($"Fling friendly entity: {entity.gameObject.name}");
-
         return true;
     }
 
@@ -138,16 +136,15 @@ public class ChargerChargeState : EnemyBaseState
 
     private bool DidChargerHitWall(Collider hit)
     {
-        if(hit.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            return true;
-        }
-
-        return false;
+        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
     }
 
-    private void FlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
+    private void TryFlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
     {
+        if(entity.CurrentState == entity.EntityDeathState) return;
+        if(entity.CurrentState == entity.EntityFlingState) return;
+        if (entity.GetType() == typeof(Charger)) return;
+
         entity.EntityFlingState.SetFlingSettings(direction, force, stunDuration);
         entity.ChangeState(entity.EntityFlingState);
     }
