@@ -7,8 +7,8 @@ using KBCore.Refs;
 
 public class SettingsMenu : MonoBehaviour
 {
-    private GameObject SettingsCanvas;
-    private GameObject PauseCanvas;
+    private GameObject settingsCanvas;
+    private GameObject pauseCanvas;
     private InputAction cameraLook;
     [SerializeField, Scene] GameManager gameManager;
     [SerializeField] private PlayerInput playerInput;
@@ -20,23 +20,24 @@ public class SettingsMenu : MonoBehaviour
         this.ValidateRefs();
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        PauseCanvas = transform.Find("PauseMenu")?.gameObject;
-        SettingsCanvas = transform.Find("SettingsMenu")?.gameObject;
+        pauseCanvas = transform.Find("PauseUI")?.gameObject;
+        settingsCanvas = transform.Find("SettingsUI")?.gameObject;
         cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
-        if (SettingsCanvas != null)
+        if (settingsCanvas != null)
         {
-            SettingsCanvas.SetActive(false);
+            settingsCanvas.SetActive(false);
         }
         else
         {
             Debug.Log("Settings Menu Canvas not Found");
         }
+    }
 
+    void Start()
+    {
         // Load Fullscreen
         if (!PlayerPrefs.HasKey("fullscreenOn")) {
             PlayerPrefs.SetInt("fullscreenOn", 0);
@@ -61,20 +62,20 @@ public class SettingsMenu : MonoBehaviour
     }
 
     public void ToggleMenu() {
-        if (SettingsCanvas != null)
+        if (settingsCanvas != null)
         {
             // Open Settings Menu
-            if (!SettingsCanvas.activeSelf)
+            if (!settingsCanvas.activeSelf)
             {
                 gameManager.ChangeState(GameState.PAUSED);
-                PauseCanvas.SetActive(false);
-                SettingsCanvas.SetActive(true);
+                pauseCanvas.SetActive(false);
+                settingsCanvas.SetActive(true);
                 Debug.Log("Settings Menu Opened");
             }
             // Close Settings Menu
             else
             {
-                SettingsCanvas.SetActive(false);
+                settingsCanvas.SetActive(false);
                 Debug.Log("Settings Menu Closed");
                 gameManager.ChangeState(GameState.PLAYING);
             }

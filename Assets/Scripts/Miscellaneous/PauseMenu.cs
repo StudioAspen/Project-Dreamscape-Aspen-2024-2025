@@ -7,9 +7,9 @@ using KBCore.Refs;
 
 public class PauseMenu : MonoBehaviour
 {
-    private GameObject PauseCanvas;
+    private GameObject pauseUI;
     private InputAction cameraLook;
-    private GameObject SettingsCanvas;
+    private GameObject settingsUI;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField, Scene] GameManager gameManager;
 
@@ -21,36 +21,33 @@ public class PauseMenu : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-    }
-    private void OnDestroy()
-    {
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
 
-    void Start()
-    {
-        PauseCanvas = transform.Find("PauseMenu")?.gameObject;
-        SettingsCanvas = transform.Find("SettingsMenu")?.gameObject;
+        pauseUI = transform.Find("PauseUI")?.gameObject;
+        settingsUI = transform.Find("SettingsUI")?.gameObject;
         //cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");
 
-        if (PauseCanvas != null)
+        if (pauseUI != null)
         {
-            PauseCanvas.SetActive(false);
+            pauseUI.SetActive(false);
         }
         else
         {
             Debug.Log("Pause Menu Canvas not Found");
         }
     }
+    private void OnDestroy()
+    {
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
 
     private void Enable()
     {
-        PauseCanvas.SetActive(true);
+        pauseUI.SetActive(true);
         Debug.Log("Pause Menu Opened");
     }
     private void Disable()
     {
-        PauseCanvas.SetActive(false);
+        pauseUI.SetActive(false);
         Debug.Log("Pause Menu Closed");
     }
 
@@ -61,7 +58,7 @@ public class PauseMenu : MonoBehaviour
         if (newState != GameState.PAUSED)
         {
             Disable();
-            SettingsCanvas.SetActive(false);
+            settingsUI.SetActive(false);
             return;
         }
 
