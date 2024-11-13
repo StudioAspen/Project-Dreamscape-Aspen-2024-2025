@@ -29,6 +29,8 @@ public class BirdsEyeCameraController : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        Disable();
     }
 
     private void OnDestroy()
@@ -38,7 +40,6 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Start()
     {
-        Disable();
         landPlacementUIObject.SetActive(false);
         landEmpowermentUIObject.SetActive(false);
 
