@@ -33,7 +33,10 @@ public class PlayerFlingState : EntityFlingState
         if (player.IsGrounded && !touchedGround)
         {
             touchedGround = true;
+
             player.SetVelocity(Vector3.zero);
+
+            player.DefaultTransitionToAnimation("FlatFallImpact");
         }
 
         player.ApplyGravity();

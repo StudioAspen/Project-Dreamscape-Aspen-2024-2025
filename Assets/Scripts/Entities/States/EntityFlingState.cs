@@ -26,7 +26,7 @@ public class EntityFlingState : BaseState
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Falling");
+        entity.DefaultTransitionToAnimation("FlatFall");
 
         timer = 0f;
         touchedGround = false;
@@ -54,7 +54,7 @@ public class EntityFlingState : BaseState
         if (entity.IsGrounded && !touchedGround)
         {
             touchedGround = true;
-            Debug.Log("Flinged touched the ground");
+            entity.DefaultTransitionToAnimation("FlatFallImpact");
         }
     }
 

@@ -26,6 +26,7 @@ public class Player : Entity
     private float hitBelowSlopeAngle;
 
     [Header("Player: Gravity")]
+    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
     [SerializeField] private float groundedAcceleration = 4f;
@@ -167,6 +168,7 @@ public class Player : Entity
     private void HandleJumpInput()
     {
         if (!IsGrounded && currentJumpCount >= maxJumpCount) return;
+        if(CurrentState == EntityFlingState) return;
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
@@ -195,6 +197,7 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
         if (CurrentState == EntityStaggeredState) return;
+        if (CurrentState == EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
@@ -448,11 +451,14 @@ public class Player : Entity
         ForceChangeState(EntityStaggeredState);
     }
 
-    // simulate flinging by fake jumping and launching player in the direction of the force
+    /// <summary>
+    /// Simulates flinging the player by performing a fake jump and launching them in the specified direction with the given force.
+    /// </summary>
+    /// <param name="direction">The direction in which the player should be flung.</param>
+    /// <param name="force">The force with which the player should be flung.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the fling.</param>
     public override void Fling(Vector3 direction, float force, float stunDuration)
     {
-        float mass = 1;
-
         // Calculate the resulting change in velocity from the impulse
         Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
@@ -462,7 +468,5 @@ public class Player : Entity
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;
-
-        currentJumpCount++;
     }
 }
