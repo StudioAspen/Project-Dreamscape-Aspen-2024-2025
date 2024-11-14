@@ -234,10 +234,18 @@ public class WorldManager : MonoBehaviour
 
             }
         }
+        //Koi's quick find marker
+        //will need to only be active as an option when spawnedlands < 36 (1/4)
+        //todo: implement a matrix or array so that it's actually possible to search for
+        //3x3 grids rather than searching nearby tiles
+        if (currentEventSelection == WorldEvent.ZONES)
+        {
+            //pick a 3x3
+            //spawn enemies in that area
+        }
 
         if (currentEventSelection == WorldEvent.ESCORT ||
             currentEventSelection == WorldEvent.DEFEND ||
-            currentEventSelection == WorldEvent.ZONES ||
             currentEventSelection == WorldEvent.VISITALL)
         {
             activeLandCount = SpawnedLands.Count;
