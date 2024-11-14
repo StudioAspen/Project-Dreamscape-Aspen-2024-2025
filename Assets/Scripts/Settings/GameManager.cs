@@ -15,6 +15,7 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public GameState CurrentState { get; private set; }
+    public GameState PreviousState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
 
     private void Awake()
@@ -96,6 +97,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        PreviousState = CurrentState;
         CurrentState = newState;
 
         OnGameStateChanged?.Invoke(newState);
