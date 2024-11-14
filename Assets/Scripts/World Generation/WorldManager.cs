@@ -65,7 +65,6 @@ public class WorldManager : MonoBehaviour
 
     void Update()
     {
-        
     }
 
     #region Grid Functions
@@ -192,11 +191,19 @@ public class WorldManager : MonoBehaviour
 
     public void DecrementActiveLandCount()
     {
+        
         activeLandCount--;
-        if (activeLandCount == 0)
+        //OLD WAVE CLEAR SYSTEM (WHEN EVENTS ARENT IMPLEMENTED JUST CHECKS IF ALL ENEMIES ARE KILLED)
+        /*if (activeLandCount == 0)
         {
             gameManager.ChangeState(GameState.BIOME_SELECTION);
-        }
+        }*/
+    }
+
+    //Needed for EventManager - Ildefonso Marrero (Environment Team)
+    public int GetActiveLandCount()
+    {
+        return activeLandCount;
     }
 
     public void AssignBiomeToSpawnNext(Biome biome)

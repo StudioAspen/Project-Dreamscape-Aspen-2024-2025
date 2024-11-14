@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Self] private LandManager landManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     private ObjectPooler enemyPooler;
@@ -52,6 +53,9 @@ public class EnemySpawner : MonoBehaviour
         if (currentShopCurrency <= 0) CanSpawn = false;
 
         if (Input.GetKeyDown(KeyCode.K)) ClearWave();
+
+        //Event Clear Status set to true
+        if (Input.GetKeyDown(KeyCode.L)) eventManager.setEventClearStatus(true);
     }
 
     private IEnumerator SpawnCoroutine()

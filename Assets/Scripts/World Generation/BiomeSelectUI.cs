@@ -14,6 +14,8 @@ public class BiomeSelectUI : MonoBehaviour
     [SerializeField, Self] private Image panel;
     [SerializeField] private List<BiomeCardUI> biomeCards;
 
+    [SerializeField, Scene] EventManager eventManager;
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -52,6 +54,8 @@ public class BiomeSelectUI : MonoBehaviour
         AssignRandomBiomesToCards();
 
         EnableCards();
+
+        eventManager.setEventClearStatus(false);
     }
 
     public void Disable()
