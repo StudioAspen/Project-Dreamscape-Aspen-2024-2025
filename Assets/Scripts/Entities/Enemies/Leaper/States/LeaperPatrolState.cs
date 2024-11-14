@@ -93,12 +93,12 @@ public class LeaperPatrolState : EnemyBaseState {
         isJumping = true;
         yield return new WaitForSeconds(leaper.PatrolJumpPrepareTime);
         jumpLaunched = true;
-        Vector3 startPoint = leaper.transform.position;
+        Vector3 startPoint = leaper.RigidBody.position;
         Vector3 endPoint = currentWanderDestination;
         Vector3 midPoint = (startPoint + endPoint) / 2;
         midPoint.y += leaper.PatrolJumpHeight;
         Vector3[] path = { startPoint, midPoint, endPoint };
-        jumpTween = leaper.transform.DOPath(path, leaper.PatrolJumpDuration, PathType.CatmullRom).SetEase(Ease.Linear).OnComplete(() => OnJumpTweenComplete()).OnUpdate(CheckForCollision); 
+        jumpTween = leaper.RigidBody.DOPath(path, leaper.PatrolJumpDuration, PathType.CatmullRom).SetEase(Ease.Linear).OnComplete(() => OnJumpTweenComplete()).OnUpdate(CheckForCollision); 
      }
 
     private void CheckForCollision() 
