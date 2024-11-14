@@ -7,9 +7,9 @@ public class Leaper : Enemy
     [field: Header("Leaper: Patrol Settings")]
     [field: SerializeField] public Vector2 PatrolIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 PatrolRadiusRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public float PatrolJumpHeight = 2f;
-    [field: SerializeField] public float PatrolJumpPrepareTime = 1f;
-    [field: SerializeField] public float PatrolJumpDuration = .75f;
+    [field: SerializeField] public float PatrolJumpHeight { get; private set; } = 2f;
+    [field: SerializeField] public float PatrolJumpPrepareTime { get; private set; } = 1f;
+    [field: SerializeField] public float PatrolJumpDuration { get; private set; } = .75f;
 
     // variables for attack go here 
     // follower has a couple of them already but I dont think leaper needs all of them
@@ -88,6 +88,7 @@ public class Leaper : Enemy
 
     }
 
+    // For the leaper's weapon hitbox when attack state is done
     public void FinishAnimation() 
     {
         IsAttackAnimationPlaying = false;
