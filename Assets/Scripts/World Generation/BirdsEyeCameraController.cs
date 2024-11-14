@@ -63,21 +63,23 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        Disable();
-        landPlacementUIObject.SetActive(false);
-        landEmpowermentUIObject.SetActive(false);
-
         if(newState == GameState.LAND_PLACEMENT)
         {
             Enable();
             landPlacementUIObject.SetActive(true);
         }
-        
-        if (newState == GameState.LAND_EMPOWERMENT)
+        else if (newState == GameState.LAND_EMPOWERMENT)
         {
-            Enable();
+           Enable();
+            landPlacementUIObject.SetActive(false);
             landEmpowermentUIObject.SetActive(true);
-        }    
+        }
+        else
+        {
+            Disable();
+            landPlacementUIObject.SetActive(false);
+            landEmpowermentUIObject.SetActive(false);
+        }
     }
 
     private void HandleMoveInput()

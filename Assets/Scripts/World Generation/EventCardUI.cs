@@ -7,6 +7,7 @@ public class EventCardUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private EventSelectUI eventSelectUI;
     [SerializeField, Self] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
@@ -21,6 +22,7 @@ public class EventCardUI : MonoBehaviour
     private void Awake()
     {
         worldManager = FindObjectOfType<WorldManager>();
+        eventSelectUI = FindObjectOfType<EventSelectUI>();
 
         button.onClick.AddListener(OnClickCard);
     }
@@ -32,7 +34,7 @@ public class EventCardUI : MonoBehaviour
 
     private void Start()
     {
-        DisableButton();
+        
     }
 
     public void EnableButton()
@@ -55,5 +57,6 @@ public class EventCardUI : MonoBehaviour
     private void OnClickCard()
     {
         worldManager.AssignNextEvent(CurrentEvent);
+        eventSelectUI.Disable();
     }
 }
