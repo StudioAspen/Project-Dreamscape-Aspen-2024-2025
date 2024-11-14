@@ -1473,6 +1473,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: dd863170-060b-4c82-b313-30b4ce93d62a
     m_ActionName: Gameplay/CameraLook[/XInputControllerWindows/rightStick,/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1b02d0f8-1456-47c8-9920-270553edc714
+    m_ActionName: UI/Minimap Toggle[/Keyboard/m]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -1543,6 +1547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 2171180168782530629}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
+  model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 100
   <Level>k__BackingField: 0

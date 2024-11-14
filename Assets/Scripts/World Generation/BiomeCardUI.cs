@@ -32,7 +32,7 @@ public class BiomeCardUI : MonoBehaviour
 
     private void Start()
     {
-        DisableButton();
+        
     }
 
     public void EnableButton()

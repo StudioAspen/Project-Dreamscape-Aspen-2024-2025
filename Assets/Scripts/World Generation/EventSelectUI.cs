@@ -19,6 +19,8 @@ public class EventSelectUI : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        Disable();
     }
 
     private void OnDestroy()
@@ -26,16 +28,11 @@ public class EventSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void Start()
-    {
-        Disable();
-    }
-
     private void GameManager_OnGameStateChanged(GameState newState)
     {
+        Disable();
         if (newState != GameState.EVENT_SELECTION)
         {
-            Disable();
             return;
         }
 

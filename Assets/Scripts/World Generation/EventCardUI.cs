@@ -32,7 +32,7 @@ public class EventCardUI : MonoBehaviour
 
     private void Start()
     {
-        DisableButton();
+        
     }
 
     public void EnableButton()
