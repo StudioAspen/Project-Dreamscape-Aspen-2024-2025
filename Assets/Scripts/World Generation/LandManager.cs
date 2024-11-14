@@ -24,6 +24,10 @@ public class LandManager : MonoBehaviour
     [field: Header("Progression Tracking")]
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
 
+    //bool that tracks if the land has been visited
+    [field: Header ("IsVisitedBool")]
+    [SerializeField] private bool isVisited = false;
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -109,6 +113,11 @@ public class LandManager : MonoBehaviour
     public void DisableLevelText()
     {
         levelText.gameObject.SetActive(false);
+    }
+
+    public void SetVisited(bool visited)
+    {
+        isVisited = visited;
     }
 }
     

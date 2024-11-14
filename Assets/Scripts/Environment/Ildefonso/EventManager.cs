@@ -108,6 +108,24 @@ public class EventManager : MonoBehaviour
                 }
                 
                 break;
+            case WorldEvent.VISIT_ALL:
+                // TODO: Check if all lands have been visited
+                bool Visited_All = true;
+                /*for (int i = 0; i < worldManager.; i++)
+                {
+                    if (!worldManager.GetLand(i).GetComponent<LandManager>().isVisited)
+                    {
+                        Visited_All = false;
+                        break;
+                    }
+                }
+
+                if (Visited_All)
+                {
+                    EventCompletion();
+                }*/
+                break;
+
             default:
                 Debug.LogError("ERROR: No event is active");
                 break;
