@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Leaper : Enemy
-{   
+{
+    [field: Header("Leaper: Patrol Settings")]
+    [field: SerializeField] public Vector2 PatrolIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 PatrolRadiusRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public float PatrolJumpHeight = 2f;
+    [field: SerializeField] public float PatrolJumpPrepareTime = 1f;
+    [field: SerializeField] public float PatrolJumpDuration = .75f;
+
     // variables for attack go here 
     // follower has a couple of them already but I dont think leaper needs all of them
     [field: Header("Leaper: Attack Settings")]
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     // reminder to change the value bellow if you need to
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
+    private float originalRotationSpeed;
 
 
     // add all states here 
@@ -19,6 +27,7 @@ public class Leaper : Enemy
     // public LeaperAttackState LeaperAttackState{ get; private set; }
     // public LeaperHopState LeaperHopState{ get; private set; }
     // public LeaperChaseState LeaperChaseState{ get; private set; }
+    public LeaperPatrolState LeaperPatrolState { get; private set; }
     
     #endregion
 
@@ -31,6 +40,7 @@ public class Leaper : Enemy
     {
         base.OnOnEnable();
         // set start state
+        SetStartState(LeaperPatrolState);
     }
 
     protected override void OnOnDisable()
@@ -46,11 +56,15 @@ public class Leaper : Enemy
     protected override void OnStart()
     {
         base.OnStart();
+        SetDefaultState(LeaperPatrolState);
+        FinishAnimation();
+
+        originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     } 
 
     protected override void OnUpdate()
     {
-        base.OnUpdate();
+        base.OnUpdate(); 
     }
 
     protected override void OnFixedUpdate()
@@ -69,7 +83,18 @@ public class Leaper : Enemy
         // LeaperAttackState = new LeaperAttackState(this);
         // LeaperHopState = new LeaperHopState(this);
         // LeaperChaseState = new LeaperChaseState(this);
+        LeaperPatrolState = new LeaperPatrolState(this);
 
 
     }
+
+    public void FinishAnimation() 
+    {
+        IsAttackAnimationPlaying = false;
+        //DisableWeaponTriggers();
+    }
+
+
+
+
 }
