@@ -70,7 +70,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.SURVIVAL:
                 // TODO: Check if the timer has ended
-                if (false)
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
                 }
@@ -78,7 +78,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.ZONES:
                 // TODO: Check if all enemies in the 3x3 grid have been killed
-                if (false)
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
                 }
@@ -86,7 +86,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.PRIORITIES:
                 // TODO: Check if all enemies in the 3 highest level islands have been killed
-                if (false)
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
                 }
@@ -94,7 +94,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.ESCORT:
                 // TODO: Check if the timer has ended AND NPC survival
-                if (false)
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
                 }
@@ -102,7 +102,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.DEFEND:
                 // TODO: Check if the timer has ended AND object survival
-                if (false)
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
                 }
@@ -110,20 +110,11 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.VISIT_ALL:
                 // TODO: Check if all lands have been visited
-                bool Visited_All = true;
-                /*for (int i = 0; i < worldManager.; i++)
-                {
-                    if (!worldManager.GetLand(i).GetComponent<LandManager>().isVisited)
-                    {
-                        Visited_All = false;
-                        break;
-                    }
-                }
-
-                if (Visited_All)
+                if(worldManager.AreAllLandsVisited() && gameManager.CurrentState == GameState.PLAYING)
                 {
                     EventCompletion();
-                }*/
+                }
+
                 break;
 
             default:

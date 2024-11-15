@@ -42,14 +42,16 @@ public class WorldManager : MonoBehaviour
     [field: SerializeField] public int EmpowerTokens { get; private set; }
     [field: SerializeField] public int WeakenTokens { get; private set; }
 
+    [Header("Player")]
+    [SerializeField] GameObject player;
+
+
+
     private void OnValidate()
     {
         this.ValidateRefs();
-    }
 
-    private void Awake()
-    {
-        
+        player = GameObject.Find("Player");
     }
 
     void Start()
@@ -65,6 +67,25 @@ public class WorldManager : MonoBehaviour
 
     void Update()
     {
+        // Set visited to true for the land the player is currently on - Ildefonso Marrero (Environment Team)
+        foreach (LandManager land in SpawnedLands)
+        {
+            if (land == GetLandByWorldPosition(player.transform.position))
+            {
+                //Debug.Log("Player is on land: " + land.GridPosition);
+                land.SetVisited(true);
+            }
+            else
+            {
+                //Debug.Log("ISNT ON LAND: " + land.GridPosition);
+            }
+        }
+
+        // If entering a new round, reset all lands IsVisited bools - Ildefonso Marrero (Environment Team)
+        if(gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
+        {
+            ResetAllLandsVisited();
+        }
     }
 
     #region Grid Functions
@@ -130,6 +151,28 @@ public class WorldManager : MonoBehaviour
         spawnedLand.Init(x, y);
 
         SpawnedLands.Add(spawnedLand);
+    }
+
+    // Method to check if all SpawnedLands are visited - Ildefonso Marrero (Environment Team)
+    public bool AreAllLandsVisited()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            if (!land.GetVisited())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Method to set all SpawnedLands IsVisited bool to false - Ildefonso Marrero (Environment Team)
+    public void ResetAllLandsVisited()
+    {
+        foreach (LandManager land in SpawnedLands)
+        {
+            land.SetVisited(false);
+        }
     }
 
     public void TrySpawnLandAtGhost()

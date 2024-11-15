@@ -115,6 +115,10 @@ public class LandManager : MonoBehaviour
         levelText.gameObject.SetActive(false);
     }
 
+    public bool GetVisited()
+    {
+        return isVisited;
+    }
     public void SetVisited(bool visited)
     {
         isVisited = visited;
