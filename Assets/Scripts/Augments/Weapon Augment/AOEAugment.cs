@@ -7,7 +7,7 @@ public class AOEAugment : Augment
 
     [field: Header("Augment Parameters")]
     [field: SerializeField] public float aoeExplosionRadius { get; private set; } = 2.0f;
-    [field: SerializeField] public float aoeDamage { get; private set; } = 0.2f;
+    [field: SerializeField] public int aoeDamage { get; private set; } = 2;
 
     private Weapon weapon;
     private ChainingSystem chaining;
@@ -16,6 +16,7 @@ public class AOEAugment : Augment
 
     protected override void Awake()
     {
+        // uses the awake from augment base
         base.Awake();
         Level = 1;
 
@@ -23,12 +24,11 @@ public class AOEAugment : Augment
         weapon = GetComponent<AugmentManager>().Player.GetComponentInChildren<Weapon>();
         // to count every other hit to apply aoe
         chaining = GetComponent<AugmentManager>().Player.GetComponentInChildren<ChainingSystem>();
-
-        SphereCollider sphereAOE = GetComponent<AugmentManager>().Player.AddComponent<SphereCollider>();
     }
 
     protected override void Start()
     {
+        // uses the start from augment base
         base.Start();
     }
 
@@ -50,7 +50,18 @@ public class AOEAugment : Augment
 
         // make a list and grab all entities nearby
         List<Entity> enemyList = new List<Entity>();
-        enemyList = entity.GetNearbyEntities(aoeExplosionRadius);
+        enemyList = victim.GetNearbyEntities(aoeExplosionRadius);
+        for(int i = 0; i < enemyList.Count; i++)
+        {
+            enemyList[i].TakeDamage(aoeDamage, hitPoint, null);
+        }
+
+        // creates a sphere of the explosion radius
+        GameObject wqe = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        wqe.transform.position = hitPoint;
+        wqe.GetComponent<Collider>().isTrigger = true;
+        wqe.transform.localScale = aoeExplosionRadius * Vector3.one;
+        Destroy(wqe, 1);
 
         Debug.Log("enemy hit");
     }
