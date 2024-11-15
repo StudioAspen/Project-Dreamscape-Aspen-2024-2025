@@ -26,8 +26,8 @@ public class Weapon : MonoBehaviour
     [HideInInspector] public UnityEvent<Entity> OnWeaponEndSwing = new UnityEvent<Entity>();
     [HideInInspector] public UnityEvent<Entity, Entity, Vector3, int> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3, int>();
 
-    [Header("Weapon: Combo")]
-    public List<ComboDataSO> Combos;
+    [field: Header("Weapon: Combo")]
+    [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
     private Vector2Int damageRange;
 
     [Header("Weapon: Impact Frames")]
@@ -195,5 +195,10 @@ public class Weapon : MonoBehaviour
     private int GetRandomDamage()
     {
         return Random.Range(damageRange.x, damageRange.y);
+    }
+
+    public void AddCombo(ComboDataSO comboData)
+    {
+        Combos.Add(comboData);
     }
 }

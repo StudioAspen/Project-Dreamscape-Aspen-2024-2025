@@ -13,7 +13,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private TMP_Text comboText;
 
     [Header("References")]
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
     [SerializeField, Self] private Player player;
     [SerializeField, Self] private Animator animator;
 
@@ -36,11 +36,11 @@ public class PlayerCombat : MonoBehaviour
     private void OnEnable()
     {
         input.Attack1.AddListener(HandleAttack1Input);
-        input.Attack1Charged.AddListener(HandleAttack1ChargedInput);
-        input.Attack1Charging.AddListener(HandleAttackChargingInput);
-/*        input.Attack2.AddListener(HandleAttack2Input);
-        input.Attack2Charged.AddListener(HandleAttack2ChargedInput);
-        input.Attack2Charging.AddListener(HandleAttackChargingInput);*/
+        //input.Attack1Charged.AddListener(HandleAttack1ChargedInput);
+        //input.Attack1Charging.AddListener(HandleAttackChargingInput);
+        input.Attack2.AddListener(HandleAttack2Input);
+        //input.Attack2Charged.AddListener(HandleAttack2ChargedInput);
+        //input.Attack2Charging.AddListener(HandleAttackChargingInput);
 
         input.OnPlayerActionInput.AddListener(HandleOnPlayerActionInput);
     }
@@ -48,11 +48,11 @@ public class PlayerCombat : MonoBehaviour
     private void OnDisable()
     {
         input.Attack1.RemoveListener(HandleAttack1Input);
-        input.Attack1Charged.RemoveListener(HandleAttack1ChargedInput);
-        input.Attack1Charging.RemoveListener(HandleAttackChargingInput);
-/*        input.Attack2.RemoveListener(HandleAttack2Input);
-        input.Attack2Charged.RemoveListener(HandleAttack2ChargedInput);
-        input.Attack2Charging.RemoveListener(HandleAttackChargingInput);*/
+        //input.Attack1Charged.RemoveListener(HandleAttack1ChargedInput);
+        //input.Attack1Charging.RemoveListener(HandleAttackChargingInput);
+        input.Attack2.RemoveListener(HandleAttack2Input);
+        //input.Attack2Charged.RemoveListener(HandleAttack2ChargedInput);
+        //input.Attack2Charging.RemoveListener(HandleAttackChargingInput);
 
         input.OnPlayerActionInput.RemoveListener(HandleOnPlayerActionInput);
     }
