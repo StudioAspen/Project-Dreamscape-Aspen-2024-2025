@@ -1,4 +1,6 @@
+using JetBrains.Annotations;
 using KBCore.Refs;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
@@ -6,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
+using UnityEngine.XR;
 
 public class WorldManager : MonoBehaviour
 {
@@ -26,7 +29,13 @@ public class WorldManager : MonoBehaviour
     */
     [field: Header("Pseudo Grid")]
     public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>();
-    private List<LandBorder> bordersList = new List<LandBorder>();
+
+    //Test replacement for bordersList
+    public Dictionary<Vector2Int, int> bordersDictionary = new Dictionary<Vector2Int, int>(); //int is not necessary, but a dictionary needs a key-value pair so its just here
+
+    //Test replacement for SpawnedList
+    public Dictionary<Vector2Int, LandManager> SpawnedLandsDictionary = new Dictionary<Vector2Int, LandManager>();
+
     private int activeLandCount;
 
     [Header("Land Position Selection")]
@@ -65,33 +74,53 @@ public class WorldManager : MonoBehaviour
     }
     #endregion
 
-    void Update() { }
+    void Update() 
+    {
+
+    }
 
     #region Grid Functions
     // Searches for and returns the LandManager at the specified grid position (x, y). If no land exists at that position, returns null.
-    public LandManager GetLand(int x, int y)
+    public LandManager GetLandByGridPosition(int x, int y)
     {
-        foreach (LandManager land in SpawnedLands)
+        for(int i = 0; i < SpawnedLands.Count; i++)
         {
-            if (land.GridPosition.x == x && land.GridPosition.y == y) return land;
+            if (SpawnedLands[i].GridPosition.x == x && SpawnedLands[i].GridPosition.y == y) return SpawnedLands[i];
         }
         return null;
+    }
+
+    public LandManager GetLandByGridPosition(Vector2Int gridPosition)
+    {
+        return GetLandByGridPosition(gridPosition.x, gridPosition.y);
     }
 
     // Converts a world position (Vector3) to a grid position (Vector2Int) by scaling the world position according to the land's size.
     public Vector2Int GetGridPosition(Vector3 worldPos)
     {
         float landScale = landToSpawnPrefab.transform.localScale.x;
+
         Vector3 floatGridPosition = worldPos / landScale;
+
         return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
     }
+
+    public LandManager GetLandByWorldPosition(Vector3 worldPos)
+    {
+        Vector2Int gridPosition = GetGridPosition(worldPos);
+
+        return GetLandByGridPosition(gridPosition.x, gridPosition.y);
+    }
+
 
     // Converts a grid position (Vector2Int) to a world position (Vector3) at a specified height, taking into account the land's scale.
     public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
     {
         float landScale = landToSpawnPrefab.transform.localScale.x;
+
         return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
     }
+
     #endregion
 
     #region Intermediary Processes
@@ -99,14 +128,16 @@ public class WorldManager : MonoBehaviour
     private bool CanNewLandSpawnAt(Vector2Int gridPos)
     {
         bool isPositionValid = false;
-        for (int i = 0; i < bordersList.Count; i++)
+
+        foreach(Vector2Int borderPosition in bordersDictionary.Keys)
         {
-            if (bordersList[i].WorldBorderPosition == gridPos)
+            if(borderPosition == gridPos)
             {
                 isPositionValid = true;
                 break;
             }
         }
+
         return isPositionValid;
     }
 
@@ -150,21 +181,22 @@ public class WorldManager : MonoBehaviour
     // Adds a new land border to the list of borders.
     public void AddBorder(LandBorder border)
     {
-        bordersList.Add(border);
+        // Try to add the key with an initial value of 1
+        if (!bordersDictionary.TryAdd(border.WorldBorderPosition, 1))
+        {
+            // If the key already exists, increment the value
+            bordersDictionary[border.WorldBorderPosition]++;
+        }
     }
 
     // Removes connected borders by iterating through spawned lands and borders, destroying the borders that are connected to existing lands.
     public void RemoveConnectedBorders()
     {
-        foreach (LandManager land in new List<LandManager>(SpawnedLands))
+        for(int i = 0; i < SpawnedLands.Count; i++)
         {
-            foreach (LandBorder border in new List<LandBorder>(bordersList))
-            {
-                if (land.GridPosition == border.WorldBorderPosition)
-                {
-                    Destroy(border.gameObject);
-                    bordersList.Remove(border);
-                }
+            if (bordersDictionary.ContainsKey(SpawnedLands[i].GridPosition))
+            { 
+                bordersDictionary.Remove(SpawnedLands[i].GridPosition);
             }
         }
     }
@@ -235,8 +267,30 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        if (currentEventSelection == WorldEvent.ESCORT ||
-            currentEventSelection == WorldEvent.DEFEND ||
+        if (currentEventSelection == WorldEvent.ESCORT)
+        {
+            Player[] players = FindObjectsOfType<Player>(); //NEED TO ALTER EOW CONDITIONS SO THAT THEY CHECK IF PLAYERS ARE ALIVE
+
+            if(players.Length == 0) //No players found
+            {
+                return;
+            }
+            else
+            {
+                int randomPlayerIndex;
+                randomPlayerIndex = UnityEngine.Random.Range(0, players.Length);
+
+                LandManager npcStartingLand = GetLandByWorldPosition(players[randomPlayerIndex].transform.position);
+                Debug.Log(npcStartingLand.GridPosition);
+
+            }
+
+
+
+            
+        }
+
+        if (currentEventSelection == WorldEvent.DEFEND ||
             currentEventSelection == WorldEvent.ZONES ||
             currentEventSelection == WorldEvent.VISITALL)
         {
@@ -262,7 +316,6 @@ public class WorldManager : MonoBehaviour
     // then transitions the game to biome selection.
     public void DecrementActivePrioritiesCount()
     {
-        Debug.Log("Decremented!!!!!");
         activePrioritiesCount--;
         if (activePrioritiesCount == 0)
         {
@@ -325,7 +378,7 @@ public class WorldManager : MonoBehaviour
 
         if (gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
         {
-            ghostLandTransform.GetComponent<MeshRenderer>().material = GetLand(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
+            ghostLandTransform.GetComponent<MeshRenderer>().material = GetLandByGridPosition(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
         }
     }
 
@@ -362,7 +415,7 @@ public class WorldManager : MonoBehaviour
     public void TryEmpowerLandAtGhost()
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+        LandManager hoveredLand = GetLandByGridPosition(spawnPosition.x, spawnPosition.y);
 
         if (hoveredLand == null)
         {
@@ -391,7 +444,7 @@ public class WorldManager : MonoBehaviour
     public void TryWeakenLandAtGhost()
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+        LandManager hoveredLand = GetLandByGridPosition(spawnPosition.x, spawnPosition.y);
 
         if (hoveredLand == null)
         {

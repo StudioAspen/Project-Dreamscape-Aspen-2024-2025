@@ -26,7 +26,13 @@ public class EnemySpawner : MonoBehaviour
     private List<Enemy> enemiesSpawned = new List<Enemy>();
     private bool isSpawnDelayed = false;
 
+    //Priority wave variables
     public bool IsPriority = false;
+    //Escort wave variables
+    public bool NpcPresent = false; //MAKE SURE THAT THIS VALUE GETS SET BACK TO FALSE FOR ALL LANDS ONCE THE WAVE IS OVER
+    private float CurrencyResetTimer;
+    private float CurrencyResetTimerLength = 5f;
+    private bool CurrencyTimerActive = false;
 
     // Ensures references are correctly assigned and validated when the script is loaded or values are changed in the Inspector.
     private void OnValidate()
@@ -52,6 +58,21 @@ public class EnemySpawner : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.K)) ClearWave();
+
+        //Code to handle resetting currency during escort wave
+        if(CurrencyTimerActive)
+        {
+            if (CurrencyResetTimer > 0)
+            {
+                CurrencyResetTimer -= Time.deltaTime;
+            }
+            else
+            {
+                currentShopCurrency = maxShopCurrency;
+                CurrencyTimerActive = false;
+            }
+        }
+        
     }
 
     // Coroutine that continuously spawns enemies at intervals, taking into account spawn settings and delays.
@@ -105,7 +126,12 @@ public class EnemySpawner : MonoBehaviour
 
                 if (worldManager.currentEventSelection == WorldEvent.ESCORT)
                 {
-                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                    if(!NpcPresent) { return; }
+                    else
+                    {
+                        CreateEnemy(i);
+                        currentShopCurrency -= enemyPrefabs[i].Cost;
+                    }
                 }
 
                 if (worldManager.currentEventSelection == WorldEvent.DEFEND)
@@ -123,7 +149,20 @@ public class EnemySpawner : MonoBehaviour
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
-                if (currentShopCurrency <= 0) CanSpawn = false;
+                if (currentShopCurrency <= 0)
+                {
+                    CanSpawn = false;
+                    if(worldManager.currentEventSelection == WorldEvent.ESCORT)
+                    {
+                        CurrencyResetTimer = CurrencyResetTimerLength;
+                        CurrencyTimerActive = true;
+                    }
+                }
+                    
+                
+
+
+
 
                 break;
             }
