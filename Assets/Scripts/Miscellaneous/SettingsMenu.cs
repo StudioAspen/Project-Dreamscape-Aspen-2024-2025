@@ -70,14 +70,14 @@ public class SettingsMenu : MonoBehaviour
                 gameManager.ChangeState(GameState.PAUSED);
                 pauseCanvas.SetActive(false);
                 settingsCanvas.SetActive(true);
-                Debug.Log("Settings Menu Opened");
+                //Debug.Log("Settings Menu Opened");
             }
             // Close Settings Menu
             else
             {
                 settingsCanvas.SetActive(false);
-                Debug.Log("Settings Menu Closed");
                 gameManager.ChangeState(GameState.PLAYING);
+                //Debug.Log("Settings Menu Closed");
             }
         }
     }
