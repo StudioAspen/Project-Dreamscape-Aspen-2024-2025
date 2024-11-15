@@ -8,8 +8,7 @@ public class VolumeManager : MonoBehaviour
 
     [SerializeField] private Slider volumeSlider;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         if (!PlayerPrefs.HasKey("audioVolume"))
         {
@@ -21,6 +20,7 @@ public class VolumeManager : MonoBehaviour
             PlayerPrefs.SetFloat("audioVolume", volumeSlider.value);
         }
     }
+
 
     public void ChangeVolume()
     {

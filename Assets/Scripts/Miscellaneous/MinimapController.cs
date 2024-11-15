@@ -12,7 +12,7 @@ using UnityEngine.InputSystem.LowLevel;
 
 public class MinimapController : MonoBehaviour
 {
-    public RectTransform minimapRectTransform;
+    [SerializeField] private RectTransform minimapRectTransform; // Raw Image Render Texture
     private Vector2 normalSize;
     private Vector2 normalPosition;
     private Vector2 centeredPosition = new Vector2(0, 0);
@@ -39,14 +39,7 @@ public class MinimapController : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-    }
-    private void OnDestroy()
-    {
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
 
-    void Start()
-    {   
         // Cache Components
         normalSize = minimapRectTransform.sizeDelta;
         normalPosition = minimapRectTransform.anchoredPosition;
@@ -60,6 +53,10 @@ public class MinimapController : MonoBehaviour
         thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
         image = mask.GetComponentInChildren<RawImage>();
         border = transform.GetChild(0).Find("Border");
+    }
+    private void OnDestroy()
+    {
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
     public void ToggleMinimap()
