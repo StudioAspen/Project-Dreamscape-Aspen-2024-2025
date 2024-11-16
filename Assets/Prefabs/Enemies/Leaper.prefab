@@ -60,7 +60,7 @@ MonoBehaviour:
   baseSpeed: 3
   velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 5
-  targetDetectionRadius: 10
+  targetDetectionRadius: 50
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -71,17 +71,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   <StaggerDuration>k__BackingField: 0.5
-  rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
+  <RigidBody>k__BackingField: {fileID: 3915645929625153338}
   <Cost>k__BackingField: 1
   IsAttackAnimationPlaying: 0
   UseRootMotion: 0
   <PatrolIntervalDurationRange>k__BackingField: {x: 3, y: 5}
   <PatrolRadiusRange>k__BackingField: {x: 4, y: 8}
+  <PatrolJumpHeight>k__BackingField: 2
+  <PatrolJumpPrepareTime>k__BackingField: 1
+  <PatrolJumpDuration>k__BackingField: 0.75
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
-  GroundedTimer: 0
 --- !u!114 &5112144103742148319
 MonoBehaviour:
   m_ObjectHideFlags: 0

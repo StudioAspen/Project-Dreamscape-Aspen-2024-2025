@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,9 +14,8 @@ public class LeaperPatrolState : EnemyBaseState {
     private Vector3 currentWanderDestination;
     private Coroutine leapCoroutine;
     private Tween leapTween;
-
     private bool lookAtDestination = false;
-    private bool jumpLaunched = false;
+    private bool jumpLaunched = false; // This variable is only really for the animation when it is in the air
 
     public LeaperPatrolState(Leaper enemy) : base(enemy) 
     {
@@ -53,7 +53,7 @@ public class LeaperPatrolState : EnemyBaseState {
             //leapCoroutine = leaper.Leap(currentWanderDestination, leaper.PatrolJumpDuration, 1f);
 
             leapCoroutine = leaper.StartCoroutine(DoLeap());
-            
+
 
         }
 
@@ -123,7 +123,8 @@ public class LeaperPatrolState : EnemyBaseState {
     {
         lookAtDestination = true;
         yield return new WaitForSeconds(leaper.PatrolJumpPrepareTime);
-        leapTween = leaper.TweenLeap(currentWanderDestination, 1f, 5f).OnComplete(() => OnLeapTweenComplete()).OnUpdate(LeapCheckForCollision);
+        jumpLaunched = true;
+        leapTween = leaper.TweenLeap(currentWanderDestination, leaper.PatrolJumpDuration, leaper.PatrolJumpHeight).OnComplete(() => OnLeapTweenComplete()).OnUpdate(LeapCheckForCollision);
     }
 
 }
