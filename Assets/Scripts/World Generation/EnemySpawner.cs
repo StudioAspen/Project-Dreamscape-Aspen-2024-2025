@@ -9,6 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
     [SerializeField, Self] private LandManager landManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     private ObjectPooler enemyPooler;
     private List<float> enemyNormalizedWeights = new List<float>();
@@ -112,19 +113,26 @@ public class EnemySpawner : MonoBehaviour
 
             if (randomValue < cumulativeWeight)
             {
-                if (worldManager.currentEventSelection == WorldEvent.SURVIVAL)
+
+                if(eventManager.CurrentWaveType == WorldEvent.START)
                 {
                     CreateEnemy(i);
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
-                if (worldManager.currentEventSelection == WorldEvent.PRIORITIES)
+                if (eventManager.CurrentWaveType == WorldEvent.SURVIVAL)
                 {
                     CreateEnemy(i);
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
-                if (worldManager.currentEventSelection == WorldEvent.ESCORT)
+                if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES)
+                {
+                    CreateEnemy(i);
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
+
+                if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
                 {
                     if(!NpcPresent) { return; }
                     else
@@ -134,17 +142,17 @@ public class EnemySpawner : MonoBehaviour
                     }
                 }
 
-                if (worldManager.currentEventSelection == WorldEvent.DEFEND)
+                if (eventManager.CurrentWaveType == WorldEvent.DEFEND)
                 {
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
-                if (worldManager.currentEventSelection == WorldEvent.ZONES)
+                if (eventManager.CurrentWaveType == WorldEvent.ZONES)
                 {
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
-                if (worldManager.currentEventSelection == WorldEvent.VISITALL)
+                if (eventManager.CurrentWaveType == WorldEvent.VISIT_ALL)
                 {
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
@@ -152,7 +160,7 @@ public class EnemySpawner : MonoBehaviour
                 if (currentShopCurrency <= 0)
                 {
                     CanSpawn = false;
-                    if(worldManager.currentEventSelection == WorldEvent.ESCORT)
+                    if(eventManager.CurrentWaveType == WorldEvent.ESCORT)
                     {
                         CurrencyResetTimer = CurrencyResetTimerLength;
                         CurrencyTimerActive = true;
@@ -191,13 +199,13 @@ public class EnemySpawner : MonoBehaviour
         enemiesSpawned.Clear();
 
         CanSpawn = false;
-        if (worldManager.currentEventSelection == WorldEvent.PRIORITIES && IsPriority)
+        if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES && IsPriority)
         {
-            worldManager.DecrementActivePrioritiesCount();
+            eventManager.DecrementActivePrioritiesCount();
         }
         else
         {
-            worldManager.DecrementActiveLandCount();
+            eventManager.DecrementActiveLandCount();
         }
     }
 
@@ -245,13 +253,13 @@ public class EnemySpawner : MonoBehaviour
 
         if (enemiesSpawned.Count == 0)
         {
-            if (worldManager.currentEventSelection == WorldEvent.PRIORITIES && IsPriority)
+            if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES && IsPriority)
             {
-                worldManager.DecrementActivePrioritiesCount();
+                eventManager.DecrementActivePrioritiesCount();
             }
             else
             {
-                worldManager.DecrementActiveLandCount();
+                eventManager.DecrementActiveLandCount();
             }
         }
     }

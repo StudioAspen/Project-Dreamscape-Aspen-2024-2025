@@ -7,12 +7,12 @@ public class EventCardUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Scene] private EventSelectUI eventSelectUI;
     [SerializeField, Self] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
-
-    public WorldEvent CurrentEvent { get; private set; }
+    private WorldEvent assignedWaveType;
 
     private void OnValidate()
     {
@@ -23,6 +23,7 @@ public class EventCardUI : MonoBehaviour
     {
         worldManager = FindObjectOfType<WorldManager>();
         eventSelectUI = FindObjectOfType<EventSelectUI>();
+        eventManager = FindObjectOfType<EventManager>();
 
         button.onClick.AddListener(OnClickCard);
     }
@@ -49,14 +50,15 @@ public class EventCardUI : MonoBehaviour
 
     public void AssignCardEvent(WorldEvent worldEvent)
     {
-        CurrentEvent = worldEvent;
+        //eventManager.CurrentWaveType = worldEvent;
+        assignedWaveType = worldEvent;
 
-        nameText.text = $"{CurrentEvent.ToString()}";
+        nameText.text = $"{worldEvent.ToString()}";
     }
 
     private void OnClickCard()
     {
-        worldManager.AssignNextEvent(CurrentEvent);
+        eventManager.AssignNextEvent(assignedWaveType);
         eventSelectUI.Disable();
     }
 }

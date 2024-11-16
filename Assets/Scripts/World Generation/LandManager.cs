@@ -57,7 +57,6 @@ public class LandManager : MonoBehaviour
     private IEnumerator OnCompleteSpawn()
     {
         worldManager.RemoveConnectedBorders();
-        worldManager.SpawnedLandsDictionary[GridPosition] = this;
 
         yield return null;
 
@@ -77,6 +76,7 @@ public class LandManager : MonoBehaviour
             border.SetWorldBorderPosition(GridPosition);
             worldManager.AddBorder(border);
         }
+
     }
 
     // This function is used to increase or decrease the land's level by the given amount.

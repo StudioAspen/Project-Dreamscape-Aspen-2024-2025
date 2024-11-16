@@ -31,12 +31,10 @@ public class WorldManager : MonoBehaviour
     public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>();
 
     //Test replacement for bordersList
-    public Dictionary<Vector2Int, int> bordersDictionary = new Dictionary<Vector2Int, int>(); //int is not necessary, but a dictionary needs a key-value pair so its just here
+    public Dictionary<Vector2Int, List<LandBorder>> bordersDictionary = new Dictionary<Vector2Int, List<LandBorder>>(); //int is not necessary, but a dictionary needs a key-value pair so its just here
 
     //Test replacement for SpawnedList
     public Dictionary<Vector2Int, LandManager> SpawnedLandsDictionary = new Dictionary<Vector2Int, LandManager>();
-
-    private int activeLandCount;
 
     [Header("Land Position Selection")]
     [SerializeField] private LandManager landToSpawnPrefab;
@@ -47,14 +45,10 @@ public class WorldManager : MonoBehaviour
     [field: Header("Biome Selection")]
     private Biome currentBiomeSelection = Biome.DREAM;
 
-    [field: Header("Event Selection")]
-    public WorldEvent currentEventSelection = WorldEvent.SURVIVAL;
-
     [field: Header("Progression")]
     [field: SerializeField] public int EmpowerTokens { get; private set; }
     [field: SerializeField] public int WeakenTokens { get; private set; }
 
-    private int activePrioritiesCount = 0;
     #endregion
 
     #region On Start
@@ -69,7 +63,6 @@ public class WorldManager : MonoBehaviour
     {
         SpawnedLands.Add(GetComponentInChildren<LandManager>());
         BuildNavMesh();
-        activeLandCount = 1;
         DisableGhostLand();
     }
     #endregion
@@ -178,162 +171,45 @@ public class WorldManager : MonoBehaviour
         navMeshSurface.BuildNavMesh();
     }
 
+
     // Adds a new land border to the list of borders.
     public void AddBorder(LandBorder border)
     {
-        // Try to add the key with an initial value of 1
-        if (!bordersDictionary.TryAdd(border.WorldBorderPosition, 1))
+        // Try to add a new key with a list containing the border
+        if (!bordersDictionary.TryAdd(border.WorldBorderPosition, new List<LandBorder> { border }))
         {
-            // If the key already exists, increment the value
-            bordersDictionary[border.WorldBorderPosition]++;
+            // If the key already exists, add the border to the existing list
+            bordersDictionary[border.WorldBorderPosition].Add(border);
         }
     }
 
     // Removes connected borders by iterating through spawned lands and borders, destroying the borders that are connected to existing lands.
     public void RemoveConnectedBorders()
     {
-        for(int i = 0; i < SpawnedLands.Count; i++)
+        for (int i = 0; i < SpawnedLands.Count; i++)
         {
             if (bordersDictionary.ContainsKey(SpawnedLands[i].GridPosition))
-            { 
+            {
+                // Create a temporary list to avoid modifying the collection while iterating
+                var bordersToRemove = new List<LandBorder>(bordersDictionary[SpawnedLands[i].GridPosition]);
+                Debug.Log("I have made the very mistake i swore i never would, i am truly a god of fools");
+
+                foreach (LandBorder border in bordersToRemove)
+                {
+                    Destroy(border.gameObject);
+                }
+
+                // Clear the list and remove the key from the dictionary
+                bordersDictionary[SpawnedLands[i].GridPosition].Clear();
                 bordersDictionary.Remove(SpawnedLands[i].GridPosition);
             }
         }
+
     }
     #endregion
 
-    #region EOW Conditions
-    // Prepares the game for the next wave based on the current event selection. 
-    // It resets enemy spawners for all lands and handles specific logic for different event types (e.g., SURVIVAL, PRIORITIES, etc.).
-    public void PrepareForNextWave()
-    {
-        if (currentEventSelection == WorldEvent.SURVIVAL)
-        {
-            activeLandCount = SpawnedLands.Count;
-            foreach (LandManager land in SpawnedLands)
-            {
-                land.EnemySpawner.WaveReset();
-            }
-        }
-
-        if (currentEventSelection == WorldEvent.PRIORITIES)
-        {
-            if (SpawnedLands.Count <= 3)
-            {
-                foreach (LandManager land in SpawnedLands) //WAIT ACTUALLY, IF THERE ARE LESS THAN 4 LANDS, THEN THE WAVE FUNCTIONS THE EXACT SAME AS THE SURVIVAL WAVE, SO THIS CAN ALL BE SCRAPPED
-                {
-                    activePrioritiesCount += 1;
-                    land.EnemySpawner.IsPriority = true;
-                    land.EnemySpawner.WaveReset();
-                }
-                Debug.Log(activePrioritiesCount);
-            }
-            else //There are at least 4 lands present
-            {
-                activePrioritiesCount = 3;
-
-                LandManager highestLevelLand = null;
-                LandManager secondHighestLevelLand = null;
-                LandManager thirdHighestLevelLand = null;
-
-                foreach (LandManager land in SpawnedLands)
-                {
-                    if (highestLevelLand == null || land.Level > highestLevelLand.Level)
-                    {
-                        thirdHighestLevelLand = secondHighestLevelLand;
-                        secondHighestLevelLand = highestLevelLand;
-                        highestLevelLand = land;
-                    }
-                    else if (secondHighestLevelLand == null || land.Level > highestLevelLand.Level)
-                    {
-                        thirdHighestLevelLand = secondHighestLevelLand;
-                        secondHighestLevelLand = land;
-                    }
-                    else if (thirdHighestLevelLand == null || land.Level > thirdHighestLevelLand.Level)
-                    {
-                        thirdHighestLevelLand = land;
-                    }
-                }
-
-                highestLevelLand.EnemySpawner.IsPriority = true;
-                secondHighestLevelLand.EnemySpawner.IsPriority = true;
-                thirdHighestLevelLand.EnemySpawner.IsPriority = true;
-
-                foreach (LandManager land in SpawnedLands)
-                {
-                    land.EnemySpawner.WaveReset();
-                }
-
-            }
-        }
-
-        if (currentEventSelection == WorldEvent.ESCORT)
-        {
-            Player[] players = FindObjectsOfType<Player>(); //NEED TO ALTER EOW CONDITIONS SO THAT THEY CHECK IF PLAYERS ARE ALIVE
-
-            if(players.Length == 0) //No players found
-            {
-                return;
-            }
-            else
-            {
-                int randomPlayerIndex;
-                randomPlayerIndex = UnityEngine.Random.Range(0, players.Length);
-
-                LandManager npcStartingLand = GetLandByWorldPosition(players[randomPlayerIndex].transform.position);
-                Debug.Log(npcStartingLand.GridPosition);
-
-            }
 
 
-
-            
-        }
-
-        if (currentEventSelection == WorldEvent.DEFEND ||
-            currentEventSelection == WorldEvent.ZONES ||
-            currentEventSelection == WorldEvent.VISITALL)
-        {
-            activeLandCount = SpawnedLands.Count;
-            foreach (LandManager land in SpawnedLands)
-            {
-                land.EnemySpawner.WaveReset();
-            }
-        }
-    }
-
-    // Decrements the active land count and transitions the game to biome selection if all lands are processed.
-    public void DecrementActiveLandCount()
-    {
-        activeLandCount--;
-        if (activeLandCount == 0)
-        {
-            gameManager.ChangeState(GameState.BIOME_SELECTION);
-        }
-    }
-
-    // Decrements the active priorities count and despawns all non-priority enemies if there are no active priorities left, 
-    // then transitions the game to biome selection.
-    public void DecrementActivePrioritiesCount()
-    {
-        activePrioritiesCount--;
-        if (activePrioritiesCount == 0)
-        {
-            foreach (LandManager land in SpawnedLands)
-            {
-                if (!land.EnemySpawner.IsPriority)
-                {
-                    land.EnemySpawner.DespawnAllEnemies();
-                }
-                else
-                {
-                    land.EnemySpawner.IsPriority = false;
-                }
-            }
-            gameManager.ChangeState(GameState.BIOME_SELECTION);
-        }
-    }
-    #endregion
 
     #region Player Selection
     // Assigns the next biome to be used for land placement and changes the game state to LAND_PLACEMENT.
@@ -343,13 +219,7 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
-    // Assigns the next world event and prepares for the next wave of enemies, then changes the game state to PLAYING.
-    public void AssignNextEvent(WorldEvent worldEvent)
-    {
-        currentEventSelection = worldEvent;
-        PrepareForNextWave();
-        gameManager.ChangeState(GameState.PLAYING);
-    }
+   
     #endregion
 
     #region Ghost Land Functions
@@ -399,6 +269,9 @@ public class WorldManager : MonoBehaviour
             land.DisableLevelText();
         }
     }
+
+
+
     #endregion
 
     #region Progression Functions
@@ -508,14 +381,4 @@ public enum Biome
     BIOME3
 }
 
-// Enumeration for different events that can occur in the game world.
-public enum WorldEvent
-{
-    SURVIVAL,
-    ZONES,
-    PRIORITIES,
-    ESCORT,
-    VISITALL,
-    DEFEND
-}
 #endregion
