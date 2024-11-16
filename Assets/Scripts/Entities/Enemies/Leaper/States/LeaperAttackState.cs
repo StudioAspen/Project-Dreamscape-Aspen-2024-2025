@@ -8,9 +8,6 @@ public class LeaperAttackState : EnemyBaseState
 
     private float timer;
 
-    private GameObject HitBoxLocation;
-    private float HitBoxRadius;
-
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -26,6 +23,8 @@ public class LeaperAttackState : EnemyBaseState
         leaper.DefaultTransitionToAnimation("FlatMovement");
 
         leaper.SetSpeedModifier(2f);
+        
+        Debug.Log(leaper.Target);
 
         SetLungeDestination(leaper.Target.transform.position);
 
