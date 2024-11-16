@@ -43,12 +43,12 @@ public class PauseMenu : MonoBehaviour
     private void Enable()
     {
         pauseUI.SetActive(true);
-        Debug.Log("Pause Menu Opened");
+        //Debug.Log("Pause Menu Opened");
     }
     private void Disable()
     {
         pauseUI.SetActive(false);
-        Debug.Log("Pause Menu Closed");
+        //Debug.Log("Pause Menu Closed");
     }
 
 
