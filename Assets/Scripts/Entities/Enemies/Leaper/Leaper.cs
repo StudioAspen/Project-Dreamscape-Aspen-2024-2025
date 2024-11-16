@@ -8,9 +8,9 @@ public class Leaper : Enemy
     [field: Header("Leaper: Patrol Settings")]
     [field: SerializeField] public Vector2 PatrolIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 PatrolRadiusRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public float PatrolJumpHeight { get; private set; } = 2f;
-    [field: SerializeField] public float PatrolJumpPrepareTime { get; private set; } = 1f;
-    [field: SerializeField] public float PatrolJumpDuration { get; private set; } = .75f;
+    [field: SerializeField] public float PatrolLeapHeight { get; private set; } = 2f;
+    [field: SerializeField] public float PatrolLeapPrepareTime { get; private set; } = 1f;
+    [field: SerializeField] public float PatrolLeapDuration { get; private set; } = .75f;
 
     // variables for attack go here 
     // follower has a couple of them already but I dont think leaper needs all of them
@@ -97,12 +97,12 @@ public class Leaper : Enemy
 
 
     // From this returned Tween object you can attach things like OnComplete() and OnUpdate() for more control over tween.
-    public Tween TweenLeap(Vector3 leapDestination, float leapDuration, float jumpHeight)
+    public Tween TweenLeap(Vector3 leapDestination, float leapDuration, float leapHeight)
     {
         Vector3 startPoint = RigidBody.position;
         Vector3 endPoint = leapDestination;
         Vector3 midPoint = (startPoint + endPoint) / 2;
-        midPoint.y += jumpHeight;
+        midPoint.y += leapHeight;
         Vector3[] path = { startPoint, midPoint, endPoint };
         return RigidBody.DOPath(path, leapDuration, PathType.CatmullRom).SetEase(Ease.Linear);
     }

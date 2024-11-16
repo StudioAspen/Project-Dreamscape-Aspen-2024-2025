@@ -15,7 +15,7 @@ public class LeaperPatrolState : EnemyBaseState {
     private Coroutine leapCoroutine;
     private Tween leapTween;
     private bool lookAtDestination = false;
-    private bool jumpLaunched = false; // This variable is only really for the animation when it is in the air
+    private bool leapLaunched = false; // This variable is only really for the animation when it is in the air
 
     public LeaperPatrolState(Leaper enemy) : base(enemy) 
     {
@@ -50,7 +50,7 @@ public class LeaperPatrolState : EnemyBaseState {
             randomWanderIntervalDuration = Random.Range(leaper.PatrolIntervalDurationRange.x, leaper.PatrolIntervalDurationRange.y);
             currentWanderDestination = GetRandomWanderPoint();
             Debug.DrawRay(currentWanderDestination, Vector3.up * 5f, Color.green, 3f);
-            //leapCoroutine = leaper.Leap(currentWanderDestination, leaper.PatrolJumpDuration, 1f);
+            //leapCoroutine = leaper.Leap(currentWanderDestination, leaper.PatrolLeapDuration, 1f);
 
             leapCoroutine = leaper.StartCoroutine(DoLeap());
 
@@ -62,8 +62,8 @@ public class LeaperPatrolState : EnemyBaseState {
             leaper.LookAt(currentWanderDestination);
         }
 
-        // Setting speed modifier here is more for animation speed than movement speed (jumping uses tweening)
-        leaper.SetSpeedModifier(!jumpLaunched ? 0f : 1f);
+        // Setting speed modifier here is more for animation speed than movement speed (leaping uses tweening)
+        leaper.SetSpeedModifier(!leapLaunched ? 0f : 1f);
 
         if (leaper.Target != null) 
         {
@@ -116,15 +116,15 @@ public class LeaperPatrolState : EnemyBaseState {
     private void OnLeapTweenComplete()
     {
         lookAtDestination = false;
-        jumpLaunched = false;
+        leapLaunched = false;
     }
 
     private IEnumerator DoLeap()
     {
         lookAtDestination = true;
-        yield return new WaitForSeconds(leaper.PatrolJumpPrepareTime);
-        jumpLaunched = true;
-        leapTween = leaper.TweenLeap(currentWanderDestination, leaper.PatrolJumpDuration, leaper.PatrolJumpHeight).OnComplete(() => OnLeapTweenComplete()).OnUpdate(LeapCheckForCollision);
+        yield return new WaitForSeconds(leaper.PatrolLeapPrepareTime);
+        leapLaunched = true;
+        leapTween = leaper.TweenLeap(currentWanderDestination, leaper.PatrolLeapDuration, leaper.PatrolLeapHeight).OnComplete(() => OnLeapTweenComplete()).OnUpdate(LeapCheckForCollision);
     }
 
 }
