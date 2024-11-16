@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Leaper : Enemy
 {
@@ -18,7 +19,6 @@ public class Leaper : Enemy
     // reminder to change the value bellow if you need to
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
     private float originalRotationSpeed;
-
 
     // add all states here 
     // add as they get created
@@ -94,6 +94,20 @@ public class Leaper : Enemy
         IsAttackAnimationPlaying = false;
         //DisableWeaponTriggers();
     }
+
+
+    // From this returned Tween object you can attach things like OnComplete() and OnUpdate() for more control over tween.
+    public Tween TweenLeap(Vector3 leapDestination, float leapDuration, float jumpHeight)
+    {
+        Vector3 startPoint = RigidBody.position;
+        Vector3 endPoint = leapDestination;
+        Vector3 midPoint = (startPoint + endPoint) / 2;
+        midPoint.y += jumpHeight;
+        Vector3[] path = { startPoint, midPoint, endPoint };
+        return RigidBody.DOPath(path, leapDuration, PathType.CatmullRom).SetEase(Ease.Linear);
+    }
+
+   
 
 
 

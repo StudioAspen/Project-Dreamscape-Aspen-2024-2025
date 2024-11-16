@@ -11,10 +11,11 @@ public class LeaperPatrolState : EnemyBaseState {
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
-    bool isJumping = false;
-    bool jumpLaunched = false;
-    private Tween jumpTween;
     private Coroutine leapCoroutine;
+    private Tween leapTween;
+
+    private bool lookAtDestination = false;
+    private bool jumpLaunched = false;
 
     public LeaperPatrolState(Leaper enemy) : base(enemy) 
     {
@@ -49,10 +50,14 @@ public class LeaperPatrolState : EnemyBaseState {
             randomWanderIntervalDuration = Random.Range(leaper.PatrolIntervalDurationRange.x, leaper.PatrolIntervalDurationRange.y);
             currentWanderDestination = GetRandomWanderPoint();
             Debug.DrawRay(currentWanderDestination, Vector3.up * 5f, Color.green, 3f);
+            //leapCoroutine = leaper.Leap(currentWanderDestination, leaper.PatrolJumpDuration, 1f);
+
             leapCoroutine = leaper.StartCoroutine(DoLeap());
+            
+
         }
 
-        if (isJumping) 
+        if (lookAtDestination) 
         {
             leaper.LookAt(currentWanderDestination);
         }
@@ -95,34 +100,30 @@ public class LeaperPatrolState : EnemyBaseState {
         return leaper.transform.position;
     }
 
-    private IEnumerator DoLeap() 
-    {
-        isJumping = true;
-        yield return new WaitForSeconds(leaper.PatrolJumpPrepareTime);
-        jumpLaunched = true;
-        Vector3 startPoint = leaper.RigidBody.position;
-        Vector3 endPoint = currentWanderDestination;
-        Vector3 midPoint = (startPoint + endPoint) / 2;
-        midPoint.y += leaper.PatrolJumpHeight;
-        Vector3[] path = { startPoint, midPoint, endPoint };
-        jumpTween = leaper.RigidBody.DOPath(path, leaper.PatrolJumpDuration, PathType.CatmullRom).SetEase(Ease.Linear).OnComplete(() => OnJumpTweenComplete()).OnUpdate(CheckForCollision); 
-     }
 
-    private void CheckForCollision() 
+
+    private void LeapCheckForCollision()
     {
         Debug.DrawRay(leaper.transform.position + (Vector3.up * .5f), leaper.transform.forward * .5f, Color.blue, 3f);
-        if (Physics.Raycast(leaper.transform.position + (Vector3.up * .5f), leaper.transform.forward, out _, .5f, LayerMask.GetMask("Ground"))) 
+        if (Physics.Raycast(leaper.transform.position + (Vector3.up * .5f), leaper.transform.forward, out _, .5f, LayerMask.GetMask("Ground")))
         {
-            OnJumpTweenComplete();
+            OnLeapTweenComplete();
             Debug.DrawRay(leaper.transform.position, Vector3.up * 5f, Color.yellow, 3f);
-            jumpTween.Kill();
+            leapTween.Kill();
         }
     }
 
-    private void OnJumpTweenComplete() 
+    private void OnLeapTweenComplete()
     {
-        isJumping = false;
+        lookAtDestination = false;
         jumpLaunched = false;
+    }
+
+    private IEnumerator DoLeap()
+    {
+        lookAtDestination = true;
+        yield return new WaitForSeconds(leaper.PatrolJumpPrepareTime);
+        leapTween = leaper.TweenLeap(currentWanderDestination, 1f, 5f).OnComplete(() => OnLeapTweenComplete()).OnUpdate(LeapCheckForCollision);
     }
 
 }
