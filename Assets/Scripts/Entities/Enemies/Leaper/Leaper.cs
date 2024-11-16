@@ -12,11 +12,10 @@ public class Leaper : Enemy
     [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10,15);
 
     [field: Header("Leaper: Hop Settings")]
-    [field: SerializeField] public int hopCount;
-    [field: SerializeField] public int hopDistance;
-    [field: SerializeField] public int hopDuration;
-    [field: SerializeField] public int hopHeight;
-    [field: SerializeField] public int coinToss = Random.Range(1, 2);
+    [field: SerializeField] public int HopCount { get; private set; } = 2;
+    [field: SerializeField] public int HopDistance { get; private set; } = 5;
+    [field: SerializeField] public int HopDuration { get; private set; } = 3;
+    [field: SerializeField] public int HopHeight { get; private set; } = 5;
 
 
     // add all states here 

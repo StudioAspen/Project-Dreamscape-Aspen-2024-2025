@@ -39,18 +39,18 @@ public class LeaperHopState : EnemyBaseState
     {
         Vector3 startPosition = leaper.transform.position;
 
-        for (int i = 0; i < leaper.hopCount; i++)
+        for (int i = 0; i < leaper.HopCount; i++)
         {
-            Vector3 hopDirection = -leaper.transform.forward * leaper.hopDistance;
+            Vector3 hopDirection = -leaper.transform.forward * leaper.HopDistance;
             Vector3 targetPositionHop = startPosition + hopDirection;
             float hopPastedTime = 0f;
 
-            while (hopPastedTime < leaper.hopDuration)
+            while (hopPastedTime < leaper.HopDuration)
             {
                 hopPastedTime += Time.deltaTime;
-                float t = Mathf.Clamp01(hopPastedTime / leaper.hopDuration);
+                float t = Mathf.Clamp01(hopPastedTime / leaper.HopDuration);
                 Vector3 currentPosition = Vector3.Lerp(startPosition, targetPositionHop, t);
-                currentPosition.y += leaper.hopHeight * Mathf.Sin(t * Mathf.PI);
+                currentPosition.y += leaper.HopHeight * Mathf.Sin(t * Mathf.PI);
                 leaper.transform.position = currentPosition;
 
                 yield return null;
@@ -64,7 +64,9 @@ public class LeaperHopState : EnemyBaseState
 
     public void CoinToss()
     {
-        if (leaper.coinToss == 1)
+        bool willGoToAttack = Random.Range(0, 2) == 1;
+
+        if (willGoToAttack)
         {
             //leaper.ChangeState(leaper.LeaperAttackState);
         }
