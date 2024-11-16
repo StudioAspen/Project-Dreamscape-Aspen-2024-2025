@@ -113,6 +113,7 @@ public class WorldManager : MonoBehaviour
     // Spawns a new land at the specified grid coordinates (x, y) and adds it to the list of spawned lands.
     private void SpawnLand(int x, int y)
     {
+        placedTiles.Add(new Vector2Int(x, y));
         float landScale = landToSpawnPrefab.transform.localScale.x;
         LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * x, -5f, landScale * y), Quaternion.identity, transform);
         spawnedLand.Init(x, y);
@@ -240,8 +241,7 @@ public class WorldManager : MonoBehaviour
         //3x3 grids rather than searching nearby tiles
         if (currentEventSelection == WorldEvent.ZONES)
         {
-            //pick a 3x3
-            //spawn enemies in that area
+            CheckAndSelect3x3Grid();
         }
 
         if (currentEventSelection == WorldEvent.ESCORT ||
@@ -255,6 +255,76 @@ public class WorldManager : MonoBehaviour
             }
         }
     }
+
+    //Data Structures
+    HashSet<Vector2Int> placedTiles = new HashSet<Vector2Int>();
+    //placedTiles.Add(new Vector2Int(x, y)); <--- to add new tiles
+
+    void CheckAndSelect3x3Grid()
+    {
+        List<List<Vector2Int>> validGrids = FindValid3x3Grids(placedTiles);
+        Vector2Int selectedTile = SelectRandom3x3(validGrids);
+        
+        if (selectedTile != Vector2Int.zero)
+        {
+            Debug.Log("Selected 3x3 center tile at: " + selectedTile);
+            // Do something with the selected grid (e.g., highlight it, perform an action, etc.)
+        }
+    }
+
+    List<List<Vector2Int>> FindValid3x3Grids(HashSet<Vector2Int> placedTiles)
+    {
+        List<List<Vector2Int>> validGrids = new List<List<Vector2Int>>();
+        
+        // Iterate over all placed tiles and check if they can be the center of a valid 3x3 grid
+        foreach (var tile in placedTiles)
+        {
+            int cx = tile.x;
+            int cy = tile.y;
+        
+            // Define all 9 positions in a 3x3 grid with the current tile as the center
+            List<Vector2Int> gridPositions = new List<Vector2Int>()
+            {
+                new Vector2Int(cx-1, cy-1), new Vector2Int(cx, cy-1), new Vector2Int(cx+1, cy-1),
+                new Vector2Int(cx-1, cy),   new Vector2Int(cx, cy),   new Vector2Int(cx+1, cy),
+                new Vector2Int(cx-1, cy+1), new Vector2Int(cx, cy+1), new Vector2Int(cx+1, cy+1)
+            };
+
+            // Check if all the 9 positions are in placedTiles
+            bool isValidGrid = true;
+            foreach (var pos in gridPositions)
+            {
+                if (!placedTiles.Contains(pos))
+                {
+                    isValidGrid = false;
+                    break;
+                }
+            }
+
+            if (isValidGrid)
+            {
+                validGrids.Add(gridPositions);  // Add the valid 3x3 grid to the list
+            }
+        }
+
+        return validGrids;
+    }
+
+    Vector2Int SelectRandom3x3(List<List<Vector2Int>> validGrids)
+    {
+        if (validGrids.Count == 0)
+        {
+            Debug.Log("No valid 3x3 grids found.");
+            return Vector2Int.zero;  // No valid grid found
+        }
+
+        int randomIndex = Random.Range(0, validGrids.Count);
+        List<Vector2Int> selectedGrid = validGrids[randomIndex];
+
+        // You can return the center of the selected grid, or just return the entire grid if needed
+        return selectedGrid[4];  // The center tile of the 3x3 grid (index 4)
+    }
+
 
     // Decrements the active land count and transitions the game to biome selection if all lands are processed.
     public void DecrementActiveLandCount()
