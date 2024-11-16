@@ -24,7 +24,7 @@ public class Leaper : Enemy
     #region States
 
     // public LeaperAttackState LeaperAttackState{ get; private set; }
-    // public LeaperHopState LeaperHopState{ get; private set; }
+    public LeaperHopState LeaperHopState{ get; private set; }
     // public LeaperChaseState LeaperChaseState{ get; private set; }
 
     #endregion
@@ -38,6 +38,7 @@ public class Leaper : Enemy
     {
         base.OnOnEnable();
         // set start state
+        SetStartState(LeaperHopState);
     }
 
     protected override void OnOnDisable()
@@ -74,7 +75,7 @@ public class Leaper : Enemy
         // add more as they get created
 
         // LeaperAttackState = new LeaperAttackState(this);
-        // LeaperHopState = new LeaperHopState(this);
+        LeaperHopState = new LeaperHopState(this);
         // LeaperChaseState = new LeaperChaseState(this);
 
 
