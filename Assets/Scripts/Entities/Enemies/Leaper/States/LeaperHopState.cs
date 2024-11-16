@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class LeaperHopState : EnemyBaseState
         leaper.DefaultTransitionToAnimation("Hop");
 
         Jump();
+        CoinToss();
     }
 
     public override void OnExit()
@@ -33,14 +35,13 @@ public class LeaperHopState : EnemyBaseState
         
     }
 
-    public void Jump()
+    public IEnumerator Jump()
     {
-        Transform rootTransform = leaper.enemyTransform.parent;
-        Vector3 startPosition = rootTransform.position;
+        Vector3 startPosition = leaper.transform.position;
 
         for (int i = 0; i < leaper.hopCount; i++)
         {
-            Vector3 hopDirection = -rootTransform.forward * leaper.hopDistance;
+            Vector3 hopDirection = -leaper.transform.forward * leaper.hopDistance;
             Vector3 targetPositionHop = startPosition + hopDirection;
             float hopPastedTime = 0f;
 
@@ -50,19 +51,27 @@ public class LeaperHopState : EnemyBaseState
                 float t = Mathf.Clamp01(hopPastedTime / leaper.hopDuration);
                 Vector3 currentPosition = Vector3.Lerp(startPosition, targetPositionHop, t);
                 currentPosition.y += leaper.hopHeight * Mathf.Sin(t * Mathf.PI);
-                rootTransform.position = currentPosition;
+                leaper.transform.position = currentPosition;
 
                 yield return null;
             }
 
-            rootTransform.position = targetPositionHop;
+            leaper.transform.position = targetPositionHop;
             startPosition = targetPositionHop;
         }
 
-        //transition state 50/50
-        //leaper.ChangeState(leaper.LeaperAttackState);
-        return;
+    }
 
+    public void CoinToss()
+    {
+        if (leaper.coinToss == 1)
+        {
+            //leaper.ChangeState(leaper.LeaperAttackState);
+        }
+        else
+        {
+            //leaper.ChangeState(leaper.LeaperIdleState);
+        }
     }
 }
 

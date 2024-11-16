@@ -16,6 +16,7 @@ public class Leaper : Enemy
     [field: SerializeField] public int hopDistance;
     [field: SerializeField] public int hopDuration;
     [field: SerializeField] public int hopHeight;
+    [field: SerializeField] public int coinToss = Random.Range(1, 2);
 
 
     // add all states here 
