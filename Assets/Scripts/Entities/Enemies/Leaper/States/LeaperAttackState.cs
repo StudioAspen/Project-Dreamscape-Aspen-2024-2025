@@ -8,6 +8,13 @@ public class LeaperAttackState : EnemyBaseState
 
     private float timer;
 
+<<<<<<< Updated upstream
+=======
+    private GameObject HitBoxLocation;
+    
+
+
+>>>>>>> Stashed changes
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -20,6 +27,7 @@ public class LeaperAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
+        
         leaper.DefaultTransitionToAnimation("FlatMovement");
 
         leaper.SetSpeedModifier(2f);
@@ -45,6 +53,11 @@ public class LeaperAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
+        if(leaper.Target == null)
+        {
+            leaper.ChangeState(leaper.LeaperAttackState);
+            return;
+        }
         Vector3 dir = (destination - leaper.transform.position);
 
         leaper.Move(dir);

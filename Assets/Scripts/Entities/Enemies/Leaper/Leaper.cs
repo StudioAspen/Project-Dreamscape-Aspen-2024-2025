@@ -14,6 +14,7 @@ public class Leaper : Enemy
     [field: SerializeField] public float HitBoxRadius { get; private set; } = 2f;
     [field: SerializeField] public GameObject HitBoxLocation { get; private set; }
     [field: SerializeField] public LayerMask HitLayer { get; private set; }
+    //[field: SerializeField] public float LeaperJumpForce { get; private set; } 
 
     // add all states here 
     // add as they get created
