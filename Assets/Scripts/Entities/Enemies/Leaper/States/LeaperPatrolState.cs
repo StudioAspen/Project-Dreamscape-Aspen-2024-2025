@@ -14,6 +14,7 @@ public class LeaperPatrolState : EnemyBaseState {
     bool isJumping = false;
     bool jumpLaunched = false;
     private Tween jumpTween;
+    private Coroutine leapCoroutine;
 
     public LeaperPatrolState(Leaper enemy) : base(enemy) 
     {
@@ -28,7 +29,13 @@ public class LeaperPatrolState : EnemyBaseState {
         randomWanderIntervalDuration = Random.Range(leaper.PatrolIntervalDurationRange.x, leaper.PatrolIntervalDurationRange.y);
     }
 
-    public override void OnExit() { }
+    public override void OnExit() {
+        if (leapCoroutine != null)
+        {
+            leaper.StopCoroutine(leapCoroutine);
+            leapCoroutine = null;
+        }
+    }
 
     public override void Update() 
     {
@@ -42,7 +49,7 @@ public class LeaperPatrolState : EnemyBaseState {
             randomWanderIntervalDuration = Random.Range(leaper.PatrolIntervalDurationRange.x, leaper.PatrolIntervalDurationRange.y);
             currentWanderDestination = GetRandomWanderPoint();
             Debug.DrawRay(currentWanderDestination, Vector3.up * 5f, Color.green, 3f);
-            leaper.StartCoroutine(DoLeap());
+            leapCoroutine = leaper.StartCoroutine(DoLeap());
         }
 
         if (isJumping) 
