@@ -16,7 +16,7 @@ public class LeaperHopState : EnemyBaseState
     {
         leaper.DefaultTransitionToAnimation("Hop");
 
-        Jump();
+        leaper.StartCoroutine(Jump());
         CoinToss();
     }
 
