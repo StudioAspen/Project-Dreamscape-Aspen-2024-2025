@@ -7,14 +7,12 @@ public class LeaperAttackState : EnemyBaseState
     private Vector3 destination;
 
     private float timer;
+   
+    public float HitBoxRadius;
 
-<<<<<<< Updated upstream
-=======
     private GameObject HitBoxLocation;
     
 
-
->>>>>>> Stashed changes
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
