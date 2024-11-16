@@ -25,12 +25,12 @@ public class PlayerDashState : PlayerBaseState
 
         player.ApplyRotationToNextMovement();
 
-        player.InstantlySetSpeed(player.InitialDashVelocity);
+        player.InstantlySetGroundedSpeed(player.InitialDashVelocity);
     }
 
     public override void OnExit()
     {
-        player.InstantlySetSpeed(maxSpeed);
+        player.InstantlySetGroundedSpeed(maxSpeed);
         player.ResetYVelocity();
     }
 
@@ -69,7 +69,7 @@ public class PlayerDashState : PlayerBaseState
         
         player.RotateToTargetRotation();
 
-        player.InstantlySetSpeed(currDashSpeed);
+        player.InstantlySetGroundedSpeed(currDashSpeed);
         player.GroundedMove();
     }
 }

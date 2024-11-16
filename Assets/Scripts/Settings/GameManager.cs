@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeState(GameState.PLAYING);
+        ForceChangeState(GameState.PLAYING);
     }
 
     private void Update()
@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
@@ -79,12 +80,55 @@ public class GameManager : MonoBehaviour
             case GameState.LAND_PLACEMENT:
                 Time.timeScale = 0f;
 
-                UnlockCursor();
+                LockCursor();
                 break;
             case GameState.LAND_EMPOWERMENT:
                 Time.timeScale = 0f;
 
+                LockCursor();
+                break;
+            case GameState.EVENT_SELECTION:
+                Time.timeScale = 0f;
+
                 UnlockCursor();
+                break;
+            default:
+                break;
+        }
+
+        CurrentState = newState;
+
+        OnGameStateChanged?.Invoke(newState);
+    }
+
+    public void ForceChangeState(GameState newState)
+    {
+        switch (newState)
+        {
+            case GameState.PLAYING:
+                Time.timeScale = 1f;
+
+                LockCursor();
+                break;
+            case GameState.PAUSED:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.BIOME_SELECTION:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.LAND_PLACEMENT:
+                Time.timeScale = 0f;
+
+                LockCursor();
+                break;
+            case GameState.LAND_EMPOWERMENT:
+                Time.timeScale = 0f;
+
+                LockCursor();
                 break;
             case GameState.EVENT_SELECTION:
                 Time.timeScale = 0f;

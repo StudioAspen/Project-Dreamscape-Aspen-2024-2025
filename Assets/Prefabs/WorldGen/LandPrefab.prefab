@@ -65,7 +65,7 @@ GameObject:
   - component: {fileID: 2713257828174539950}
   - component: {fileID: 3688375034819025643}
   - component: {fileID: 2721416000522201154}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderEast
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -514,7 +514,7 @@ MonoBehaviour:
   landManager: {fileID: 6052383663745716427}
   enemyPrefabs:
   - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
-  - {fileID: -71318835558361112, guid: 8d65e1d3225116f43bc402345430faf9, type: 3}
+  - {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376, type: 3}
   weightingSkewFactor: 2.2
   spawnInterval: 3
   baseCurrency: 2
@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 934173520614831567}
   - component: {fileID: 3339952415797423076}
   - component: {fileID: 3681944110880667696}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderWest
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -813,7 +813,7 @@ GameObject:
   - component: {fileID: 4862459101237194586}
   - component: {fileID: 4271741344995929924}
   - component: {fileID: 7035828083019054197}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderNorth
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 462447320193338778}
   - component: {fileID: 8992238792902132451}
   - component: {fileID: 4914862744058982853}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BorderSouth
   m_TagString: Border
   m_Icon: {fileID: 0}

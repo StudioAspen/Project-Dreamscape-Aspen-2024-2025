@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
+  model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 50
   <Level>k__BackingField: 1
@@ -73,9 +74,10 @@ MonoBehaviour:
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
-  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 1
   IsAttackAnimationPlaying: 0
+  UseRootMotion: 0
+  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
   <AttackReadyDuration>k__BackingField: 0.25
