@@ -10,10 +10,6 @@ public class StatusEffectSO : ScriptableObject
     private protected Entity entity;
     private protected GameObject source;
 
-    [field: Header("Status Effect: Settings")]
-    [field: SerializeField] public float Duration { get; protected set; } = 1f;
-    public float RemainingDuration { get; protected set; }
-
     /// <summary>
     /// Initializes the status effect with the specified owner and source.
     /// </summary>
@@ -23,8 +19,6 @@ public class StatusEffectSO : ScriptableObject
     {
         entityStatusEffectorOwner = owner;
         entity = owner.GetComponent<Entity>();
-
-        RemainingDuration = Duration;
 
         OnApply();
     }
@@ -39,22 +33,18 @@ public class StatusEffectSO : ScriptableObject
     }
 
     /// <summary>
-    /// Updates the status effect by decreasing the remaining duration and checking if it has expired.
+    /// Updates the status effect.
     /// Override this function if you want to customize the update behavior.
     /// </summary>
     public virtual void Update()
     {
-        RemainingDuration -= Time.deltaTime;
 
-        if (RemainingDuration <= 0)
-        {
-            OnExpire();
-        }
     }
 
     /// <summary>
     /// Called when the status effect expires.
     /// Removes the status effect from the owner.
+    /// Permanent status effects should not expire and are cancelled instead.
     /// Override this function if you want to customize the OnExpire behavior.
     /// </summary>
     private protected virtual void OnExpire()
@@ -74,12 +64,19 @@ public class StatusEffectSO : ScriptableObject
     }
 
     /// <summary>
-    /// Overrides the current status effect with a new status effect by extending the current duration.
-    /// Override this function if you want to customize the override behavior.
+    /// Overrides the current status effect with a new status effect of the specified type.
+    /// Override if you want to add custom behavior when overriding the status effect.
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
-    public virtual void Override(StatusEffectSO newStatusEffect)
+    /// <returns>True if the override is successful, false otherwise.</returns>
+    public virtual bool Override(StatusEffectSO newStatusEffect)
     {
-        RemainingDuration += newStatusEffect.Duration;
+        if (newStatusEffect.GetType() != GetType())
+        {
+            Debug.LogError($"Cannot override {name} with a different status effect type.");
+            return false;
+        }
+
+        return true;
     }
 }

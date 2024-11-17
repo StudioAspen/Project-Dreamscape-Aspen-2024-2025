@@ -30,16 +30,17 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Speed Variables
     [Header("Entity: Speed")]
-    [SerializeField] protected private float baseSpeed = 3f;
-    [SerializeField] protected private float rotationSpeed = 5f;
+    [SerializeField] private protected float baseSpeed = 3f;
+    [SerializeField] private protected float rotationSpeed = 5f;
     public float SpeedModifier { get; protected set; } = 1f;
-    protected private Vector3 velocity;
+    public float StatusSpeedModifier { get; protected set; } = 1f;
+    private protected Vector3 velocity;
     #endregion
 
     #region Airborne Variables
     [HideInInspector] public bool IsGrounded;
-    protected private float inAirTimer;
-    protected private bool fallVelocityApplied;
+    private protected float inAirTimer;
+    private protected bool fallVelocityApplied;
     #endregion
 
     #region Target Detection Variables
@@ -55,7 +56,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
-    protected private GameObject lastHitSource;
+    private protected GameObject lastHitSource;
     #endregion
 
     #region Stagger Variables
@@ -672,7 +673,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     }
 
-
     #region Tinting Functions
     /// <summary>
     /// Caches the original tints of the renderers in the character model.
@@ -759,4 +759,9 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
     }
     #endregion
+
+    public void SetStatusSpeedModifier(float newModifer)
+    {
+        StatusSpeedModifier = newModifer;
+    }
 }

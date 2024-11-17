@@ -15,7 +15,7 @@ public class Player : Entity
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
-    public float MovementSpeed => movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
+    public float MovementSpeed => StatusSpeedModifier * movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
     private float movementOnSlopeSpeedModifier = 1f;
     private float totalSpeedModifierForAnimation;
     public Vector3 MoveDirection => input.MoveDirection;

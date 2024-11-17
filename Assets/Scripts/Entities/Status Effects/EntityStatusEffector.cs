@@ -18,6 +18,11 @@ public class EntityStatusEffector : MonoBehaviour
         {
             OverrideAndExtendStatusEffect(TestStatusEffect, null);
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ApplyStatusEffect(TestStatusEffect, null);
+        }
     }
 
     /// <summary>
@@ -63,7 +68,7 @@ public class EntityStatusEffector : MonoBehaviour
         }
 
         StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-        currentStatusEffect.Override(newStatusEffect); // extend the remaining duration
+        currentStatusEffect.Override(newStatusEffect); // extend and override
     }
 
     /// <summary>

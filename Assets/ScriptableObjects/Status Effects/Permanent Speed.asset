@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
-  m_Name: TestBurn
+  m_Script: {fileID: 11500000, guid: 6e19a7d3be33abd4cbd88521e1f580cc, type: 3}
+  m_Name: Permanent Speed
   m_EditorClassIdentifier: 
-  duration: 2
-  damagePerTick: 1
-  tickDuration: 0.5
+  <SpeedMultiplier>k__BackingField: 1.1
