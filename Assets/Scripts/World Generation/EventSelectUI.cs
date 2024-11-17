@@ -64,7 +64,7 @@ public class EventSelectUI : MonoBehaviour
 
         foreach (EventCardUI card in eventCards)
         {
-            int randomIndex = Random.Range(0, potentialEvents.Count);
+            int randomIndex = Random.Range(1, potentialEvents.Count);
 
             WorldEvent randomEvent = potentialEvents[randomIndex];
 

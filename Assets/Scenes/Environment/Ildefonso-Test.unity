@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211752}
+  eventManager: {fileID: 1416371478039211755}
   button: {fileID: 68945460}
   image: {fileID: 1150409913}
   nameText: {fileID: 1891613857}
@@ -2135,7 +2135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211752}
+  eventManager: {fileID: 1416371478039211755}
   button: {fileID: 878057792}
   image: {fileID: 2120750626}
   nameText: {fileID: 1941833614}
@@ -3701,7 +3701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211752}
+  eventManager: {fileID: 1416371478039211755}
   button: {fileID: 1461370043}
   image: {fileID: 864508893}
   nameText: {fileID: 1305073775}
@@ -4475,7 +4475,6 @@ GameObject:
   - component: {fileID: 1832457528}
   - component: {fileID: 1832457527}
   - component: {fileID: 1832457529}
-  - component: {fileID: 1832457530}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -4554,24 +4553,6 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
---- !u!114 &1832457530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1832457525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf3d661749f6b2c4bab9e152af897784, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldManager: {fileID: 1416371478039211752}
-  gameManager: {fileID: 487855562}
-  IsDebugging: 1
-  eventText: {fileID: 833962647}
-  EventClearStatus: 0
-  CurrEvent: 0
 --- !u!1 &1873184806
 GameObject:
   m_ObjectHideFlags: 0
@@ -4632,7 +4613,7 @@ MonoBehaviour:
   - {fileID: 719982916}
   - {fileID: 412937925}
   - {fileID: 1496102135}
-  eventManager: {fileID: 1832457530}
+  eventManager: {fileID: 1416371478039211755}
 --- !u!114 &1873184809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5073,6 +5054,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941833612}
   m_CullTransparentMesh: 1
+--- !u!1 &2091589656 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3004667545289962807, guid: db1275f617a255440bbd7838400968a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1416371478039211751}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2114565719
 GameObject:
   m_ObjectHideFlags: 0
@@ -5261,8 +5248,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2034974937338886477}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5439,7 +5426,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3004667545289962807, guid: db1275f617a255440bbd7838400968a9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1416371478039211755}
   m_SourcePrefab: {fileID: 100100000, guid: db1275f617a255440bbd7838400968a9, type: 3}
 --- !u!114 &1416371478039211752 stripped
 MonoBehaviour:
@@ -5447,12 +5438,29 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1416371478039211751}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2091589656}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1416371478039211755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091589656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf3d661749f6b2c4bab9e152af897784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldManager: {fileID: 1416371478039211752}
+  gameManager: {fileID: 487855562}
+  CurrentWaveType: 0
+  eventText: {fileID: 833962647}
+  EventClearStatus: 0
 --- !u!1 &1613189912748339658
 GameObject:
   m_ObjectHideFlags: 0

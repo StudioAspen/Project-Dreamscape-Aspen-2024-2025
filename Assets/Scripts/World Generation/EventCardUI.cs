@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class EventCardUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Self] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
@@ -20,7 +20,7 @@ public class EventCardUI : MonoBehaviour
 
     private void Awake()
     {
-        worldManager = FindObjectOfType<WorldManager>();
+        eventManager = FindObjectOfType<EventManager>();
 
         button.onClick.AddListener(OnClickCard);
     }
@@ -54,6 +54,6 @@ public class EventCardUI : MonoBehaviour
 
     private void OnClickCard()
     {
-        worldManager.AssignNextEvent(CurrentEvent);
+        eventManager.AssignNextEvent(CurrentEvent);
     }
 }

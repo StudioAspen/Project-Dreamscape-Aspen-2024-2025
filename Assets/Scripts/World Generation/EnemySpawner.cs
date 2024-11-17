@@ -8,8 +8,8 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
-    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Self] private LandManager landManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     private ObjectPooler enemyPooler;
     private List<float> enemyNormalizedWeights = new List<float>();
@@ -27,48 +27,61 @@ public class EnemySpawner : MonoBehaviour
     private List<Enemy> enemiesSpawned = new List<Enemy>();
     private bool isSpawnDelayed = false;
 
+    //Priority wave variables
+    public bool IsPriority = false;
+    //Escort wave variables
+    public bool NpcPresent = false; //MAKE SURE THAT THIS VALUE GETS SET BACK TO FALSE FOR ALL LANDS ONCE THE WAVE IS OVER
+    private float CurrencyResetTimer;
+    private float CurrencyResetTimerLength = 5f;
+    private bool CurrencyTimerActive = false;
+
+    // Ensures references are correctly assigned and validated when the script is loaded or values are changed in the Inspector.
     private void OnValidate()
     {
         this.ValidateRefs();
     }
 
+    // Initializes key references and calculations when the object is created.
     private void Awake()
     {
         enemyPooler = transform.parent.GetComponentInChildren<ObjectPooler>();
-
         CalculateNormalizedWeights();
     }
 
+    // Resets the wave settings and starts the spawn coroutine when the game starts.
     void Start()
     {
         WaveReset();
-      
         StartCoroutine(SpawnCoroutine());
     }
 
-
+    // Continuously checks for wave status and currency depletion.
     void Update()
     {
-
-        if (currentShopCurrency <= 0) CanSpawn = false;
-
         if (Input.GetKeyDown(KeyCode.K)) ClearWave();
 
-        //Event Clear Status set to true
-        if (Input.GetKeyDown(KeyCode.L)) eventManager.setEventClearStatus(true);
+        //Code to handle resetting currency during escort wave
+        if (CurrencyTimerActive)
+        {
+            if (CurrencyResetTimer > 0)
+            {
+                CurrencyResetTimer -= Time.deltaTime;
+            }
+            else
+            {
+                currentShopCurrency = maxShopCurrency;
+                CurrencyTimerActive = false;
+            }
+        }
+
     }
 
+    // Coroutine that continuously spawns enemies at intervals, taking into account spawn settings and delays.
     private IEnumerator SpawnCoroutine()
     {
         while (true)
         {
             if (!CanSpawn)
-            {
-                yield return null;
-                continue;
-            }
-
-            if (currentShopCurrency <= 0)
             {
                 yield return null;
                 continue;
@@ -81,39 +94,100 @@ public class EnemySpawner : MonoBehaviour
             }
 
             SpawnEnemy();
-
             yield return new WaitForSeconds(spawnInterval);
         }
     }
 
-    private void SpawnEnemy() 
+    // Selects an enemy to spawn based on random selection and available currency.
+    private void SpawnEnemy()
     {
         float randomValue = Random.Range(0f, 1f);
         int spawnLocation = Random.Range(1, 5);
-        float cumalativeWeight = 0f;
+        float cumulativeWeight = 0f;
 
-        for(int i = 0; i < enemyPrefabs.Count; i++)
+        for (int i = 0; i < enemyPrefabs.Count; i++)
         {
-            cumalativeWeight += enemyNormalizedWeights[i];
+            cumulativeWeight += enemyNormalizedWeights[i];
 
             if (currentShopCurrency < enemyPrefabs[i].Cost) continue;
 
-            if(randomValue < cumalativeWeight)
+            if (randomValue < cumulativeWeight)
             {
-                enemyPooler.ChangePrefab(enemyPrefabs[i].gameObject);
 
-                Enemy e = enemyPooler.SpawnObject<Enemy>(landManager.GetRandomEnemySpawn().position);
-                e.Init(this);
+                if (eventManager.CurrentWaveType == WorldEvent.START)
+                {
+                    CreateEnemy(i);
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
 
-                enemiesSpawned.Add(e);
+                if (eventManager.CurrentWaveType == WorldEvent.SURVIVAL)
+                {
+                    CreateEnemy(i);
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
 
-                currentShopCurrency -= enemyPrefabs[i].Cost;
+                if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES)
+                {
+                    CreateEnemy(i);
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
+
+                if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
+                {
+                    if (!NpcPresent) { return; }
+                    else
+                    {
+                        CreateEnemy(i);
+                        currentShopCurrency -= enemyPrefabs[i].Cost;
+                    }
+                }
+
+                if (eventManager.CurrentWaveType == WorldEvent.DEFEND)
+                {
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
+
+                if (eventManager.CurrentWaveType == WorldEvent.ZONES)
+                {
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
+
+                if (eventManager.CurrentWaveType == WorldEvent.VISIT_ALL)
+                {
+                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                }
+
+                if (currentShopCurrency <= 0)
+                {
+                    CanSpawn = false;
+                    if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
+                    {
+                        CurrencyResetTimer = CurrencyResetTimerLength;
+                        CurrencyTimerActive = true;
+                    }
+                }
+
+
+
+
+
 
                 break;
             }
         }
-    } 
+    }
 
+    private void CreateEnemy(int enemy_index)
+    {
+        enemyPooler.ChangePrefab(enemyPrefabs[enemy_index].gameObject);
+
+        Enemy e = enemyPooler.SpawnObject<Enemy>(landManager.GetRandomEnemySpawn().position);
+        e.Init(this);
+
+        enemiesSpawned.Add(e);
+    }
+
+    // Clears all currently spawned enemies and resets currency.
     private void ClearWave()
     {
         currentShopCurrency = 0;
@@ -125,10 +199,18 @@ public class EnemySpawner : MonoBehaviour
         enemiesSpawned.Clear();
 
         CanSpawn = false;
-        worldManager.DecrementActiveLandCount();
+        if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES && IsPriority)
+        {
+            eventManager.DecrementActivePrioritiesCount();
+        }
+        else
+        {
+            eventManager.DecrementActiveLandCount();
+        }
     }
 
-    public void WaveReset() 
+    // Resets wave settings and initializes currency based on the current level of the land manager.
+    public void WaveReset()
     {
         if (landManager.Level <= 0)
         {
@@ -143,35 +225,52 @@ public class EnemySpawner : MonoBehaviour
         isSpawnDelayed = true;
     }
 
-    private void CalculateNormalizedWeights() 
+    // Calculates normalized weights for each enemy based on their cost and a skew factor.
+    private void CalculateNormalizedWeights()
     {
         enemyNormalizedWeights = new List<float>();
 
         float totalWeight = 0f;
 
-        foreach (Enemy enemy in enemyPrefabs) 
+        foreach (Enemy enemy in enemyPrefabs)
         {
             totalWeight += 1f / Mathf.Pow(enemy.Cost, weightingSkewFactor);
         }
 
-        for(int i = 0; i < enemyPrefabs.Count; i++)
+        for (int i = 0; i < enemyPrefabs.Count; i++)
         {
             float weight = 1f / Mathf.Pow(enemyPrefabs[i].Cost, weightingSkewFactor);
-
             enemyNormalizedWeights.Add(weight / totalWeight);
         }
     }
 
+    // Removes a specific enemy from the spawned list and checks for wave completion.
     public void RemoveEnemyFromList(Enemy e)
     {
         enemiesSpawned.Remove(e);
 
         if (currentShopCurrency > 0) return;
 
-        if(enemiesSpawned.Count == 0)
+        if (enemiesSpawned.Count == 0)
         {
-            worldManager.DecrementActiveLandCount();
+            if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES && IsPriority)
+            {
+                eventManager.DecrementActivePrioritiesCount();
+            }
+            else
+            {
+                eventManager.DecrementActiveLandCount();
+            }
         }
     }
 
+    // Removes all spawned enemies and clears the list.
+    public void DespawnAllEnemies()
+    {
+        foreach (Enemy enemy in new List<Enemy>(enemiesSpawned))
+        {
+            enemyPooler.ReleaseObject(enemy.gameObject);
+        }
+        enemiesSpawned.Clear();
+    }
 }
