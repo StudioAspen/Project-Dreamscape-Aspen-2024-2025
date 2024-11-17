@@ -16,7 +16,7 @@ public class EntityStatusEffector : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            AddStatusEffect(TestStatusEffect, null);
+            OverrideAndExtendStatusEffect(TestStatusEffect, null);
         }
     }
 
@@ -34,11 +34,11 @@ public class EntityStatusEffector : MonoBehaviour
 
     /// <summary>
     /// Adds a copy of the status effect to the entity.
-    /// Will always delete the old status effect if it exists.
+    /// Will always cancel the old status effect if it exists.
     /// </summary>
-    /// <typeparam name="T">The type of the status effect.</typeparam>
-    /// <param name="newStatusEffect">The new status effect to add.</param>
-    public void AddStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    /// <param name="newStatusEffect">The new status effect to override or apply.</param>
+    /// <param name="source">The source GameObject that applies the status effect.</param>
+    public void ApplyStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
         RemoveStatusEffect(newStatusEffect.GetType(), true);
 
@@ -49,7 +49,26 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
+    /// Overrides and extends the specified status effect on the entity.
+    /// If the status effect does not exist, it will be applied.
+    /// </summary>
+    /// <param name="newStatusEffect">The new status effect to override or apply.</param>
+    /// <param name="source">The source GameObject that applies the status effect.</param>
+    public void OverrideAndExtendStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    {
+        if (!CurrentStatusEffects.ContainsKey(newStatusEffect.GetType()))
+        {
+            ApplyStatusEffect(newStatusEffect, source);
+            return;
+        }
+
+        StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
+        currentStatusEffect.Override(newStatusEffect); // extend the remaining duration
+    }
+
+    /// <summary>
     /// Removes the specified status effect from the entity.
+    /// Cancelling the status effect will not trigger OnExpire.
     /// </summary>
     /// <param name="statusEffectType">The status effect type to remove.</param>
     /// <param name="cancel">Indicates whether to cancel the status effect.</param>
