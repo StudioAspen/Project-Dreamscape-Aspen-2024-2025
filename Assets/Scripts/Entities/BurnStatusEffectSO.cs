@@ -3,91 +3,55 @@ using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityBurn : MonoBehaviour
+[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burn")]
+public class BurnStatusEffectSO : StatusEffectSO
 {
-    [Header("References")]
-    [SerializeField, Self] private Entity entity;
-
-    [Header("Settings")]
+    [Header("Burn: Settings")]
     [SerializeField] private int damagePerTick = 1;
     [SerializeField] private float tickDuration = 0.5f;
-    private int currentTicks;
     private float tickTimer;
 
-    private GameObject source;
-
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
-    private bool isTinted;
 
-    private void OnValidate()
+    private protected override void OnApply()
     {
-        this.ValidateRefs();
-    }
+        base.OnApply();
 
-    private void OnEnable()
-    {
-        
-    }
-
-    private void OnDisable()
-    {
-        UnTintEntity();
-    }
-
-    private void Start()
-    {
         SaveDefaultTints();
+        TweenTintEntity();
     }
 
-    private void Update()
+    public override void Update()
     {
-        HandleTick();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            AddBurn(3.5f, entity.gameObject);
-        }
-    }
-
-    private void HandleTick()
-    {
-        if (currentTicks <= 0)
-        {
-            tickTimer = 0f;
-
-            if (isTinted) UnTintEntity();            
-            return;
-        }
-
-        //Debug.Log("Burning");
+        base.Update();
 
         tickTimer += Time.deltaTime;
         if(tickTimer > tickDuration)
         {
             tickTimer = 0;
-            OnTick();
+
+            entity.TakeDamageWithoutState(damagePerTick, entity.GetColliderCenterPosition(), source);
         }
     }
 
-    private void OnTick()
+    private protected override void OnExpire()
     {
-        currentTicks--;
+        TweenUnTintEntity();
 
-        entity.TakeDamageWithoutState(damagePerTick, entity.GetColliderCenterPosition(), source);
+        base.OnExpire();
     }
 
-    public void AddBurn(float duration, GameObject source)
+    public override void Cancel()
     {
-        this.source = source;
-        currentTicks += Mathf.FloorToInt(duration / tickDuration);
+        ResetTint();
 
-        TintEntity();
+        base.Cancel();
     }
 
     private void SaveDefaultTints()
     {
         // Get all renderers in the character model, including any child objects
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
 
         foreach (Renderer renderer in renderers)
         {
@@ -105,9 +69,8 @@ public class EntityBurn : MonoBehaviour
         }
     }
 
-    private void TintEntity()
+    private void TweenTintEntity()
     {
-        isTinted = true;
         foreach (Renderer renderer in originalColors.Keys)
         {
             DOTween.Kill(renderer);
@@ -121,9 +84,8 @@ public class EntityBurn : MonoBehaviour
         }
     }
 
-    private void UnTintEntity()
+    private void TweenUnTintEntity()
     {
-        isTinted = false;
         foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
         {
             Renderer renderer = entry.Key;
@@ -135,6 +97,24 @@ public class EntityBurn : MonoBehaviour
                 if (renderer.materials[i].HasProperty("_Color"))
                 {
                     renderer.materials[i].DOColor(colors[i], 0.5f);
+                }
+            }
+        }
+    }
+
+    private void ResetTint()
+    {
+        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
+        {
+            Renderer renderer = entry.Key;
+            Color[] colors = entry.Value;
+
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                DOTween.Kill(renderer);
+                if (renderer.materials[i].HasProperty("_Color"))
+                {
+                    renderer.materials[i].color = colors[i];
                 }
             }
         }

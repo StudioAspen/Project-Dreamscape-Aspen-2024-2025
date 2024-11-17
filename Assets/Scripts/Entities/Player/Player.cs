@@ -135,8 +135,6 @@ public class Player : Entity
         HandleDashDelay();
         HandleDashTrail();
 
-        UpdateStatusEffects();
-
         HandleAnimations();
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";

@@ -1,5 +1,4 @@
 ﻿using KBCore.Refs;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,20 +7,39 @@ using UnityEngine.Pool;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
+    #region References Variables
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
-    [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
-    [SerializeField] private protected Transform model;
+    [SerializeField, Anywhere] private protected GlobalPhysicsSettings physicsSettings;
+    [SerializeField, Anywhere] private protected Transform model;
+    #endregion
 
-    [field: Header("Entity: Settings")]
+    #region Health Variables
+    [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: SerializeField] public int MaxHealth { get; protected set; }
-    [field: SerializeField] public int Level { get; protected set; }
+    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")] [field: SerializeField] public int MaxHealth { get; protected set; }
+    #endregion
 
+    #region Level Variables
+    [field: Header("Entity: Level")]
+    [field: SerializeField] public int Level { get; protected set; }
+    #endregion
+
+    #region Speed Variables
+    [Header("Entity: Speed")]
+    [SerializeField] protected private float baseSpeed = 3f;
+    [SerializeField] protected private float rotationSpeed = 5f;
+    public float SpeedModifier { get; protected set; } = 1f;
+    protected private Vector3 velocity;
+    #endregion
+
+    #region Airborne Variables
     [HideInInspector] public bool IsGrounded;
     protected private float inAirTimer;
     protected private bool fallVelocityApplied;
-    private List<StatusEffector> statusEffectors = new List<StatusEffector>();
+    #endregion
+
+    private List<StatusEffectSO> statusEffectors = new List<StatusEffectSO>();
     public enum EntityStats
     {
         MAXHEALTH,
@@ -29,22 +47,30 @@ public class Entity : MonoBehaviour, IPoolableObject
         ATTACKPOWER
     }
 
-
-    public float SpeedModifier { get; protected set; } = 1f;
-    [SerializeField] protected private float baseSpeed = 3f;
-    [SerializeField] protected private Vector3 velocity;
-    [SerializeField] protected private float rotationSpeed = 5f;
-
+    #region Target Detection Variables
+    [Header("Entity: Target Detection")]
     [SerializeField] private protected float targetDetectionRadius = 10f;
+    #endregion
 
+    #region Team Variables
     public int Team { get; private set; }
+    #endregion
 
-    protected private GameObject lastHitSource;
+    #region Combat Events
     [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
+    protected private GameObject lastHitSource;
+    #endregion
 
+    #region Stagger Variables
+    [field: Header("Entity: Stagger")]
     [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+    #endregion
+
+    #region Pooling Variables
+    private ObjectPool<GameObject> pool;
+    #endregion
 
     #region States
     public BaseState CurrentState { get; private set; }
@@ -68,8 +94,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityStaggeredState = new EntityStaggeredState(this);
     }
     #endregion
-
-    private ObjectPool<GameObject> pool;
 
     private void OnValidate()
     {
@@ -382,39 +406,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void ChangeTeam(int newTeam)
     {
         Team = newTeam;
-    }
-
-    public void ApplyEffector(StatusEffector status)
-    {
-        statusEffectors.Add(status);
-        ModifyStat(status);
-    }
-
-    protected void UpdateStatusEffects()
-    {
-        for (int i = statusEffectors.Count - 1; i >= 0; i--)
-        {
-            StatusEffector status = statusEffectors[i];
-            status.UpdateTime(Time.deltaTime);
-
-            if (status.IsExpired())
-            {
-                RevertStat(status);
-                statusEffectors.RemoveAt(i);
-            }
-        }
-    }
-
-    protected void ModifyStat(StatusEffector status)
-    {
-        if (status.StatAffected == Entity.EntityStats.SPEED)
-            SetSpeedModifier(SpeedModifier += status.IsDebuff ? -status.ModifierAmount : status.ModifierAmount);
-    }
-
-    private void RevertStat(StatusEffector status)
-    {
-        if (status.StatAffected == Entity.EntityStats.SPEED)
-            SetSpeedModifier(SpeedModifier -= status.IsDebuff ? -status.ModifierAmount : status.ModifierAmount);
     }
 
     /// <summary>
