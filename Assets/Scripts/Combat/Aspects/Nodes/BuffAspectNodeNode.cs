@@ -15,7 +15,7 @@ public class BuffAspectNodeNode : AspectNodeNode
             Debug.LogError($"No EntityStatusEffector found in children of {aspectsManager.gameObject.name}");
         }
 
-        if(StatusEffect.CanBeOverridedAndExtended)
+        if(StatusEffect.Stackable)
         {
             ownerStatusEffector.OverrideAndExtendStatusEffect(StatusEffect, ownerStatusEffector.gameObject);
         }

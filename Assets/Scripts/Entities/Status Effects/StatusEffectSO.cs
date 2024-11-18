@@ -11,7 +11,7 @@ public class StatusEffectSO : ScriptableObject
     private protected GameObject source;
 
     [field: Header("Status Effect: Settings")]
-    [field: SerializeField] public bool CanBeOverridedAndExtended { get; private set; }
+    [field: SerializeField] public bool Stackable { get; private set; }
 
     /// <summary>
     /// Initializes the status effect with the specified owner and source.
