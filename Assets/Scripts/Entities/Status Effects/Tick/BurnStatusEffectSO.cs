@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
