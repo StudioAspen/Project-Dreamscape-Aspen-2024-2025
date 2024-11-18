@@ -51,7 +51,7 @@ public class EntityLaunchState : BaseState
             return;
         }
 
-        if (entity.IsGrounded && !touchedGround)
+        if (timer > 0.05f && entity.IsGrounded && !touchedGround)
         {
             touchedGround = true;
             entity.DefaultTransitionToAnimation("FlatFallImpact");

@@ -155,7 +155,7 @@ public class Player : Entity
     protected override void CheckGrounded()
     {
         //IsGrounded is always false until the apex of the jump
-        if (IsJumping && inAirTimer > 0f && inAirTimer < Mathf.Sqrt(jumpHeight * -2f * physicsSettings.Gravity) / Mathf.Abs(physicsSettings.Gravity))
+        if (IsJumping && inAirTimer > 0f && inAirTimer < Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity) / Mathf.Abs(PhysicsSettings.Gravity))
         {
             IsGrounded = false;
             return;
@@ -169,7 +169,7 @@ public class Player : Entity
         }
 
         //direct physics calls r faster than Unity collision boxes
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, physicsSettings.GroundLayer);
+        IsGrounded = Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, PhysicsSettings.GroundLayer);
     }
 
     private void HandleJumpInput()
@@ -256,12 +256,12 @@ public class Player : Entity
             if (!IsJumping && !fallVelocityApplied) // falling without jumping
             {
                 fallVelocityApplied = true;
-                velocity.y = physicsSettings.FallingStartingYVelocity;
+                velocity.y = PhysicsSettings.FallingStartingYVelocity;
 
                 if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState) ChangeState(PlayerFallState);
             }
             inAirTimer += Time.deltaTime;
-            velocity.y += physicsSettings.Gravity * Time.deltaTime;
+            velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
         }
     }
 
@@ -300,7 +300,7 @@ public class Player : Entity
             return;
         }
 
-        Physics.Raycast(transform.position, Vector3.down, out hitBelow, controller.height / 2, physicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(transform.position, Vector3.down, out hitBelow, controller.height / 2, PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
 
         if (hitBelow.collider == null)
         {
@@ -332,7 +332,7 @@ public class Player : Entity
 
     public void ApplySlide(Vector3 slideDirection)
     {
-        velocity.y = physicsSettings.GroundedYVelocity;
+        velocity.y = PhysicsSettings.GroundedYVelocity;
         controller.Move(slideDirection * -velocity.y * Time.deltaTime);
     }
 
@@ -355,7 +355,7 @@ public class Player : Entity
         IsJumping = true;
         IsGrounded = false;
 
-        velocity.y = Mathf.Sqrt(jumpHeight * -2f * physicsSettings.Gravity);
+        velocity.y = Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity);
         inAirTimer = 0.01f;
 
         currentJumpCount++;

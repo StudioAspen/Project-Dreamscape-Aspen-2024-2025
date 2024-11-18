@@ -50,15 +50,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
-  physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
+  <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+    type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 200
   <Level>k__BackingField: 1
-  IsGrounded: 0
   baseSpeed: 1
-  velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 7.5
+  IsGrounded: 0
   targetDetectionRadius: 2.25
   OnEntityTakeDamage:
     m_PersistentCalls:

@@ -12,7 +12,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region References
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
-    [SerializeField, Anywhere] private protected GlobalPhysicsSettings physicsSettings;
+    [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion

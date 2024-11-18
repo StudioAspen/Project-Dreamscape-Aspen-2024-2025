@@ -45,7 +45,7 @@ public class PlayerAttackState : PlayerBaseState
 
         player.InstantlySetGroundedSpeed(0f);
 
-        if (ComboData.WillIgnoreGravity) player.ResetYVelocity();
+        //if (ComboData.WillIgnoreGravity) player.ResetYVelocity();
 
         playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit);
     }
@@ -78,15 +78,14 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint)
     {
-        if (ComboData.WillIgnoreGravity)
-        {
-            victim.ForceChangeToLaunchState(Vector3.up, 5f, 2f);
-            source.Launch(Vector3.up, 5f);
-        }
-
         if (ComboData.WillLaunchUpwards)
         {
+            Physics.gravity = -10 * Vector3.up;
+
             victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+
+            source.Launch(Vector3.up, ComboData.AirLaunchForce);
+            (source as Player).InvokeJumpActionInputForCombo();
         }
     }
 }
