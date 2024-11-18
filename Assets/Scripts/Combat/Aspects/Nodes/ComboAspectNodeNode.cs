@@ -12,7 +12,7 @@ public class ComboAspectNodeNode : AspectNodeNode
         Weapon ownerWeapon = aspectsManager.GetComponentInChildren<Weapon>();
         if (ownerWeapon == null)
         {
-            Debug.LogError("No weapon found in children of " + aspectsManager.gameObject.name);
+            Debug.LogError($"No weapon found in children of {aspectsManager.gameObject.name}");
         }
         
         ownerWeapon.AddCombo(ComboData);

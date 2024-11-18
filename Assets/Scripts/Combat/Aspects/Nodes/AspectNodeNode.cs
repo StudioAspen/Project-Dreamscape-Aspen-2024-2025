@@ -7,7 +7,7 @@ public class AspectNodeNode : Node
     [Input] public AspectNodeNode Parent;
     [Output(connectionType = ConnectionType.Multiple)] public List<AspectNodeNode> Children;
 
-    [field:SerializeField] public bool IsApplied { get; protected set; }
+    public bool IsApplied { get; protected set; }
 
     private void OnValidate()
     {

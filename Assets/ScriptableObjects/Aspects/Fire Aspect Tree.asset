@@ -63,9 +63,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
-  <IsApplied>k__BackingField: 0
+  Parent: {fileID: 2601295889772934724}
+  Children:
+  - {fileID: 1754930447581656949}
 --- !u!114 &770389167332293664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +109,6 @@ MonoBehaviour:
       _dynamic: 0
   Parent: {fileID: 8806075820471221040}
   Children: []
-  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 11400000, guid: cf12a1bb44269bc45b094201cb68b02d,
     type: 2}
 --- !u!114 &1754930447581656949
@@ -159,9 +158,11 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
-  <IsApplied>k__BackingField: 0
+  Parent: {fileID: 156384384425502292}
+  Children:
+  - {fileID: 8806075820471221040}
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: b6dddd08690361a45bfbe04b0be270af,
+    type: 2}
 --- !u!114 &2601295889772934724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +211,6 @@ MonoBehaviour:
   Children:
   - {fileID: 156384384425502292}
   - {fileID: 8496788754396392917}
-  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 11400000, guid: ed5fba988c30b9645af847b51526eb5b,
     type: 2}
 --- !u!114 &8496788754396392917
@@ -257,9 +257,9 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
-  <IsApplied>k__BackingField: 0
+  Parent: {fileID: 2601295889772934724}
+  Children:
+  - {fileID: 1754930447581656949}
 --- !u!114 &8806075820471221040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +304,8 @@ MonoBehaviour:
       _connectionType: 0
       _typeConstraint: 0
       _dynamic: 0
-  Parent: {fileID: 0}
-  Children: []
-  <IsApplied>k__BackingField: 0
+  Parent: {fileID: 1754930447581656949}
+  Children:
+  - {fileID: 770389167332293664}
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: b6dddd08690361a45bfbe04b0be270af,
+    type: 2}

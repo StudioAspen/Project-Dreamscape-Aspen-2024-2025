@@ -21,7 +21,6 @@ public class EntityStatusEffector : MonoBehaviour
         foreach (StatusEffectSO statusEffect in new List<StatusEffectSO>(CurrentStatusEffects.Values))
         {
             statusEffect.Update();
-            Debug.Log($"Update {statusEffect.name}");
         }
     }
 

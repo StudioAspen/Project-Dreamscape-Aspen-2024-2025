@@ -10,6 +10,9 @@ public class StatusEffectSO : ScriptableObject
     private protected Entity entity;
     private protected GameObject source;
 
+    [field: Header("Status Effect: Settings")]
+    [field: SerializeField] public bool CanBeOverridedAndExtended { get; private set; }
+
     /// <summary>
     /// Initializes the status effect with the specified owner and source.
     /// </summary>
