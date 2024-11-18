@@ -202,30 +202,4 @@ public class Weapon : MonoBehaviour
     {
         Combos.Add(comboData);
     }
-
-    /// <summary>
-    /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
-    /// List is sorted from closest to farthest entity from the hit position.
-    /// </summary>
-    /// <param name="hitPosition">The center position of the AOE.</param>
-    /// <param name="radius">The radius of the AOE.</param>
-    /// <returns>A list of entities within the AOE, ordered by their distance from the hit position.</returns>
-    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius)
-    {
-        List<Entity> entities = new List<Entity>();
-
-        Collider[] hits = Physics.OverlapSphere(hitPosition, radius, LayerMask.GetMask("Entity"));
-        if (hits == null) return entities;
-        if (hits.Length == 0) return entities;
-
-        foreach (Collider hit in hits)
-        {
-            Entity potentialTarget = hit.GetComponent<Entity>();
-            if (potentialTarget == null) continue;
-
-            entities.Add(potentialTarget);
-        }
-
-        return entities.OrderBy(target => Vector3.SqrMagnitude(hitPosition - target.transform.position)).ToList();
-    }
 }

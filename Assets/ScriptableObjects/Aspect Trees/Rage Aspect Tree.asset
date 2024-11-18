@@ -94,7 +94,8 @@ MonoBehaviour:
       _dynamic: 0
   Parent: {fileID: 4095001867604409900}
   Children: []
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 5e2c24e8c786be6408439a7634738417,
+    type: 2}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,8 +238,7 @@ MonoBehaviour:
       _dynamic: 0
   Parent: {fileID: 4095001867604409900}
   Children: []
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 5e2c24e8c786be6408439a7634738417,
-    type: 2}
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,8 +355,7 @@ MonoBehaviour:
   Parent: {fileID: -3918194093017296719}
   Children:
   - {fileID: -6323877592038428020}
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 2a85ce385b965914e9f1e5bd40af8de1,
-    type: 2}
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
   m_ObjectHideFlags: 0

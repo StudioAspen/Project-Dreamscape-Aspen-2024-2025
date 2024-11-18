@@ -18,6 +18,10 @@ public class AspectsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the current aspect tree to the specified runtime instance of the aspect tree.
+    /// </summary>
+    /// <param name="aspectTree">The aspect tree to set as the current aspect tree.</param>
     public void SetCurrentAspectTree(AspectTree aspectTree)
     {
         CurrentAspectTree = aspectTree.CreateRuntimeInstance();

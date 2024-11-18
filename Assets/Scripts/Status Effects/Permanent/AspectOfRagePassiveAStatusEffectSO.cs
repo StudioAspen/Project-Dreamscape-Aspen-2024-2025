@@ -48,7 +48,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
         // make a list and grab all entities nearby
-        List<Entity> enemyList = Weapon.GetEntitiesThroughAOE(hitPoint, AOEExplosionRadius);
+        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(hitPoint, AOEExplosionRadius);
         for (int i = 0; i < enemyList.Count; i++) // loop through all entities and filter out friendly ones
         {
             Entity enemy = enemyList[i]; // current entity in the loop

@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using XNode;
 
 [CreateAssetMenu(menuName = "Aspect Tree")]
 public class AspectTree : NodeGraph
 {
-    // makes a runtime copy of this aspect tree so that it can be modified without affecting the original
+    /// <summary>
+    /// Makes a runtime copy of this aspect tree so that it can be modified without affecting the original.
+    /// </summary>
+    /// <returns>The created runtime instance of the aspect tree.</returns>
     public AspectTree CreateRuntimeInstance()
     {
         // Instantiate a new nodegraph instance
@@ -48,7 +52,10 @@ public class AspectTree : NodeGraph
         return graph;
     }
 
-    // gets the node without a parent
+    /// <summary>
+    /// Gets the node without a parent.
+    /// </summary>
+    /// <returns>The root node.</returns>
     public AspectNodeNode GetRootNode()
     {
         foreach (Node node in nodes)
@@ -63,7 +70,10 @@ public class AspectTree : NodeGraph
         return null;
     }
 
-    // gets the node that was most recently applied, null if none have been applied
+    /// <summary>
+    /// Gets the node that was most recently applied.
+    /// Returns null if none have been applied.
+    /// </summary>
     public AspectNodeNode GetMostRecentlyAppliedNode()
     {
         AspectNodeNode currentNode = GetRootNode();
@@ -91,11 +101,14 @@ public class AspectTree : NodeGraph
         return currentNode.IsApplied ? currentNode : null;
     }
 
-    // gets the list of the nodes that can be applied next, empty if there are no more
+    /// <summary>
+    /// Gets the list of the nodes that can be applied next, empty if there are no more.
+    /// </summary>
+    /// <returns>The list of nodes that can be applied next.</returns>
     public List<AspectNodeNode> GetNextUnappliedNodes()
     {
         AspectNodeNode recentlyAppliedNode = GetMostRecentlyAppliedNode();
-        if(recentlyAppliedNode == null) 
+        if (recentlyAppliedNode == null)
         {
             return new List<AspectNodeNode>() { GetRootNode() };
         }
@@ -103,17 +116,22 @@ public class AspectTree : NodeGraph
         return recentlyAppliedNode.Children;
     }
 
-    // gets the list of nodes that are at the specified level, empty if there are no nodes at that level
+    /// <summary>
+    /// Gets the list of nodes that are at the specified level, empty if there are no nodes at that level.
+    /// The node that is the highest in the graph is the first index of the list.
+    /// </summary>
+    /// <param name="level">The level of the nodes to retrieve.</param>
+    /// <returns>The list of nodes at the specified level.</returns>
     public List<AspectNodeNode> GetNodesAtLevel(int level)
     {
         if (level == 0) return new List<AspectNodeNode>() { GetRootNode() };
 
         AspectNodeNode currentNode = GetRootNode();
-        for(int i = 0; i < level-1; i++)
+        for (int i = 0; i < level - 1; i++)
         {
             if (currentNode.Children.Count == 0)
             {
-                Debug.LogError($"No nodes at level {level+1}");
+                Debug.LogError($"No nodes leading to level {level + 1}");
                 return currentNode.Children;
             }
 
@@ -122,10 +140,13 @@ public class AspectTree : NodeGraph
 
         if (currentNode.Children.Count == 0) Debug.LogError($"No nodes at level {level + 1}");
 
-        return currentNode.Children;
+        return currentNode.Children.OrderByDescending(child => child.position.y).ToList();
     }
 
-    // gets total number of levels in the tree
+    /// <summary>
+    /// Gets the total number of levels in the tree.
+    /// </summary>
+    /// <returns>The total number of levels.</returns>
     public int GetTotalLevels()
     {
         int totalLevels = 1;
@@ -140,10 +161,15 @@ public class AspectTree : NodeGraph
         return totalLevels;
     }
 
-    // gets the level of the specified node as a Vector2Int, x is the level, y is the index of the node at that level, returns (-1, -1) if the node is not in the tree
+    /// <summary>
+    /// Gets the level of the specified node as a Vector2Int, where x is the level and y is the index of the node at that level.
+    /// Returns (-1, -1) if the node is not in the tree.
+    /// </summary>
+    /// <param name="node">The node to get the level for.</param>
+    /// <returns>The level of the node as a Vector2Int.</returns>
     public Vector2Int GetNodeLevel(AspectNodeNode node)
     {
-        for(int i = 0; i < GetTotalLevels(); i++)
+        for (int i = 0; i < GetTotalLevels(); i++)
         {
             List<AspectNodeNode> nodes = GetNodesAtLevel(i);
             if (nodes.Contains(node))
@@ -153,5 +179,57 @@ public class AspectTree : NodeGraph
         }
 
         return new Vector2Int(-1, -1);
+    }
+
+    /// <summary>
+    /// Gets the levels at which the aspect tree has more than one node.
+    /// </summary>
+    /// <returns>A list of levels at which the aspect tree branches.</returns>
+    public List<int> GetMultiNodeLevels()
+    {
+        List<int> levels = new List<int>();
+
+        for (int i = 0; i < GetTotalLevels(); i++)
+        {
+            List<AspectNodeNode> aspectNodes = GetNodesAtLevel(i);
+
+            if (aspectNodes.Count > 1) levels.Add(i);
+        }
+
+        return levels;
+    }
+
+    /// <summary>
+    /// Checks if the specified node is part of a multi-node level in the aspect tree.
+    /// </summary>
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if the node is part of a multi-node level, false otherwise.</returns>
+    public bool IsNodePartOfMultiNodeLevel(AspectNodeNode node)
+    {
+        return GetMultiNodeLevels().Contains(GetNodeLevel(node).x);
+    }
+
+    public bool CanMultiNodeLevelNodeBeChosen(AspectNodeNode node)
+    {
+        if (!IsNodePartOfMultiNodeLevel(node)) return true;
+
+        Vector2Int currentNodePosition = GetNodeLevel(node);
+        List<int> levelsWithMultiNodes = GetMultiNodeLevels();
+
+        // if the node is part of the first instance of multi-node level
+        if (currentNodePosition.x == levelsWithMultiNodes[0]) return true; 
+
+        // get applied node's y at the first level
+        int appliedNodeY = -1;
+        foreach(AspectNodeNode firstMultiNodeLevelNode in GetNodesAtLevel(levelsWithMultiNodes[0])){
+            if (firstMultiNodeLevelNode.IsApplied)
+            {
+                appliedNodeY = GetNodeLevel(firstMultiNodeLevelNode).y;
+                break;
+            }
+        }
+
+        // if the node is at the same y as the applied node at the first multi-node level, it can be chosen and isnt locked out
+        return currentNodePosition.y == appliedNodeY;
     }
 }
