@@ -6,23 +6,11 @@ using UnityEngine;
 
 public class EntityStatusEffector : MonoBehaviour
 {
-    public StatusEffectSO TestStatusEffect;
-
     public Dictionary<Type, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<Type, StatusEffectSO>();
 
     private void Update()
     {
         UpdateStatusEffects();
-
-        if(Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            OverrideAndExtendStatusEffect(TestStatusEffect, null);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ApplyStatusEffect(TestStatusEffect, null);
-        }
     }
 
     /// <summary>

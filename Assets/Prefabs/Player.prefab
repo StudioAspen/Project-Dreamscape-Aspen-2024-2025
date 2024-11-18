@@ -1217,6 +1217,7 @@ GameObject:
   - component: {fileID: 5620550920081884860}
   - component: {fileID: 2191053302705418715}
   - component: {fileID: 3702187593430642151}
+  - component: {fileID: 5066363359248579512}
   - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
@@ -1373,7 +1374,7 @@ MonoBehaviour:
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
   model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 200
+  <MaxHealth>k__BackingField: 0
   <Level>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 10
@@ -1460,6 +1461,19 @@ MonoBehaviour:
   playerCombat: {fileID: 5620550920081884860}
   debugText: {fileID: 6870328943161982194}
   timeBetween: 2
+--- !u!114 &5066363359248579512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TestStatusEffect: {fileID: 11400000, guid: 8740df4de448de7408bc53d009c395a1, type: 2}
 --- !u!95 &2171180168782530629
 Animator:
   serializedVersion: 5

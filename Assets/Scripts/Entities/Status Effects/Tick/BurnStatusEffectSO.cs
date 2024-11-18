@@ -20,7 +20,7 @@ public class BurnStatusEffectSO : TickStatusEffectSO
     {
         base.OnTick();
 
-        entity.TakeDamageWithoutState(DamagePerTick, entity.GetColliderCenterPosition(), source);
+        entity.TakeDamageWithoutState(DamagePerTick, entity.GetRandomPositionOnCollider(), source);
     }
 
     private protected override void OnExpire()

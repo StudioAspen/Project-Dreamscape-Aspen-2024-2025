@@ -375,7 +375,10 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (spawner == null) return;
 
         HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
-        hitNumber.ActivateHitNumberText(dmg, hitPoint);
+
+        Vector3 hitNumberFloatDirection = hitPoint - transform.position;
+
+        hitNumber.ActivateHitNumberText(dmg, hitPoint, hitNumberFloatDirection.normalized);
     }
 
     /// <summary>
@@ -639,6 +642,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     public Vector3 GetColliderCenterPosition()
     {
         return GetComponent<Collider>().bounds.center;
+    }
+
+    /// <summary>
+    /// Returns a random position on the collider of the entity.
+    /// </summary>
+    /// <returns>The random position on the collider.</returns>
+    public Vector3 GetRandomPositionOnCollider()
+    {
+        Collider collider = GetComponent<Collider>();
+        if (collider == null)
+        {
+            Debug.LogError("No collider found on entity.");
+            return Vector3.zero;
+        }
+
+        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * Random.onUnitSphere;
+
+        return collider.ClosestPointOnBounds(collider.bounds.center + randomPointOnUnitSphere);
     }
 
     /// <summary>
