@@ -773,6 +773,11 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 661545480}
+    - target: {fileID: 3290007610415171280, guid: d8018c55af358d04fabeebd6843fed24,
+        type: 3}
+      propertyPath: aspectsManager
+      value: 
+      objectReference: {fileID: 1809274141}
     - target: {fileID: 8663218925736720942, guid: d8018c55af358d04fabeebd6843fed24,
         type: 3}
       propertyPath: m_Name
@@ -2673,7 +2678,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3015ec1bdaf4a64988629f136ad8e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspectTrees: []
+  aspectTrees:
+  - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
   <AspectTokens>k__BackingField: 10
 --- !u!1 &2014214699
 GameObject:

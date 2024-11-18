@@ -91,7 +91,7 @@ public class FollowerCircleState : EnemyBaseState
 
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyEntitiesByType<Follower>(follower.CircleRadius + 1f);
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f);
 
             foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
             {

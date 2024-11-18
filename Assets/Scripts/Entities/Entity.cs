@@ -379,7 +379,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 
-        hitNumber.ActivateHitNumberText(damage, hitPoint, hitNumberFloatDirection.normalized, color);
+        hitNumber.ActivateHitNumberText(damage, GetRandomPositionOnCollider(), hitNumberFloatDirection.normalized, color);
     }
 
     /// <summary>
@@ -533,13 +533,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a list of nearby entities within the specified radius.
+    /// Gets a list of nearby hostile entities within the specified radius.
     /// The entities must be on the "Entity" layer and not on the same team as the entity.
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
     /// <returns>A list of nearby entities.</returns>
-    public List<Entity> GetNearbyEntities(float radius)
+    public List<Entity> GetNearbyHostileEntities(float radius)
     {
         List<Entity> targets = new List<Entity>();
 
@@ -559,14 +559,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a list of nearby entities of a specific type within the specified radius.
+    /// Gets a list of nearby hostile entities of a specific type within the specified radius.
     /// The entities must be on the "Entity" layer and not on the same team as the entity.
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <typeparam name="T">The type of entities to retrieve.</typeparam>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
     /// <returns>A list of nearby entities of the specified type.</returns>
-    public List<T> GetNearbyEntitiesByType<T>(float radius) where T : Entity
+    public List<T> GetNearbyHostileEntitiesByType<T>(float radius) where T : Entity
     {
         List<T> targets = new List<T>();
 

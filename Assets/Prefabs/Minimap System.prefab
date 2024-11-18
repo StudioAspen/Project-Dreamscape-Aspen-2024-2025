@@ -435,7 +435,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/CameraLook[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2597751138748880552}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MinimapController, Assembly-CSharp
         m_MethodName: ToggleMinimap
         m_Mode: 1
@@ -746,8 +746,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2638316873640238849}
+  - component: {fileID: 3562942129147648451}
   - component: {fileID: 5311334982300330976}
-  - component: {fileID: 2597751138748880552}
   m_Layer: 5
   m_Name: Minimap
   m_TagString: Untagged
@@ -775,15 +775,7 @@ RectTransform:
   m_AnchoredPosition: {x: 623.8561, y: 463.65277}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5311334982300330976
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8234800737431074488}
-  m_CullTransparentMesh: 0
---- !u!114 &2597751138748880552
+--- !u!114 &3562942129147648451
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -799,6 +791,14 @@ MonoBehaviour:
   maximizedSize: {x: 300, y: 300}
   m_Camera: {fileID: 3515041053628074707}
   maximizedZoom: 80
-  minimap_opacity: 0.8
+  minimap_opacity: 0.75
   minimap_canvas: {fileID: 4082575377189925010}
   gameManager: {fileID: 0}
+--- !u!222 &5311334982300330976
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8234800737431074488}
+  m_CullTransparentMesh: 0
