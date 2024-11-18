@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be96fbcfc0f5d7646ac2c69e830c3c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  _player: {fileID: 0}
   m_Camera: {fileID: 3515041053628074707}
 --- !u!114 &406411436350425511
 MonoBehaviour:
@@ -449,6 +449,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 1b02d0f8-1456-47c8-9920-270553edc714
     m_ActionName: UI/Minimap Toggle[/Keyboard/m]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77b60454-e697-4a6a-84e5-77d3febbcfd0
+    m_ActionName: UI/OpenSettings[/Keyboard/o]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: UI
@@ -796,3 +800,5 @@ MonoBehaviour:
   m_Camera: {fileID: 3515041053628074707}
   maximizedZoom: 80
   minimap_opacity: 0.8
+  minimap_canvas: {fileID: 4082575377189925010}
+  gameManager: {fileID: 0}

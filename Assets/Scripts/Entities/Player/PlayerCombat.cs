@@ -277,4 +277,6 @@ public class PlayerCombat : MonoBehaviour
     {
         IsAnimationPlaying = false;
     }
+
 }
+

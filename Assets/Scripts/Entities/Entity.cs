@@ -1,4 +1,5 @@
-﻿using KBCore.Refs;
+﻿using DG.Tweening;
+using KBCore.Refs;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,35 +9,64 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
+    #region References
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
-    [SerializeField] private protected GlobalPhysicsSettings physicsSettings;
-    [SerializeField] private protected Transform model;
+    [SerializeField, Anywhere] private protected GlobalPhysicsSettings physicsSettings;
+    [SerializeField, Anywhere] private protected Transform model;
+    private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
+    #endregion
 
-    [field: Header("Entity: Settings")]
+    #region Health Variables
+    [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: SerializeField] public int MaxHealth { get; protected set; }
+    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public int MaxHealth { get; protected set; }
+    #endregion
+
+    #region Level Variables
+    [field: Header("Entity: Level")]
     [field: SerializeField] public int Level { get; protected set; }
+    #endregion
 
-    [HideInInspector] public bool IsGrounded;
-    protected private float inAirTimer;
-    protected private bool fallVelocityApplied;
-
+    #region Speed Variables
+    [Header("Entity: Speed")]
+    [SerializeField] private protected float baseSpeed = 3f;
+    [SerializeField] private protected float rotationSpeed = 5f;
     public float SpeedModifier { get; protected set; } = 1f;
-    [SerializeField] protected private float baseSpeed = 3f;
-    [SerializeField] protected private Vector3 velocity;
-    [SerializeField] protected private float rotationSpeed = 5f;
+    public float StatusSpeedModifier { get; protected set; } = 1f;
+    private protected Vector3 velocity;
+    #endregion
 
+    #region Airborne Variables
+    [HideInInspector] public bool IsGrounded;
+    private protected float inAirTimer;
+    private protected bool fallVelocityApplied;
+    #endregion
+
+    #region Target Detection Variables
+    [Header("Entity: Target Detection")]
     [SerializeField] private protected float targetDetectionRadius = 10f;
+    #endregion
 
+    #region Team Variables
     public int Team { get; private set; }
+    #endregion
 
-    protected private GameObject lastHitSource;
+    #region Combat Events
     [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
+    private protected GameObject lastHitSource;
+    #endregion
 
+    #region Stagger Variables
+    [field: Header("Entity: Stagger")]
     [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+    #endregion
+
+    #region Pooling Variables
+    private ObjectPool<GameObject> pool;
+    #endregion
 
     #region States
     public BaseState CurrentState { get; private set; }
@@ -60,8 +90,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityStaggeredState = new EntityStaggeredState(this);
     }
     #endregion
-
-    private ObjectPool<GameObject> pool;
 
     private void OnValidate()
     {
@@ -132,11 +160,13 @@ public class Entity : MonoBehaviour, IPoolableObject
         SetDefaultState(EntityEmptyState);
 
         IgnoreMyOwnColliders();
+
+        CacheOriginalTints();
     }
 
     private void Update()
     {
-        OnUpdate();   
+        OnUpdate();
     }
 
     /// <summary>
@@ -240,7 +270,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void Die()
     {
-        if(pool == null)
+        if (pool == null)
         {
             Destroy(gameObject);
             return;
@@ -258,10 +288,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (lastHitSource == null) return;
 
-        if(lastHitSource.TryGetComponent(out Entity killer))
+        if (lastHitSource.TryGetComponent(out Entity killer))
         {
             killer.OnKill(this);
-        }        
+        }
     }
 
     /// <summary>
@@ -355,7 +385,10 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (spawner == null) return;
 
         HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
-        hitNumber.ActivateHitNumberText(dmg, hitPoint);
+
+        Vector3 hitNumberFloatDirection = hitPoint - transform.position;
+
+        hitNumber.ActivateHitNumberText(dmg, hitPoint, hitNumberFloatDirection.normalized);
     }
 
     /// <summary>
@@ -390,6 +423,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the speed modifier of the entity. The speed modifier is a multiplier that affects the entity's base movement speed.
     /// </summary>
     /// <param name="speed">The speed modifier to set.</param>
+
     public void SetSpeedModifier(float speed)
     {
         SpeedModifier = speed;
@@ -621,6 +655,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Returns a random position on the collider of the entity.
+    /// </summary>
+    /// <returns>The random position on the collider.</returns>
+    public Vector3 GetRandomPositionOnCollider()
+    {
+        Collider collider = GetComponent<Collider>();
+        if (collider == null)
+        {
+            Debug.LogError("No collider found on entity.");
+            return Vector3.zero;
+        }
+
+        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * Random.onUnitSphere;
+
+        return collider.ClosestPointOnBounds(collider.bounds.center + randomPointOnUnitSphere);
+    }
+
+    /// <summary>
     /// Sets the object pool for the entity.
     /// Must be used if the entity is pooled.
     /// </summary>
@@ -682,5 +734,97 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
         ForceChangeState(EntityLaunchState);
+    }
+    
+    #region Tinting Functions
+    /// <summary>
+    /// Caches the original tints of the renderers in the character model.
+    /// </summary>
+    private void CacheOriginalTints()
+    {
+        // Get all renderers in the character model, including any child objects
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer.TryGetComponent(out Weapon weapon)) continue;
+
+            Color[] colors = new Color[renderer.materials.Length];
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                if (renderer.materials[i].HasProperty("_Color"))
+                {
+                    colors[i] = renderer.materials[i].color;
+                }
+            }
+            originalColors.Add(renderer, colors);
+        }
+    }
+
+    /// <summary>
+    /// Tweens the entity's tint color to the specified new color.
+    /// </summary>
+    /// <param name="newColor">The new color to tween to.</param>
+    public void TweenTintEntity(Color newColor)
+    {
+        foreach (Renderer renderer in originalColors.Keys)
+        {
+            DOTween.Kill(renderer);
+            foreach (Material material in renderer.materials)
+            {
+                if (material.HasProperty("_Color"))
+                {
+                    material.DOColor(newColor, 0.5f);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tweens the entity back to its original colors.
+    /// </summary>
+    public void TweenUnTintEntity()
+    {
+        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
+        {
+            Renderer renderer = entry.Key;
+            Color[] colors = entry.Value;
+
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                DOTween.Kill(renderer);
+                if (renderer.materials[i].HasProperty("_Color"))
+                {
+                    renderer.materials[i].DOColor(colors[i], 0.5f);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Immediately resets the tint of the entity to its original colors.
+    /// </summary>
+    public void ResetTint()
+    {
+        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
+        {
+            Renderer renderer = entry.Key;
+            Color[] colors = entry.Value;
+
+            for (int i = 0; i < renderer.materials.Length; i++)
+            {
+                DOTween.Kill(renderer);
+                if (renderer.materials[i].HasProperty("_Color"))
+                {
+                    renderer.materials[i].color = colors[i];
+                }
+            }
+        }
+    }
+    #endregion
+
+    public void SetStatusSpeedModifier(float newModifer)
+    {
+        StatusSpeedModifier = newModifer;
     }
 }
