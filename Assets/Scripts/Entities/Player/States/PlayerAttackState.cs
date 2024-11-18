@@ -14,6 +14,7 @@ public class PlayerAttackState : PlayerBaseState
     public PlayerAttackState(Player player) : base(player)
     {
         this.player = player;
+        playerCombat = player.GetComponent<PlayerCombat>();
     }
 
     public override void OnEnter()
@@ -70,9 +71,8 @@ public class PlayerAttackState : PlayerBaseState
 
     }
 
-    public void SetCombo(PlayerCombat playerCombat, ComboDataSO comboData)
+    public void SetCombo(ComboDataSO comboData)
     {
-        this.playerCombat = playerCombat;
         ComboData = comboData;
     }
 
@@ -88,7 +88,6 @@ public class PlayerAttackState : PlayerBaseState
         {
             victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
         }
-            
     }
 }
 

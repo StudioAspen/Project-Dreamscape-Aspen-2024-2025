@@ -172,7 +172,7 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerSlideState) return;
         if (player.CurrentState == player.EntityStaggeredState) return;
 
-        player.PlayerAttackState.SetCombo(this, combo);
+        player.PlayerAttackState.SetCombo(combo);
         player.ChangeState(player.PlayerAttackState);
 
         comboText.text = "Combo: " + combo.ComboName;

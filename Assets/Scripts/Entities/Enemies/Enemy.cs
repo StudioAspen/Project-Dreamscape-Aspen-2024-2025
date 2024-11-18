@@ -106,7 +106,7 @@ public class Enemy : Entity
 
         float modelScale = model.localScale.x;
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        //desiredAnimationMovement.y = 0f;
+        desiredAnimationMovement.y = 0f;
 
         rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }

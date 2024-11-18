@@ -201,7 +201,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState.OnEnter();
     }
 
-
     /// <summary>
     /// Forces a change of state to the specified new state even when in that same state.
     /// </summary>
