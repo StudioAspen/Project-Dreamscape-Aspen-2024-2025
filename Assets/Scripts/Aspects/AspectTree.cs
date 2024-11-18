@@ -209,6 +209,11 @@ public class AspectTree : NodeGraph
         return GetMultiNodeLevels().Contains(GetNodeLevel(node).x);
     }
 
+    /// <summary>
+    /// Checks if a node in a multi-node level can be chosen.
+    /// </summary>
+    /// <param name="node">The node to check.</param>
+    /// <returns>True if the node can be chosen, false otherwise.</returns>
     public bool CanMultiNodeLevelNodeBeChosen(AspectNodeNode node)
     {
         if (!IsNodePartOfMultiNodeLevel(node)) return true;
@@ -217,11 +222,12 @@ public class AspectTree : NodeGraph
         List<int> levelsWithMultiNodes = GetMultiNodeLevels();
 
         // if the node is part of the first instance of multi-node level
-        if (currentNodePosition.x == levelsWithMultiNodes[0]) return true; 
+        if (currentNodePosition.x == levelsWithMultiNodes[0]) return true;
 
-        // get applied node's y at the first level
+        // find and get applied node's y at the first level
         int appliedNodeY = -1;
-        foreach(AspectNodeNode firstMultiNodeLevelNode in GetNodesAtLevel(levelsWithMultiNodes[0])){
+        foreach (AspectNodeNode firstMultiNodeLevelNode in GetNodesAtLevel(levelsWithMultiNodes[0]))
+        {
             if (firstMultiNodeLevelNode.IsApplied)
             {
                 appliedNodeY = GetNodeLevel(firstMultiNodeLevelNode).y;
