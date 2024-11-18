@@ -14,12 +14,12 @@ public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
     [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] protected CapsuleCollider capsuleCollider;
+    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
-    public float MovementSpeed => SpeedModifier * baseSpeed;
+    public float MovementSpeed => StatusSpeedModifier * SpeedModifier * baseSpeed;
     private float totalSpeedModifierForAnimation;
 
     public Vector3 Destination {  get; protected set; }
