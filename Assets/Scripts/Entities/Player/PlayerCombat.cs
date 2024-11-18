@@ -70,6 +70,7 @@ public class PlayerCombat : MonoBehaviour
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK1);
     }
@@ -78,6 +79,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK1);
     }
@@ -88,7 +90,8 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
         if (player.CurrentState == player.PlayerDashState) return;
-            
+        if (player.CurrentState == player.EntityFlingState) return;
+
         player.ChangeState(player.PlayerChargeState);
     }
 
@@ -97,6 +100,7 @@ public class PlayerCombat : MonoBehaviour
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK2);
     }
@@ -105,6 +109,7 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK2);
     }
@@ -165,7 +170,7 @@ public class PlayerCombat : MonoBehaviour
     private void ExecuteCombo(ComboDataSO combo)
     {
         if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityHitState) return;
+        if (player.CurrentState == player.EntityStaggeredState) return;
 
         player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);
@@ -272,4 +277,6 @@ public class PlayerCombat : MonoBehaviour
     {
         IsAnimationPlaying = false;
     }
+
 }
+

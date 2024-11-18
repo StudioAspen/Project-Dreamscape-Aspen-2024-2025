@@ -15,7 +15,7 @@ public class Player : Entity
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
-    public float MovementSpeed => movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
+    public float MovementSpeed => StatusSpeedModifier * movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
     private float movementOnSlopeSpeedModifier = 1f;
     private float totalSpeedModifierForAnimation;
     public Vector3 MoveDirection => input.MoveDirection;
@@ -25,7 +25,13 @@ public class Player : Entity
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
 
+    public float baseMovementSpeed;
+    public float baseAttackPower;
+    private float currentMovementSpeed;
+    private float currentAttackPower;
+
     [Header("Player: Gravity")]
+    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
     [SerializeField] private float groundedAcceleration = 4f;
@@ -59,6 +65,24 @@ public class Player : Entity
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
+
+    protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        PlayerIdleState = new PlayerIdleState(this);
+        PlayerWalkingState = new PlayerWalkingState(this);
+        PlayerSprintingState = new PlayerSprintingState(this);
+        PlayerJumpState = new PlayerJumpState(this);
+        PlayerFallState = new PlayerFallState(this);
+        PlayerDashState = new PlayerDashState(this);
+        PlayerSlideState = new PlayerSlideState(this);
+        PlayerAttackState = new PlayerAttackState(this);
+        PlayerChargeState = new PlayerChargeState(this);
+        EntityStaggeredState = new PlayerStaggeredState(this);
+        EntityDeathState = new PlayerDeathState(this);
+        EntityFlingState = new PlayerFlingState(this);
+    }
     #endregion
 
     protected override void OnOnEnable()
@@ -91,12 +115,13 @@ public class Player : Entity
     {
         base.OnStart();
 
+        currentMovementSpeed = baseMovementSpeed;
+        currentAttackPower = baseAttackPower;
+
         ChangeTeam(0);
 
         SetStartState(PlayerIdleState);
         SetDefaultState(PlayerIdleState);
-
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     protected override void OnUpdate()
@@ -127,23 +152,6 @@ public class Player : Entity
         controller.Move(desiredAnimationMovement);
     }
 
-    protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        PlayerIdleState = new PlayerIdleState(this);
-        PlayerWalkingState = new PlayerWalkingState(this);
-        PlayerSprintingState = new PlayerSprintingState(this);
-        PlayerJumpState = new PlayerJumpState(this);
-        PlayerFallState = new PlayerFallState(this);
-        PlayerDashState = new PlayerDashState(this);
-        PlayerSlideState = new PlayerSlideState(this);
-        PlayerAttackState = new PlayerAttackState(this);
-        PlayerChargeState = new PlayerChargeState(this);
-        EntityHitState = new PlayerHitState(this);
-        EntityDeathState = new PlayerDeathState(this);
-    }
-
     protected override void CheckGrounded()
     {
         //IsGrounded is always false until the apex of the jump
@@ -167,10 +175,11 @@ public class Player : Entity
     private void HandleJumpInput()
     {
         if (!IsGrounded && currentJumpCount >= maxJumpCount) return;
+        if(CurrentState == EntityFlingState) return;
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
-        if (CurrentState == EntityHitState) return;
+        if (CurrentState == EntityStaggeredState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
         ChangeState(PlayerJumpState);
@@ -194,7 +203,8 @@ public class Player : Entity
         if (dashDelayTimer < dashDelayDuration) return;
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
-        if (CurrentState == EntityHitState) return;
+        if (CurrentState == EntityStaggeredState) return;
+        if (CurrentState == EntityFlingState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
@@ -215,7 +225,7 @@ public class Player : Entity
         velocity.z = groundedVelocity.z;
     }
 
-    public void InstantlySetSpeed(float speed)
+    public void InstantlySetGroundedSpeed(float speed)
     {
         Vector3 groundedVelocity = GetGroundedVelocity();
 
@@ -239,7 +249,7 @@ public class Player : Entity
         }
     }
 
-    public void HandleAirborne()
+    private void HandleAirborne()
     {
         if (!IsGrounded)
         {
@@ -372,6 +382,16 @@ public class Player : Entity
         return new Vector3(velocity.x, 0f, velocity.z);
     }
 
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
+
+    public void SetVelocity(Vector3 newVelocity)
+    {
+        velocity = newVelocity;
+    }
+
     public float GetMaxSpeed()
     {
         return SprintSpeedModifier * baseSpeed;
@@ -435,7 +455,25 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
 
-        ChangeState(EntityEmptyState);
-        ChangeState(EntityHitState);
+        ForceChangeState(EntityStaggeredState);
+    }
+
+    /// <summary>
+    /// Simulates flinging the player by performing a fake jump and launching them in the specified direction with the given force.
+    /// </summary>
+    /// <param name="direction">The direction in which the player should be flung.</param>
+    /// <param name="force">The force with which the player should be flung.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the fling.</param>
+    public override void Fling(Vector3 direction, float force, float stunDuration)
+    {
+        // Calculate the resulting change in velocity from the impulse
+        Vector3 deltaVelocity = (force * direction.normalized) / mass;
+
+        IsJumping = true;
+        IsGrounded = false;
+        inAirTimer = 0.01f;
+
+        // Apply the change to the current velocity
+        velocity = deltaVelocity;
     }
 }
