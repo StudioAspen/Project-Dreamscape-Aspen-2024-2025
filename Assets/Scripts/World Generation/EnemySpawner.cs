@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
     public bool NpcPresent = false; //MAKE SURE THAT THIS VALUE GETS SET BACK TO FALSE FOR ALL LANDS ONCE THE WAVE IS OVER
     private float CurrencyResetTimer;
     private float CurrencyResetTimerLength = 5f;
-    private bool CurrencyTimerActive = false;
+    public bool CurrencyTimerActive = false;
 
     // Ensures references are correctly assigned and validated when the script is loaded or values are changed in the Inspector.
     private void OnValidate()
@@ -71,6 +71,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 currentShopCurrency = maxShopCurrency;
                 CurrencyTimerActive = false;
+                CanSpawn = true;
             }
         }
         
@@ -203,6 +204,10 @@ public class EnemySpawner : MonoBehaviour
         {
             eventManager.DecrementActivePrioritiesCount();
         }
+        else if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
+        {
+            //Do Nothing
+        }
         else
         {
             eventManager.DecrementActiveLandCount();
@@ -256,6 +261,10 @@ public class EnemySpawner : MonoBehaviour
             if (eventManager.CurrentWaveType == WorldEvent.PRIORITIES && IsPriority)
             {
                 eventManager.DecrementActivePrioritiesCount();
+            }
+            else if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
+            {
+                //do nothing
             }
             else
             {

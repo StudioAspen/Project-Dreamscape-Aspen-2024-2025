@@ -37,7 +37,7 @@ public class WorldManager : MonoBehaviour
     public Dictionary<Vector2Int, LandManager> SpawnedLandsDictionary = new Dictionary<Vector2Int, LandManager>();
 
     [Header("Land Position Selection")]
-    [SerializeField] private LandManager landToSpawnPrefab;
+    [SerializeField] public LandManager landToSpawnPrefab;
     [SerializeField] private Transform ghostLandTransform;
     [SerializeField] private Material redTransparentMaterial;
     [SerializeField] private Material greenTransparentMaterial;
@@ -62,6 +62,7 @@ public class WorldManager : MonoBehaviour
     void Start()
     {
         SpawnedLands.Add(GetComponentInChildren<LandManager>());
+        SpawnedLandsDictionary.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
         BuildNavMesh();
         DisableGhostLand();
     }
@@ -107,7 +108,7 @@ public class WorldManager : MonoBehaviour
 
 
     // Converts a grid position (Vector2Int) to a world position (Vector3) at a specified height, taking into account the land's scale.
-    public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
+    public Vector3 GetLandPositionByGridPosition(Vector2Int gridPosition, float height)
     {
         float landScale = landToSpawnPrefab.transform.localScale.x;
 
@@ -141,6 +142,7 @@ public class WorldManager : MonoBehaviour
         LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * x, -5f, landScale * y), Quaternion.identity, transform);
         spawnedLand.Init(x, y);
         SpawnedLands.Add(spawnedLand);
+        SpawnedLandsDictionary.Add(new Vector2Int(x, y), spawnedLand);
     }
 
     // Tries to spawn a new land at the position of the ghost land, if valid, otherwise logs an error and prevents spawning.
@@ -192,7 +194,6 @@ public class WorldManager : MonoBehaviour
             {
                 // Create a temporary list to avoid modifying the collection while iterating
                 var bordersToRemove = new List<LandBorder>(bordersDictionary[SpawnedLands[i].GridPosition]);
-                Debug.Log("I have made the very mistake i swore i never would, i am truly a god of fools");
 
                 foreach (LandBorder border in bordersToRemove)
                 {
@@ -239,7 +240,7 @@ public class WorldManager : MonoBehaviour
     public void SetGhostLandPosition(Vector3 worldPos)
     {
         Vector2Int gridPosition = GetGridPosition(worldPos);
-        ghostLandTransform.position = GetLandPosition(gridPosition, ghostLandTransform.position.y);
+        ghostLandTransform.position = GetLandPositionByGridPosition(gridPosition, ghostLandTransform.position.y);
 
         if (gameManager.CurrentState == GameState.LAND_PLACEMENT)
         {

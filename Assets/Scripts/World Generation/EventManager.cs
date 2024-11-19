@@ -3,6 +3,7 @@ using TMPro;
 using KBCore.Refs;
 using UnityEngine;
 using UnityEngine.Rendering.VirtualTexturing;
+using Unity.VisualScripting;
 
 public enum WorldEvent
 {
@@ -26,6 +27,12 @@ public class EventManager : MonoBehaviour
     private int activeLandCount;
     private int activePrioritiesCount;
 
+    [SerializeField] private GameObject escortNPC;
+    private float escortWaveTimer;
+    private float escortWaveTimerLength = 30f; //temp value
+    private bool startEscortWaveTimer = false;
+    private EscortNpc npcScriptScriptReference;
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -38,22 +45,34 @@ public class EventManager : MonoBehaviour
     }
 
     void Update()
-    { 
-        //switch (CurrentWaveType)
-        //{
-        //    case WorldEvent.SURVIVAL:
-        //        break;
-        //    case WorldEvent.ZONES:
-        //        break;
-        //    case WorldEvent.PRIORITIES:
-        //        break;
-        //    case WorldEvent.ESCORT:
-        //        break;
-        //    case WorldEvent.DEFEND:
-        //        break;
-        //    case WorldEvent.VISIT_ALL:
-        //        break;
-        //}
+    {
+        if (Input.GetKeyDown(KeyCode.K) && CurrentWaveType == WorldEvent.ESCORT) FinishEscortWave();
+
+        switch (CurrentWaveType)
+        {
+            case WorldEvent.SURVIVAL:
+                break;
+            case WorldEvent.ZONES:
+                break;
+            case WorldEvent.PRIORITIES:
+                break;
+            case WorldEvent.ESCORT:
+                if(startEscortWaveTimer)
+                {
+
+                    escortWaveTimer -= Time.deltaTime;
+                    if(escortWaveTimer <= 0)
+                    {
+                        startEscortWaveTimer = false;
+                        FinishEscortWave();
+                    }
+                }
+                break;
+            case WorldEvent.DEFEND:
+                break;
+            case WorldEvent.VISIT_ALL:
+                break;
+        }
     }
 
     private void WaveCompletion()
@@ -77,7 +96,6 @@ public class EventManager : MonoBehaviour
         if(CurrentWaveType == WorldEvent.START) //START does not get a preperation function because it is the ugly duckling, we dont f with ugly ducklings
         {
             activeLandCount = 1;
-            Debug.Log("IM TWEAKING TF OUTTTTT");
         }
 
         if (CurrentWaveType == WorldEvent.SURVIVAL) //this will need to be changed
@@ -177,11 +195,22 @@ public class EventManager : MonoBehaviour
         }
         else
         {
+            ResetSpawners(); 
+
             int randomPlayerIndex;
             randomPlayerIndex = UnityEngine.Random.Range(0, players.Length);
-
             LandManager npcStartingLand = worldManager.GetLandByWorldPosition(players[randomPlayerIndex].transform.position);
-            Debug.Log(npcStartingLand.GridPosition);
+            GameObject npcObject = Instantiate(escortNPC, worldManager.GetLandPositionByGridPosition(npcStartingLand.GridPosition, 1f), Quaternion.identity);
+
+            npcScriptScriptReference = npcObject.GetComponent<EscortNpc>();
+
+            escortWaveTimer = escortWaveTimerLength;
+            Debug.Log(escortWaveTimer);
+            startEscortWaveTimer = true;
+
+            
+
+
 
         }
     }
@@ -211,7 +240,6 @@ public class EventManager : MonoBehaviour
         foreach (LandManager land in worldManager.SpawnedLands)
         {
             land.EnemySpawner.WaveReset();
-            Debug.Log("Gyatttt");
         }
     }
 
@@ -245,6 +273,22 @@ public class EventManager : MonoBehaviour
             }
             WaveCompletion();
         }
+    }
+
+    public void FinishEscortWave()
+    {
+        Debug.Log("END OF ESCORT WAVE");
+        foreach(LandManager land in worldManager.SpawnedLands)
+        {
+            land.EnemySpawner.NpcPresent = false;
+            land.EnemySpawner.CurrencyTimerActive = false;
+            land.EnemySpawner.DespawnAllEnemies();
+        }
+
+        npcScriptScriptReference.Destroy();
+
+
+        WaveCompletion();
     }
 
     #endregion

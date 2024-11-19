@@ -5107,8 +5107,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2034974937338886477}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5324,6 +5324,8 @@ MonoBehaviour:
   worldManager: {fileID: 1416371478039211752}
   gameManager: {fileID: 487855562}
   CurrentWaveType: 0
+  escortNPC: {fileID: 9041070483142363031, guid: 006b362f8f3844b469df5594b06f32b1,
+    type: 3}
 --- !u!1 &1613189912748339658
 GameObject:
   m_ObjectHideFlags: 0
