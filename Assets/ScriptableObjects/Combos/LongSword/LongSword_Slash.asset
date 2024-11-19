@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: LongSword_Slash
   m_EditorClassIdentifier: 
   <ComboName>k__BackingField: LongSword_Slash
-  <ComboInputs>k__BackingField: 02000000
+  <ComboInputs>k__BackingField: 00000000
   <ComboClip>k__BackingField: {fileID: -1115183702260151492, guid: 3d21b82dff41d12438297e2cbeefb519,
     type: 3}
   <ComboClipAnimationSpeed>k__BackingField: 2
-  <AttackHasRootMotion>k__BackingField: 1
+  <HasRootMotion>k__BackingField: 1
+  <WillIgnoreGravity>k__BackingField: 0
+  <WillLaunchUpwards>k__BackingField: 0
   <ComboDamageRange>k__BackingField: {x: 10, y: 15}
+  <AirLaunchForce>k__BackingField: 7.5

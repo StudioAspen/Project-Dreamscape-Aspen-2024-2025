@@ -84,7 +84,6 @@ public class PlayerAttackState : PlayerBaseState
             victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
             source.Launch(Vector3.up, ComboData.AirLaunchForce);
-            (source as Player).InvokeJumpActionInputForCombo();
         }
 
         if (ComboData.WillIgnoreGravity)

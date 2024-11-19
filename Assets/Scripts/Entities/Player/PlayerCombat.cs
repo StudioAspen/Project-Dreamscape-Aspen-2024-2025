@@ -180,6 +180,11 @@ public class PlayerCombat : MonoBehaviour
 
     private void GenerateComboLists()
     {
+        if (!player.IsGrounded && currentComboList.Count > 0)
+        {
+            if (currentComboList[0] != PlayerActions.AIRBORNE) currentComboList.Insert(0, PlayerActions.AIRBORNE);
+        }
+
         potentialCombos = new List<ComboDataSO>();
         predictedCombos = new List<ComboDataSO>();
         foreach (ComboDataSO weaponCombo in Weapon.Combos)

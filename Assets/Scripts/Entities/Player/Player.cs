@@ -170,7 +170,6 @@ public class Player : Entity
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityStaggeredState) return;
 
-        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
         ChangeState(PlayerJumpState);
     }
 
@@ -454,10 +453,5 @@ public class Player : Entity
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;
-    }
-
-    public void InvokeJumpActionInputForCombo()
-    {
-        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
     }
 }
