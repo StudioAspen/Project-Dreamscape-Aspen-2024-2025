@@ -6,11 +6,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using KBCore.Refs;
+using UnityEngine.InputSystem.LowLevel;
 
 
 public class MinimapController : MonoBehaviour
 {
-    public RectTransform minimapRectTransform;
+    [SerializeField] private RectTransform minimapRectTransform; // Raw Image Render Texture
     private Vector2 normalSize;
     private Vector2 normalPosition;
     private Vector2 centeredPosition = new Vector2(0, 0);
@@ -27,9 +29,17 @@ public class MinimapController : MonoBehaviour
     private Mask mask;
     private RawImage image;
     private Transform border;
+    [SerializeField] private Canvas minimap_canvas;
+    [SerializeField, Scene] GameManager gameManager;
 
-    void Start()
-    {   
+    private void OnValidate()
+    {
+        this.ValidateRefs();
+    }
+    private void Awake()
+    {
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
         // Cache Components
         normalSize = minimapRectTransform.sizeDelta;
         normalPosition = minimapRectTransform.anchoredPosition;
@@ -44,14 +54,19 @@ public class MinimapController : MonoBehaviour
         image = mask.GetComponentInChildren<RawImage>();
         border = transform.GetChild(0).Find("Border");
     }
-
-    void Update()
+    private void OnDestroy()
     {
-
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
     public void ToggleMinimap()
     {
+        // Disable the Toggle when the game isn't running
+        if ((gameManager.CurrentState != GameState.PLAYING) && !isMaximized)
+        {
+            return;
+        }
+
         // Toggle Mask and Border
         if (border != null) {
             border.gameObject.SetActive(isMaximized);
@@ -96,5 +111,22 @@ public class MinimapController : MonoBehaviour
 
         isMaximized = !isMaximized;
         //Debug.Log("Minimap Toggled");
+    }
+
+    private void GameManager_OnGameStateChanged(GameState newState)
+    {
+        // If the game isn't running, hide minimap
+        if ((newState != GameState.PLAYING))
+        {
+            if (isMaximized)
+            {
+                ToggleMinimap();
+            }
+            minimap_canvas.gameObject.SetActive(false);
+        } else 
+        {
+            minimap_canvas.gameObject.SetActive(true);
+        }
+
     }
 }

@@ -15,7 +15,7 @@ public class Player : Entity
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
-    public float MovementSpeed => movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
+    public float MovementSpeed => StatusSpeedModifier * movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
     private float movementOnSlopeSpeedModifier = 1f;
     private float totalSpeedModifierForAnimation;
     public Vector3 MoveDirection => input.MoveDirection;
@@ -24,6 +24,11 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
+
+    public float baseMovementSpeed;
+    public float baseAttackPower;
+    private float currentMovementSpeed;
+    private float currentAttackPower;
 
     [Header("Player: Gravity")]
     [SerializeField] private float mass = 1f;
@@ -109,6 +114,9 @@ public class Player : Entity
     protected override void OnStart()
     {
         base.OnStart();
+
+        currentMovementSpeed = baseMovementSpeed;
+        currentAttackPower = baseAttackPower;
 
         ChangeTeam(0);
 
