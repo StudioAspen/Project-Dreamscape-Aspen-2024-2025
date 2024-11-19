@@ -15,9 +15,8 @@ public class Player : Entity
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
-    public float MovementSpeed => StatusSpeedModifier * movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
+    [SerializeField] private float groundedAcceleration = 4f;
     private float movementOnSlopeSpeedModifier = 1f;
-    private float totalSpeedModifierForAnimation;
     public Vector3 MoveDirection => input.MoveDirection;
     private float forwardAngleBasedOnCamera;
     private Quaternion targetForwardRotation = Quaternion.identity;
@@ -29,13 +28,13 @@ public class Player : Entity
     public float baseAttackPower;
     private float currentMovementSpeed;
     private float currentAttackPower;
+    private Vector3 velocity;
+    public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
     [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
-    [SerializeField] private float groundedAcceleration = 4f;
-    [field: SerializeField] public float JumpTimeToFall { get; private set; } = 0.3f;
     private int currentJumpCount;
     
     #region Flags
@@ -66,7 +65,7 @@ public class Player : Entity
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -85,7 +84,7 @@ public class Player : Entity
     }
     #endregion
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
@@ -95,7 +94,7 @@ public class Player : Entity
         input.Dash.AddListener(HandleDashInput);
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
 
@@ -105,13 +104,13 @@ public class Player : Entity
         input.Dash.RemoveListener(HandleDashInput);
     }
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         //calls OnAwake from the parent class, Entity
         base.OnAwake();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
@@ -124,7 +123,7 @@ public class Player : Entity
         SetDefaultState(PlayerIdleState);
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
 
@@ -152,7 +151,7 @@ public class Player : Entity
         controller.Move(desiredAnimationMovement);
     }
 
-    protected override void CheckGrounded()
+    private protected override void CheckGrounded()
     {
         //IsGrounded is always false until the apex of the jump
         if (IsJumping && inAirTimer > 0f && inAirTimer < Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity) / Mathf.Abs(PhysicsSettings.Gravity))
@@ -343,11 +342,14 @@ public class Player : Entity
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }
 
-    private void HandleAnimations()
+    private protected override void HandleAnimations()
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, movementOnSlopeSpeedModifier * SpeedModifier, groundedAcceleration * Time.deltaTime); 
+        base.HandleAnimations();
+    }
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+    private protected override void EvaluateMovementSpeed()
+    {
+        MovementSpeed = movementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
     public void Jump()

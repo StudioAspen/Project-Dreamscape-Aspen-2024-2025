@@ -55,7 +55,7 @@ public class Charger : Enemy
     public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
     public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -70,23 +70,23 @@ public class Charger : Enemy
     }
     #endregion
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         base.OnAwake();
     }
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
         SetStartState(ChargerWanderState);
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
@@ -97,17 +97,17 @@ public class Charger : Enemy
         originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    protected override void OnFixedUpdate()
+    private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
     }
 
-    protected override void OnTick()
+    private protected override void OnTick()
     {
         
     }
@@ -123,7 +123,7 @@ public class Charger : Enemy
         CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, ChargeCollisionTopPoint, ChargeCollisionRadius);
     }
 
-    protected override void OnOnAnimatorMove()
+    private protected override void OnOnAnimatorMove()
     {
         base.OnOnAnimatorMove();
     }

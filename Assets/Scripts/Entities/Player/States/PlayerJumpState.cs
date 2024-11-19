@@ -2,8 +2,6 @@
 
 public class PlayerJumpState : PlayerBaseState
 {
-    private float timer;
-
     public PlayerJumpState(Player player) : base(player)
     {
         this.player = player;
@@ -14,8 +12,6 @@ public class PlayerJumpState : PlayerBaseState
         player.DefaultTransitionToAnimation("JumpingUp");
 
         player.Jump();
-
-        timer = 0f;
     }
 
     public override void OnExit()
@@ -42,15 +38,16 @@ public class PlayerJumpState : PlayerBaseState
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
-        timer += Time.deltaTime;
-        if(timer > player.JumpTimeToFall)
+        if(player.Velocity.y < 0f)
         {
             player.ChangeState(player.PlayerFallState);
+            return;
         }
 
         if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
+            return;
         }
     }
 

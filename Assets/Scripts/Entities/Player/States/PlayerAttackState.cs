@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class PlayerAttackState : PlayerBaseState
 {
@@ -80,12 +79,19 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (ComboData.WillLaunchUpwards)
         {
-            Physics.gravity = -10 * Vector3.up;
+            //Physics.gravity = -10 * Vector3.up;
 
             victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
             source.Launch(Vector3.up, ComboData.AirLaunchForce);
             (source as Player).InvokeJumpActionInputForCombo();
+        }
+
+        if (ComboData.WillIgnoreGravity)
+        {
+            victim.ForceChangeToLaunchState(Vector3.up, 5f, 2f);
+
+            source.Launch(Vector3.up, 5f);
         }
     }
 }

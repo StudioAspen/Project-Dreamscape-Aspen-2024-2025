@@ -5,8 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
-using static UnityEngine.EventSystems.EventTrigger;
-
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
@@ -34,7 +32,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected float rotationSpeed = 5f;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
-    private protected Vector3 velocity;
+    public float MovementSpeed;
+    private protected float totalSpeedModifierForAnimation;
     #endregion
 
     #region Airborne Variables
@@ -81,7 +80,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Override this function to add more states to the entity.
     /// Entity states can be initialized as inherited versions of those states.
     /// </summary>
-    protected virtual void InitializeStates()
+    private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
         EntityEmptyState = new EntityEmptyState(this);
@@ -109,7 +108,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It initializes the states for the entity.
     /// Override this function for custom Awake logic.
     /// </summary>
-    protected virtual void OnAwake()
+    private protected virtual void OnAwake()
     {
         InitializeStates();
     }
@@ -124,7 +123,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It sets the start state of the entity and sets the entity to max health.
     /// Override this function for custom OnEnable logic.
     /// </summary>
-    protected virtual void OnOnEnable()
+    private protected virtual void OnOnEnable()
     {
         CurrentHealth = MaxHealth;
 
@@ -140,7 +139,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// This method is called during the OnDisable phase of the MonoBehaviour lifecycle.
     /// Override this function for custom OnDisable logic.
     /// </summary>
-    protected virtual void OnOnDisable()
+    private protected virtual void OnOnDisable()
     {
 
     }
@@ -155,7 +154,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It sets the default state of the entity and ignores the entity's own colliders.
     /// Override this function for custom Start logic.
     /// </summary>
-    protected virtual void OnStart()
+    private protected virtual void OnStart()
     {
         SetDefaultState(EntityEmptyState);
 
@@ -174,13 +173,16 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It updates the current state of the entity and checks if the entity is grounded.
     /// Override this function for custom Update logic.
     /// </summary>
-    protected virtual void OnUpdate()
+    private protected virtual void OnUpdate()
     {
         //if CurrentState isn't null, run it's Update function
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.Update();
 
         CheckGrounded();
+
+        HandleAnimations();
+        EvaluateMovementSpeed();
     }
 
     private void FixedUpdate()
@@ -193,7 +195,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It fixed updates the current state of the entity.
     /// Override this function for custom FixedUpdate logic.
     /// </summary>
-    protected virtual void OnFixedUpdate()
+    private protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
     }
@@ -202,7 +204,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the start state of the entity.
     /// </summary>
     /// <param name="state">The start state to set.</param>
-    protected void SetStartState(BaseState state)
+    private protected void SetStartState(BaseState state)
     {
         CurrentState = state;
         CurrentState.OnEnter();
@@ -212,7 +214,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the default state of the entity.
     /// </summary>
     /// <param name="state">The default state to set.</param>
-    protected void SetDefaultState(BaseState state)
+    private protected void SetDefaultState(BaseState state)
     {
         DefaultState = state;
     }
@@ -247,14 +249,21 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Handles the IsGrounded bool for the entity. Override this method to add custom grounded checks.
     /// </summary>
-    protected virtual void CheckGrounded() { }
+    private protected virtual void CheckGrounded() { }
+
+    private protected virtual void HandleAnimations()
+    {
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
+
+        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+    }
 
     /// <summary>
     /// Handles the death logic for the entity by invoking the OnEntityDeath event and attempting to notify the killer.
     /// Also changes the state to the death state.
     /// Override this function if you want to add custom death logic.
     /// </summary>
-    protected virtual void OnDeath()
+    private protected virtual void OnDeath()
     {
         OnEntityDeath?.Invoke(lastHitSource);
 
@@ -284,7 +293,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If this fails, then the soruce that killed this entity is not an entity and cannot be notified.
     /// Override this function if you want to add custom logic for notifying the killer.
     /// </summary>
-    protected virtual void AttemptToNotifyKiller()
+    private protected virtual void AttemptToNotifyKiller()
     {
         if (lastHitSource == null) return;
 
@@ -423,7 +432,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the speed modifier of the entity. The speed modifier is a multiplier that affects the entity's base movement speed.
     /// </summary>
     /// <param name="speed">The speed modifier to set.</param>
-
     public void SetSpeedModifier(float speed)
     {
         SpeedModifier = speed;
@@ -477,6 +485,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual void OnKill(Entity entity)
     {
         OnKillEntity?.Invoke(entity);
+    }
+
+    private protected virtual void EvaluateMovementSpeed()
+    {
+        MovementSpeed = StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
     /// <summary>
@@ -823,6 +836,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
     #endregion
 
+    /// <summary>
+    /// Sets the status speed modifier for the entity.
+    /// </summary>
+    /// <param name="newModifer">The new status speed modifier.</param>
     public void SetStatusSpeedModifier(float newModifer)
     {
         StatusSpeedModifier = newModifer;

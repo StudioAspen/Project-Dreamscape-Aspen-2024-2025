@@ -19,8 +19,6 @@ public class Enemy : Entity
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
-    public float MovementSpeed => StatusSpeedModifier * SpeedModifier * baseSpeed;
-    private float totalSpeedModifierForAnimation;
 
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
@@ -42,26 +40,26 @@ public class Enemy : Entity
         spawner = e;
     }
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         base.OnAwake();
 
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
         SetStartState(EnemyIdleState);
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
@@ -70,7 +68,7 @@ public class Enemy : Entity
         SetDefaultState(EnemyIdleState);
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
 
@@ -83,7 +81,7 @@ public class Enemy : Entity
         }
     }
 
-    protected override void OnFixedUpdate()
+    private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
         
@@ -100,7 +98,7 @@ public class Enemy : Entity
         OnOnAnimatorMove();
     }
 
-    protected virtual void OnOnAnimatorMove()
+    private protected virtual void OnOnAnimatorMove()
     {
         if (!UseRootMotion) return;
 
@@ -111,12 +109,12 @@ public class Enemy : Entity
         rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
-    protected virtual void OnTick()
+    private protected virtual void OnTick()
     {
         TryAssignTarget();
     }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -124,7 +122,7 @@ public class Enemy : Entity
         EnemyChaseState = new EnemyChaseState(this);
     }
 
-    protected override void CheckGrounded()
+    private protected override void CheckGrounded()
     {
         IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
     }
@@ -136,11 +134,9 @@ public class Enemy : Entity
         debugStateText.text = $"{CurrentState.GetType()}";
     }
 
-    private void HandleAnimations()
+    private protected override void HandleAnimations()
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 5f * Time.deltaTime);
-
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        base.HandleAnimations();
     }
 
     private List<Vector3> GetPathToDestination(Vector3 dest)
@@ -200,7 +196,7 @@ public class Enemy : Entity
         this.lookAtPath = lookAtPath;
     }
 
-    protected override void OnDeath()
+    private protected override void OnDeath()
     {
         base.OnDeath();
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
