@@ -69,10 +69,12 @@ public class LeaperHopState : EnemyBaseState
         if (willGoToAttack)
         {
             //leaper.ChangeState(leaper.LeaperAttackState);
+            Debug.Log("Attack State");
         }
         else
         {
             //leaper.ChangeState(leaper.LeaperIdleState);
+            Debug.Log("Idle State");
         }
     }
 }

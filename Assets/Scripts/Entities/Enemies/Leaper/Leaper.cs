@@ -13,9 +13,9 @@ public class Leaper : Enemy
 
     [field: Header("Leaper: Hop Settings")]
     [field: SerializeField] public int HopCount { get; private set; } = 2;
-    [field: SerializeField] public int HopDistance { get; private set; } = 5;
-    [field: SerializeField] public int HopDuration { get; private set; } = 3;
-    [field: SerializeField] public int HopHeight { get; private set; } = 5;
+    [field: SerializeField] public float HopDistance { get; private set; } = 5f;
+    [field: SerializeField] public float HopDuration { get; private set; } = .5f;
+    [field: SerializeField] public float HopHeight { get; private set; } = .75f;
 
 
     // add all states here 

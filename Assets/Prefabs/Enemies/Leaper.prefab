@@ -79,11 +79,10 @@ MonoBehaviour:
   UseRootMotion: 0
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
-  hopCount: 2
-  hopDistance: 5
-  hopDuration: 5
-  hopHeight: 2
-  coinToss: 0
+  <HopCount>k__BackingField: 2
+  <HopDistance>k__BackingField: 1.5
+  <HopDuration>k__BackingField: 0.75
+  <HopHeight>k__BackingField: 1.2
 --- !u!114 &6700608577994973314
 MonoBehaviour:
   m_ObjectHideFlags: 0
