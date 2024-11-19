@@ -21,7 +21,6 @@ public class EscortNpc : Entity
 
     void Update()
     {
-        MoveForward(); //Simple moving forward logic for testing purposes
 
         if (currentGridPosition != worldManager.GetLandByWorldPosition(this.transform.position).GridPosition)
         {
@@ -39,12 +38,7 @@ public class EscortNpc : Entity
 
     }
 
-    private void MoveForward()
-    {
-        // Move forward in the NPC's forward direction
-        transform.Translate(Vector3.forward * this.baseSpeed * Time.deltaTime);
-    }
-
+    
 
 
 

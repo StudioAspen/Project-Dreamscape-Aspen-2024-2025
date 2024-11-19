@@ -32,7 +32,7 @@ public class EnemySpawner : MonoBehaviour
     //Escort wave variables
     public bool NpcPresent = false; //MAKE SURE THAT THIS VALUE GETS SET BACK TO FALSE FOR ALL LANDS ONCE THE WAVE IS OVER
     private float CurrencyResetTimer;
-    private float CurrencyResetTimerLength = 5f;
+    private float CurrencyResetTimerLength = 15f;
     public bool CurrencyTimerActive = false;
 
     // Ensures references are correctly assigned and validated when the script is loaded or values are changed in the Inspector.
@@ -69,6 +69,7 @@ public class EnemySpawner : MonoBehaviour
             }
             else
             {
+                Debug.Log("Timer Ended");
                 currentShopCurrency = maxShopCurrency;
                 CurrencyTimerActive = false;
                 CanSpawn = true;

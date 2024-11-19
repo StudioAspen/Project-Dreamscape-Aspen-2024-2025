@@ -29,7 +29,7 @@ public class EventManager : MonoBehaviour
 
     [SerializeField] private GameObject escortNPC;
     private float escortWaveTimer;
-    private float escortWaveTimerLength = 30f; //temp value
+    private float escortWaveTimerLength = 180f; //temp value
     private bool startEscortWaveTimer = false;
     private EscortNpc npcScriptScriptReference;
 
