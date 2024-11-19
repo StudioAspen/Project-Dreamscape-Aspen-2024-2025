@@ -499,6 +499,7 @@ MonoBehaviour:
   <Level>k__BackingField: 1
   <Biome>k__BackingField: 0
   <LevelDifference>k__BackingField: 0
+  isVisited: 0
 --- !u!114 &3642624367869852063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,6 +514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldManager: {fileID: 0}
   landManager: {fileID: 6052383663745716427}
+  eventManager: {fileID: 0}
   enemyPrefabs:
   - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
   - {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376, type: 3}
@@ -522,6 +524,8 @@ MonoBehaviour:
   growthFactor: 1
   polynomialDegree: 1
   CanSpawn: 0
+  IsPriority: 0
+  NpcPresent: 0
 --- !u!114 &8171416551064500414
 MonoBehaviour:
   m_ObjectHideFlags: 0

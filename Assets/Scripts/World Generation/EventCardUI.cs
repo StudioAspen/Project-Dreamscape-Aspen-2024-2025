@@ -55,5 +55,12 @@ public class EventCardUI : MonoBehaviour
     private void OnClickCard()
     {
         eventManager.AssignNextEvent(CurrentEvent);
+
+        // Timer UI popup
+        if (CurrentEvent == WorldEvent.SURVIVAL)
+        {
+            eventManager.EnableTimer();
+            eventManager.ResetTimer();
+        }
     }
 }

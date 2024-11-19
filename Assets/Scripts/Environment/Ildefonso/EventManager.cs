@@ -21,13 +21,16 @@ public class EventManager : MonoBehaviour
     [SerializeField, Scene] public GameManager gameManager;
 
     [Header("Current Event")]
-    [SerializeField] public WorldEvent CurrentWaveType = WorldEvent.START;
+    public WorldEvent CurrentWaveType = WorldEvent.START;
 
     [Header("Event: Debug UI")]
-    [SerializeField] private TMP_Text eventText;
+    [SerializeField] private TMP_Text eventText; // Event Debug UI
 
     [Header("Event Complete Bool")]
-    [SerializeField] private bool EventClearStatus = false;
+    [SerializeField] private bool eventClearStatus = false; // Event Clear Status is basically a bool i am using as a placeholder for events that are not implemented
+    private int timerVAR; // INT for timer UI
+    public float survivalTimer; // Timer for survival event
+    public TMP_Text timerText; // Timer UI
 
     private int activeLandCount;
     private int activePrioritiesCount;
@@ -42,8 +45,15 @@ public class EventManager : MonoBehaviour
         CurrentWaveType = WorldEvent.START;
         PrepareForNextWave();
 
-        // Assign the TMP_Text component from the GameObject named "CurrEventText"
+        // Assign the TMP_Text components
         eventText = GameObject.Find("CurrEventText").GetComponent<TMP_Text>();
+        timerText = GameObject.Find("TimerText").GetComponent<TMP_Text>();
+
+        // Timer UI disabled by default
+        timerText.enabled = false;
+
+        // Initialize survivalTimer with timerVAR
+        survivalTimer = timerVAR;
     }
 
     void Update()
@@ -54,7 +64,7 @@ public class EventManager : MonoBehaviour
         // Event Debugging
         if (Input.GetKeyDown(KeyCode.L))
         {
-            setEventClearStatus(true);
+            SetEventClearStatus(true);
         }
         
 
@@ -69,35 +79,36 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.SURVIVAL:
                 // TODO: Check if the timer has ended
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (survivalTimer == 0f && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
+                DecrementTimer();
                 break;
             case WorldEvent.ZONES:
                 // TODO: Check if all enemies in the 3x3 grid have been killed
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (eventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
                 break;
             case WorldEvent.PRIORITIES:
                 // TODO: Check if all enemies in the 3 highest level islands have been killed
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (eventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
                 break;
             case WorldEvent.ESCORT:
                 // TODO: Check if the timer has ended AND NPC survival
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (eventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
                 break;
             case WorldEvent.DEFEND:
                 // TODO: Check if the timer has ended AND object survival
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (eventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
@@ -119,6 +130,13 @@ public class EventManager : MonoBehaviour
     private void WaveCompletion()
     {
         gameManager.ChangeState(GameState.BIOME_SELECTION);
+
+        // Disables the timer UI whenever CurrEvent != SURVIVAL.
+        if (CurrentWaveType == WorldEvent.SURVIVAL)
+        {
+            timerText.enabled = false; 
+        }
+
     }
 
     // Assigns the next world event and prepares for the next wave of enemies, then changes the game state to PLAYING.
@@ -129,13 +147,42 @@ public class EventManager : MonoBehaviour
         gameManager.ChangeState(GameState.PLAYING);
     }
 
+    // Event Clear Status is basically a bool i am using as a placeholder for events that are not implemented
     #region Event Clear Status
-    public void setEventClearStatus(bool status)
+    public void SetEventClearStatus(bool status)
     {
-        EventClearStatus = status;
+        eventClearStatus = status;
     }
     #endregion
 
+    #region Timer Functions
+    // Decrements the survival timer and updates the timer UI whenever CurrEvent == SURVIVAL.
+    public void DecrementTimer()
+    {
+        timerVAR = (int)survivalTimer;
+        if (survivalTimer > 0)
+        {
+            survivalTimer -= Time.deltaTime;
+            if (survivalTimer < 0)
+            {
+                survivalTimer = 0;
+            }
+            timerText.text = $"SURVIVE: {timerVAR+1} SECONDS";
+        }
+    }
+
+    // Resets the survival timer to 60 seconds and enables the timer UI whenever CurrEvent == SURVIVAL.
+    public void ResetTimer()
+    {
+        survivalTimer = 60f;
+    }
+
+    // Timer Enable
+    public void EnableTimer()
+    {
+        timerText.enabled = true;
+    }
+    #endregion
 
     #region Preperation Functions
     public void PrepareForNextWave() 
@@ -144,7 +191,7 @@ public class EventManager : MonoBehaviour
         if(CurrentWaveType == WorldEvent.START) //START does not get a preperation function because it is the ugly duckling, we dont f with ugly ducklings
         {
             activeLandCount = 1;
-            Debug.Log("IM TWEAKING TF OUTTTTT");
+            //Debug.Log("IM TWEAKING TF OUTTTTT");
         }
 
         if (CurrentWaveType == WorldEvent.SURVIVAL) //this will need to be changed
@@ -278,7 +325,7 @@ public class EventManager : MonoBehaviour
         foreach (LandManager land in worldManager.SpawnedLands)
         {
             land.EnemySpawner.WaveReset();
-            Debug.Log("Gyatttt");
+            //Debug.Log("Gyatttt");
         }
     }
 

@@ -52,7 +52,7 @@ public class BiomeSelectUI : MonoBehaviour
 
         EnableCards();
 
-        eventManager.setEventClearStatus(false);
+        eventManager.SetEventClearStatus(false);
     }
 
     public void Disable()
