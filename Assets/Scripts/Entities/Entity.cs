@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
+
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
@@ -32,7 +33,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected float rotationSpeed = 5f;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
-    public float MovementSpeed;
+    public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion
 
@@ -49,6 +50,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Team Variables
     public int Team { get; private set; }
+    #endregion
+
+    #region Attack Variables
+    [field: Header("Entity: Attack")]
+    [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
     #endregion
 
     #region Combat Events
@@ -487,6 +494,9 @@ public class Entity : MonoBehaviour, IPoolableObject
         OnKillEntity?.Invoke(entity);
     }
 
+    /// <summary>
+    /// Evaluates the movement speed of the entity based on the status speed modifier, speed modifier, and base speed.
+    /// </summary>
     private protected virtual void EvaluateMovementSpeed()
     {
         MovementSpeed = StatusSpeedModifier * SpeedModifier * baseSpeed;
@@ -843,5 +853,28 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetStatusSpeedModifier(float newModifer)
     {
         StatusSpeedModifier = newModifer;
+    }
+
+    /// <summary>
+    /// Sets the damage modifier for the entity.
+    /// </summary>
+    /// <param name="newModifier">The new damage modifier value.</param>
+    public void SetDamageModifier(float newModifier)
+    {
+        DamageModifier = newModifier;
+    }
+
+    /// <summary>
+    /// Calculates the damage based on the given percentage.
+    /// </summary>
+    /// <param name="percent">The percentage of the damage range to calculate.</param>
+    /// <returns>The calculated damage value.</returns>
+    public int CalculateDamage(float percent)
+    {
+        Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
+            (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+            );
+
+        return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
     }
 }

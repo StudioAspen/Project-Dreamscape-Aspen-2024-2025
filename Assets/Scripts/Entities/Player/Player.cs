@@ -23,11 +23,6 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
-
-    public float baseMovementSpeed;
-    public float baseAttackPower;
-    private float currentMovementSpeed;
-    private float currentAttackPower;
     private Vector3 velocity;
     public Vector3 Velocity => velocity;
 
@@ -41,8 +36,8 @@ public class Player : Entity
     [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
     [HideInInspector] public bool CanAttack = true;
-    [HideInInspector] public bool IsJumping;
     [HideInInspector] public bool ApplyRootMotion;
+    private bool isJumping;
     #endregion
 
     [field : Header("Player: Dash")]
@@ -114,9 +109,6 @@ public class Player : Entity
     {
         base.OnStart();
 
-        currentMovementSpeed = baseMovementSpeed;
-        currentAttackPower = baseAttackPower;
-
         ChangeTeam(0);
 
         SetStartState(PlayerIdleState);
@@ -137,6 +129,11 @@ public class Player : Entity
         HandleAnimations();
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Launch(Vector3.up, 10f);
+        }
     }
 
     private void OnAnimatorMove()
@@ -153,13 +150,6 @@ public class Player : Entity
 
     private protected override void CheckGrounded()
     {
-        //IsGrounded is always false until the apex of the jump
-        if (IsJumping && inAirTimer > 0f && inAirTimer < Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity) / Mathf.Abs(PhysicsSettings.Gravity))
-        {
-            IsGrounded = false;
-            return;
-        }
-
         //IsGrounded is always false for the first 0.1 seconds in air
         if (inAirTimer > 0f && inAirTimer < 0.1f)
         {
@@ -173,7 +163,7 @@ public class Player : Entity
 
     private void HandleJumpInput()
     {
-        if (!IsGrounded && currentJumpCount >= maxJumpCount) return;
+        if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return;
         if(CurrentState == EntityLaunchState) return;
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
@@ -244,7 +234,7 @@ public class Player : Entity
             }
             inAirTimer = 0f;
             fallVelocityApplied = false;
-            IsJumping = false;
+            isJumping = false;
         }
     }
 
@@ -252,12 +242,13 @@ public class Player : Entity
     {
         if (!IsGrounded)
         {
-            if (!IsJumping && !fallVelocityApplied) // falling without jumping
+            if (!isJumping && !fallVelocityApplied) // falling without jumping
             {
                 fallVelocityApplied = true;
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
 
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState) ChangeState(PlayerFallState);
+                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
+                    ChangeState(PlayerFallState);
             }
             inAirTimer += Time.deltaTime;
             velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
@@ -354,8 +345,9 @@ public class Player : Entity
 
     public void Jump()
     {
-        IsJumping = true;
         IsGrounded = false;
+
+        isJumping = true;
 
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity);
         inAirTimer = 0.01f;
@@ -455,9 +447,10 @@ public class Player : Entity
         // Calculate the resulting change in velocity from the impulse
         Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
-        IsJumping = true;
         IsGrounded = false;
+        isJumping = true;
         inAirTimer = 0.01f;
+        currentJumpCount++;
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;

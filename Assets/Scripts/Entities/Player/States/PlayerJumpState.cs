@@ -44,11 +44,11 @@ public class PlayerJumpState : PlayerBaseState
             return;
         }
 
-        if (player.IsGrounded)
+/*        if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
             return;
-        }
+        }*/
     }
 
     public override void FixedUpdate()
