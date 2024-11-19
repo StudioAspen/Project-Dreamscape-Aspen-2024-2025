@@ -51,7 +51,6 @@ public class AspectNodeNode : Node
     /// Assigns the parent node by retrieving the connections of the "Parent" input port.
     /// </summary>
     private void AssignParent()
-
     {
         List<NodePort> parentConnections = GetInputPort("Parent").GetConnections();
         if(parentConnections.Count == 0) return;
