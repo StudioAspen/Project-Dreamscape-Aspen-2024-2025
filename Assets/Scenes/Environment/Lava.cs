@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Lava : MonoBehaviour
 {
-    [SerializeField] private Transform t;
+    [SerializeField] Transform TilePosition;
     public int MaxFloors = 3;
-    [SerializeField] private GameObject floorModel;
+    [SerializeField] private GameObject FloorModel;
 
     private void Start()
     {
@@ -40,7 +40,7 @@ public class Lava : MonoBehaviour
 
     public GameObject BuildFloor(int floor)
     {
-        GameObject newFloorModel = GameObject.Instantiate(floorModel);
+        GameObject newFloorModel = GameObject.Instantiate(FloorModel);
         newFloorModel.SetActive (true);
         newFloorModel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
 
