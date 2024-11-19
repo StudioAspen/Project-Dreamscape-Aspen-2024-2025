@@ -18,7 +18,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField, Self] private Animator animator;
 
     [field: Header("Settings")]
-    [field: SerializeField] public Weapon Weapon { get; private set; }
+    [field: SerializeField, Child] public Weapon Weapon { get; private set; }
     [HideInInspector] public bool IsAnimationPlaying;
 
     [Header("Combo")]

@@ -9,12 +9,8 @@ public class Weapon : MonoBehaviour
 {
     [Header("Weapon: References")]
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
-    [SerializeField, Anywhere] private GameObject trailObject;
     [SerializeField] private Entity holderEntity;
     private Animator animator;
-
-    [Header("Weapon: Settings")]
-    [SerializeField] private AnimatorOverrideController overrideAnimator;
 
     [Header("Weapon: Collisions")]
     [SerializeField] private LayerMask damageableCollidersLayerMask;
@@ -46,14 +42,10 @@ public class Weapon : MonoBehaviour
         holderEntity = GetComponentInParent<Entity>();
 
         AssignColliderStartEndPositions();
-
-        if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
     }
 
     private void Update()
     {
-        trailObject.SetActive(capsuleCollider.enabled);
-
         HandleHitDetectionBetweenFrames();
     }
 
@@ -101,7 +93,7 @@ public class Weapon : MonoBehaviour
 
     private void CheckCollisionsWithRays(Ray ray, float distance)
     {
-        RaycastHit[] hits = Physics.RaycastAll(ray, distance, damageableCollidersLayerMask);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, capsuleCollider.radius, distance, damageableCollidersLayerMask);
 
         if (hits == null) return;
         if (hits.Length == 0) return;
