@@ -14,7 +14,7 @@ public class LeaperAttackState : EnemyBaseState
     private GameObject HitBoxLocation;
     
     private Tween leapTween;
-
+   
 
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
@@ -41,7 +41,7 @@ public class LeaperAttackState : EnemyBaseState
 
         leaper.LookAt(destination);
 
-        leapTween = leaper.TweenLeap(destination, leaper.LungeDuration, leaper.PatrolLeapHeight);
+        leapTween = leaper.TweenLeap(destination, leaper.LeapAttackDuration, leaper.LeapAttackHeight);
     }
 
     public override void OnExit()
