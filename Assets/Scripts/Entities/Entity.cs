@@ -101,6 +101,52 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityLaunchState = new EntityLaunchState(this);
         EntityStaggeredState = new EntityStaggeredState(this);
     }
+
+    /// <summary>
+    /// Sets the start state of the entity.
+    /// </summary>
+    /// <param name="state">The start state to set.</param>
+    private protected void SetStartState(BaseState state)
+    {
+        CurrentState = state;
+        CurrentState.OnEnter();
+    }
+
+    /// <summary>
+    /// Sets the default state of the entity.
+    /// </summary>
+    /// <param name="state">The default state to set.</param>
+    private protected void SetDefaultState(BaseState state)
+    {
+        DefaultState = state;
+    }
+
+    /// <summary>
+    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
+    /// </summary>
+    /// <param name="state">The new state to change to.</param>
+    public void ChangeState(BaseState state)
+    {
+        if (CurrentState == EntityDeathState) return;
+        if (CurrentState == state) return;
+
+        CurrentState.OnExit();
+        CurrentState = state;
+        CurrentState.OnEnter();
+    }
+
+    /// <summary>
+    /// Forces a change of state to the specified new state even when in that same state.
+    /// </summary>
+    /// <param name="newState">The new state to change to.</param>
+    public void ForceChangeState(BaseState newState)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        CurrentState.OnExit();
+        CurrentState = newState;
+        CurrentState.OnEnter();
+    }
     #endregion
 
     private void OnValidate()
@@ -211,52 +257,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
-    }
-
-    /// <summary>
-    /// Sets the start state of the entity.
-    /// </summary>
-    /// <param name="state">The start state to set.</param>
-    private protected void SetStartState(BaseState state)
-    {
-        CurrentState = state;
-        CurrentState.OnEnter();
-    }
-
-    /// <summary>
-    /// Sets the default state of the entity.
-    /// </summary>
-    /// <param name="state">The default state to set.</param>
-    private protected void SetDefaultState(BaseState state)
-    {
-        DefaultState = state;
-    }
-
-    /// <summary>
-    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
-    /// </summary>
-    /// <param name="state">The new state to change to.</param>
-    public void ChangeState(BaseState state)
-    {
-        if (CurrentState == EntityDeathState) return;
-        if (CurrentState == state) return;
-
-        CurrentState.OnExit();
-        CurrentState = state;
-        CurrentState.OnEnter();
-    }
-
-    /// <summary>
-    /// Forces a change of state to the specified new state even when in that same state.
-    /// </summary>
-    /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(BaseState newState)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        CurrentState.OnExit();
-        CurrentState = newState;
-        CurrentState.OnEnter();
     }
 
     /// <summary>

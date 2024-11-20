@@ -79,7 +79,10 @@ public class Charger : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
+
         SetStartState(ChargerWanderState);
+
+        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -92,8 +95,6 @@ public class Charger : Enemy
         base.OnStart();
 
         SetDefaultState(ChargerWanderState);
-
-        FinishAnimation();
 
         originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }

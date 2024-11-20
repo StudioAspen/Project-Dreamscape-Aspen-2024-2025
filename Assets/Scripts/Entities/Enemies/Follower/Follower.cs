@@ -37,6 +37,8 @@ public class Follower : Enemy
         base.OnOnEnable();
 
         // SetStartState(EnemyIdleState);
+
+        FinishAnimation();
     }
 
     private protected override void OnOnDisable()

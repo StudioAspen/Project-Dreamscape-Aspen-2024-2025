@@ -159,8 +159,22 @@ public class Player : Entity
             return;
         }
 
-        //direct physics calls r faster than Unity collision boxes
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, PhysicsSettings.GroundLayer);
+        IsGrounded = GetIsGrounded();
+    }
+
+    private bool GetIsGrounded()
+    {
+        LayerMask mask = LayerMask.GetMask("Entity", "Ground");
+
+        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
+        foreach (Collider hit in hits)
+        {
+            if (hit.gameObject != gameObject)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void Input_HandleJumpInput()

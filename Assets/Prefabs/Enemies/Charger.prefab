@@ -62,6 +62,14 @@ MonoBehaviour:
   rotationSpeed: 7.5
   IsGrounded: 0
   targetDetectionRadius: 2.25
+  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <DamageModifier>k__BackingField: 1
+  OnGrounded:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAirborne:
+    m_PersistentCalls:
+      m_Calls: []
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []
