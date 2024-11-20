@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3490398193883977143}
   - component: {fileID: 3031659000538846661}
+  - component: {fileID: 2008562887667020325}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
@@ -104,6 +105,18 @@ MonoBehaviour:
   <RightFistWeapon>k__BackingField: {fileID: 3945500814101211304}
   <JabRecoverDuration>k__BackingField: 1.5
   <DazedDuration>k__BackingField: 5
+--- !u!114 &2008562887667020325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5

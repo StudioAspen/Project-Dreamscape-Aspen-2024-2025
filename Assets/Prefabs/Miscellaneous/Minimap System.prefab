@@ -435,7 +435,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/CameraLook[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3562942129147648451}
+      - m_Target: {fileID: 5828995240267279469}
         m_TargetAssemblyTypeName: MinimapController, Assembly-CSharp
         m_MethodName: ToggleMinimap
         m_Mode: 1
@@ -746,7 +746,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2638316873640238849}
-  - component: {fileID: 3562942129147648451}
+  - component: {fileID: 5828995240267279469}
   - component: {fileID: 5311334982300330976}
   m_Layer: 5
   m_Name: Minimap
@@ -775,7 +775,7 @@ RectTransform:
   m_AnchoredPosition: {x: 623.8561, y: 463.65277}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3562942129147648451
+--- !u!114 &5828995240267279469
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
