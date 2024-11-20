@@ -13,9 +13,9 @@ using UnityEngine.Pool;
 public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
+    [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] protected CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
-    [field: SerializeField, Self] public Rigidbody RigidBody { get; private set; }
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
@@ -102,7 +102,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         //desiredAnimationMovement.y = 0f;
 
-        RigidBody.MovePosition(transform.position + desiredAnimationMovement);
+        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
     protected virtual void OnTick()
@@ -184,7 +184,7 @@ public class Enemy : Entity
 
     public void Move(Vector3 dir)
     {
-        RigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -259,11 +259,11 @@ public class Enemy : Entity
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        RigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
     public override void Fling(Vector3 direction, float force, float stunDuration)
     {
-        RigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
+        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }
