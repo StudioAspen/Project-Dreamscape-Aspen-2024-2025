@@ -25,7 +25,7 @@ public class FollowerAttackState : EnemyBaseState
         follower.Weapon.OnWeaponStartSwing?.Invoke(follower);
         follower.Weapon.ClearEnemiesHitList();
 
-        follower.Weapon.SetDamageRange(new Vector2Int(follower.AttackDamageRange.x, follower.AttackDamageRange.y));
+        follower.Weapon.SetPercentDamage(follower.AttackPercentDamage);
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;

@@ -18,7 +18,7 @@ public class Charger : Enemy
     [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
     [field: Header("Charger: Charge Settings")]
-    [field: SerializeField] public Vector2Int ChargeContactDamageRange { get; private set; } = new Vector2Int(20, 30);
+    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
@@ -36,7 +36,7 @@ public class Charger : Enemy
 
     [field: Header("Charger: Jabbing Attack Settings")]
     [field: SerializeField] public int JabCount { get; private set; } = 5;
-    [field: SerializeField] public Vector2Int JabDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float JabPercentDamage { get; private set; } = 100;
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
     [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
     [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }

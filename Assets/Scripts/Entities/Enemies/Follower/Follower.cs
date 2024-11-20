@@ -8,7 +8,7 @@ public class Follower : Enemy
     [field: Header("Follower: Attack Settings")]
     [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 

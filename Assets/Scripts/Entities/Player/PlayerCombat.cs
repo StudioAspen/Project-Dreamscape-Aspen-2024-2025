@@ -163,6 +163,10 @@ public class PlayerCombat : MonoBehaviour
 
         currentComboList.Add(incomingAction);
 
+        if (!player.IsGrounded && currentComboList.Count > 0)
+        {
+            if (currentComboList[0] != PlayerActions.AIRBORNE) currentComboList.Insert(0, PlayerActions.AIRBORNE);
+        }
         GenerateComboLists();
 
         AttemptToExecuteACombo(incomingAction);
@@ -177,12 +181,25 @@ public class PlayerCombat : MonoBehaviour
             currentComboList.Clear();
             currentComboList.Add(incomingAction);
 
-            GenerateComboLists();
-
-            comboToExecute = ComboDataSO.GetSingleActionCombo(Weapon.Combos, incomingAction);
-            if (comboToExecute != null)
+            if (!player.IsGrounded)
             {
-                ExecuteCombo(comboToExecute);
+                currentComboList.Insert(0, PlayerActions.AIRBORNE);
+                GenerateComboLists();
+
+                comboToExecute = ComboDataSO.GetLongestCombo(potentialCombos);
+
+                if (comboToExecute != null)
+                {
+                    ExecuteCombo(comboToExecute);
+                }
+            }
+            else
+            {
+                comboToExecute = ComboDataSO.GetSingleActionCombo(Weapon.Combos, incomingAction);
+                if (comboToExecute != null)
+                {
+                    ExecuteCombo(comboToExecute);
+                }
             }
         }
         else

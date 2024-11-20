@@ -21,7 +21,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player);
         playerCombat.Weapon.ClearEnemiesHitList();
 
-        playerCombat.Weapon.SetDamageRange(ComboData.ComboDamageRange);
+        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage);
 
         player.ReplaceComboAnimationClip(ComboData.ComboClip);
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
@@ -79,18 +79,18 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (ComboData.WillLaunchUpwards)
         {
-            //Physics.gravity = -10 * Vector3.up;
-
             victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
             source.Launch(Vector3.up, ComboData.AirLaunchForce);
+
+            return;
         }
 
-        if (ComboData.WillIgnoreGravity)
+        if (!player.IsGrounded)
         {
-            victim.ForceChangeToLaunchState(Vector3.up, 5f, 2f);
+            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
-            source.Launch(Vector3.up, 5f);
+            source.Launch(Vector3.up, ComboData.AirLaunchForce);
         }
     }
 }

@@ -18,7 +18,7 @@ public class ComboDataSO : ScriptableObject
     [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
 
     [field: Header("[Hit Options]")]
-    [field: SerializeField] public Vector2Int ComboDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
     [field: Tooltip("Upwards launch force on hit. Only works if IsAirCombo is true.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
 

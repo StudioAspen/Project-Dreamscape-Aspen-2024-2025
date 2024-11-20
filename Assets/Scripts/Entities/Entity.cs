@@ -735,16 +735,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a random damage value within the specified damage range.
-    /// </summary>
-    /// <param name="damageRange">The range of damage values.</param>
-    /// <returns>A random damage value within the range.</returns>
-    public int GetRandomDamageFromRange(Vector2Int damageRange)
-    {
-        return Random.Range(damageRange.x, damageRange.y);
-    }
-
-    /// <summary>
     /// Applies a launch force to the entity in the specified direction with the given force and stun duration.
     /// Override this function to add custom launch logic.
     /// </summary>
