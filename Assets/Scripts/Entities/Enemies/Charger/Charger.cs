@@ -38,6 +38,7 @@ public class Charger : Enemy
     [field: SerializeField] public int JabCount { get; private set; } = 5;
     [field: SerializeField] public Vector2Int JabDamageRange { get; private set; } = new Vector2Int(10, 15);
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
+    [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
     [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
     [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
     [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
@@ -141,7 +142,7 @@ public class Charger : Enemy
     public override void TryAssignTarget()
     {
         List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyEntities(DetectionDistance);
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(DetectionDistance);
         List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, ChargeCollisionTopPoint, DetectionConeHalfAngle);
 
         if (largeRadiusTargets.Count == 0)
@@ -193,7 +194,7 @@ public class Charger : Enemy
 
         CurrentHealth -= newDamage;
 
-        AttemptToSpawnHitNumbers(newDamage, hitPoint);
+        AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 

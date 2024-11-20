@@ -437,7 +437,7 @@ public class Player : Entity
     {
         if (CurrentState == EntityDeathState) return;
 
-        AttemptToSpawnHitNumbers(dmg, hitPoint);
+        AttemptToSpawnHitNumbers(dmg, hitPoint, Color.red);
 
         CurrentHealth -= dmg;
 
