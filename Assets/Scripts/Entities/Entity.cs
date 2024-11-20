@@ -736,7 +736,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             {
                 if (material.HasProperty("_Color"))
                 {
-                    material.DOColor(newColor, 0.5f);
+                    material.DOColor(newColor, 0.2f);
                 }
             }
         }
@@ -757,7 +757,7 @@ public class Entity : MonoBehaviour, IPoolableObject
                 DOTween.Kill(renderer);
                 if (renderer.materials[i].HasProperty("_Color"))
                 {
-                    renderer.materials[i].DOColor(colors[i], 0.5f);
+                    renderer.materials[i].DOColor(colors[i], 0.2f);
                 }
             }
         }
@@ -785,6 +785,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
     #endregion
 
+    /// <summary>
+    /// Sets the status speed modifier for the entity.
+    /// </summary>
+    /// <param name="newModifer">The new status speed modifier.</param>
     public void SetStatusSpeedModifier(float newModifer)
     {
         StatusSpeedModifier = newModifer;
