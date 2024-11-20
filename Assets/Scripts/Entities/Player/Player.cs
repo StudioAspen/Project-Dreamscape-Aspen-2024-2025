@@ -129,11 +129,6 @@ public class Player : Entity
         HandleAnimations();
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Launch(Vector3.up, 10f);
-        }
     }
 
     private void OnAnimatorMove()
@@ -145,7 +140,7 @@ public class Player : Entity
         Vector3 desiredAnimationMovement = animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        controller.Move(desiredAnimationMovement);
+        //controller.Move(desiredAnimationMovement);
     }
 
     private protected override void CheckGrounded()

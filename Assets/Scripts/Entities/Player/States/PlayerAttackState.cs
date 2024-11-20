@@ -23,9 +23,10 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage);
 
-        player.ReplaceComboAnimationClip(ComboData.ComboClip);
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
-        player.TransitionToAnimation("Combo", 0.05f);
+
+        //Debug.Break();
+        player.TransitionToAnimation("Combo", 0.1f);
 
         playerCombat.IsAnimationPlaying = true;
         player.ApplyRootMotion = ComboData.HasRootMotion;
@@ -40,7 +41,9 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player);
         playerCombat.IsAnimationPlaying = false;
         player.ApplyRootMotion = false;
-        playerCombat.DisableWeaponTriggers();
+
+        playerCombat.EndHit();
+        playerCombat.CanCombo = false;
 
         player.InstantlySetGroundedSpeed(0f);
 

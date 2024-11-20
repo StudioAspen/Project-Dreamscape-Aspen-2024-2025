@@ -60,6 +60,7 @@ public class Weapon : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!capsuleCollider.enabled) return;
+        if ((damageableCollidersLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
         Entity enemy = other.GetComponentInParent<Entity>();
 

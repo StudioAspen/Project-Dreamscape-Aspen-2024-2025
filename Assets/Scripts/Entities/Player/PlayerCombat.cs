@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +28,8 @@ public class PlayerCombat : MonoBehaviour
     private List<PlayerActions> currentComboList = new List<PlayerActions>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
+
+    public bool CanCombo;
 
     private void OnValidate()
     {
@@ -75,8 +78,8 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
         if (player.CurrentState == player.EntityLaunchState) return;
+        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK1);
     }
@@ -105,8 +108,8 @@ public class PlayerCombat : MonoBehaviour
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
         if (player.CurrentState == player.EntityLaunchState) return;
+        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK2);
     }
@@ -220,8 +223,11 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerSlideState) return;
         if (player.CurrentState == player.EntityStaggeredState) return;
 
+        ReplaceComboAnimationClip(animator, combo.ComboClip);
+
         player.PlayerAttackState.SetCombo(combo);
-        player.ChangeState(player.PlayerAttackState);
+        player.ForceChangeState(player.PlayerAttackState);
+
 
         comboText.text = "Combo: " + combo.name;
     }
@@ -308,17 +314,22 @@ public class PlayerCombat : MonoBehaviour
 
     private void HandleWeaponTriggers()
     {
-        if (player.CurrentState != player.PlayerAttackState) DisableWeaponTriggers();
+        if (player.CurrentState != player.PlayerAttackState) EndHit();
     }
 
-    public void EnableWeaponTriggers()
+    public void StartHit()
     {
         Weapon.EnableTriggers();
     }
 
-    public void DisableWeaponTriggers()
+    public void EndHit()
     {
         Weapon.DisableTriggers();
+    }
+
+    public void EnableCombo()
+    {
+        CanCombo = true;
     }
 
     public void FinishAnimation()
