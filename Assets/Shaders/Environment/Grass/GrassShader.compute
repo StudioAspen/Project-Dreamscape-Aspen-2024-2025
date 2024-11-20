@@ -3,6 +3,12 @@
 
 #include "NMGComputeHelpers.hlsl"
 
+#define PI 3.14159265359
+
+// Define max num of blade segments and points required
+#define MAX_BLADE_SEGMENTS 5
+#define MAX_BLADE_POINTS MAX_BLADE_SEGMENTS * 2 + 1
+
 // Describes vertex on source mesh
 struct SourceVertex
 {
@@ -58,6 +64,14 @@ RWStructuredBuffer<IndirectArgs> _IndirectArgsBuffer;
 
 // Variables are set by renderer
 int _NumSourceTriangles; // Num Triangles on Source Mesh
+int _MaxBladeSegments; // Max segments on a blade
+float _MaxBendAngle; // Maximum bend angle (a multiplier to pi/2)
+float _BladeCurvature; // Defines how sharp the blade bends
+float _BladeHeight; // The max height of each blade
+float _BladeHeightVariance; // Variance of blade height
+float _BladeWidth; // Max blade width
+float _BladeWidthVariance; // Variance of the blade width
+
 float4x4 _LocalToWorld; // Local Space to World Space Transformation Matrix
 
 // Get the triangle's center and basis
@@ -76,11 +90,30 @@ void GetCenterAndBasis(SourceVertex a, SourceVertex b, SourceVertex c,
     GetTriangleNormalAndTSToWSMatrix(positionA_WS, positionB_WS, positionC_WS, normalWS, tsToWs);
 }
 
+float2 GetBladeDimensions(float3 positionWS)
+{
+    float width = randNegative1to1(positionWS, 0) * _BladeWidthVariance + _BladeWidth;
+    float height = randNegative1to1(positionWS, 1) * _BladeHeightVariance + _BladeHeight;
+    return float2(width, height);
+}
+
+// Calculate TS to WS matrix for a point at the given V-Coord
+float3x3 FigureTransformationForHeight(float v, float3x3 twistMatrix, float3x3 tsToWs, float maxBend)
+{
+    // Bend increases towards tip
+    float3x3 bendMatrix = AngleAxis3x3(maxBend * pow(abs(v), _BladeCurvature), float3(1, 0, 0));
+    
+    // Bend, then twist, then convert to world space, then apply wind
+    return mul(tsToWs, mul(twistMatrix, bendMatrix));
+}
+
+
 // Calculates values for output point
-DrawVertex SetupBladePoint(float3 anchorWS, float3x3 tsToWs, float2 uv)
+DrawVertex SetupBladePoint(float3 anchorWS, float2 dimensions, float3x3 tsToWs, float2 uv)
 {
     // Calculate offset in tangent space based on uv and width/height -> then to world space
-    float3 offsetTS = float3(uv.x - 0.5f, 0, uv.y); // Offset x by 1/2, so that the middle vertex (0.5) is center
+    // Offset x by 1/2, so that the middle vertex (0.5) is center
+    float3 offsetTS = float3((uv.x - 0.5f) * dimensions.x, 0, uv.y * dimensions.y);
     float3 offsetWS = mul(tsToWs, offsetTS);
 
     float3 positionWS = anchorWS + offsetWS;
@@ -113,24 +146,53 @@ void Main(uint3 id : SV_DispatchThreadID)
         _SourceVertices[_SourceTriangles[triStart + 2]], // Get third vertex
         positionWS, normalWS, tsToWs);
 
-    // Store new blade points
-    DrawVertex vertices[3];
+    float2 dimensions = GetBladeDimensions(positionWS);
 
-    // The order of the vertices is bottom up.
-    vertices[0] = SetupBladePoint(positionWS, tsToWs, float2(0, 0));
-    vertices[1] = SetupBladePoint(positionWS, tsToWs, float2(1, 0));     //\\ This is the
-    vertices[2] = SetupBladePoint(positionWS, tsToWs, float2(0.5, 1));  //__\\ triangle shape
+    // Twist matrix that defines which direction the grass will face
+    float3x3 twistMatrix = AngleAxis3x3(rand(positionWS, 2) * PI * 2, float3(0, 0, 1));
+    // Bend angle is how much the grass bends towards 90 degrees
+    float maxBend = rand(positionWS, 3) * PI * 0.5f * _MaxBendAngle;
+
+    int numBladeSegments = min(MAX_BLADE_SEGMENTS, max(1, _MaxBladeSegments));
+    
+    // Store blade points in array
+    DrawVertex vertices[MAX_BLADE_POINTS];
+    
+    // Construct each square segment of the blade
+    for (int i = 0; i < numBladeSegments; i++)
+    {
+        // v rises as i (segment num) increases
+        float v = i / (float)numBladeSegments;
+
+        // Converges on 0.5 as the segment increases
+        float u = 0.5 - (1 - v) * 0.5;
+
+        float3x3 transform = FigureTransformationForHeight(v, twistMatrix, tsToWs, maxBend);
+
+        // Append the vertices
+        vertices[i * 2] = SetupBladePoint(positionWS, dimensions, transform, float2(u, v));
+        vertices[i * 2 + 1] = SetupBladePoint(positionWS, dimensions, transform, float2(1 - u, v));
+    }
+
+    // Calculate tip of blade
+    float3x3 tipTransform = FigureTransformationForHeight(1, twistMatrix, tsToWs, maxBend);
+    // Append tip
+    vertices[numBladeSegments * 2] = SetupBladePoint(positionWS, dimensions, tipTransform, float2(0.5, 1));
 
     // Add triangle to draw buffer
-    DrawTriangle tri = (DrawTriangle)0;
-    tri.lightingNormalWS = normalWS;
-    tri.vertices[0] = vertices[0];
-    tri.vertices[1] = vertices[1];
-    tri.vertices[2] = vertices[2];
-    _DrawTriangles.Append(tri);
+    int numTriangles = (numBladeSegments - 1) * 2 + 1;
+    for (int j = 0; j < numTriangles; j++)
+    {
+        DrawTriangle tri = (DrawTriangle)0;
+        tri.lightingNormalWS = normalWS;
+        tri.vertices[0] = vertices[j];
+        tri.vertices[1] = vertices[j + 1];
+        tri.vertices[2] = vertices[j + 2];
+        _DrawTriangles.Append(tri);
+    }
 
     // InterlockedAdd() is thread safe. We are storing the number of verts in indirectArgs.
     // Is used to tell the renderer how many vertices are in the mesh for DrawProcedural
-    InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, 3);
+    InterlockedAdd(_IndirectArgsBuffer[0].numVerticesPerInstance, numTriangles * 3);
 }
 
