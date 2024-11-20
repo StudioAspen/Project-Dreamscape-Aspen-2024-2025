@@ -72,14 +72,14 @@ public class AspectButtonUI : MonoBehaviour
         {
             ComboAspectNodeNode comboAspectNode = aspectNode as ComboAspectNodeNode;
 
-            text.text = comboAspectNode == null ? $"Unlock empty combo" : $"Unlock combo: {comboAspectNode.ComboData.name}";
+            text.text = comboAspectNode == null ? $"Empty combo" : $"{comboAspectNode.ComboData.name}";
         }
 
         if (aspectNode.GetType() == typeof(StatusEffectAspectNodeNode))
         {
             StatusEffectAspectNodeNode statusEffectAspectNode = aspectNode as StatusEffectAspectNodeNode;
 
-            text.text = statusEffectAspectNode.StatusEffect == null ? $"Unlock empty status effect" : $"Unlock status effect: {statusEffectAspectNode.StatusEffect.name}";
+            text.text = statusEffectAspectNode.StatusEffect == null ? $"Empty status effect" : $"{statusEffectAspectNode.StatusEffect.name}";
         }
     }
 }

@@ -124,6 +124,8 @@ public class Enemy : Entity
 
     private protected override void CheckGrounded()
     {
+        base.CheckGrounded();
+
         IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
     }
 

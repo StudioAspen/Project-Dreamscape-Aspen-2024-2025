@@ -75,7 +75,7 @@ public class AspectsTreeUI : MonoBehaviour
         if(aspectTree == null)
         {
             titleText.text = "Missing Aspect";
-            Debug.LogError("No aspect tree selected");
+            Debug.LogWarning("No aspect tree selected, press T to assign");
             return;
         }
         titleText.text = $"{aspectTree.name}";

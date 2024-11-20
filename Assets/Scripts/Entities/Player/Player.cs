@@ -83,20 +83,20 @@ public class Player : Entity
     {
         base.OnOnEnable();
 
-        input.Jump.AddListener(HandleJumpInput);
-        input.SprintHold.AddListener(HandleSprintInput);
-        input.SprintRelease.AddListener(HandleSprintReleaseInput);
-        input.Dash.AddListener(HandleDashInput);
+        input.Jump.AddListener(Input_HandleJumpInput);
+        input.SprintHold.AddListener(Input_HandleSprintInput);
+        input.SprintRelease.AddListener(Input_HandleSprintReleaseInput);
+        input.Dash.AddListener(Input_HandleDashInput);
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
 
-        input.Jump.RemoveListener(HandleJumpInput);
-        input.SprintHold.RemoveListener(HandleSprintInput);
-        input.SprintRelease.RemoveListener(HandleSprintReleaseInput);
-        input.Dash.RemoveListener(HandleDashInput);
+        input.Jump.RemoveListener(Input_HandleJumpInput);
+        input.SprintHold.RemoveListener(Input_HandleSprintInput);
+        input.SprintRelease.RemoveListener(Input_HandleSprintReleaseInput);
+        input.Dash.RemoveListener(Input_HandleDashInput);
     }
 
     private protected override void OnAwake()
@@ -150,6 +150,8 @@ public class Player : Entity
 
     private protected override void CheckGrounded()
     {
+        base.CheckGrounded();
+
         //IsGrounded is always false for the first 0.1 seconds in air
         if (inAirTimer > 0f && inAirTimer < 0.1f)
         {
@@ -161,7 +163,7 @@ public class Player : Entity
         IsGrounded = Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, PhysicsSettings.GroundLayer);
     }
 
-    private void HandleJumpInput()
+    private void Input_HandleJumpInput()
     {
         if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return;
         if(CurrentState == EntityLaunchState) return;
@@ -173,7 +175,7 @@ public class Player : Entity
         ChangeState(PlayerJumpState);
     }
 
-    private void HandleSprintInput()
+    private void Input_HandleSprintInput()
     {
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
@@ -181,12 +183,12 @@ public class Player : Entity
         IsSprinting = true;
     }
 
-    private void HandleSprintReleaseInput()
+    private void Input_HandleSprintReleaseInput()
     {
         IsSprinting = false;
     }
 
-    private void HandleDashInput()
+    private void Input_HandleDashInput()
     {
         if (dashDelayTimer < dashDelayDuration) return;
         if (CurrentState == PlayerChargeState) return;
@@ -247,7 +249,9 @@ public class Player : Entity
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
 
                 if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
+                {
                     ChangeState(PlayerFallState);
+                }
             }
             inAirTimer += Time.deltaTime;
             velocity.y += PhysicsSettings.Gravity * Time.deltaTime;

@@ -8,10 +8,9 @@ using UnityEngine;
 public class ComboDataSO : ScriptableObject
 {
     [field: Header("[Combo Data]")]
-    [field: SerializeField] public string ComboName { get; private set; } = "";
     [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
-    [field: SerializeField] [field: Range(0.01f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
+    [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
     [field: Header("[Filter Options]")]
     [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
@@ -22,18 +21,6 @@ public class ComboDataSO : ScriptableObject
     [field: SerializeField] public Vector2Int ComboDamageRange { get; private set; } = new Vector2Int(10, 15);
     [field: Tooltip("Upwards launch force on hit. Only works if IsAirCombo is true.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
-
-    private void OnValidate()
-    {
-#if UNITY_EDITOR
-        ComboName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
-#endif
-    }
-
-    public void SetName(string name)
-    {
-        ComboName = name;
-    }
 
     /// <summary>
     /// Checks to see if the given combo (starting from the front) is potentially in the other combo

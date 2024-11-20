@@ -58,6 +58,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
     #endregion
 
+    #region Movement Events
+    [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
+    [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
+    private bool prevIsGrounded;
+    #endregion
+
     #region Combat Events
     [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>(); // passes the hit point and the source of the damage
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
@@ -255,9 +261,28 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Handles the IsGrounded bool for the entity. Override this method to add custom grounded checks.
+    /// Also invokes the events for OnGrounded and OnAirborne.
     /// </summary>
-    private protected virtual void CheckGrounded() { }
+    private protected virtual void CheckGrounded()
+    {
+        if(prevIsGrounded != IsGrounded)
+        {
+            if (IsGrounded)
+            {
+                OnGrounded?.Invoke(transform.position);
+            }
+            else
+            {
+                OnAirborne?.Invoke(transform.position);
+            }
+            prevIsGrounded = IsGrounded;
+        }
+    }
 
+    /// <summary>
+    /// Handles the animations of the entity.
+    /// Sets the MovementSpeed parameter for the FlatMovement blend tree
+    /// </summary>
     private protected virtual void HandleAnimations()
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
