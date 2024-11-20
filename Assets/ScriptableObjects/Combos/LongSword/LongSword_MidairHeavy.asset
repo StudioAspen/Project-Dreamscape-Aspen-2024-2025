@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b253543ac71d7f14eaf5a73906075e12, type: 3}
   m_Name: LongSword_MidairHeavy
   m_EditorClassIdentifier: 
-  <ComboName>k__BackingField: LongSword_MidairHeavy
-  <ComboInputs>k__BackingField: 0000000004000000
+  <ComboInputs>k__BackingField: 0500000002000000
   <ComboClip>k__BackingField: {fileID: -1115183702260151492, guid: 3d21b82dff41d12438297e2cbeefb519,
     type: 3}
   <ComboClipAnimationSpeed>k__BackingField: 1
-  <AttackHasRootMotion>k__BackingField: 0
-  <IsAirCombo>k__BackingField: 1
-  <ComboDamageRange>k__BackingField: {x: 20, y: 30}
+  <HasRootMotion>k__BackingField: 1
+  <WillIgnoreGravity>k__BackingField: 0
+  <WillLaunchUpwards>k__BackingField: 0
+  <PercentDamage>k__BackingField: 150
+  <AirLaunchForce>k__BackingField: 7.5

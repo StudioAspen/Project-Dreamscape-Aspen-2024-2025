@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
-    private Vector2Int damageRange;
+    private float percentDamage;
 
     [Header("Weapon: Impact Frames")]
     [SerializeField] private float impactFramesDuration = 0.15f;
@@ -136,7 +136,7 @@ public class Weapon : MonoBehaviour
 
         //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
-        int damageValue = GetRandomDamage();
+        int damageValue = holderEntity.CalculateDamage(percentDamage);
         victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
@@ -188,14 +188,9 @@ public class Weapon : MonoBehaviour
         capsuleCollider.enabled = false;
     }
 
-    public void SetDamageRange(Vector2Int newRange)
+    public void SetPercentDamage(float newPercent)
     {
-        damageRange = newRange;
-    }
-
-    private int GetRandomDamage()
-    {
-        return Random.Range(damageRange.x, damageRange.y);
+        percentDamage = newPercent;
     }
 
     public void AddCombo(ComboDataSO comboData)

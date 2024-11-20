@@ -15,7 +15,7 @@ public class PlayerFallState : PlayerBaseState
 
     public override void OnExit()
     {
-
+       
     }
 
     public override void Update()
@@ -40,6 +40,7 @@ public class PlayerFallState : PlayerBaseState
         if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
+            return;
         }
     }
 

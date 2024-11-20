@@ -8,7 +8,7 @@ public class Follower : Enemy
     [field: Header("Follower: Attack Settings")]
     [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 
@@ -27,46 +27,48 @@ public class Follower : Enemy
     public FollowerCircleState FollowerCircleState { get; private set; }
     #endregion
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         base.OnAwake();
     }
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
         // SetStartState(EnemyIdleState);
+
+        FinishAnimation();
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    protected override void OnOnAnimatorMove()
+    private protected override void OnOnAnimatorMove()
     {
         base.OnOnAnimatorMove();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
         FinishAnimation();
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    protected override void OnFixedUpdate()
+    private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
     }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 

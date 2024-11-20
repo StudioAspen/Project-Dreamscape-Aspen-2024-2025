@@ -5,14 +5,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     [Header("Entity: References")]
     [SerializeField, Self] private protected Animator animator;
-    [SerializeField, Anywhere] private protected GlobalPhysicsSettings physicsSettings;
+    [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion
@@ -34,7 +33,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected float rotationSpeed = 5f;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
-    private protected Vector3 velocity;
+    public float MovementSpeed { get; protected set; }
+    private protected float totalSpeedModifierForAnimation;
     #endregion
 
     #region Airborne Variables
@@ -50,6 +50,18 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Team Variables
     public int Team { get; private set; }
+    #endregion
+
+    #region Attack Variables
+    [field: Header("Entity: Attack")]
+    [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    #endregion
+
+    #region Movement Events
+    [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
+    [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
+    private bool prevIsGrounded;
     #endregion
 
     #region Combat Events
@@ -74,20 +86,66 @@ public class Entity : MonoBehaviour, IPoolableObject
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
-    public EntityFlingState EntityFlingState { get; protected set; }
+    public EntityLaunchState EntityLaunchState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
     /// Override this function to add more states to the entity.
     /// Entity states can be initialized as inherited versions of those states.
     /// </summary>
-    protected virtual void InitializeStates()
+    private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
         EntityEmptyState = new EntityEmptyState(this);
         EntityDeathState = new EntityDeathState(this);
-        EntityFlingState = new EntityFlingState(this);
+        EntityLaunchState = new EntityLaunchState(this);
         EntityStaggeredState = new EntityStaggeredState(this);
+    }
+
+    /// <summary>
+    /// Sets the start state of the entity.
+    /// </summary>
+    /// <param name="state">The start state to set.</param>
+    private protected void SetStartState(BaseState state)
+    {
+        CurrentState = state;
+        CurrentState.OnEnter();
+    }
+
+    /// <summary>
+    /// Sets the default state of the entity.
+    /// </summary>
+    /// <param name="state">The default state to set.</param>
+    private protected void SetDefaultState(BaseState state)
+    {
+        DefaultState = state;
+    }
+
+    /// <summary>
+    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
+    /// </summary>
+    /// <param name="state">The new state to change to.</param>
+    public void ChangeState(BaseState state)
+    {
+        if (CurrentState == EntityDeathState) return;
+        if (CurrentState == state) return;
+
+        CurrentState.OnExit();
+        CurrentState = state;
+        CurrentState.OnEnter();
+    }
+
+    /// <summary>
+    /// Forces a change of state to the specified new state even when in that same state.
+    /// </summary>
+    /// <param name="newState">The new state to change to.</param>
+    public void ForceChangeState(BaseState newState)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        CurrentState.OnExit();
+        CurrentState = newState;
+        CurrentState.OnEnter();
     }
     #endregion
 
@@ -109,7 +167,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It initializes the states for the entity.
     /// Override this function for custom Awake logic.
     /// </summary>
-    protected virtual void OnAwake()
+    private protected virtual void OnAwake()
     {
         InitializeStates();
     }
@@ -124,7 +182,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It sets the start state of the entity and sets the entity to max health.
     /// Override this function for custom OnEnable logic.
     /// </summary>
-    protected virtual void OnOnEnable()
+    private protected virtual void OnOnEnable()
     {
         CurrentHealth = MaxHealth;
 
@@ -140,7 +198,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// This method is called during the OnDisable phase of the MonoBehaviour lifecycle.
     /// Override this function for custom OnDisable logic.
     /// </summary>
-    protected virtual void OnOnDisable()
+    private protected virtual void OnOnDisable()
     {
 
     }
@@ -155,7 +213,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It sets the default state of the entity and ignores the entity's own colliders.
     /// Override this function for custom Start logic.
     /// </summary>
-    protected virtual void OnStart()
+    private protected virtual void OnStart()
     {
         SetDefaultState(EntityEmptyState);
 
@@ -174,13 +232,16 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It updates the current state of the entity and checks if the entity is grounded.
     /// Override this function for custom Update logic.
     /// </summary>
-    protected virtual void OnUpdate()
+    private protected virtual void OnUpdate()
     {
         //if CurrentState isn't null, run it's Update function
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.Update();
 
         CheckGrounded();
+
+        HandleAnimations();
+        EvaluateMovementSpeed();
     }
 
     private void FixedUpdate()
@@ -193,69 +254,48 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// It fixed updates the current state of the entity.
     /// Override this function for custom FixedUpdate logic.
     /// </summary>
-    protected virtual void OnFixedUpdate()
+    private protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
     }
 
     /// <summary>
-    /// Sets the start state of the entity.
-    /// </summary>
-    /// <param name="state">The start state to set.</param>
-    protected void SetStartState(BaseState state)
-    {
-        CurrentState = state;
-        CurrentState.OnEnter();
-    }
-
-    /// <summary>
-    /// Sets the default state of the entity.
-    /// </summary>
-    /// <param name="state">The default state to set.</param>
-    protected void SetDefaultState(BaseState state)
-    {
-        DefaultState = state;
-    }
-
-    /// <summary>
-    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
-    /// </summary>
-    /// <param name="state">The new state to change to.</param>
-    public void ChangeState(BaseState state)
-    {
-        if (CurrentState == EntityDeathState) return;
-        if (CurrentState == state) return;
-
-        CurrentState.OnExit();
-        CurrentState = state;
-        CurrentState.OnEnter();
-    }
-
-
-    /// <summary>
-    /// Forces a change of state to the specified new state even when in that same state.
-    /// </summary>
-    /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(BaseState newState)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        CurrentState.OnExit();
-        CurrentState = newState;
-        CurrentState.OnEnter();
-    }
-
-    /// <summary>
     /// Handles the IsGrounded bool for the entity. Override this method to add custom grounded checks.
+    /// Also invokes the events for OnGrounded and OnAirborne.
     /// </summary>
-    protected virtual void CheckGrounded() { }
+    private protected virtual void CheckGrounded()
+    {
+        if(prevIsGrounded != IsGrounded)
+        {
+            if (IsGrounded)
+            {
+                OnGrounded?.Invoke(transform.position);
+            }
+            else
+            {
+                OnAirborne?.Invoke(transform.position);
+            }
+            prevIsGrounded = IsGrounded;
+        }
+    }
+
+    /// <summary>
+    /// Handles the animations of the entity.
+    /// Sets the MovementSpeed parameter for the FlatMovement blend tree
+    /// </summary>
+    private protected virtual void HandleAnimations()
+    {
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
+
+        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+    }
 
     /// <summary>
     /// Handles the death logic for the entity by invoking the OnEntityDeath event and attempting to notify the killer.
     /// Also changes the state to the death state.
     /// Override this function if you want to add custom death logic.
     /// </summary>
-    protected virtual void OnDeath()
+    private protected virtual void OnDeath()
     {
         ChangeState(EntityDeathState);
 
@@ -285,7 +325,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If this fails, then the soruce that killed this entity is not an entity and cannot be notified.
     /// Override this function if you want to add custom logic for notifying the killer.
     /// </summary>
-    protected virtual void AttemptToNotifyKiller()
+    private protected virtual void AttemptToNotifyKiller()
     {
         if (lastHitSource == null) return;
 
@@ -317,7 +357,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
@@ -361,6 +401,17 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             OnDeath();
         }
+    }
+
+    /// <summary>
+    /// Tries to change the state of the entity to the staggered state.
+    /// If the current state is already the fling state, it does nothing.
+    /// </summary>
+    private protected virtual void TryChangeStaggeredState()
+    {
+        if (CurrentState == EntityLaunchState) return;
+
+        ForceChangeState(EntityStaggeredState);
     }
 
     /// <summary>
@@ -417,7 +468,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the speed modifier of the entity. The speed modifier is a multiplier that affects the entity's base movement speed.
     /// </summary>
     /// <param name="speed">The speed modifier to set.</param>
-
     public void SetSpeedModifier(float speed)
     {
         SpeedModifier = speed;
@@ -471,6 +521,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual void OnKill(Entity entity)
     {
         OnKillEntity?.Invoke(entity);
+    }
+
+    /// <summary>
+    /// Evaluates the movement speed of the entity based on the status speed modifier, speed modifier, and base speed.
+    /// </summary>
+    private protected virtual void EvaluateMovementSpeed()
+    {
+        MovementSpeed = StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
     /// <summary>
@@ -677,27 +735,49 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a random damage value within the specified damage range.
+    /// Applies a launch force to the entity in the specified direction with the given force and stun duration.
+    /// Override this function to add custom launch logic.
     /// </summary>
-    /// <param name="damageRange">The range of damage values.</param>
-    /// <returns>A random damage value within the range.</returns>
-    public int GetRandomDamageFromRange(Vector2Int damageRange)
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    public virtual void Launch(Vector3 direction, float force)
     {
-        return Random.Range(damageRange.x, damageRange.y);
+
     }
 
     /// <summary>
-    /// Applies a fling force to the entity in the specified direction with the given force and stun duration.
-    /// Override this function to add custom fling logic.
+    /// Tries to change the state of the entity to the launch state with the specified direction, force, and stun duration.
+    /// If the current state is the death state or already the launch state, it does nothing.
+    /// Override this function to modify the blocking states.
     /// </summary>
-    /// <param name="direction">The direction in which to apply the fling force.</param>
-    /// <param name="force">The force of the fling.</param>
-    /// <param name="stunDuration">The duration of the stun caused by the fling.</param>
-    public virtual void Fling(Vector3 direction, float force, float stunDuration)
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
+    public virtual void TryChangeToLaunchState(Vector3 direction, float force, float stunDuration)
     {
+        if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntityLaunchState) return;
 
+        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
+        ChangeState(EntityLaunchState);
     }
 
+    /// <summary>
+    /// Forces the state of the entity to the launch state with the specified direction, force, and stun duration.
+    /// If the current state is the death state, it does nothing.
+    /// Override this function to modify the blocking states.
+    /// </summary>
+    /// <param name="direction">The direction in which to apply the launch force.</param>
+    /// <param name="force">The force of the launch.</param>
+    /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
+    public virtual void ForceChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
+        ForceChangeState(EntityLaunchState);
+    }
+    
     #region Tinting Functions
     /// <summary>
     /// Caches the original tints of the renderers in the character model.
@@ -795,6 +875,28 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Sets the damage modifier for the entity.
+    /// </summary>
+    /// <param name="newModifier">The new damage modifier value.</param>
+    public void SetDamageModifier(float newModifier)
+    {
+        DamageModifier = newModifier;
+    }
+
+    /// <summary>
+    /// Calculates the damage based on the given percentage.
+    /// </summary>
+    /// <param name="percent">The percentage of the damage range to calculate.</param>
+    /// <returns>The calculated damage value.</returns>
+    public int CalculateDamage(float percent)
+    {
+        Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
+            (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+            );
+
+        return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
+    }
+    
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
     /// List is sorted from closest to farthest entity from the hit position.
     /// </summary>

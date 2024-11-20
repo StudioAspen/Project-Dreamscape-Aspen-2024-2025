@@ -29,7 +29,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.RightFistWeapon.ClearEnemiesHitList();
 
-            charger.RightFistWeapon.SetDamageRange(charger.JabDamageRange);
+            charger.RightFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
         else
         {
@@ -39,7 +39,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.LeftFistWeapon.ClearEnemiesHitList();
 
-            charger.LeftFistWeapon.SetDamageRange(charger.JabDamageRange);
+            charger.LeftFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
 
         charger.SetRotationSpeed(charger.JabRotationSpeed);
@@ -66,6 +66,12 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void Update()
     {
+        if (rememberedTarget == null)
+        {
+            charger.ChangeState(charger.ChargerJabRecoverState);
+            return;
+        }
+
         charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
 
         charger.LookAt(rememberedTarget.transform.position);
