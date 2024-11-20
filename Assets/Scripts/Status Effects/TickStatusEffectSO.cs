@@ -5,7 +5,7 @@ public class TickStatusEffectSO : StatusEffectSO
     [field: Header("Tick Status Effect: Settings")]
     [field: SerializeField] public int Ticks { get; protected set; } = 2;
     [field: SerializeField] public float TickDuration { get; protected set; } = 0.5f;
-    private int currentTicks;
+    private protected int currentTicks;
     private float tickTimer;
 
     /// <summary>

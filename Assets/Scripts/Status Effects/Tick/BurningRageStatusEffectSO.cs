@@ -59,7 +59,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
             return false;
         }
 
-        Ticks = (newStatusEffect as BurningRageStatusEffectSO).Ticks;
+        currentTicks = 0; // reset the ticks
 
         damagePerTick = (int)(currentStacks * tickDamageMultiplierPerStack);
 
