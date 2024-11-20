@@ -9,6 +9,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     [field: Header("Aspect of Rage Passive A: Settings")]
     [field: SerializeField] public float AOEExplosionRadius { get; private set; } = 2.0f;
     [field: SerializeField] public int AOEDamage { get; private set; } = 2;
+    [field: SerializeField] public StatusEffectSO BurningRageStack { get; private set; }
 
     private void OnValidate()
     {
@@ -26,14 +27,16 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
-        ownerWeapon.OnWeaponHit.AddListener(Weapon_OnWeaponHit);
+        //ownerWeapon.OnWeaponHit.AddListener(WeaponExplosion_OnWeaponHit);
+        ownerWeapon.OnWeaponHit.AddListener(WeaponStacks_OnWeaponHit);
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        ownerWeapon.OnWeaponHit.RemoveListener(Weapon_OnWeaponHit);
+        //ownerWeapon.OnWeaponHit.RemoveListener(WeaponExplosion_OnWeaponHit);
+        ownerWeapon.OnWeaponHit.RemoveListener(WeaponStacks_OnWeaponHit);
     }
 
     public override bool Override(StatusEffectSO newStatusEffect)
@@ -45,7 +48,8 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         return true;
     }
 
-    private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    // for explosion
+    private void WeaponExplosion_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
         // make a list and grab all entities nearby
         List<Entity> enemyList = Entity.GetEntitiesThroughAOE(hitPoint, AOEExplosionRadius);
@@ -59,6 +63,15 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         }
 
         CreateTemporaryVisualizer(hitPoint, AOEExplosionRadius, 0.25f);
+    }
+
+    // for stacks
+    private void WeaponStacks_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    {
+        
+        EntityStatusEffector statusEffector = victim.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) { return; }
+        statusEffector.ApplyStatusEffect(BurningRageStack, victim.gameObject);
     }
 
     private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)
