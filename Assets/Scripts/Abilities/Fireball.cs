@@ -55,7 +55,7 @@ public class Fireball : MonoBehaviour
         {
             int damageDealt = Mathf.FloorToInt(damage);
             
-            if (entity != null && entity.Team != this.Team) 
+            if (entity.Team != this.Team) 
             {
                 entity.TakeDamage(damageDealt, transform.position, caster);
             }
