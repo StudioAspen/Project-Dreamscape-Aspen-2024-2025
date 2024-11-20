@@ -91,7 +91,7 @@ public class Weapon : MonoBehaviour
 
                 CheckCollisionsWithRays(new Ray(prevPoint, currPoint-prevPoint), Vector3.Distance(currPoint, prevPoint));
 
-                Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
+                //Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
             }
         }
 

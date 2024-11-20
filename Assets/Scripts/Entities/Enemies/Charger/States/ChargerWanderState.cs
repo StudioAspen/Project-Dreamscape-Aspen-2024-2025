@@ -50,6 +50,9 @@ public class ChargerWanderState : EnemyBaseState
 
         charger.SetSpeedModifier(CloseToPoint(currentWanderDestination, 0.05f) ? 0f : 1f);
 
+        // Jump
+
+
         if(charger.Target != null)
         {
             charger.ChargerTargetDetectedState.AssignCurrentRememberedTarget(charger.Target);
