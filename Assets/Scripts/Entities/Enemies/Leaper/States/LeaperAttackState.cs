@@ -63,7 +63,7 @@ public class LeaperAttackState : EnemyBaseState
         }
         Vector3 dir = (destination - leaper.transform.position);
 
-        leaper.Move(dir);
+        //leaper.Move(dir);
         
         leaper.CheckForHits();
         timer += Time.deltaTime;
