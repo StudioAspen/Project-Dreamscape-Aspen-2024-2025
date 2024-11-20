@@ -53,9 +53,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
-    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
-    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
+    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>(); // passes the hit point and the source of the damage
+    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
+    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
     private protected GameObject lastHitSource;
     #endregion
 
@@ -257,11 +257,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     protected virtual void OnDeath()
     {
-        OnEntityDeath?.Invoke(lastHitSource);
+        ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();
 
-        ChangeState(EntityDeathState);
+        OnEntityDeath?.Invoke(lastHitSource);
     }
 
     /// <summary>
@@ -372,6 +372,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="color">The color of the text.</param>
     private protected void AttemptToSpawnHitNumbers(int damage, Vector3 hitPoint, Color color)
     {
+        if (damage <= 0) return;
+
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
 

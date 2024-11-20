@@ -60,7 +60,7 @@ MonoBehaviour:
   baseSpeed: 2
   rotationSpeed: 5
   IsGrounded: 0
-  targetDetectionRadius: 20
+  targetDetectionRadius: Infinity
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []

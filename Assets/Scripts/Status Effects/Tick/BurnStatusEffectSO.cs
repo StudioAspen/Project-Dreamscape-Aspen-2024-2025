@@ -30,6 +30,13 @@ public class BurnStatusEffectSO : TickStatusEffectSO
         base.OnExpire();
     }
 
+    public override void Cancel()
+    {
+        entity.ResetTint();
+
+        base.Cancel();
+    }
+
     public override bool Override(StatusEffectSO newStatusEffect)
     {
         if (!base.Override(newStatusEffect)) return false;

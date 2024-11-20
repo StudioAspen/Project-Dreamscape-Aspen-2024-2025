@@ -83,4 +83,18 @@ public class EntityStatusEffector : MonoBehaviour
             CurrentStatusEffects.Remove(statusEffectType);
         }
     }
+
+    /// <summary>
+    /// Cancels and removes all current status effects from the entity when it is disabled.
+    /// </summary>
+    private void OnDisable()
+    {
+        foreach (StatusEffectSO statusEffect in CurrentStatusEffects.Values)
+        {
+            statusEffect.Cancel();
+            Destroy(statusEffect);
+        }
+
+        CurrentStatusEffects.Clear();
+    }
 }

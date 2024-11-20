@@ -15,6 +15,8 @@ MonoBehaviour:
   <Stackable>k__BackingField: 1
   <Ticks>k__BackingField: 5
   <TickDuration>k__BackingField: 1
-  <DamagePerTick>k__BackingField: 0
   <MaxStacks>k__BackingField: 5
-  <MultipleStackMultiplier>k__BackingField: 1
+  damagePerTick: 0
+  combustRadius: 4
+  combustDamageMultiplierPerStack: 5
+  tickDamageMultiplierPerStack: 0
