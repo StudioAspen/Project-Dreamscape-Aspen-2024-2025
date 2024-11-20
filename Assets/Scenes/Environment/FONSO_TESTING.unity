@@ -310,7 +310,7 @@ PrefabInstance:
         type: 3}
       propertyPath: worldManager
       value: 
-      objectReference: {fileID: 415208735}
+      objectReference: {fileID: 567336373}
     - target: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_Name
@@ -320,7 +320,7 @@ PrefabInstance:
         type: 3}
       propertyPath: worldManager
       value: 
-      objectReference: {fileID: 415208735}
+      objectReference: {fileID: 567336373}
     - target: {fileID: 7451146893933980580, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: player
@@ -388,27 +388,31 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 567336369}
+      addedObject: {fileID: 567336373}
+    - targetCorrespondingSourceObject: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 567336372}
   m_SourcePrefab: {fileID: 100100000, guid: 7e9449c6a8e69744db25aff9cece0927, type: 3}
---- !u!114 &415208735 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7451146893933980580, guid: 7e9449c6a8e69744db25aff9cece0927,
-    type: 3}
-  m_PrefabInstance: {fileID: 415208734}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 567336365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &567336365 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
     type: 3}
   m_PrefabInstance: {fileID: 415208734}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &567336369
+--- !u!114 &567336370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8002973263680581614, guid: 7e9449c6a8e69744db25aff9cece0927,
+    type: 3}
+  m_PrefabInstance: {fileID: 415208734}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567336365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &567336372
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -420,13 +424,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3d661749f6b2c4bab9e152af897784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 415208735}
+  worldManager: {fileID: 567336373}
   gameManager: {fileID: 1538107138}
   CurrentWaveType: 0
   eventText: {fileID: 833962647}
   eventClearStatus: 0
-  survivalTimer: 0
+  survivalTimer: 30
   timerText: {fileID: 692624893}
+--- !u!114 &567336373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567336365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 1538107138}
+  navMeshSurface: {fileID: 567336370}
+  landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
+    type: 3}
+  ghostLandTransform: {fileID: 1705560501}
+  redTransparentMaterial: {fileID: 2100000, guid: 804d411a54fdfcd49a13fc9f397690a7,
+    type: 2}
+  greenTransparentMaterial: {fileID: 2100000, guid: 81b768abece8a534c9941ce0ad6296e1,
+    type: 2}
+  player: {fileID: 1899182437}
 --- !u!1 &574716043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1490,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ad7cfa1c863794e8d569f31452ea3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1705560501 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4562900200964922340, guid: 7e9449c6a8e69744db25aff9cece0927,
+    type: 3}
+  m_PrefabInstance: {fileID: 415208734}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1832457525
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,7 +2020,17 @@ PrefabInstance:
         type: 3}
       propertyPath: eventManager
       value: 
-      objectReference: {fileID: 567336369}
+      objectReference: {fileID: 0}
+    - target: {fileID: 3777459550008560590, guid: 29c40066b5360f04bbd8a6a98d22b071,
+        type: 3}
+      propertyPath: worldManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5678971654946283878, guid: 29c40066b5360f04bbd8a6a98d22b071,
+        type: 3}
+      propertyPath: worldManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6720848867947313540, guid: 29c40066b5360f04bbd8a6a98d22b071,
         type: 3}
       propertyPath: m_Name
@@ -1998,6 +2040,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7520708644547924003, guid: 29c40066b5360f04bbd8a6a98d22b071,
+        type: 3}
+      propertyPath: worldManager
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2531,12 +2578,12 @@ PrefabInstance:
         type: 3}
       propertyPath: eventManager
       value: 
-      objectReference: {fileID: 567336369}
+      objectReference: {fileID: 0}
     - target: {fileID: 2270875566873309830, guid: fc8480327f8c8834f97fe270ef82a988,
         type: 3}
       propertyPath: eventManager
       value: 
-      objectReference: {fileID: 567336369}
+      objectReference: {fileID: 0}
     - target: {fileID: 4575158561041908543, guid: fc8480327f8c8834f97fe270ef82a988,
         type: 3}
       propertyPath: m_Name
@@ -2651,7 +2698,7 @@ PrefabInstance:
         type: 3}
       propertyPath: eventManager
       value: 
-      objectReference: {fileID: 567336369}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

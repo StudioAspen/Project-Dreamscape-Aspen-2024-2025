@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8938620608541455539}
-  - component: {fileID: 7451146893933980580}
   - component: {fileID: 8002973263680581614}
   m_Layer: 0
   m_Name: WorldManager
@@ -36,28 +35,6 @@ Transform:
   - {fileID: 7186845640020004704}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7451146893933980580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3004667545289962807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b1673f77022d4548b996ec9f2cf5ff2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  navMeshSurface: {fileID: 8002973263680581614}
-  landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
-    type: 3}
-  ghostLandTransform: {fileID: 4562900200964922340}
-  redTransparentMaterial: {fileID: 2100000, guid: 804d411a54fdfcd49a13fc9f397690a7,
-    type: 2}
-  greenTransparentMaterial: {fileID: 2100000, guid: 81b768abece8a534c9941ce0ad6296e1,
-    type: 2}
-  player: {fileID: 0}
 --- !u!114 &8002973263680581614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +209,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 3642624367869852063, guid: 006873e2de8d753499aa3b3f6548874b,
+        type: 3}
+      propertyPath: eventManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642624367869852063, guid: 006873e2de8d753499aa3b3f6548874b,
+        type: 3}
+      propertyPath: worldManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3999374681703134211, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -281,6 +268,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
+        type: 3}
+      propertyPath: worldManager
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

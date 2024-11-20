@@ -72,7 +72,7 @@ public class EventManager : MonoBehaviour
         {
             case WorldEvent.START:
                 // TODO: Check if all enemies have been killed
-                if (worldManager.GetActiveLandCount() == 0 && gameManager.CurrentState == GameState.PLAYING)
+                if (activeLandCount == 0 && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
@@ -81,6 +81,7 @@ public class EventManager : MonoBehaviour
                 // TODO: Check if the timer has ended
                 if (survivalTimer == 0f && gameManager.CurrentState == GameState.PLAYING)
                 {
+                    timerText.enabled = false;
                     WaveCompletion();
                 }
                 DecrementTimer();
@@ -94,7 +95,7 @@ public class EventManager : MonoBehaviour
                 break;
             case WorldEvent.PRIORITIES:
                 // TODO: Check if all enemies in the 3 highest level islands have been killed
-                if (eventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (activeLandCount == 0 && gameManager.CurrentState == GameState.PLAYING)
                 {
                     WaveCompletion();
                 }
@@ -130,13 +131,6 @@ public class EventManager : MonoBehaviour
     private void WaveCompletion()
     {
         gameManager.ChangeState(GameState.BIOME_SELECTION);
-
-        // Disables the timer UI whenever CurrEvent != SURVIVAL.
-        if (CurrentWaveType == WorldEvent.SURVIVAL)
-        {
-            timerText.enabled = false; 
-        }
-
     }
 
     // Assigns the next world event and prepares for the next wave of enemies, then changes the game state to PLAYING.
@@ -333,7 +327,7 @@ public class EventManager : MonoBehaviour
     public void DecrementActiveLandCount()
     {
         activeLandCount--;
-        if (activeLandCount == 0)
+        if (activeLandCount == 0 && CurrentWaveType != WorldEvent.SURVIVAL && CurrentWaveType != WorldEvent.VISIT_ALL)
         {
             WaveCompletion();
         }
