@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class LeaperAttackState : EnemyBaseState
 {
@@ -12,6 +13,8 @@ public class LeaperAttackState : EnemyBaseState
 
     private GameObject HitBoxLocation;
     
+    private Tween leapTween;
+
 
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
@@ -37,6 +40,8 @@ public class LeaperAttackState : EnemyBaseState
         timer = 0;
 
         leaper.LookAt(destination);
+
+        leapTween = leaper.TweenLeap(destination, leaper.LungeDuration, leaper.PatrolLeapHeight);
     }
 
     public override void OnExit()
