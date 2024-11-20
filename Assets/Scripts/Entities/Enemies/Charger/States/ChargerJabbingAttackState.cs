@@ -41,6 +41,8 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.LeftFistWeapon.SetDamageRange(charger.JabDamageRange);
         }
+
+        charger.SetRotationSpeed(charger.JabRotationSpeed);
     }
 
     public override void OnExit()
@@ -58,6 +60,8 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
 
         charger.DisableWeaponTriggers();
+
+        charger.ResetRotationSpeed();
     }
 
     public override void Update()

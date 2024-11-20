@@ -75,7 +75,7 @@ public class PlayerAttackState : PlayerBaseState
         ComboData = comboData;
     }
 
-    private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint)
+    private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
         if (ComboData.WillLaunchUpwards)
         {

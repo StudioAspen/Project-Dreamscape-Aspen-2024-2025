@@ -59,9 +59,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>();
-    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>();
-    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>();
+    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>(); // passes the hit point and the source of the damage
+    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
+    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
     private protected GameObject lastHitSource;
     #endregion
 
@@ -272,11 +272,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        OnEntityDeath?.Invoke(lastHitSource);
+        ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();
 
-        ChangeState(EntityDeathState);
+        OnEntityDeath?.Invoke(lastHitSource);
     }
 
     /// <summary>
@@ -334,7 +334,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         TryChangeStaggeredState();
 
-        TrySpawnHitNumbers(damage, hitPoint);
+        AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
 
@@ -359,13 +359,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="damage">The amount of damage to take.</param>
     /// <param name="hitPoint">The point where the entity was hit.</param>
     /// <param name="source">The source of the damage.</param>
-    public virtual void TakeDamageWithoutState(int dmg, Vector3 hitPoint, GameObject source)
+    public virtual void TakeDamageWithoutState(int damage, Vector3 hitPoint, GameObject source)
     {
         if (CurrentState == EntityDeathState) return;
 
-        TrySpawnHitNumbers(dmg, hitPoint);
+        AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
-        CurrentHealth -= dmg;
+        CurrentHealth -= damage;
 
         lastHitSource = source;
 
@@ -393,10 +393,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Attempts to spawn hit numbers at the hit point with the specified damage.
     /// Fails if the HitNumberPooler is not found.
     /// </summary>
-    /// <param name="dmg">The amount of damage to display.</param>
+    /// <param name="damage">The amount of damage to display.</param>
     /// <param name="hitPoint">The point where the entity was hit.</param>
-    private protected void TrySpawnHitNumbers(int dmg, Vector3 hitPoint)
+    /// <param name="color">The color of the text.</param>
+    private protected void AttemptToSpawnHitNumbers(int damage, Vector3 hitPoint, Color color)
     {
+        if (damage <= 0) return;
+
         ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
 
@@ -404,7 +407,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 
-        hitNumber.ActivateHitNumberText(dmg, hitPoint, hitNumberFloatDirection.normalized);
+        hitNumber.ActivateHitNumberText(damage, GetRandomPositionOnCollider(), hitNumberFloatDirection.normalized, color);
     }
 
     /// <summary>
@@ -414,6 +417,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void Heal(int health)
     {
         CurrentHealth += health;
+        AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
     }
 
     /// <summary>
@@ -564,13 +568,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a list of nearby entities within the specified radius.
+    /// Gets a list of nearby hostile entities within the specified radius.
     /// The entities must be on the "Entity" layer and not on the same team as the entity.
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
     /// <returns>A list of nearby entities.</returns>
-    public List<Entity> GetNearbyEntities(float radius)
+    public List<Entity> GetNearbyHostileEntities(float radius)
     {
         List<Entity> targets = new List<Entity>();
 
@@ -590,14 +594,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets a list of nearby entities of a specific type within the specified radius.
+    /// Gets a list of nearby hostile entities of a specific type within the specified radius.
     /// The entities must be on the "Entity" layer and not on the same team as the entity.
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <typeparam name="T">The type of entities to retrieve.</typeparam>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
     /// <returns>A list of nearby entities of the specified type.</returns>
-    public List<T> GetNearbyEntitiesByType<T>(float radius) where T : Entity
+    public List<T> GetNearbyHostileEntitiesByType<T>(float radius) where T : Entity
     {
         List<T> targets = new List<T>();
 
@@ -797,7 +801,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             {
                 if (material.HasProperty("_Color"))
                 {
-                    material.DOColor(newColor, 0.5f);
+                    material.DOColor(newColor, 0.2f);
                 }
             }
         }
@@ -818,7 +822,7 @@ public class Entity : MonoBehaviour, IPoolableObject
                 DOTween.Kill(renderer);
                 if (renderer.materials[i].HasProperty("_Color"))
                 {
-                    renderer.materials[i].DOColor(colors[i], 0.5f);
+                    renderer.materials[i].DOColor(colors[i], 0.2f);
                 }
             }
         }
@@ -876,5 +880,30 @@ public class Entity : MonoBehaviour, IPoolableObject
             );
 
         return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
+    }
+    
+    /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
+    /// List is sorted from closest to farthest entity from the hit position.
+    /// </summary>
+    /// <param name="hitPosition">The center position of the AOE.</param>
+    /// <param name="radius">The radius of the AOE.</param>
+    /// <returns>A list of entities within the AOE, ordered by their distance from the hit position.</returns>
+    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius)
+    {
+        List<Entity> entities = new List<Entity>();
+
+        Collider[] hits = Physics.OverlapSphere(hitPosition, radius, LayerMask.GetMask("Entity"));
+        if (hits == null) return entities;
+        if (hits.Length == 0) return entities;
+
+        foreach (Collider hit in hits)
+        {
+            Entity potentialTarget = hit.GetComponent<Entity>();
+            if (potentialTarget == null) continue;
+
+            entities.Add(potentialTarget);
+        }
+
+        return entities.OrderBy(target => Vector3.SqrMagnitude(hitPosition - target.transform.position)).ToList();
     }
 }
