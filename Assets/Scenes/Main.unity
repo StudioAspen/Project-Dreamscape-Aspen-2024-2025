@@ -807,6 +807,17 @@ PrefabInstance:
       propertyPath: worldManager
       value: 
       objectReference: {fileID: 333654149}
+    - target: {fileID: 2866989536264367900, guid: 7e9449c6a8e69744db25aff9cece0927,
+        type: 3}
+      propertyPath: enemyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2866989536264367900, guid: 7e9449c6a8e69744db25aff9cece0927,
+        type: 3}
+      propertyPath: enemyPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 2879496147006636460, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
     - target: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_Name
@@ -2982,6 +2993,84 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050836051}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &5057038831318976646
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.21891
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00000047683716
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.8924017
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527765116546437995, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 778554438578636353, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: m_Name
+      value: Leaper
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879496147006636460, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: <Cost>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879496147006636460, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da,
+        type: 3}
+      propertyPath: <MaxHealth>k__BackingField
+      value: 20
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e8e75c3b6fcd8ff4e867c4f77de2b8da, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3004,3 +3093,4 @@ SceneRoots:
   - {fileID: 1809274137}
   - {fileID: 1195971632}
   - {fileID: 1424226871}
+  - {fileID: 5057038831318976646}
