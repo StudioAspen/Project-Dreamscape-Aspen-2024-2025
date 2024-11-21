@@ -20,7 +20,8 @@ public class Shielder : Enemy
     [field: SerializeField] public float PlayerDetectedDuration { get; private set; } = 2f;
     [field: SerializeField] public float DetectionDistance { get; private set; } = 10f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
-    public Vector3 DetectionConeTopPoint => GetColliderCenterPosition() + (Vector3.up * (capsuleCollider.height / 2));
+    private float shielderEyesYOffset = -.3f;
+    public Vector3 DetectionConeTopPoint => GetColliderCenterPosition() + (Vector3.up * (capsuleCollider.height / 2f)) + (Vector3.up * shielderEyesYOffset);
 
     protected override void InitializeStates()
     {
