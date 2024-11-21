@@ -26,7 +26,7 @@ public class PlayerAttackState : PlayerBaseState
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
 
         //Debug.Break();
-        player.TransitionToAnimation("Combo", 0.1f);
+        player.Animator.Play(ComboData.ComboClip, 0.1f);
 
         playerCombat.IsAnimationPlaying = true;
         player.ApplyRootMotion = ComboData.HasRootMotion;

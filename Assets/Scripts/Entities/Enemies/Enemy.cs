@@ -97,7 +97,7 @@ public class Enemy : Entity
         if (!UseRootMotion) return;
 
         float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        Vector3 desiredAnimationMovement = modelScale * Animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
         rigidBody.MovePosition(transform.position + desiredAnimationMovement);

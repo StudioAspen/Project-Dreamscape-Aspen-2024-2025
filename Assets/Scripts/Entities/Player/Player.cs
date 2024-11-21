@@ -137,10 +137,10 @@ public class Player : Entity
 
         if (!ApplyRootMotion) return;
 
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        Vector3 desiredAnimationMovement = Animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        //controller.Move(desiredAnimationMovement);
+        controller.Move(desiredAnimationMovement);
     }
 
     private protected override void CheckGrounded()
@@ -410,28 +410,9 @@ public class Player : Entity
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
     }
 
-    public void ReplaceComboAnimationClip(AnimationClip newClip)
-    {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(animator.runtimeAnimatorController);
-
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
-        foreach (AnimationClip currentClip in aoc.animationClips)
-        {
-            if (currentClip.name == "ComboPlaceholder")
-            {
-                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
-            }
-        }
-
-        aoc.ApplyOverrides(anims);
-
-        animator.runtimeAnimatorController = aoc;
-    }
-
     public void SetComboAnimationSpeed(float speed)
     {
-        animator.SetFloat("ComboAnimationSpeed", speed);
+        Animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     public override void Die()

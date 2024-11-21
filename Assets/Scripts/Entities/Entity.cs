@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
+using Animancer;
 
-public class Entity : MonoBehaviour, IPoolableObject
+public class Entity : MonoBehaviour, DreamscapeObjectPooler.IPoolableObject
 {
     #region References
-    [Header("Entity: References")]
-    [SerializeField, Self] private protected Animator animator;
+    [field: Header("Entity: References")]
+    [field: SerializeField, Self] public HybridAnimancerComponent Animator { get; private set; }
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -77,7 +77,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Pooling Variables
-    private ObjectPool<GameObject> pool;
+    private UnityEngine.Pool.ObjectPool<GameObject> pool;
     #endregion
 
     #region States
@@ -287,7 +287,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        Animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
     }
 
     /// <summary>
@@ -425,7 +425,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (damage <= 0) return;
 
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
+        DreamscapeObjectPooler.ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<DreamscapeObjectPooler.ObjectPooler>();
         if (spawner == null) return;
 
         HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
@@ -479,7 +479,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="animation">The name of the animation to transition to.</param>
     public void DefaultTransitionToAnimation(string animation)
     {
-        animator.CrossFadeInFixedTime(animation, 0.1f);
+        Animator.CrossFadeInFixedTime(animation, 0.1f);
     }
 
     /// <summary>
@@ -489,7 +489,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="animation">The name of the animation to transition to.</param>
     public void DefaultTransitionToAnimation(string animation, string layer)
     {
-        animator.CrossFadeInFixedTime(animation, 0.1f, animator.GetLayerIndex(layer));
+        Animator.CrossFadeInFixedTime(animation, 0.1f, Animator.GetLayerIndex(layer));
     }
 
     /// <summary>
@@ -499,7 +499,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="transitionDuration">The duration of the transition.</param>
     public void TransitionToAnimation(string animation, float transitionDuration)
     {
-        animator.CrossFadeInFixedTime(animation, transitionDuration);
+        Animator.CrossFadeInFixedTime(animation, transitionDuration);
     }
 
     /// <summary>
@@ -510,7 +510,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="layer">The layer to transition to.</param>
     public void TransitionToAnimation(string animation, float transitionDuration, string layer)
     {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, animator.GetLayerIndex(layer));
+        Animator.CrossFadeInFixedTime(animation, transitionDuration, Animator.GetLayerIndex(layer));
     }
 
     /// <summary>
@@ -729,7 +729,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Must be used if the entity is pooled.
     /// </summary>
     /// <param name="objectPool">The object pool to set.</param>
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
+    public void SetObjectPool(UnityEngine.Pool.ObjectPool<GameObject> objectPool)
     {
         pool = objectPool;
     }

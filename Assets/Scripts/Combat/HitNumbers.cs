@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Pool;
 using DG.Tweening;
+using DreamscapeObjectPooler;
 
 public class HitNumbers : MonoBehaviour, IPoolableObject
 {

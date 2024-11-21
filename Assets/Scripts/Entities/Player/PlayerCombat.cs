@@ -1,3 +1,4 @@
+using Animancer;
 using KBCore.Refs;
 using System;
 using System.Collections;
@@ -16,7 +17,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("References")]
     [SerializeField, Self] private PlayerInputReader input;
     [SerializeField, Self] private Player player;
-    [SerializeField, Self] private Animator animator;
+    [SerializeField, Self] private HybridAnimancerComponent animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -223,11 +224,8 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerSlideState) return;
         if (player.CurrentState == player.EntityStaggeredState) return;
 
-        ReplaceComboAnimationClip(animator, combo.ComboClip);
-
         player.PlayerAttackState.SetCombo(combo);
         player.ForceChangeState(player.PlayerAttackState);
-
 
         comboText.text = "Combo: " + combo.name;
     }
@@ -291,25 +289,6 @@ public class PlayerCombat : MonoBehaviour
         result += "}";
 
         Debug.Log(result);
-    }
-
-    private void ReplaceComboAnimationClip(Animator anim, AnimationClip newClip)
-    {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(anim.runtimeAnimatorController);
-
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
-        foreach(AnimationClip currentClip in aoc.animationClips)
-        {
-            if(currentClip.name == "ComboPlaceholder")
-            {
-                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
-            }
-        }
-
-        aoc.ApplyOverrides(anims);
-
-        animator.runtimeAnimatorController = aoc;
     }
 
     private void HandleWeaponTriggers()

@@ -47,7 +47,7 @@ public class Weapon : MonoBehaviour
 
         AssignColliderStartEndPositions();
 
-        if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
+        //if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
     }
 
     private void Update()
