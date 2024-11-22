@@ -12,12 +12,11 @@ public class PlayerFallState : PlayerBaseState
     public override void OnEnter()
     {
         player.TransitionToAnimation("Falling", 0.25f);
-        player.Fall();
     }
 
     public override void OnExit()
     {
-
+       
     }
 
     public override void Update()
@@ -36,12 +35,13 @@ public class PlayerFallState : PlayerBaseState
         }
             
         player.RotateToTargetRotation(); 
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
+            return;
         }
     }
 

@@ -16,52 +16,42 @@ public class MemorySystem : MonoBehaviour
     [SerializeField]private RectTransform memoryBarTransform;
     private List<RectTransform> memoryTransforms = new List<RectTransform>();
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            GainMemory(typeof(Follower), 10);
-        }
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            GainMemory(typeof(Player), 10);
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-
-        }
-    }
     private void OnValidate()
     {
         this.ValidateRefs();
     }
 
+
     private void OnEnable()
     {
         //enemies need a memory type and amount property before we can link these together easily..
-        //player.OnKillEntity.AddListener(GainMemory())
+        player.OnKillEntity.AddListener(Player_OnKillEntity);
     }
 
     private void OnDisable()
     {
+        player.OnKillEntity.RemoveListener(Player_OnKillEntity);
         memories.Clear();
     }
 
-    private void GainMemory(Type type, int memoryGained) //add memory and check if meter is full 
+    private void Player_OnKillEntity(Entity victim) //add memory and check if meter is full 
     {
+        Type type = victim.GetType();
+
+
         if (memories.ContainsKey(type))
         {
-            memories[type] += memoryGained;
+            memories[type]++;
         }
         else
         {
-            memories[type] = memoryGained;
+            memories[type] = 1;
         }
         UpdateDebugMeter();
 
         if (MemoryIsFull())
         {
-            Debug.Log("hey bro change the Type type to string teehee");
+            
         }
     }
 
