@@ -1,8 +1,15 @@
 // using System.Collections;
 using DG.Tweening;
 using KBCore.Refs;
+// using System.Collections.Generic;
+// using UnityEngine;
+
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class VolcanicEntity : MonoBehaviour
 {
@@ -10,8 +17,11 @@ public class VolcanicEntity : MonoBehaviour
     [SerializeField, Self] private Entity entity;
     
     [Header("Explosions Settings")]
+    [SerializeField, Self] private Vector2Int explosionContactDamageRange  = new Vector2Int(20, 30);
+    [SerializeField, Self] private float explosionDamage = 5f;
     [SerializeField, Self] private float explosionForce = 1000f;
-    [SerializeField, Self] private float explosionRadius = 10f;
+    [SerializeField, Self] private float explosionRadius = 100f;
+    [SerializeField, Self] private float stunDuration = 3;
     Collider[] colliders = new Collider[20];
 
 
@@ -21,25 +31,40 @@ public class VolcanicEntity : MonoBehaviour
         if(entity.CurrentState == entity.EntityDeathState)
         {
             Debug.Log("BOOM");
-            explosion();
+            CheckCollisions();
+            
         }
     }
 
-    private void explosion()
+    private void CheckCollisions()
     {
-        int numColliders = Physics.OverlapSphereNonAlloc(transform.position, explosionRadius, colliders);
-        Debug.Log(transform.position);
-        if(numColliders > 0)
+        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+
+        if(hits == null) return;
+        if(hits.Length == 0) return;
+
+        List<Collider> orderedHits = hits.OrderBy(hit => entity.Distance(hit.ClosestPoint(entity.GetColliderCenterPosition()))).ToList();
+
+        foreach(Collider hit in orderedHits)
         {
-            Debug.Log("add colliders to array");
-            for (int i = 0; i < numColliders; i++)
+            // if(IsOwnDamageableEntityCollider(hit)) continue;
+
+            if(DidEntityExplosionDamageFriendlyEntity(hit, out Entity friendlyEntity))
             {
-                Debug.Log(numColliders);   
-                if (colliders[i].TryGetComponent(out Rigidbody rb))
-                {
-                    
-                }
+
+                Debug.Log("friendly, leave alone");
             }
+            if (DidEntityExplosionHitEnemyEntity(hit, out Entity enemyEntity))
+            {
+                Debug.Log("ENEMY DEAL DAMAGE");
+
+                Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - entity.transform.position;
+                TryFlingEntity(enemyEntity, flingDirection, explosionForce, stunDuration);
+
+                enemyEntity.TakeDamageWithoutState(entity.GetRandomDamageFromRange(explosionContactDamageRange), hit.ClosestPoint(entity.GetColliderCenterPosition()), entity.gameObject);
+                return;
+            }
+            
         }
     }
 
@@ -51,6 +76,36 @@ public class VolcanicEntity : MonoBehaviour
 
         entity.EntityFlingState.SetFlingSettings(direction, force, stunDuration);
         entity.ChangeState(entity.EntityFlingState);
+    }
+
+    private bool DidEntityExplosionDamageFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if(entity == null) return false;
+        if (entity.Team != 1) return false;
+        print( $"Entity: {entity} Team: {entity.Team}");
+        return true;
+    }
+    // private bool IsOwnDamageableEntityCollider(Collider hit)
+    // {
+    //     // check if hit is a child of charger's collider
+    //     entity selfEntity = hit.GetComponentInParent<VolcanicEntity>();
+
+    //     if(selfEntity == null) return false;
+    //     if (selfEntity == entity) return true;
+
+    //     return false;
+    // }
+
+    private bool DidEntityExplosionHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == 1) return false;
+        
+        return true;
     }
 
 }
