@@ -66,6 +66,7 @@ public class EventManager : MonoBehaviour
                 // TODO: Check if all enemies in the 3 highest level islands have been killed
                 if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
                 {
+                    worldManager.CheckAndSelect3x3Grid();
                     WaveCompletion();
                 }
                 break;

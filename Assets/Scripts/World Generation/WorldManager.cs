@@ -158,6 +158,80 @@ public class WorldManager : MonoBehaviour
 
         return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
     }
+    
+    //Data Structure for Event Management
+    HashSet<Vector2Int> placedTiles = new HashSet<Vector2Int>();
+    //placedTiles.Add(new Vector2Int(x, y)); <--- to add new tiles
+    public void CheckAndSelect3x3Grid()
+    {
+        List<List<Vector2Int>> validGrids = FindValid3x3Grids(placedTiles);
+        Vector2Int selectedTile = SelectRandom3x3(validGrids);
+        
+        if (selectedTile != Vector2Int.zero)
+        {
+            Debug.Log("Selected 3x3 center tile at: " + selectedTile);
+            // Do something with the selected grid
+        }
+    }
+    List<List<Vector2Int>> FindValid3x3Grids(HashSet<Vector2Int> placedTiles)
+    {
+        List<List<Vector2Int>> validGrids = new List<List<Vector2Int>>();
+        
+        // Iterate over all placed tiles and check if they can be the center of a valid 3x3 grid
+        foreach (var tile in placedTiles)
+        {
+            int cx = tile.x;
+            int cy = tile.y;
+        
+            // Define all 9 positions in a 3x3 grid with the current tile as the center
+            List<Vector2Int> gridPositions = new List<Vector2Int>()
+            {
+                new Vector2Int(cx-1, cy-1), new Vector2Int(cx, cy-1), new Vector2Int(cx+1, cy-1),
+                new Vector2Int(cx-1, cy),   new Vector2Int(cx, cy),   new Vector2Int(cx+1, cy),
+                new Vector2Int(cx-1, cy+1), new Vector2Int(cx, cy+1), new Vector2Int(cx+1, cy+1)
+            };
+            // Check if all the 9 positions are in placedTiles
+            bool isValidGrid = true;
+            foreach (var pos in gridPositions)
+            {
+                if (!placedTiles.Contains(pos))
+                {
+                    isValidGrid = false;
+                    break;
+                }
+            }
+            if (isValidGrid)
+            {
+                validGrids.Add(gridPositions);  // Add the valid 3x3 grid to the list
+            }
+        }
+        return validGrids;
+    }
+    Vector2Int SelectRandom3x3(List<List<Vector2Int>> validGrids)
+    {
+        if (validGrids.Count == 0)
+        {
+            Debug.Log("No valid 3x3 grids found.");
+            return Vector2Int.zero;  // No valid grid found
+        }
+        int randomIndex = UnityEngine.Random.Range(0, validGrids.Count);
+        List<Vector2Int> selectedGrid = validGrids[randomIndex];
+        // You can return the center of the selected grid, or just return the entire grid if needed
+        //return selectedGrid[4];  // The center tile of the 3x3 grid (index 4)
+        SpawnZone(selectedGrid);
+    }
+
+    private SpawnZone(List<Vector2Int> selectedGrid)
+    {
+        LandManager CurrentZoneTile;
+        //spawn enemies in each tile of zone
+        foreach (var tile in selectedGrid)
+        {
+            CurrentZoneTile = GetLandByGridPosition(tile.x, tile.y);
+            CurrentZoneTile.EnemySpawner.IsInZone = true;
+            Debug.Log("Enemies Spawned in Tile: " + tile);
+        }
+    }
 
     #endregion
 
@@ -187,6 +261,7 @@ public class WorldManager : MonoBehaviour
         spawnedLand.Init(x, y);
         SpawnedLands.Add(spawnedLand);
         SpawnedLandsDictionary.Add(new Vector2Int(x, y), spawnedLand);
+        placedTiles.Add(new Vector2Int(x, y));
     }
 
     // Tries to spawn a new land at the position of the ghost land, if valid, otherwise logs an error and prevents spawning.

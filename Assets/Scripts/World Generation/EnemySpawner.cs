@@ -27,6 +27,8 @@ public class EnemySpawner : MonoBehaviour
     private List<Enemy> enemiesSpawned = new List<Enemy>();
     private bool isSpawnDelayed = false;
 
+    //Zone wave variables
+    public bool IsInZone = false;
     //Priority wave variables
     public bool IsPriority = false;
     //Escort wave variables
@@ -151,6 +153,7 @@ public class EnemySpawner : MonoBehaviour
 
                 if (eventManager.CurrentWaveType == WorldEvent.ZONES)
                 {
+                    CreateEnemy(i);
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
@@ -264,6 +267,10 @@ public class EnemySpawner : MonoBehaviour
                 eventManager.DecrementActivePrioritiesCount();
             }
             else if (eventManager.CurrentWaveType == WorldEvent.ESCORT)
+            {
+                //do nothing
+            }
+            else if (eventManager.CurrentWaveType == WorldEvent.ZONES)
             {
                 //do nothing
             }
