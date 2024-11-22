@@ -18,7 +18,7 @@ public class Charger : Enemy
     [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
     [field: Header("Charger: Charge Settings")]
-    [field: SerializeField] public Vector2Int ChargeContactDamageRange { get; private set; } = new Vector2Int(20, 30);
+    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
@@ -36,8 +36,9 @@ public class Charger : Enemy
 
     [field: Header("Charger: Jabbing Attack Settings")]
     [field: SerializeField] public int JabCount { get; private set; } = 5;
-    [field: SerializeField] public Vector2Int JabDamageRange { get; private set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float JabPercentDamage { get; private set; } = 100;
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
+    [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
     [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
     [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
     [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
@@ -55,7 +56,7 @@ public class Charger : Enemy
     public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
     public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -70,44 +71,45 @@ public class Charger : Enemy
     }
     #endregion
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         base.OnAwake();
     }
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
+
         SetStartState(ChargerWanderState);
+
+        FinishAnimation();
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
         SetDefaultState(ChargerWanderState);
 
-        FinishAnimation();
-
         originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    protected override void OnFixedUpdate()
+    private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
     }
 
-    protected override void OnTick()
+    private protected override void OnTick()
     {
         
     }
@@ -123,7 +125,7 @@ public class Charger : Enemy
         CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, ChargeCollisionTopPoint, ChargeCollisionRadius);
     }
 
-    protected override void OnOnAnimatorMove()
+    private protected override void OnOnAnimatorMove()
     {
         base.OnOnAnimatorMove();
     }
@@ -141,7 +143,7 @@ public class Charger : Enemy
     public override void TryAssignTarget()
     {
         List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyEntities(DetectionDistance);
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(DetectionDistance);
         List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, ChargeCollisionTopPoint, DetectionConeHalfAngle);
 
         if (largeRadiusTargets.Count == 0)
@@ -193,7 +195,7 @@ public class Charger : Enemy
 
         CurrentHealth -= newDamage;
 
-        AttemptToSpawnHitNumbers(newDamage, hitPoint);
+        AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 

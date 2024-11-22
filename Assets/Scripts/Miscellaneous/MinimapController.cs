@@ -22,7 +22,7 @@ public class MinimapController : MonoBehaviour
     [SerializeField] private Vector2 maximizedSize = new Vector2(300, 300);
     [SerializeField] private Camera m_Camera;
     [SerializeField] private int maximizedZoom = 80;
-    [Range(0.0f, 1.0f)] [SerializeField] private float minimap_opacity = 0.75f;
+    [Range(0.0f, 1.0f)][SerializeField] private float minimap_opacity = 0.75f;
 
     private CinemachineVirtualCamera virtualCamera;
     private Cinemachine3rdPersonFollow thirdPersonFollow;
@@ -68,7 +68,8 @@ public class MinimapController : MonoBehaviour
         }
 
         // Toggle Mask and Border
-        if (border != null) {
+        if (border != null)
+        {
             border.gameObject.SetActive(isMaximized);
         }
 
@@ -79,12 +80,14 @@ public class MinimapController : MonoBehaviour
         }
 
         // Toggle Solid Color Background of Minimap
-        if (m_Camera.TryGetComponent(out UniversalAdditionalCameraData cameraData)) {
+        if (m_Camera.TryGetComponent(out UniversalAdditionalCameraData cameraData))
+        {
             cameraData.renderPostProcessing = !cameraData.renderPostProcessing;
         }
 
         // Map is Maximized --> Minimize map
-        if (isMaximized) {
+        if (isMaximized)
+        {
             // Make Minimap smaller and move into corner
             minimapRectTransform.sizeDelta = normalSize;
             minimapRectTransform.anchoredPosition = normalPosition;
@@ -95,8 +98,10 @@ public class MinimapController : MonoBehaviour
             image.color = newColor;
         }
         // Map is Minimized --> Maximize Map
-        else {
-            if (image != null) {
+        else
+        {
+            if (image != null)
+            {
                 Color newColor = image.color;
                 newColor.a = minimap_opacity;
                 image.color = newColor;
@@ -123,7 +128,8 @@ public class MinimapController : MonoBehaviour
                 ToggleMinimap();
             }
             minimap_canvas.gameObject.SetActive(false);
-        } else 
+        }
+        else
         {
             minimap_canvas.gameObject.SetActive(true);
         }

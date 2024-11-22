@@ -1221,6 +1221,7 @@ GameObject:
   - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
+  - component: {fileID: 2908022964901649110}
   m_Layer: 16
   m_Name: Player
   m_TagString: Untagged
@@ -1302,6 +1303,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 1b02d0f8-1456-47c8-9920-270553edc714
     m_ActionName: UI/Minimap Toggle[/Keyboard/m]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 77b60454-e697-4a6a-84e5-77d3febbcfd0
+    m_ActionName: UI/OpenSettings[/Keyboard/o]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
@@ -1371,7 +1376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 2171180168782530629}
-  physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
+  <PhysicsSettings>k__BackingField: {fileID: 0}
   model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 0
@@ -1380,6 +1385,14 @@ MonoBehaviour:
   rotationSpeed: 10
   IsGrounded: 0
   targetDetectionRadius: 10
+  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <DamageModifier>k__BackingField: 1
+  OnGrounded:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAirborne:
+    m_PersistentCalls:
+      m_Calls: []
   OnEntityTakeDamage:
     m_PersistentCalls:
       m_Calls: []
@@ -1394,16 +1407,12 @@ MonoBehaviour:
   controller: {fileID: 7237775664649881152}
   input: {fileID: 6714409095086020908}
   <SprintSpeedModifier>k__BackingField: 1.66
-  baseMovementSpeed: 0
-  baseAttackPower: 0
+  groundedAcceleration: 4
   mass: 1
   jumpHeight: 2
   maxJumpCount: 1
-  groundedAcceleration: 4
-  <JumpTimeToFall>k__BackingField: 0.3
   IsSprinting: 0
   CanAttack: 1
-  IsJumping: 0
   ApplyRootMotion: 0
   <DashDuration>k__BackingField: 0.25
   <InitialDashVelocity>k__BackingField: 75
@@ -1473,7 +1482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TestStatusEffect: {fileID: 11400000, guid: 8740df4de448de7408bc53d009c395a1, type: 2}
 --- !u!95 &2171180168782530629
 Animator:
   serializedVersion: 5
@@ -1551,6 +1559,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!136 &2908022964901649110
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.25
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0
