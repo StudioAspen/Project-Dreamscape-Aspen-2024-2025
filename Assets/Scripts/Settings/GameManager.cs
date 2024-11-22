@@ -1,4 +1,5 @@
-﻿using KBCore.Refs;
+﻿using DG.Tweening.Core.Easing;
+using KBCore.Refs;
 using System;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ public enum GameState
     BIOME_SELECTION,
     LAND_PLACEMENT,
     LAND_EMPOWERMENT,
-    EVENT_SELECTION
+    EVENT_SELECTION,
+    ASPECT_SELECTION
 }
 
 public class GameManager : MonoBehaviour
@@ -25,12 +27,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeState(GameState.PLAYING);
+        ForceChangeState(GameState.PLAYING);
     }
 
     private void Update()
     {
         UpdateState(CurrentState);
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (CurrentState == GameState.PLAYING) ChangeState(GameState.ASPECT_SELECTION);
+            else if (CurrentState == GameState.ASPECT_SELECTION) ChangeState(GameState.PLAYING);
+        }
     }
 
     #region State Machine Functions
@@ -50,16 +58,67 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.EVENT_SELECTION:
                 break;
+            case GameState.ASPECT_SELECTION:
+                break;
             default:
                 break;
         }
     }
+
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
 
         //print($"GameManager: Going from {CurrentState} to {newState}");
 
+        switch (newState)
+        {
+            case GameState.PLAYING:
+                Time.timeScale = 1f;
+
+                LockCursor();
+                break;
+            case GameState.PAUSED:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.BIOME_SELECTION:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.LAND_PLACEMENT:
+                Time.timeScale = 0f;
+
+                LockCursor();
+                break;
+            case GameState.LAND_EMPOWERMENT:
+                Time.timeScale = 0f;
+
+                LockCursor();
+                break;
+            case GameState.EVENT_SELECTION:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            case GameState.ASPECT_SELECTION:
+                Time.timeScale = 0f;
+
+                UnlockCursor();
+                break;
+            default:
+                break;
+        }
+
+        CurrentState = newState;
+
+        OnGameStateChanged?.Invoke(newState);
+    }
+
+    public void ForceChangeState(GameState newState)
+    {
         switch (newState)
         {
             case GameState.PLAYING:

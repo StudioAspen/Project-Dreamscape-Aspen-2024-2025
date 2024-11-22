@@ -46,8 +46,8 @@ public class WorldManager : MonoBehaviour
     private Biome currentBiomeSelection = Biome.DREAM;
 
     [field: Header("Progression")]
-    [field: SerializeField] public int EmpowerTokens { get; private set; }
-    [field: SerializeField] public int WeakenTokens { get; private set; }
+    public int EmpowerTokens { get; private set; }
+    public int WeakenTokens { get; private set; }
 
     #endregion
 
@@ -280,8 +280,8 @@ public class WorldManager : MonoBehaviour
     // Empower tokens are rounded up, and weaken tokens are rounded down.
     private void RestockTokens(int landCount)
     {
-        EmpowerTokens = Mathf.CeilToInt(landCount / 2f);
-        WeakenTokens = Mathf.FloorToInt(landCount / 2f);
+        EmpowerTokens = Mathf.CeilToInt((landCount - 1) / 2f);
+        WeakenTokens = Mathf.FloorToInt((landCount - 1) / 2f);
     }
 
     // Attempts to empower the land at the ghost position, checking if the land can be empowered 

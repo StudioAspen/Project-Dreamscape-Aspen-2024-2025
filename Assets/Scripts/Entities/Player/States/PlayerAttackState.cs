@@ -13,6 +13,7 @@ public class PlayerAttackState : PlayerBaseState
     public PlayerAttackState(Player player) : base(player)
     {
         this.player = player;
+        playerCombat = player.GetComponent<PlayerCombat>();
     }
 
     public override void OnEnter()
@@ -20,16 +21,18 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player);
         playerCombat.Weapon.ClearEnemiesHitList();
 
-        playerCombat.Weapon.SetDamageRange(ComboData.ComboDamageRange);
+        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage);
 
         player.ReplaceComboAnimationClip(ComboData.ComboClip);
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
         player.TransitionToAnimation("Combo", 0.05f);
 
         playerCombat.IsAnimationPlaying = true;
-        player.ApplyRootMotion = ComboData.AttackHasRootMotion;
+        player.ApplyRootMotion = ComboData.HasRootMotion;
 
         player.ApplyRotationToNextMovement();
+
+        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit);
     }
 
     public override void OnExit()
@@ -39,14 +42,16 @@ public class PlayerAttackState : PlayerBaseState
         player.ApplyRootMotion = false;
         playerCombat.DisableWeaponTriggers();
 
-        player.InstantlySetSpeed(0f);
+        player.InstantlySetGroundedSpeed(0f);
 
-        if (ComboData.IsAirCombo) player.ResetYVelocity();
+        //if (ComboData.WillIgnoreGravity) player.ResetYVelocity();
+
+        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit);
     }
 
     public override void Update()
     {
-        if(!ComboData.IsAirCombo) player.ApplyGravity();
+        player.ApplyGravity();
 
         if (!playerCombat.IsAnimationPlaying) player.ChangeState(player.DefaultState);
 
@@ -54,7 +59,7 @@ public class PlayerAttackState : PlayerBaseState
 
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(0f);
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         player.RotateToTargetRotation();
@@ -65,10 +70,28 @@ public class PlayerAttackState : PlayerBaseState
 
     }
 
-    public void SetCombo(PlayerCombat playerCombat, ComboDataSO comboData)
+    public void SetCombo(ComboDataSO comboData)
     {
-        this.playerCombat = playerCombat;
         ComboData = comboData;
+    }
+
+    private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
+    {
+        if (ComboData.WillLaunchUpwards)
+        {
+            victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+
+            source.Launch(Vector3.up, ComboData.AirLaunchForce);
+
+            return;
+        }
+
+        if (!player.IsGrounded)
+        {
+            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+
+            source.Launch(Vector3.up, ComboData.AirLaunchForce);
+        }
     }
 }
 
