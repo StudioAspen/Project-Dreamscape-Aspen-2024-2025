@@ -9,7 +9,7 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Charge");
+        player.PlayAnimation("Charge", 0.25f);
 
         player.SetSpeedModifier(0);
     }
@@ -21,7 +21,7 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void Update()
     {
-        player.DefaultTransitionToAnimation("Charge");
+        player.PlayAnimation("Charge", 0.25f);
 
         player.ApplyGravity();
 

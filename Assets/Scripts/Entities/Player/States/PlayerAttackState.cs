@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Animancer;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -23,10 +24,9 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage);
 
-        player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
+        AnimancerState state = player.PlayAnimation(ComboData.ComboClip, 0.25f);
 
-        //Debug.Break();
-        player.TransitionToAnimation("Combo", 0.1f);
+        state.Speed = ComboData.ComboClipAnimationSpeed;
 
         playerCombat.IsAnimationPlaying = true;
         player.ApplyRootMotion = ComboData.HasRootMotion;

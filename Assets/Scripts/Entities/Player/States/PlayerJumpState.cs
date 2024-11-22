@@ -9,7 +9,7 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("JumpingUp");
+        player.PlayAnimation("Jump", 0.25f);
 
         player.Jump();
     }

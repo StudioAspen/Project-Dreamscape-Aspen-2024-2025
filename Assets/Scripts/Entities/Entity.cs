@@ -1,4 +1,6 @@
-﻿using DG.Tweening;
+﻿using Animancer;
+using DG.Tweening;
+using DreamScapes.ObjectPooler;
 using KBCore.Refs;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     [Header("Entity: References")]
+    [SerializeField, Anywhere] public EntityAnimationClipsSO animationClips;
+    [SerializeField, Self] private AnimancerComponent animancer;
     [SerializeField, Self] private protected Animator animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
@@ -77,7 +81,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Pooling Variables
-    private ObjectPool<GameObject> pool;
+    private UnityEngine.Pool.ObjectPool<GameObject> pool;
     #endregion
 
     #region States
@@ -514,6 +518,34 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Plays the specified animation with a transition duration.
+    /// If the animation is already playing, restarts it from the beginning.
+    /// </summary>
+    /// <param name="animationName">The name of the animation to play.</param>
+    /// <param name="transitionDuration">The duration of the transition to the new animation.</param>
+    public AnimancerState PlayAnimation(string animationName, float transitionDuration = 0f)
+    {
+        AnimancerState state = animancer.Play(animationClips.Clips[animationName], transitionDuration);
+        state.Time = 0f; // Restart the animation.
+
+        return state;
+    }
+
+    /// <summary>
+    /// Plays the specified animation with a transition duration.
+    /// If the animation is already playing, restarts it from the beginning.
+    /// </summary>
+    /// <param name="animationName">The name of the animation to play.</param>
+    /// <param name="transitionDuration">The duration of the transition to the new animation.</param>
+    public AnimancerState PlayAnimation(AnimationClip clip, float transitionDuration = 0f)
+    {
+        AnimancerState state = animancer.Play(clip, transitionDuration);
+        state.Time = 0f; // Restart the animation.
+
+        return state;
+    }
+
+    /// <summary>
     /// Invoked when this entity kills another entity.
     /// Override this function if you want to add custom on kill logic.
     /// </summary>
@@ -729,7 +761,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Must be used if the entity is pooled.
     /// </summary>
     /// <param name="objectPool">The object pool to set.</param>
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
+    public void SetObjectPool(UnityEngine.Pool.ObjectPool<GameObject> objectPool)
     {
         pool = objectPool;
     }

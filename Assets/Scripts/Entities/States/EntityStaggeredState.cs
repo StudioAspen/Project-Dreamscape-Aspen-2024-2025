@@ -14,7 +14,7 @@ public class EntityStaggeredState : BaseState
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Hit");
+        entity.PlayAnimation("Stagger");
 
         timer = 0f;
 

@@ -10,12 +10,12 @@ public class PlayerFallState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Falling", 0.25f);
+        player.PlayAnimation("Fall", 0.25f);
     }
 
     public override void OnExit()
     {
-       
+        
     }
 
     public override void Update()
