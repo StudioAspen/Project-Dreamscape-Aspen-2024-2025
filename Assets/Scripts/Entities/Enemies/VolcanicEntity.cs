@@ -18,8 +18,8 @@ public class VolcanicEntity : MonoBehaviour
     
     [Header("Explosions Settings")]
     [SerializeField, Self] private Vector2Int explosionContactDamageRange  = new Vector2Int(20, 30);
-    [SerializeField, Self] private float explosionDamage = 5f;
-    [SerializeField, Self] private float explosionForce = 1000f;
+    [SerializeField, Self] public int explosionDamage = 5;
+    [SerializeField, Self] public float explosionForce = 10f;
     [SerializeField, Self] private float explosionRadius = 100f;
     [SerializeField, Self] private float stunDuration = 3;
     Collider[] colliders = new Collider[20];
@@ -53,6 +53,7 @@ public class VolcanicEntity : MonoBehaviour
             {
 
                 Debug.Log("friendly, leave alone");
+                
             }
             if (DidEntityExplosionHitEnemyEntity(hit, out Entity enemyEntity))
             {
@@ -60,8 +61,8 @@ public class VolcanicEntity : MonoBehaviour
 
                 Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - entity.transform.position;
                 TryFlingEntity(enemyEntity, flingDirection, explosionForce, stunDuration);
-
-                enemyEntity.TakeDamageWithoutState(entity.GetRandomDamageFromRange(explosionContactDamageRange), hit.ClosestPoint(entity.GetColliderCenterPosition()), entity.gameObject);
+                // entity.GetRandomDamageFromRange(explosionContactDamageRange)
+                enemyEntity.TakeDamageWithoutState( explosionDamage, hit.ClosestPoint(entity.GetColliderCenterPosition()), entity.gameObject);
                 return;
             }
             

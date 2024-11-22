@@ -508,6 +508,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entity: {fileID: 3433871332904231154}
+  explosionContactDamageRange: {x: 20, y: 30}
+  explosionDamage: 5
+  explosionForce: 10
+  explosionRadius: 10
+  stunDuration: 3
 --- !u!1001 &359874884912053727
 PrefabInstance:
   m_ObjectHideFlags: 0
