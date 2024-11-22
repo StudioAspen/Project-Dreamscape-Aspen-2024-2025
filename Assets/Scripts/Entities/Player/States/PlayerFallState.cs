@@ -15,7 +15,7 @@ public class PlayerFallState : PlayerBaseState
 
     public override void OnExit()
     {
-       
+
     }
 
     public override void Update()
@@ -34,13 +34,12 @@ public class PlayerFallState : PlayerBaseState
         }
             
         player.RotateToTargetRotation(); 
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
-            return;
         }
     }
 

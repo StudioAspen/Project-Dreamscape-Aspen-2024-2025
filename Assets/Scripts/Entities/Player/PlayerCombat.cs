@@ -35,32 +35,26 @@ public class PlayerCombat : MonoBehaviour
 
     private void OnEnable()
     {
-        input.Attack1.AddListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.AddListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.AddListener(Input_HandleAttackChargingInput);
-        input.Attack2.AddListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.AddListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.AddListener(Input_HandleAttackChargingInput);
+        input.Attack1.AddListener(HandleAttack1Input);
+        input.Attack1Charged.AddListener(HandleAttack1ChargedInput);
+        input.Attack1Charging.AddListener(HandleAttackChargingInput);
+/*        input.Attack2.AddListener(HandleAttack2Input);
+        input.Attack2Charged.AddListener(HandleAttack2ChargedInput);
+        input.Attack2Charging.AddListener(HandleAttackChargingInput);*/
 
-        input.OnPlayerActionInput.AddListener(Input_HandleOnPlayerActionInput);
-
-        player.OnGrounded.AddListener(Player_OnGrounded);
-        player.OnAirborne.AddListener(Player_OnAirborne);
+        input.OnPlayerActionInput.AddListener(HandleOnPlayerActionInput);
     }
 
     private void OnDisable()
     {
-        input.Attack1.RemoveListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.RemoveListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.RemoveListener(Input_HandleAttackChargingInput);
-        input.Attack2.RemoveListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.RemoveListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.RemoveListener(Input_HandleAttackChargingInput);
+        input.Attack1.RemoveListener(HandleAttack1Input);
+        input.Attack1Charged.RemoveListener(HandleAttack1ChargedInput);
+        input.Attack1Charging.RemoveListener(HandleAttackChargingInput);
+/*        input.Attack2.RemoveListener(HandleAttack2Input);
+        input.Attack2Charged.RemoveListener(HandleAttack2ChargedInput);
+        input.Attack2Charging.RemoveListener(HandleAttackChargingInput);*/
 
-        input.OnPlayerActionInput.RemoveListener(Input_HandleOnPlayerActionInput);
-
-        player.OnGrounded.RemoveListener(Player_OnGrounded);
-        player.OnAirborne.RemoveListener(Player_OnAirborne);
+        input.OnPlayerActionInput.RemoveListener(HandleOnPlayerActionInput);
     }
 
     private void Update()
@@ -71,78 +65,48 @@ public class PlayerCombat : MonoBehaviour
         DebugUICombos();
     }
 
-    private void Input_HandleAttack1Input()
+    private void HandleAttack1Input()
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK1);
     }
 
-    private void Input_HandleAttack1ChargedInput()
+    private void HandleAttack1ChargedInput()
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK1);
     }
 
-    private void Input_HandleAttackChargingInput()
+    private void HandleAttackChargingInput()
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
         if (player.CurrentState == player.PlayerDashState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-
+            
         player.ChangeState(player.PlayerChargeState);
     }
 
-    private void Input_HandleAttack2Input()
+    private void HandleAttack2Input()
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerChargeState) return;
         if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK2);
     }
 
-    private void Input_HandleAttack2ChargedInput()
+    private void HandleAttack2ChargedInput()
     {
         if (!player.CanAttack) return;
         if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK2);
-    }
-
-    private void Player_OnAirborne(Vector3 startAirbornePosition)
-    {
-        comboListenTimer = 0;
-
-        if (currentComboList.Count == 0)
-        {
-            currentComboList.Add(PlayerActions.AIRBORNE);
-            GenerateComboLists();
-            return;
-        }
-
-        currentComboList.Clear();
-        currentComboList.Add(PlayerActions.AIRBORNE);
-        GenerateComboLists();
-    }
-
-    private void Player_OnGrounded(Vector3 startGroundedPosition)
-    {
-        comboListenTimer = 0;
-
-        currentComboList.Clear();
-
-        GenerateComboLists();
     }
 
     private void HandleComboList()
@@ -157,16 +121,12 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
+    private void HandleOnPlayerActionInput(PlayerActions incomingAction)
     {
         comboListenTimer = 0;
 
         currentComboList.Add(incomingAction);
 
-        if (!player.IsGrounded && currentComboList.Count > 0)
-        {
-            if (currentComboList[0] != PlayerActions.AIRBORNE) currentComboList.Insert(0, PlayerActions.AIRBORNE);
-        }
         GenerateComboLists();
 
         AttemptToExecuteACombo(incomingAction);
@@ -181,25 +141,12 @@ public class PlayerCombat : MonoBehaviour
             currentComboList.Clear();
             currentComboList.Add(incomingAction);
 
-            if (!player.IsGrounded)
-            {
-                currentComboList.Insert(0, PlayerActions.AIRBORNE);
-                GenerateComboLists();
+            GenerateComboLists();
 
-                comboToExecute = ComboDataSO.GetLongestCombo(potentialCombos);
-
-                if (comboToExecute != null)
-                {
-                    ExecuteCombo(comboToExecute);
-                }
-            }
-            else
+            comboToExecute = ComboDataSO.GetSingleActionCombo(Weapon.Combos, incomingAction);
+            if (comboToExecute != null)
             {
-                comboToExecute = ComboDataSO.GetSingleActionCombo(Weapon.Combos, incomingAction);
-                if (comboToExecute != null)
-                {
-                    ExecuteCombo(comboToExecute);
-                }
+                ExecuteCombo(comboToExecute);
             }
         }
         else
@@ -218,12 +165,12 @@ public class PlayerCombat : MonoBehaviour
     private void ExecuteCombo(ComboDataSO combo)
     {
         if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityStaggeredState) return;
+        if (player.CurrentState == player.EntityHitState) return;
 
-        player.PlayerAttackState.SetCombo(combo);
+        player.PlayerAttackState.SetCombo(this, combo);
         player.ChangeState(player.PlayerAttackState);
 
-        comboText.text = "Combo: " + combo.name;
+        comboText.text = "Combo: " + combo.ComboName;
     }
 
     private void GenerateComboLists()
@@ -268,7 +215,7 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < potentialCombos.Count; i++)
         {
-            result += potentialCombos[i].name;
+            result += potentialCombos[i].ComboName;
             if (i != potentialCombos.Count - 1) result += ",";
             result += " ";
         }
@@ -277,7 +224,7 @@ public class PlayerCombat : MonoBehaviour
 
         for (int i = 0; i < predictedCombos.Count; i++)
         {
-            result += predictedCombos[i].name;
+            result += potentialCombos[i].ComboName;
             if (i != predictedCombos.Count - 1) result += ",";
             result += " ";
         }
@@ -326,4 +273,3 @@ public class PlayerCombat : MonoBehaviour
         IsAnimationPlaying = false;
     }
 }
-

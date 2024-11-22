@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +5,8 @@ using UnityEngine;
 public class Follower : Enemy
 {
     [field: Header("Follower: Attack Settings")]
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public Vector2Int AttackDamageRange { get; private set; } = new Vector2Int(10, 15);
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 
@@ -27,48 +25,44 @@ public class Follower : Enemy
     public FollowerCircleState FollowerCircleState { get; private set; }
     #endregion
 
-    private protected override void OnAwake()
+    protected override void OnAwake()
     {
         base.OnAwake();
     }
 
-    private protected override void OnOnEnable()
+    protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
         // SetStartState(EnemyIdleState);
-
-        FinishAnimation();
     }
 
-    private protected override void OnOnDisable()
+    protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    private protected override void OnOnAnimatorMove()
+    protected override void OnOnAnimatorMove()
     {
         base.OnOnAnimatorMove();
     }
 
-    private protected override void OnStart()
+    protected override void OnStart()
     {
         base.OnStart();
-
-        FinishAnimation();
     }
 
-    private protected override void OnUpdate()
+    protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    private protected override void OnFixedUpdate()
+    protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
     }
 
-    private protected override void InitializeStates()
+    protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -77,21 +71,5 @@ public class Follower : Enemy
         FollowerAttackState = new FollowerAttackState(this);
         FollowerReadyAttackState = new FollowerReadyAttackState(this);
         FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
-    }
-
-    public void EnableWeaponTriggers()
-    {
-        Weapon.EnableTriggers();
-    }
-
-    public void DisableWeaponTriggers()
-    {
-        Weapon.DisableTriggers();
     }
 }

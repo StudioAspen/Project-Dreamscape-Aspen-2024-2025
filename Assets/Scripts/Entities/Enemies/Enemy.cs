@@ -14,21 +14,23 @@ public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
     [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
+    [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Child] private TMP_Text debugStateText;
+    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
+    public float MovementSpeed => SpeedModifier * baseSpeed;
+    private float totalSpeedModifierForAnimation;
 
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
     private bool lookAtPath;
 
-    public Entity Target { get; protected set; }
+    public Entity Target { get; private set; }
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
-    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -40,48 +42,44 @@ public class Enemy : Entity
         spawner = e;
     }
 
-    private protected override void OnAwake()
+    protected override void OnAwake()
     {
         base.OnAwake();
 
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
-    private protected override void OnOnEnable()
+    protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
         SetStartState(EnemyIdleState);
     }
 
-    private protected override void OnOnDisable()
+    protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    private protected override void OnStart()
+    protected override void OnStart()
     {
         base.OnStart();
 
         ChangeTeam(1);
 
         SetDefaultState(EnemyIdleState);
+
+        FinishAnimation(); // disable attack animation
     }
 
-    private protected override void OnUpdate()
+    protected override void OnUpdate()
     {
         base.OnUpdate();
 
         HandleAnimations();
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
-            ForceChangeState(EntityLaunchState);
-        }
     }
 
-    private protected override void OnFixedUpdate()
+    protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
         
@@ -98,23 +96,22 @@ public class Enemy : Entity
         OnOnAnimatorMove();
     }
 
-    private protected virtual void OnOnAnimatorMove()
+    protected virtual void OnOnAnimatorMove()
     {
-        if (!UseRootMotion) return;
+        if (!IsAttackAnimationPlaying) return;
 
-        float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
+        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        //desiredAnimationMovement.y = 0f;
 
-        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
+        Move(desiredAnimationMovement);
     }
 
-    private protected virtual void OnTick()
+    protected virtual void OnTick()
     {
-        TryAssignTarget();
+        AssignTarget();
     }
 
-    private protected override void InitializeStates()
+    protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -122,11 +119,9 @@ public class Enemy : Entity
         EnemyChaseState = new EnemyChaseState(this);
     }
 
-    private protected override void CheckGrounded()
+    protected override void CheckGrounded()
     {
-        base.CheckGrounded();
-
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
+        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, physicsSettings.GroundLayer);
     }
 
     private void DebugState()
@@ -136,9 +131,11 @@ public class Enemy : Entity
         debugStateText.text = $"{CurrentState.GetType()}";
     }
 
-    private protected override void HandleAnimations()
+    private void HandleAnimations()
     {
-        base.HandleAnimations();
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 5f * Time.deltaTime);
+
+        animator.SetFloat("MovementSpeed", MovementSpeed);
     }
 
     private List<Vector3> GetPathToDestination(Vector3 dest)
@@ -181,14 +178,9 @@ public class Enemy : Entity
         }
     }
 
-    public void CancelPath()
-    {
-        path = null;
-    }
-
     public void Move(Vector3 dir)
     {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -198,7 +190,7 @@ public class Enemy : Entity
         this.lookAtPath = lookAtPath;
     }
 
-    private protected override void OnDeath()
+    protected override void OnDeath()
     {
         base.OnDeath();
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
@@ -210,7 +202,7 @@ public class Enemy : Entity
         spawner.RemoveEnemyFromList(this);
     }
 
-    public virtual void TryAssignTarget()
+    protected virtual void AssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
         if (targets.Count == 0)
@@ -220,40 +212,6 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
-    }
-
-    /// <summary>
-    /// Filters targets in a cone shape starting from the center of the collider with a total angle of 2 * coneHalfAngle.
-    /// </summary>
-    /// <param name="targets">The list of targets to filter.</param>
-    /// <param name="center">The center position of the collider.</param>
-    /// <param name="coneHalfAngle">Half of the total angle of the cone.</param>
-    /// <returns>The filtered list of targets.</returns>
-    public virtual List<Entity> FilterTargetsInConeShape(List<Entity> targets, Vector3 center, float coneHalfAngle)
-    {
-        if (targets.Count == 0) return targets;
-
-        List<Entity> filteredTargets = new List<Entity>();
-
-        Vector3 forwardDirection = transform.forward;
-
-        foreach (Entity target in targets)
-        {
-            Vector3 directionToTarget = target.GetColliderCenterPosition() - center;
-
-            // Calculate the angle between the forward direction and the direction to the target
-            float angle = Vector3.Angle(forwardDirection, directionToTarget.normalized);
-
-            // If angle is within half of the cone's angle, add to filtered targets
-            if (angle <= coneHalfAngle) filteredTargets.Add(target);
-        }
-
-        return filteredTargets;
-    }
-
-    public void ClearTarget()
-    {
-        Target = null;
     }
 
     public override void LookAt(Vector3 target)
@@ -266,9 +224,19 @@ public class Enemy : Entity
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
 
-    public override void Launch(Vector3 direction, float force)
+    public virtual void FinishAnimation()
     {
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
+        IsAttackAnimationPlaying = false;
+        DisableWeaponTriggers();
+    }
+
+    public virtual void EnableWeaponTriggers()
+    {
+        Weapon.EnableTriggers();
+    }
+
+    public virtual void DisableWeaponTriggers()
+    {
+        Weapon.DisableTriggers();
     }
 }

@@ -29,11 +29,6 @@ public class BirdsEyeCameraController : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
-        Disable();
-
-        landPlacementUIObject.SetActive(false);
-        landEmpowermentUIObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -43,6 +38,10 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Start()
     {
+        Disable();
+        landPlacementUIObject.SetActive(false);
+        landEmpowermentUIObject.SetActive(false);
+
         currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom)/(maxZoom - minZoom));
     }
 

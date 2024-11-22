@@ -22,43 +22,43 @@ public class Leaper : Enemy
     
     #endregion
 
-    private protected override void OnAwake()
+    protected override void OnAwake()
     {
         base.OnAwake();
     }
 
-    private protected override void OnOnEnable()
+    protected override void OnOnEnable()
     {
         base.OnOnEnable();
         // set start state
     }
 
-    private protected override void OnOnDisable()
+    protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    private protected override void OnOnAnimatorMove()
+    protected override void OnOnAnimatorMove()
     {
         base.OnOnAnimatorMove();
     }
 
-    private protected override void OnStart()
+    protected override void OnStart()
     {
         base.OnStart();
     } 
 
-    private protected override void OnUpdate()
+    protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    private protected override void OnFixedUpdate()
+    protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
     }
 
-    private protected override void InitializeStates()
+    protected override void InitializeStates()
     {
         base.InitializeStates();
 

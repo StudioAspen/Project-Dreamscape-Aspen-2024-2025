@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
-using System.Linq;
 
 public class Weapon : MonoBehaviour
 {
@@ -25,11 +24,11 @@ public class Weapon : MonoBehaviour
     private int currentHitFrame;
     [HideInInspector] public UnityEvent<Entity> OnWeaponStartSwing = new UnityEvent<Entity>();
     [HideInInspector] public UnityEvent<Entity> OnWeaponEndSwing = new UnityEvent<Entity>();
-    [HideInInspector] public UnityEvent<Entity, Entity, Vector3, int> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3, int>();
+    [HideInInspector] public UnityEvent<Entity, Entity, Vector3> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3>();
 
-    [field: Header("Weapon: Combo")]
-    [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
-    private float percentDamage;
+    [Header("Weapon: Combo")]
+    public List<ComboDataSO> Combos;
+    private Vector2Int damageRange;
 
     [Header("Weapon: Impact Frames")]
     [SerializeField] private float impactFramesDuration = 0.15f;
@@ -136,10 +135,9 @@ public class Weapon : MonoBehaviour
 
         //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
-        int damageValue = holderEntity.CalculateDamage(percentDamage);
-        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
+        victim.TakeDamage(GetRandomDamage(), hitPoint, holderEntity.gameObject);
 
-        OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
+        OnWeaponHit?.Invoke(holderEntity, victim, hitPoint);
     }
 
     private void CreateTempHitVisual(Vector3 pos, Color color, float duration)
@@ -188,13 +186,13 @@ public class Weapon : MonoBehaviour
         capsuleCollider.enabled = false;
     }
 
-    public void SetPercentDamage(float newPercent)
+    public void SetDamageRange(Vector2Int newRange)
     {
-        percentDamage = newPercent;
+        damageRange = newRange;
     }
 
-    public void AddCombo(ComboDataSO comboData)
+    private int GetRandomDamage()
     {
-        Combos.Add(comboData);
+        return Random.Range(damageRange.x, damageRange.y);
     }
 }
