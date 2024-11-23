@@ -53,7 +53,7 @@ public class FogEffectFeature : ScriptableRendererFeature
             if (material == null) return;
 
             CommandBuffer cmd = CommandBufferPool.Get("FogEffectFeature");
-            /*var stack = VolumeManager.instance.stack;
+            var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
             var fogEffect = stack.GetComponent<FogEffectComponent>();
             // Apply fog properties if fog effect is active
             if (fogEffect != null && fogEffect.IsActive())
@@ -75,7 +75,7 @@ public class FogEffectFeature : ScriptableRendererFeature
                 material.SetFloat("_SkyBoxNoiseTransparency", fogEffect.skyBoxNoiseTransparency.value);
                 material.SetFloat("_RotateFogNoise", fogEffect.rotateFogNoise.value);
                 material.SetFloat("_RotateSkyBoxNoise", fogEffect.rotateSkyBoxNoise.value);
-            }*/
+            }
 
             RenderTargetIdentifier tempTexture = new RenderTargetIdentifier("_TemporaryTexture");
             cmd.GetTemporaryRT(Shader.PropertyToID("_TemporaryTexture"), renderingData.cameraData.cameraTargetDescriptor);
