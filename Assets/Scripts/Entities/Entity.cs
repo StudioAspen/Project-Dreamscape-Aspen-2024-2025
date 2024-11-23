@@ -9,8 +9,8 @@ using UnityEngine.Pool;
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    [Header("Entity: References")]
-    [SerializeField, Self] public Animator animator;
+    [field: Header("Entity: References")]
+    [field: SerializeField, Self] public Animator Animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -49,7 +49,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Team Variables
-    public int Team { get; private set; }
+    [field: Header("Entity: Team")]
+    [field: SerializeField] public int Team { get; private set; }
     #endregion
 
     #region Attack Variables
@@ -287,7 +288,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        Animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
     }
 
     /// <summary>
@@ -404,6 +405,16 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Determines if the entity will die from the given damage.
+    /// </summary>
+    /// <param name="damage">The amount of damage.</param>
+    /// <returns>True if the entity will die, false otherwise.</returns>
+    public virtual bool WillDieFromDamage(int damage)
+    {
+        return MaxHealth > 0 && CurrentHealth - damage <= 0;
+    }
+
+    /// <summary>
     /// Tries to change the state of the entity to the staggered state.
     /// If the current state is already the fling state, it does nothing.
     /// </summary>
@@ -474,43 +485,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Transitions the animator to the specified animation using default transition duration.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    public void DefaultTransitionToAnimation(string animation)
-    {
-        animator.CrossFadeInFixedTime(animation, 0.1f);
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using default transition duration.
-    /// Also specifies the layer to transition to.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    public void DefaultTransitionToAnimation(string animation, string layer)
-    {
-        animator.CrossFadeInFixedTime(animation, 0.1f, animator.GetLayerIndex(layer));
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using the specified transition duration.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    /// <param name="transitionDuration">The duration of the transition.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration)
-    {
-        animator.CrossFadeInFixedTime(animation, transitionDuration);
-    }
-
-    /// <summary>
     /// Transitions the animator to the specified animation using the specified transition duration and layer.
     /// </summary>
     /// <param name="animation">The name of the animation to transition to.</param>
     /// <param name="transitionDuration">The duration of the transition.</param>
-    /// <param name="layer">The layer to transition to.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration, string layer)
+    public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
     {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, animator.GetLayerIndex(layer));
+        Animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>

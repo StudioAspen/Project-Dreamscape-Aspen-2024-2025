@@ -19,55 +19,57 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player);
-        playerCombat.Weapon.ClearEnemiesHitList();
+        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
 
-        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage);
+        playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
 
-        player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
+        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
 
-        player.TransitionToAnimation(ComboData.ComboClip.name, 0.1f);
+        player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
 
-        //Debug.Break();
+        player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
-        playerCombat.IsAnimationPlaying = true;
-        player.ApplyRootMotion = ComboData.HasRootMotion;
+        playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
 
-        player.ApplyRotationToNextMovement();
+        player.ApplyRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
-        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit);
+        player.ApplyRotationToNextMovement(); // makes the player face the direction they are facing and moving
+
+        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit); // listen for weapon hits
     }
 
     public override void OnExit()
     {
-        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player);
-        playerCombat.IsAnimationPlaying = false;
-        player.ApplyRootMotion = false;
+        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
 
-        playerCombat.EndHit();
-        playerCombat.CanCombo = false;
+        playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
+        player.ApplyRootMotion = false; // stops root motion
+        playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
-        player.InstantlySetGroundedSpeed(0f);
+        playerCombat.EndHit(); // stops the hitbox on the weapon
 
-        //if (ComboData.WillIgnoreGravity) player.ResetYVelocity();
+        player.InstantlySetGroundedSpeed(0f); // stops the player from moving
 
-        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit);
+        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit); // remove the onhit listener
     }
 
     public override void Update()
     {
         player.ApplyGravity();
 
-        if (!playerCombat.IsAnimationPlaying) player.ChangeState(player.DefaultState);
+        if (!playerCombat.IsAnimationPlaying) // if the animation is done playing, go back to the default state
+        {
+            player.ChangeState(player.DefaultState);
+            return;
+        }
+            
 
-        if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement();
+        if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); // update new target rotation player if they are moving
 
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(0f);
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
-
-        player.RotateToTargetRotation();
     }
 
     public override void FixedUpdate()
@@ -82,10 +84,9 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (ComboData.WillLaunchUpwards)
+        if (ComboData.WillLaunchUpwards && !victim.WillDieFromDamage(damage))
         {
-            victim.TryChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-
+            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
             source.Launch(Vector3.up, ComboData.AirLaunchForce);
 
             return;
@@ -94,7 +95,6 @@ public class PlayerAttackState : PlayerBaseState
         if (!player.IsGrounded)
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-
             source.Launch(Vector3.up, ComboData.AirLaunchForce);
         }
     }

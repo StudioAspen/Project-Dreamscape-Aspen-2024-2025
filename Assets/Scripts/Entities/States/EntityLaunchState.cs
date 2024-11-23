@@ -26,7 +26,7 @@ public class EntityLaunchState : BaseState
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("FlatFall");
+        entity.TransitionToAnimation("FlatFall");
 
         timer = 0f;
         touchedGround = false;
@@ -54,7 +54,7 @@ public class EntityLaunchState : BaseState
         if (timer > 0.05f && entity.IsGrounded && !touchedGround)
         {
             touchedGround = true;
-            entity.DefaultTransitionToAnimation("FlatFallImpact");
+            entity.TransitionToAnimation("FlatFallImpact");
         }
     }
 

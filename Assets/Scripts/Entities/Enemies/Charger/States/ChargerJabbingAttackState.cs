@@ -23,7 +23,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
         if (charger.RemainingJabs % 2 == 1)
         {
-            charger.DefaultTransitionToAnimation("RightJab");
+            charger.TransitionToAnimation("RightJab");
 
             charger.RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
@@ -33,7 +33,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
         else
         {
-            charger.DefaultTransitionToAnimation("LeftJab");
+            charger.TransitionToAnimation("LeftJab");
 
             charger.LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 

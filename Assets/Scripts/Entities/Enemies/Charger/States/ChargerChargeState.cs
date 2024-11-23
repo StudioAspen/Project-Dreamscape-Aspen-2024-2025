@@ -26,7 +26,7 @@ public class ChargerChargeState : EnemyBaseState
 
     public override void OnEnter() 
     {
-        charger.DefaultTransitionToAnimation("FlatMovement");
+        charger.TransitionToAnimation("FlatMovement");
         
         charger.SetSpeedModifier(charger.ChargeSpeedModifier);
         charger.SetRotationSpeed(charger.ChargeRotationSpeed);
@@ -147,7 +147,7 @@ public class ChargerChargeState : EnemyBaseState
 
     private void TryFlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
     {
-        if (entity.GetType() == typeof(Charger)) return;
+        //if (entity.GetType() == typeof(Charger)) return; // prevents chargers from flinging other chargers
 
         entity.TryChangeToLaunchState(direction, force, stunDuration);
     }

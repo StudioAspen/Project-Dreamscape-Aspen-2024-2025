@@ -10,7 +10,6 @@ public class ComboDataSO : ScriptableObject
     [field: Header("[Combo Data]")]
     [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
-    [field: SerializeField] public AnimatorOverrideController AnimatorOverrideController { get; private set; }
     [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
     [field: Header("[Filter Options]")]

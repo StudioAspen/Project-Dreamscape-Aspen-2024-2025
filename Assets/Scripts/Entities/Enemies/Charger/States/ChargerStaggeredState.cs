@@ -11,7 +11,7 @@ public class ChargerStaggeredState : EntityStaggeredState
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("GetUp");
+        charger.TransitionToAnimation("GetUp");
 
         charger.SetSpeedModifier(0f);
 

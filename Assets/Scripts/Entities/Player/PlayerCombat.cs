@@ -290,25 +290,6 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log(result);
     }
 
-    public void ReplaceComboAnimationClip(AnimationClip newClip, string stateName)
-    {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(animator.runtimeAnimatorController);
-
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
-        foreach(AnimationClip currentClip in aoc.animationClips)
-        {
-            if(currentClip.name == stateName)
-            {
-                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
-            }
-        }
-
-        aoc.ApplyOverrides(anims);
-
-        animator.runtimeAnimatorController = aoc;
-    }
-
     private void HandleWeaponTriggers()
     {
         if (player.CurrentState != player.PlayerAttackState) EndHit();
@@ -325,6 +306,11 @@ public class PlayerCombat : MonoBehaviour
     }
 
     public void EnableCombo()
+    {
+        CanCombo = true;
+    }
+
+    public void DisableCombo()
     {
         CanCombo = true;
     }
