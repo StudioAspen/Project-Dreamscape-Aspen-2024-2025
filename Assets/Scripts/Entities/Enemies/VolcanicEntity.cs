@@ -16,7 +16,7 @@ public class VolcanicEntity : MonoBehaviour
     [Header("References")]
     [SerializeField, Self] private Entity entity;
     
-    [Header("Explosions Settings")]
+    [Header("Explosion Settings")]
     [SerializeField, Self] private Vector2Int explosionContactDamageRange  = new Vector2Int(20, 30);
     [SerializeField, Self] public int explosionDamage = 5;
     [SerializeField, Self] public float explosionForce = 10f;
@@ -27,7 +27,7 @@ public class VolcanicEntity : MonoBehaviour
 
     public void Update()
     {
-
+        // just checking if the enemy this script is attached to is "dead"
         if(entity.CurrentState == entity.EntityDeathState)
         {
             Debug.Log("BOOM");
@@ -47,20 +47,19 @@ public class VolcanicEntity : MonoBehaviour
 
         foreach(Collider hit in orderedHits)
         {
-            // if(IsOwnDamageableEntityCollider(hit)) continue;
 
             if(DidEntityExplosionDamageFriendlyEntity(hit, out Entity friendlyEntity))
             {
-
+                // leaving this here but doubt its going to be used
                 Debug.Log("friendly, leave alone");
                 
             }
             if (DidEntityExplosionHitEnemyEntity(hit, out Entity enemyEntity))
             {
-                Debug.Log("ENEMY DEAL DAMAGE");
-
+                // hits player and does damage
                 Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - entity.transform.position;
                 TryFlingEntity(enemyEntity, flingDirection, explosionForce, stunDuration);
+                // instead of bellow just an int for now as the thing bellow kills instantly
                 // entity.GetRandomDamageFromRange(explosionContactDamageRange)
                 enemyEntity.TakeDamageWithoutState( explosionDamage, hit.ClosestPoint(entity.GetColliderCenterPosition()), entity.gameObject);
                 return;
@@ -84,10 +83,14 @@ public class VolcanicEntity : MonoBehaviour
         entity = hit.GetComponentInParent<Entity>();
 
         if(entity == null) return false;
+        // NOTICE: cant really tell if team isnt team as it 
+        // treats all entities as part of the same team so have to say != 1
+        // which is not the players team
         if (entity.Team != 1) return false;
         print( $"Entity: {entity} Team: {entity.Team}");
         return true;
     }
+    // NOT NECESSARY ENEMY DIES AND STOPS EXISTING FOR EXPLOSION
     // private bool IsOwnDamageableEntityCollider(Collider hit)
     // {
     //     // check if hit is a child of charger's collider
@@ -101,6 +104,7 @@ public class VolcanicEntity : MonoBehaviour
 
     private bool DidEntityExplosionHitEnemyEntity(Collider hit, out Entity entity)
     {
+        // just to be safe im keeping this here
         entity = hit.GetComponentInParent<Entity>();
 
         if (entity == null) return false;
