@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,8 +26,9 @@ public class PlayerAttackState : PlayerBaseState
 
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed);
 
+        player.TransitionToAnimation(ComboData.ComboClip.name, 0.1f);
+
         //Debug.Break();
-        player.TransitionToAnimation("Combo", 0.1f);
 
         playerCombat.IsAnimationPlaying = true;
         player.ApplyRootMotion = ComboData.HasRootMotion;

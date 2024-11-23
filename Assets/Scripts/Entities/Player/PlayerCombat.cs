@@ -223,11 +223,8 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.PlayerSlideState) return;
         if (player.CurrentState == player.EntityStaggeredState) return;
 
-        ReplaceComboAnimationClip(animator, combo.ComboClip);
-
         player.PlayerAttackState.SetCombo(combo);
         player.ForceChangeState(player.PlayerAttackState);
-
 
         comboText.text = "Combo: " + combo.name;
     }
@@ -293,15 +290,15 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log(result);
     }
 
-    private void ReplaceComboAnimationClip(Animator anim, AnimationClip newClip)
+    public void ReplaceComboAnimationClip(AnimationClip newClip, string stateName)
     {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(anim.runtimeAnimatorController);
+        AnimatorOverrideController aoc = new AnimatorOverrideController(animator.runtimeAnimatorController);
 
         var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
 
         foreach(AnimationClip currentClip in aoc.animationClips)
         {
-            if(currentClip.name == "ComboPlaceholder")
+            if(currentClip.name == stateName)
             {
                 anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
             }

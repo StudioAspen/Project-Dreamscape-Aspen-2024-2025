@@ -138,9 +138,9 @@ public class Player : Entity
         if (!ApplyRootMotion) return;
 
         Vector3 desiredAnimationMovement = animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
+        //desiredAnimationMovement.y = 0f;
 
-        //controller.Move(desiredAnimationMovement);
+        controller.Move(desiredAnimationMovement);
     }
 
     private protected override void CheckGrounded()
