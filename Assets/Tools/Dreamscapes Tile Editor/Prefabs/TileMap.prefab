@@ -60,8 +60,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4170070762846698995}
+  m_Children: []
   m_Father: {fileID: 1360595089787577889}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9109390248881837772
@@ -127,77 +126,3 @@ MonoBehaviour:
   _biomeSeed: 0
   _gridSize: {x: 1, y: 1}
   _tilesContainer: {fileID: 603821371843053735}
---- !u!1001 &3759655388855162418
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 603821371843053735}
-    m_Modifications:
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8160156650286791525, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-        type: 3}
-      propertyPath: m_Name
-      value: Tile_DreamForest_1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7c8b799c79fd04d418b1bfd28e58cc64, type: 3}
---- !u!4 &4170070762846698995 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1005406539892157377, guid: 7c8b799c79fd04d418b1bfd28e58cc64,
-    type: 3}
-  m_PrefabInstance: {fileID: 3759655388855162418}
-  m_PrefabAsset: {fileID: 0}
