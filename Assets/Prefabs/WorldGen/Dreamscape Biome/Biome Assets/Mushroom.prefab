@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2481567607217189574}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0363979, y: 1.0277207, z: 2.9406886}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -43,17 +43,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.04219246
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.97772074
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.2946886
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
@@ -63,17 +63,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
@@ -98,7 +98,22 @@ PrefabInstance:
     - target: {fileID: -369950532539616761, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.1944511
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -369950532539616761, guid: a471501c8e09df248a3007624297bfcb,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -369950532539616761, guid: a471501c8e09df248a3007624297bfcb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -369950532539616761, guid: a471501c8e09df248a3007624297bfcb,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a471501c8e09df248a3007624297bfcb,
         type: 3}
@@ -106,7 +121,8 @@ PrefabInstance:
       value: FBX_Mushroom
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -2845779275431937956, guid: a471501c8e09df248a3007624297bfcb, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a471501c8e09df248a3007624297bfcb, type: 3}
