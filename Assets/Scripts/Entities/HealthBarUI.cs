@@ -42,6 +42,6 @@ public class HealthBarUI : MonoBehaviour
         healthText.text = $"{Mathf.Clamp(currentValue, 0, maxValue)}/{maxValue}";
 
         DOTween.Kill(healthDifferenceFill);
-        healthDifferenceFill.DOSizeDelta(healthFill.sizeDelta, healthDifferenceFillDuration).SetUpdate(true).SetDelay(healthDifferenceFillDelay).SetEase(Ease.OutQuint).OnUpdate(() => { Debug.Log($"{healthFill.sizeDelta}, {healthDifferenceFill.sizeDelta}"); });
+        healthDifferenceFill.DOSizeDelta(healthFill.sizeDelta, healthDifferenceFillDuration).SetUpdate(true).SetDelay(healthDifferenceFillDelay).SetEase(Ease.OutQuint);
     }
 }
