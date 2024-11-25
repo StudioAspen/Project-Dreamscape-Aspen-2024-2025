@@ -1,5 +1,6 @@
 using KBCore.Refs;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -79,6 +80,8 @@ public class Player : Entity
     }
     #endregion
 
+    public Fireball FireballPrefab;
+
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
@@ -129,11 +132,6 @@ public class Player : Entity
         HandleAnimations();
 
         stateText.text = $"State: {CurrentState.GetType().ToString()}";
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Launch(Vector3.up, 10f);
-        }
     }
 
     private void OnAnimatorMove()
