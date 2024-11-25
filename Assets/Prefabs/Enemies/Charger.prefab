@@ -94,7 +94,7 @@ MonoBehaviour:
   <DetectionConeHalfAngle>k__BackingField: 20
   <TargetDetectedDuration>k__BackingField: 2
   <NearbyAttackRadiusThreshold>k__BackingField: 5
-  <ChargeContactPercentDamage>k__BackingField: 200
+  <ChargeContactDamageRange>k__BackingField: {x: 20, y: 30}
   <ChargeSpeedModifier>k__BackingField: 5
   <ChargeDuration>k__BackingField: 10
   <ChargeRotationSpeed>k__BackingField: 15
@@ -107,7 +107,7 @@ MonoBehaviour:
   <ChargeStunDuration>k__BackingField: 4
   <WindDownDuration>k__BackingField: 3.5
   <JabCount>k__BackingField: 10
-  <JabPercentDamage>k__BackingField: 75
+  <JabDamageRange>k__BackingField: {x: 7, y: 13}
   <JabStandStillRadius>k__BackingField: 1
   <JabRotationSpeed>k__BackingField: 25
   <LeftFistWeapon>k__BackingField: {fileID: 3805667188454913111}

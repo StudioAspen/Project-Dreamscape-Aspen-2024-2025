@@ -9,8 +9,8 @@ using UnityEngine.Pool;
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    [field: Header("Entity: References")]
-    [field: SerializeField, Self] public Animator Animator;
+    [Header("Entity: References")]
+    [SerializeField, Self] private protected Animator animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -288,7 +288,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
 
-        Animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
     }
 
     /// <summary>
@@ -491,7 +491,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="transitionDuration">The duration of the transition.</param>
     public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
     {
-        Animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
+        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>

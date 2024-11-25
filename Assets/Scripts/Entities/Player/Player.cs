@@ -1,5 +1,6 @@
 using KBCore.Refs;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -137,8 +138,8 @@ public class Player : Entity
 
         if (!ApplyRootMotion) return;
 
-        Vector3 desiredAnimationMovement = Animator.deltaPosition;
-        //desiredAnimationMovement.y = 0f;
+        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
 
         controller.Move(desiredAnimationMovement);
     }
@@ -410,28 +411,9 @@ public class Player : Entity
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
     }
 
-    public void ReplaceComboAnimationClip(AnimationClip newClip)
-    {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(Animator.runtimeAnimatorController);
-
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
-        foreach (AnimationClip currentClip in aoc.animationClips)
-        {
-            if (currentClip.name == "ComboPlaceholder")
-            {
-                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
-            }
-        }
-
-        aoc.ApplyOverrides(anims);
-
-        Animator.runtimeAnimatorController = aoc;
-    }
-
     public void SetComboAnimationSpeed(float speed)
     {
-        Animator.SetFloat("ComboAnimationSpeed", speed);
+        animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     public override void Die()
