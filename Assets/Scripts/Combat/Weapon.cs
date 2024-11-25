@@ -138,9 +138,10 @@ public class Weapon : MonoBehaviour
         //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
         int damageValue = holderEntity.CalculateDamage(percentDamage);
-        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
+
+        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
     private void CreateTempHitVisual(Vector3 pos, Color color, float duration)

@@ -101,7 +101,7 @@ public class ChargerChargeState : EnemyBaseState
                 Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
                 TryFlingEntity(enemyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
 
-                enemyEntity.TakeDamageWithoutState(charger.CalculateDamage(charger.ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject);
+                enemyEntity.TakeDamage(charger.CalculateDamage(charger.ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject, false);
 
                 charger.ChangeState(charger.ChargerWindDownState);
                 return;

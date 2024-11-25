@@ -46,7 +46,7 @@ public class MomentumSystem : MonoBehaviour
         HandleMomentum();
     }
 
-    private void Player_OnEntityTakeDamage(Vector3 hitPoint, GameObject source)
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
         Reset();
     }

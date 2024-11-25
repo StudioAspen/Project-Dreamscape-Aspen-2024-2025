@@ -29,7 +29,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     {
         base.OnTick();
 
-        if(damagePerTick > 0) entity.TakeDamageWithoutState(damagePerTick, entity.GetRandomPositionOnCollider(), source);
+        if(damagePerTick > 0) entity.TakeDamage(damagePerTick, entity.GetRandomPositionOnCollider(), source, false);
     }
 
     private protected override void OnExpire()

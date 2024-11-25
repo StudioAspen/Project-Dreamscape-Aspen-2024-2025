@@ -282,16 +282,28 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState != player.PlayerAttackState) EndHit();
     }
 
+    /// <summary>
+    /// Start the hit by enabling the weapon triggers.
+    /// Called by an animation event.
+    /// </summary>
     public void StartHit()
     {
         Weapon.EnableTriggers();
     }
 
+    /// <summary>
+    /// Ends the hit by disabling the weapon triggers.
+    /// Called by an animation event.
+    /// </summary>
     public void EndHit()
     {
         Weapon.DisableTriggers();
     }
 
+    /// <summary>
+    /// Allows the next combo to be executed mid-animation.
+    /// Called by an animation event.
+    /// </summary>
     public void EnableCombo()
     {
         CanCombo = true;
@@ -304,6 +316,11 @@ public class PlayerCombat : MonoBehaviour
         ClearComboLists();
     }
 
+    /// <summary>
+    /// Finish the animation and clear the combo lists if animation cancellation is allowed.
+    /// Animation cancelling is disabled for the first half of the attack animation to prevent premature cancelling bug.
+    /// Called at the end of an attack animation through an event.
+    /// </summary>
     public void FinishAnimation()
     {
         if (!CanCancelAnimation) return;

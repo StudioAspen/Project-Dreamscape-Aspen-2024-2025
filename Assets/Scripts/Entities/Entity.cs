@@ -66,7 +66,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>(); // passes the hit point and the source of the damage
+    [HideInInspector] public UnityEvent<int, Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<int, Vector3, GameObject>(); // passes the hit point and the source of the damage
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
     private protected GameObject lastHitSource;
@@ -347,55 +347,27 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Entity becomes staggered on hit and cannot take damage if it is in the death state.
     /// Takes damage and updates the entity's health while checking to see if the entity's health reaches below zero.
-    /// Also, attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
+    /// Attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
     /// Entity will be invicible if max health is set to 0.
     /// Override this function if you want to add custom damage taking logic.
     /// </summary>
     /// <param name="damage">The amount of damage to take.</param>
     /// <param name="hitPoint">The point where the entity was hit.</param>
     /// <param name="source">The source of the damage.</param>
-    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    /// <param name="willTryStagger">If the instance of damage will try to stagger.</param>
+    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
-        TryChangeStaggeredState();
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
+
+        if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
 
         lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
-        //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
-        {
-            OnDeath();
-        }
-    }
-
-    /// <summary>
-    /// Entity doesn't become staggered on hit and cannot take damage if it is in the death state.
-    /// Takes damage and updates the entity's health while checking to see if the entity's health reaches below zero.
-    /// Also, attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
-    /// Entity will be invicible if max health is set to 0.
-    /// Override this function if you want to add custom damage taking logic.
-    /// </summary>
-    /// <param name="damage">The amount of damage to take.</param>
-    /// <param name="hitPoint">The point where the entity was hit.</param>
-    /// <param name="source">The source of the damage.</param>
-    public virtual void TakeDamageWithoutState(int damage, Vector3 hitPoint, GameObject source)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
-
-        CurrentHealth -= damage;
-
-        lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
 
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth > 0)
