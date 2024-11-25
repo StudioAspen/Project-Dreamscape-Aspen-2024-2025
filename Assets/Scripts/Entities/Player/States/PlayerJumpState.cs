@@ -16,7 +16,7 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void OnExit()
     {
-
+        
     }
 
     public override void Update()

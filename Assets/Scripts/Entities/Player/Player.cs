@@ -148,6 +148,12 @@ public class Player : Entity
     {
         base.CheckGrounded();
 
+        if(velocity.y > 0f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
         //IsGrounded is always false for the first 0.1 seconds in air
         if (inAirTimer > 0f && inAirTimer < 0.1f)
         {
@@ -160,11 +166,23 @@ public class Player : Entity
 
     private bool GetIsGrounded()
     {
-        LayerMask mask = LayerMask.GetMask("Entity", "Ground");
+        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
+        LayerMask mask = LayerMask.GetMask("Ground");
 
         Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
         foreach (Collider hit in hits)
         {
+            // normal detection  
+            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
+
+            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
+            {
+                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
+                {
+                    continue;
+                }
+            }
+
             if (hit.gameObject != gameObject)
             {
                 return true;

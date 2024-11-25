@@ -21,15 +21,14 @@ public class PlayerCombat : MonoBehaviour
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
     [HideInInspector] public bool IsAnimationPlaying;
+    [HideInInspector] public bool CanCombo;
+    [HideInInspector] public bool CanCancelAnimation;
 
-    [Header("Combo")]
-    [SerializeField] private float comboListenDuration = 1f;
-    private float comboListenTimer;
+    [field: Header("Combo")]
     private List<PlayerActions> currentComboList = new List<PlayerActions>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
-    public bool CanCombo;
 
     private void OnValidate()
     {
@@ -68,7 +67,6 @@ public class PlayerCombat : MonoBehaviour
 
     private void Update()
     {
-        HandleComboList();
         HandleWeaponTriggers();
 
         DebugUICombos();
@@ -125,8 +123,6 @@ public class PlayerCombat : MonoBehaviour
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
-        comboListenTimer = 0;
-
         if (currentComboList.Count == 0)
         {
             currentComboList.Add(PlayerActions.AIRBORNE);
@@ -141,29 +137,20 @@ public class PlayerCombat : MonoBehaviour
 
     private void Player_OnGrounded(Vector3 startGroundedPosition)
     {
-        comboListenTimer = 0;
-
         currentComboList.Clear();
 
         GenerateComboLists();
     }
 
-    private void HandleComboList()
+    public void ClearComboLists()
     {
-        if (player.CurrentState != player.PlayerChargeState && player.CurrentState != player.PlayerAttackState && comboListenTimer < comboListenDuration * 2f) comboListenTimer += Time.unscaledDeltaTime;
-
-        if (comboListenTimer > comboListenDuration)
-        {
-            currentComboList.Clear();
-            potentialCombos.Clear();
-            predictedCombos.Clear();
-        }
+        currentComboList.Clear();
+        potentialCombos.Clear();
+        predictedCombos.Clear();
     }
 
     private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
     {
-        comboListenTimer = 0;
-
         currentComboList.Add(incomingAction);
 
         if (!player.IsGrounded && currentComboList.Count > 0)
@@ -312,12 +299,18 @@ public class PlayerCombat : MonoBehaviour
 
     public void DisableCombo()
     {
-        CanCombo = true;
+        CanCombo = false;
+
+        ClearComboLists();
     }
 
     public void FinishAnimation()
     {
+        if (!CanCancelAnimation) return;
+
         IsAnimationPlaying = false;
+
+        ClearComboLists();
     }
 }
 

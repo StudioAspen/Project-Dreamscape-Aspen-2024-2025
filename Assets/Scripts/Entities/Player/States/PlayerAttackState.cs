@@ -11,10 +11,23 @@ public class PlayerAttackState : PlayerBaseState
 
     public ComboDataSO ComboData { get; private set; }
 
+    private float duration;
+    private float timer;
+
     public PlayerAttackState(Player player) : base(player)
     {
         this.player = player;
         playerCombat = player.GetComponent<PlayerCombat>();
+    }
+
+    /// <summary>
+    /// Sets the combo data for the player.
+    /// Needs to be called everytime you change to the PlayerAttackState.
+    /// </summary>
+    /// <param name="comboData">The combo data to set.</param>
+    public void SetCombo(ComboDataSO comboData)
+    {
+        ComboData = comboData;
     }
 
     public override void OnEnter()
@@ -29,7 +42,11 @@ public class PlayerAttackState : PlayerBaseState
 
         player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
+        playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
         playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
+
+        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
+        timer = 0f; // reset the timer
 
         player.ApplyRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
@@ -62,7 +79,8 @@ public class PlayerAttackState : PlayerBaseState
             player.ChangeState(player.DefaultState);
             return;
         }
-            
+
+        HandleAnimationCancellingBuffer();
 
         if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); // update new target rotation player if they are moving
 
@@ -77,9 +95,10 @@ public class PlayerAttackState : PlayerBaseState
 
     }
 
-    public void SetCombo(ComboDataSO comboData)
+    private void HandleAnimationCancellingBuffer()
     {
-        ComboData = comboData;
+        timer += Time.deltaTime;
+        if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
