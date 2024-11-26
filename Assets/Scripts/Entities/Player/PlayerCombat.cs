@@ -9,10 +9,6 @@ using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [Header("Player: Debug UI")]
-    [SerializeField] private TMP_Text inputsText;
-    [SerializeField] private TMP_Text comboText;
-
     [Header("References")]
     [SerializeField, Self] private PlayerInputReader input;
     [SerializeField, Self] private Player player;
@@ -25,7 +21,7 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
-    private List<PlayerActions> currentComboList = new List<PlayerActions>();
+    public List<PlayerActions> CurrentInputsList { get; private set; } = new List<PlayerActions>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
@@ -67,8 +63,6 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
-
-        DebugUICombos();
     }
 
     private void Input_HandleAttack1Input()
@@ -132,14 +126,14 @@ public class PlayerCombat : MonoBehaviour
 
     public void ClearComboLists()
     {
-        currentComboList.Clear();
+        CurrentInputsList.Clear();
         potentialCombos.Clear();
         predictedCombos.Clear();
     }
 
     private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
     {
-        currentComboList.Add(incomingAction);
+        CurrentInputsList.Add(incomingAction);
 
         GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
@@ -151,8 +145,8 @@ public class PlayerCombat : MonoBehaviour
         // if new action doesn't create any valid combos, restart the combo list with the new action
         if (predictedCombos.Count == 0) 
         {
-            currentComboList.Clear();
-            currentComboList.Add(incomingAction);
+            CurrentInputsList.Clear();
+            CurrentInputsList.Add(incomingAction);
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
@@ -172,8 +166,6 @@ public class PlayerCombat : MonoBehaviour
 
         player.PlayerAttackState.SetCombo(combo);
         player.ForceChangeState(player.PlayerAttackState);
-
-        comboText.text = "Combo: " + combo.name;
     }
 
     private void GenerateComboLists(List<ComboDataSO> validCombos)
@@ -182,35 +174,19 @@ public class PlayerCombat : MonoBehaviour
         predictedCombos = new List<ComboDataSO>();
         foreach (ComboDataSO weaponCombo in validCombos)
         {
-            if (ComboDataSO.IsIn(weaponCombo.ComboInputs, currentComboList)) potentialCombos.Add(weaponCombo);
-            if (ComboDataSO.IsPotentiallyIn(weaponCombo.ComboInputs, currentComboList)) predictedCombos.Add(weaponCombo);
+            if (ComboDataSO.IsIn(weaponCombo.ComboInputs, CurrentInputsList)) potentialCombos.Add(weaponCombo);
+            if (ComboDataSO.IsPotentiallyIn(weaponCombo.ComboInputs, CurrentInputsList)) predictedCombos.Add(weaponCombo);
         }
-    }
-
-    private void DebugUICombos()
-    {
-        string inputs = "Inputs: ";
-
-        for (int i = 0; i < currentComboList.Count; i++)
-        {
-            inputs += currentComboList[i].ToString();
-            if (i != currentComboList.Count - 1) inputs += ",";
-            inputs += " ";
-        }
-
-        inputsText.text = inputs;
-
-        if (currentComboList.Count == 0) comboText.text = "Combo: ";
     }
 
     private string PrintComboLists(bool willPrint = true)
     {
         string result = "Current Combo: { ";
 
-        for (int i = 0; i < currentComboList.Count; i++)
+        for (int i = 0; i < CurrentInputsList.Count; i++)
         {
-            result += currentComboList[i].ToString();
-            if (i != currentComboList.Count - 1) result += ",";
+            result += CurrentInputsList[i].ToString();
+            if (i != CurrentInputsList.Count - 1) result += ",";
             result += " ";
         }
 

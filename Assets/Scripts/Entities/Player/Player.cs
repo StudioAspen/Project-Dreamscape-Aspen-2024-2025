@@ -7,9 +7,6 @@ using UnityEngine.Events;
 
 public class Player : Entity
 {
-    [Header("Player: Debug UI")]
-    [SerializeField] private TMP_Text stateText;
-
     [Header("Player: References")]
     [SerializeField, Self] private CharacterController controller;
     [SerializeField, Self] private PlayerInputReader input;
@@ -128,8 +125,6 @@ public class Player : Entity
         HandleDashTrail();
 
         HandleAnimations();
-
-        stateText.text = $"State: {CurrentState.GetType().ToString()}";
     }
 
     private void OnAnimatorMove()

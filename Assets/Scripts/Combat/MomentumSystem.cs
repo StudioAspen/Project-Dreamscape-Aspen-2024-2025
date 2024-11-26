@@ -8,7 +8,6 @@ public class MomentumSystem : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private Player player;
-    [SerializeField] private TMP_Text debugText;
 
     [Header("Settings")]
     [SerializeField] private float baseTimeBetween = 5f;
@@ -73,8 +72,6 @@ public class MomentumSystem : MonoBehaviour
         momentum++;
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
-
-        debugText.text = $"Momentum: {momentum}";
     }
 
     private void Reset()
@@ -82,8 +79,6 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         momentum = 0;
-
-        debugText.text = $"Momentum: {momentum}";
     }
 
 }
