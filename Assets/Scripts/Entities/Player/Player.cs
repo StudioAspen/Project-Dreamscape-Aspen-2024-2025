@@ -359,6 +359,16 @@ public class Player : Entity
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }
 
+    /// <summary>
+    /// Applies the given target rotation to the next movement.
+    /// </summary>
+    /// <param name="targetRotation">The target rotation to apply.</param>
+    public void ApplyRotationToNextMovement(Quaternion targetRotation)
+    {
+        targetForwardRotation = targetRotation;
+        targetForwardDirection = targetForwardRotation * Vector3.forward;
+    }
+
     private protected override void HandleAnimations()
     {
         base.HandleAnimations();

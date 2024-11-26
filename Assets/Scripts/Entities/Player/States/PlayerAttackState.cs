@@ -50,7 +50,7 @@ public class PlayerAttackState : PlayerBaseState
 
         player.ApplyRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
-        player.ApplyRotationToNextMovement(); // makes the player face the direction they are facing and moving
+        if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
         playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit); // listen for weapon hits
     }
@@ -82,7 +82,8 @@ public class PlayerAttackState : PlayerBaseState
 
         HandleAnimationCancellingBuffer();
 
-        if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); // update new target rotation player if they are moving
+        // update new target rotation player if they are moving and grounded
+        if (player.IsGrounded && player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); 
 
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(0f);
@@ -106,7 +107,9 @@ public class PlayerAttackState : PlayerBaseState
         if (ComboData.WillLaunchUpwards && !victim.WillDieFromDamage(damage))
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            source.Launch(Vector3.up, ComboData.AirLaunchForce);
+            player.Launch(Vector3.up, ComboData.AirLaunchForce);
+
+            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
 
             return;
         }
@@ -114,7 +117,7 @@ public class PlayerAttackState : PlayerBaseState
         if (!player.IsGrounded)
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            source.Launch(Vector3.up, ComboData.AirLaunchForce);
+            player.Launch(Vector3.up, ComboData.AirLaunchForce);
         }
     }
 }

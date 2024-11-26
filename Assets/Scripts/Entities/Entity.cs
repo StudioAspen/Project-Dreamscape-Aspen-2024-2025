@@ -487,10 +487,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Rotates the entity to face the specified target position with a speed of rotationSpeed.
     /// Must be called in Update to work.
+    /// Returns the target rotation of the entity.
     /// Override this function if you want custom LookAt behavior.
     /// </summary>
     /// <param name="target">The position to look at.</param>
-    public virtual void LookAt(Vector3 target)
+    public virtual Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -498,6 +499,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        return targetRotation;
     }
 
     /// <summary>

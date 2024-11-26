@@ -1,3 +1,4 @@
+using DG.Tweening;
 using KBCore.Refs;
 using System;
 using System.Collections;
@@ -21,6 +22,7 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
+    [SerializeField] private float comboResetDelay = 1f;
     public List<PlayerActions> CurrentInputsList { get; private set; } = new List<PlayerActions>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
@@ -116,19 +118,12 @@ public class PlayerCombat : MonoBehaviour
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
-        ClearComboLists();
+        ResetCombos();
     }
 
     private void Player_OnGrounded(Vector3 startGroundedPosition)
     {
-        ClearComboLists();
-    }
-
-    public void ClearComboLists()
-    {
-        CurrentInputsList.Clear();
-        potentialCombos.Clear();
-        predictedCombos.Clear();
+        ResetCombos();
     }
 
     private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
@@ -137,25 +132,27 @@ public class PlayerCombat : MonoBehaviour
 
         GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
-        AttemptToExecuteCombo(incomingAction);
-    }
+        // if the incoming action is not an attack action, the combo list is reset after a delay.
+        if (!IsAttackAction(incomingAction)) StartDelayedComboReset();
 
-    private void AttemptToExecuteCombo(PlayerActions incomingAction)
-    {
-        // if new action doesn't create any valid combos, restart the combo list with the new action
-        if (predictedCombos.Count == 0) 
+        // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
+        if (predictedCombos.Count == 0)
         {
             CurrentInputsList.Clear();
             CurrentInputsList.Add(incomingAction);
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
-        ExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+        if (IsAttackAction(incomingAction)) TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
     }
 
-    private void ExecuteCombo(ComboDataSO combo)
+    /// <summary>
+    /// Tries to execute the given combo if it is not null and the player's current state allows it.
+    /// </summary>
+    /// <param name="combo">The combo to execute.</param>
+    private void TryExecuteCombo(ComboDataSO combo)
     {
-        if(combo == null)
+        if (combo == null)
         {
             //Debug.LogWarning($"Executed combo is null with combo lists:\n{PrintComboLists(false)}");
             return;
@@ -168,6 +165,10 @@ public class PlayerCombat : MonoBehaviour
         player.ForceChangeState(player.PlayerAttackState);
     }
 
+    /// <summary>
+    /// Generates the combo lists based on the valid combos and the current inputs.
+    /// </summary>
+    /// <param name="validCombos">The list of valid combos.</param>
     private void GenerateComboLists(List<ComboDataSO> validCombos)
     {
         potentialCombos = new List<ComboDataSO>();
@@ -179,6 +180,23 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets the combo lists and clears the current inputs, potential combos, and predicted combos.
+    /// </summary>
+    public void ResetCombos()
+    {
+        DOTween.Kill("DelayedComboReset");
+
+        CurrentInputsList.Clear();
+        potentialCombos.Clear();
+        predictedCombos.Clear();
+    }
+
+    /// <summary>
+    /// Returns the current combo, potential combos, and predicted combos in printable format.
+    /// </summary>
+    /// <param name="willPrint">Whether to print the combo lists to the console.</param>
+    /// <returns>A string representation of the combo lists.</returns>
     private string PrintComboLists(bool willPrint = true)
     {
         string result = "Current Combo: { ";
@@ -210,11 +228,38 @@ public class PlayerCombat : MonoBehaviour
 
         result += "}";
 
-        if(willPrint) Debug.Log(result);
-        
+        if (willPrint) Debug.Log(result);
+
         return result;
     }
 
+    /// <summary>
+    /// Checks if the given action is an attack action.
+    /// </summary>
+    /// <param name="action">The player action to check.</param>
+    /// <returns>True if the action is an attack action, false otherwise.</returns>
+    private bool IsAttackAction(PlayerActions action)
+    {
+        return action == PlayerActions.ATTACK1
+            || action == PlayerActions.ATTACK2
+            || action == PlayerActions.CHARGED_ATTACK1
+            || action == PlayerActions.CHARGED_ATTACK2;
+    }
+
+    /// <summary>
+    /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
+    /// </summary>
+    private void StartDelayedComboReset()
+    {
+        DOTween.Kill("DelayedComboReset");
+        DOVirtual.DelayedCall(comboResetDelay, ResetCombos).SetId("DelayedComboReset");
+    }
+
+    /// <summary>
+    /// Handles the weapon triggers based on the player's current state.
+    /// A backup in case the PlayerAttackState doesn't do it.
+    /// If the player's current state is not the PlayerAttackState, it calls the EndHit method.
+    /// </summary>
     private void HandleWeaponTriggers()
     {
         if (player.CurrentState != player.PlayerAttackState) EndHit();
@@ -251,7 +296,7 @@ public class PlayerCombat : MonoBehaviour
     {
         CanCombo = false;
 
-        ClearComboLists();
+        ResetCombos();
     }
 
     /// <summary>
@@ -265,7 +310,7 @@ public class PlayerCombat : MonoBehaviour
 
         IsAnimationPlaying = false;
 
-        ClearComboLists();
+        ResetCombos();
     }
 }
 

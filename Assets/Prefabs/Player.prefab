@@ -1432,8 +1432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8e255f5d8dfd84d95b9016a330a0c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputsText: {fileID: 1575641516642038556}
-  comboText: {fileID: 2549703386475872756}
   input: {fileID: 6714409095086020908}
   player: {fileID: 8852926688546275590}
   animator: {fileID: 2171180168782530629}
@@ -1441,6 +1439,7 @@ MonoBehaviour:
   IsAnimationPlaying: 0
   CanCombo: 0
   CanCancelAnimation: 0
+  comboResetDelay: 1
 --- !u!114 &2191053302705418715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,7 +1453,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 8852926688546275590}
-  debugText: {fileID: 1721648083386111821}
   baseTimeBetween: 10
   timeBetweenMultiplier: 0.975
 --- !u!114 &3702187593430642151
@@ -1470,7 +1468,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCombat: {fileID: 5620550920081884860}
-  debugText: {fileID: 6870328943161982194}
   timeBetween: 2
 --- !u!114 &5066363359248579512
 MonoBehaviour:

@@ -245,7 +245,7 @@ public class Enemy : Entity
         Target = null;
     }
 
-    public override void LookAt(Vector3 target)
+    public override Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -253,6 +253,8 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+
+        return targetRotation;
     }
 
     public override void Launch(Vector3 direction, float force)
