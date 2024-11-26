@@ -199,4 +199,21 @@ public class Weapon : MonoBehaviour
     {
         Combos.Add(comboData);
     }
+
+    /// <summary>
+    /// Retrieves the list of valid combos based on the specified air combo flag.
+    /// </summary>
+    /// <param name="isAirCombo">Flag indicating whether the combo is an air combo.</param>
+    /// <returns>The list of valid combos.</returns>
+    public List<ComboDataSO> GetCombos(bool isAirCombo)
+    {
+        List<ComboDataSO> validCombos = new List<ComboDataSO>();
+
+        foreach (ComboDataSO comboData in Combos)
+        {
+            if (comboData.IsAirCombo == isAirCombo) validCombos.Add(comboData);
+        }
+
+        return validCombos;
+    }
 }

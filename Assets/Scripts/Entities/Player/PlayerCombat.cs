@@ -29,7 +29,6 @@ public class PlayerCombat : MonoBehaviour
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
-
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -123,23 +122,12 @@ public class PlayerCombat : MonoBehaviour
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
-        if (currentComboList.Count == 0)
-        {
-            currentComboList.Add(PlayerActions.AIRBORNE);
-            GenerateComboLists();
-            return;
-        }
-
-        currentComboList.Clear();
-        currentComboList.Add(PlayerActions.AIRBORNE);
-        GenerateComboLists();
+        ClearComboLists();
     }
 
     private void Player_OnGrounded(Vector3 startGroundedPosition)
     {
-        currentComboList.Clear();
-
-        GenerateComboLists();
+        ClearComboLists();
     }
 
     public void ClearComboLists()
@@ -153,60 +141,32 @@ public class PlayerCombat : MonoBehaviour
     {
         currentComboList.Add(incomingAction);
 
-        if (!player.IsGrounded && currentComboList.Count > 0)
-        {
-            if (currentComboList[0] != PlayerActions.AIRBORNE) currentComboList.Insert(0, PlayerActions.AIRBORNE);
-        }
-        GenerateComboLists();
+        GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
-        AttemptToExecuteACombo(incomingAction);
+        AttemptToExecuteCombo(incomingAction);
     }
 
-    private void AttemptToExecuteACombo(PlayerActions incomingAction)
+    private void AttemptToExecuteCombo(PlayerActions incomingAction)
     {
-        ComboDataSO comboToExecute = null;
-
-        if (predictedCombos.Count == 0) // if new action doesn't create any valid combos
+        // if new action doesn't create any valid combos, restart the combo list with the new action
+        if (predictedCombos.Count == 0) 
         {
             currentComboList.Clear();
             currentComboList.Add(incomingAction);
-
-            if (!player.IsGrounded)
-            {
-                currentComboList.Insert(0, PlayerActions.AIRBORNE);
-                GenerateComboLists();
-
-                comboToExecute = ComboDataSO.GetLongestCombo(potentialCombos);
-
-                if (comboToExecute != null)
-                {
-                    ExecuteCombo(comboToExecute);
-                }
-            }
-            else
-            {
-                comboToExecute = ComboDataSO.GetSingleActionCombo(Weapon.Combos, incomingAction);
-                if (comboToExecute != null)
-                {
-                    ExecuteCombo(comboToExecute);
-                }
-            }
-        }
-        else
-        {
-            comboToExecute = ComboDataSO.GetLongestCombo(potentialCombos);
-
-            if (comboToExecute != null)
-            {
-                ExecuteCombo(comboToExecute);
-            }
+            GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
-        //PrintComboLists();
+        ExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
     }
 
     private void ExecuteCombo(ComboDataSO combo)
     {
+        if(combo == null)
+        {
+            //Debug.LogWarning($"Executed combo is null with combo lists:\n{PrintComboLists(false)}");
+            return;
+        }
+
         if (player.CurrentState == player.PlayerSlideState) return;
         if (player.CurrentState == player.EntityStaggeredState) return;
 
@@ -216,11 +176,11 @@ public class PlayerCombat : MonoBehaviour
         comboText.text = "Combo: " + combo.name;
     }
 
-    private void GenerateComboLists()
+    private void GenerateComboLists(List<ComboDataSO> validCombos)
     {
         potentialCombos = new List<ComboDataSO>();
         predictedCombos = new List<ComboDataSO>();
-        foreach (ComboDataSO weaponCombo in Weapon.Combos)
+        foreach (ComboDataSO weaponCombo in validCombos)
         {
             if (ComboDataSO.IsIn(weaponCombo.ComboInputs, currentComboList)) potentialCombos.Add(weaponCombo);
             if (ComboDataSO.IsPotentiallyIn(weaponCombo.ComboInputs, currentComboList)) predictedCombos.Add(weaponCombo);
@@ -243,7 +203,7 @@ public class PlayerCombat : MonoBehaviour
         if (currentComboList.Count == 0) comboText.text = "Combo: ";
     }
 
-    private void PrintComboLists()
+    private string PrintComboLists(bool willPrint = true)
     {
         string result = "Current Combo: { ";
 
@@ -274,7 +234,9 @@ public class PlayerCombat : MonoBehaviour
 
         result += "}";
 
-        Debug.Log(result);
+        if(willPrint) Debug.Log(result);
+        
+        return result;
     }
 
     private void HandleWeaponTriggers()

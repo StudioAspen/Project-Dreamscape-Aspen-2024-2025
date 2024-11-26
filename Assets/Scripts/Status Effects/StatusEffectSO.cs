@@ -32,7 +32,7 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     private protected virtual void OnApply()
     {
-        Debug.Log($"{name} applied on {entityStatusEffectorOwner.gameObject.name}");
+        //Debug.Log($"{name} applied on {entityStatusEffectorOwner.gameObject.name}");
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class StatusEffectSO : ScriptableObject
     {
         entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false);
 
-        Debug.Log($"{name} Expired");
+        //Debug.Log($"{name} Expired");
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     public virtual void Cancel()
     {
-        Debug.Log($"{name} Canceled");
+        //Debug.Log($"{name} Canceled");
     }
 
     /// <summary>
