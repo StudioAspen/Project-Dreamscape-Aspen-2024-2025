@@ -114,10 +114,12 @@ public class PlayerAttackState : PlayerBaseState
             return;
         }
 
-        if (!player.IsGrounded)
+        if (!player.IsGrounded && !victim.IsGrounded)
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
             player.Launch(Vector3.up, ComboData.AirLaunchForce);
+
+            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
         }
     }
 }
