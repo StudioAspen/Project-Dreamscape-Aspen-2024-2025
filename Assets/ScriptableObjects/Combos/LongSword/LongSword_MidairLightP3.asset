@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: LongSword_MidairLightP3
   m_EditorClassIdentifier: 
   <ComboInputs>k__BackingField: 000000000000000000000000
-  <ComboClip>k__BackingField: {fileID: -3891449819406770849, guid: 11c317ca660f7a740b666b9a9e0835e4,
+  <ComboClip>k__BackingField: {fileID: 7400000, guid: 89d35761eaaf9d849a6fec057e537f45,
     type: 3}
-  <ComboClipAnimationSpeed>k__BackingField: 2
+  <ComboClipAnimationSpeed>k__BackingField: 1.5
   <HasRootMotion>k__BackingField: 0
   <IsAirCombo>k__BackingField: 1
   <WillLaunchUpwards>k__BackingField: 0
   <PercentDamage>k__BackingField: 120
-  <AirLaunchForce>k__BackingField: -15
+  <ImpactFramesTimeScale>k__BackingField: 0.02
+  <ImpactFramesDuration>k__BackingField: 0.75
+  <AirLaunchForce>k__BackingField: -30

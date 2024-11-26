@@ -31,8 +31,9 @@ public class Weapon : MonoBehaviour
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
     private float percentDamage;
 
-    [Header("Weapon: Impact Frames")]
-    [SerializeField] private float impactFramesDuration = 0.15f;
+    private float fixedDeltaTime;
+    private float impactFramesTimeScale;
+    private float impactFramesDuration;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void OnValidate()
@@ -47,7 +48,7 @@ public class Weapon : MonoBehaviour
 
         AssignColliderStartEndPositions();
 
-        //if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
+        fixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Update()
@@ -132,7 +133,7 @@ public class Weapon : MonoBehaviour
 
     private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
-        StartImpactFrames(0.1f);
+        StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
         //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
@@ -155,24 +156,32 @@ public class Weapon : MonoBehaviour
         Destroy(temp, duration);
     }
 
-    private void StartImpactFrames(float timeScale)
+    private void StartImpactFrames(float timeScale, float duration)
     {
         if (impactFramesDuration <= 0) return;
 
         DOTween.Kill("ImpactFrames");
-        Time.timeScale = 1f;
+        Time.timeScale = timeScale;
+        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
 
-        float speedUpTime = impactFramesDuration / 4f;
-
-        Sequence impactFrameSequence = DOTween.Sequence().SetId("ImpactFrames");
-        impactFrameSequence.Append(DOTween.To(() => Time.timeScale, x => Time.timeScale = x, timeScale, impactFramesDuration - speedUpTime).SetEase(Ease.OutQuint)).SetUpdate(true);
-        impactFrameSequence.Append(DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, speedUpTime).SetEase(Ease.InCubic)).SetUpdate(true);
+        DOVirtual.DelayedCall(duration, () => { Time.timeScale = 1f; Time.fixedDeltaTime = fixedDeltaTime; }).SetId("ImpactFrames");
     }
 
     private void AssignColliderStartEndPositions()
     {
         colliderStartTransform.localPosition = capsuleCollider.center - (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
         colliderEndTransform.localPosition = capsuleCollider.center + (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
+    }
+
+    /// <summary>
+    /// Sets the timescale and duration of the impact frames.
+    /// </summary>
+    /// <param name="newScale">The new timescale of the impact frames.</param>
+    /// <param name="newDuration">The new duration of the impact frames.</param>
+    public void ConfigureImpactFrames(float newScale, float newDuration)
+    {
+        impactFramesTimeScale = newScale;
+        impactFramesDuration = newDuration;
     }
 
     public void ClearEnemiesHitList()
