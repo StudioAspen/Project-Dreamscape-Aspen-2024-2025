@@ -41,8 +41,16 @@ public class Leaper : Enemy
     public float PatrolJumpDuration;
     //- Cheng
 
+    // NOTE: everything was happening to fast initially added a timer to slow and debug
+    // for fun though take these off lol its funny af 
+    [field: Header("Leaper Debug Settings")]
+    public float debugTimerDuration = 0;
+    public float debugTimer = 5f;
+
+    
     // add all states here 
     // add as they get created
+
     #region States
 
     public LeaperAttackState LeaperAttackState{ get; private set; }
@@ -77,11 +85,16 @@ public class Leaper : Enemy
     {
         base.OnStart();
         SetDefaultState(LeaperPatrolState);
+        Debug.Log("Starting Leaper");
     } 
 
     private protected override void OnUpdate()
     {
         base.OnUpdate();
+        if(CurrentState == EnemyChaseState)
+        {
+            ForceChangeState(LeaperPatrolState);
+        }
     }
 
     private protected override void OnFixedUpdate()

@@ -58,12 +58,13 @@ public class LeaperChaseState : EnemyChaseState
         // Move towards the player if the target is beyond the safe distance threshold
         if (distanceToTarget > safeDistanceForLeap)
         {
-            Debug.Log(leaper.Distance(leaper.Target));
+            // Debug.Log(leaper.Distance(leaper.Target));
             leaper.SetDestination(leaper.Target.transform.position, true);
         }
         else
         {
-            Debug.Log(leaper.Distance(leaper.Target));
+            // Debug.Log(leaper.Distance(leaper.Target));
+
             // If within the safe distance, prepare for hop or leap back
             leaper.ChangeState(leaper.LeaperHopState);
         }

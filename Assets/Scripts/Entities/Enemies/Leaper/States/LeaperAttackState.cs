@@ -21,27 +21,26 @@ public class LeaperAttackState : EnemyBaseState
         leaper = enemy;
     }
 
-    public void SetLungeDestination(Vector3 dest)
-    {
-        destination = dest;
-    }
+    // public void SetLungeDestination(Vector3 dest)
+    // {
+    //     destination = dest;
+    // }
 
     public override void OnEnter()
     {
+        // leaper.DefaultTransitionToAnimation("FlatMovement");
+
+        // leaper.SetSpeedModifier(2f);
         
-        leaper.DefaultTransitionToAnimation("FlatMovement");
+        // Debug.Log(leaper.Target);
 
-        leaper.SetSpeedModifier(2f);
-        
-        Debug.Log(leaper.Target);
+        // SetLungeDestination(leaper.Target.transform.position);
 
-        SetLungeDestination(leaper.Target.transform.position);
+        // timer = 0;
 
-        timer = 0;
+        // leaper.LookAt(destination);
 
-        leaper.LookAt(destination);
-
-        leapTween = leaper.TweenLeap(destination, leaper.LeapAttackDuration, leaper.LeapAttackHeight);
+        // leapTween = leaper.TweenLeap(destination, leaper.LeapAttackDuration, leaper.LeapAttackHeight);
     }
 
     public override void OnExit()
@@ -51,28 +50,34 @@ public class LeaperAttackState : EnemyBaseState
 
     public override void Update()
     {
-        
+        // Debug.Log("IN ATTACK STATE");
     }
 
     public override void FixedUpdate()
     {
-        if(leaper.Target == null)
-        {
-            leaper.ChangeState(leaper.LeaperAttackState);
-            return;
-        }
-        Vector3 dir = (destination - leaper.transform.position);
-
-        //leaper.Move(dir);
         
-        leaper.CheckForHits();
-        timer += Time.deltaTime;
-        if (timer > leaper.LungeDuration)
-        {
-            leaper.ChangeState(leaper.EntityEmptyState);
-            leaper.ChangeState(leaper.LeaperAttackState);
-            return;
-        }
+            if(leaper.Target == null)
+            {
+                leaper.ChangeState(leaper.LeaperPatrolState);
+                return;
+            }
+            // Vector3 dir = (destination - leaper.transform.position);
+            // leapTween;
+            leaper.TweenLeap(destination, leaper.LeapAttackDuration, leaper.LeapAttackHeight);
+        // leaper.Move(dir);
+            
+            // leaper.CheckForHits();
+            // timer += Time.deltaTime;
+            // if (timer > leaper.LungeDuration)
+            // {
+            //     leaper.ChangeState(leaper.EntityEmptyState);
+            //     leaper.ChangeState(leaper.LeaperPatrolState);
+            //     return;
+            // }    
+        
+            // leaper.ChangeState(leaper.LeaperPatrolState);
+        
+        
         
     }
 }

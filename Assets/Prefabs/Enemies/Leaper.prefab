@@ -88,7 +88,7 @@ MonoBehaviour:
   UseRootMotion: 0
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
-  <LungeDuration>k__BackingField: 2
+  <LungeDuration>k__BackingField: 4
   <HitBoxRadius>k__BackingField: 2
   <HitBoxLocation>k__BackingField: {fileID: 778554438578636353}
   <HitLayer>k__BackingField:
@@ -106,6 +106,8 @@ MonoBehaviour:
   PatrolJumpPrepareTime: 0
   PatrolJumpHeight: 0
   PatrolJumpDuration: 0
+  debugTimerDuration: 0
+  debugTimer: 5
 --- !u!114 &1064907141835643634
 MonoBehaviour:
   m_ObjectHideFlags: 0

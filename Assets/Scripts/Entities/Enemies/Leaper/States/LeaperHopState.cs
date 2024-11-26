@@ -13,10 +13,18 @@ public class LeaperHopState : EnemyBaseState
 
     public override void OnEnter()
     {
-        leaper.DefaultTransitionToAnimation("Hop");
+        // leaper.debugTimerDuration += Time.deltaTime;
+        
 
-        leaper.StartCoroutine(Jump());
-        CoinToss();
+        // leaper.DefaultTransitionToAnimation("Hop");
+        // Debug.Log(leaper.debugTimerDuration);
+        // if( leaper.debugTimerDuration > leaper.debugTimer)
+        // {
+        //     leaper.StartCoroutine(Jump());
+        //     leaper.debugTimerDuration = 0;
+        //     CoinToss();
+        // }
+        // leaper.StartCoroutine(Jump());
     }
 
     public override void OnExit()
@@ -26,7 +34,18 @@ public class LeaperHopState : EnemyBaseState
 
     public override void Update()
     {
+        leaper.debugTimerDuration += Time.deltaTime;
+        
 
+        leaper.DefaultTransitionToAnimation("Hop");
+        // Debug.Log(leaper.debugTimerDuration);
+        if( leaper.debugTimerDuration > leaper.debugTimer)
+        {
+            leaper.StartCoroutine(Jump());
+            leaper.debugTimerDuration = 0;
+            // CoinToss();
+            leaper.ChangeState(leaper.LeaperAttackState);
+        }
     }
 
     public override void FixedUpdate()
