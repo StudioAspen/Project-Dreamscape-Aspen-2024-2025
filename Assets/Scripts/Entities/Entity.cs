@@ -65,6 +65,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     private bool prevIsGrounded;
     #endregion
 
+    #region Attack Variables
+    [field: Header("Entity: Attack")]
+    [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
+    [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    #endregion
+
+    #region Movement Events
+    [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
+    [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
+    private bool prevIsGrounded;
+    #endregion
+
     #region Combat Events
     [HideInInspector] public UnityEvent<int, Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<int, Vector3, GameObject>(); // passes the hit point and the source of the damage
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
@@ -384,6 +396,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual bool WillDieFromDamage(int damage)
     {
         return MaxHealth > 0 && CurrentHealth - damage <= 0;
+    }
+
+    /// <summary>
+    /// Tries to change the state of the entity to the staggered state.
+    /// If the current state is already the fling state, it does nothing.
+    /// </summary>
+    private protected virtual void TryChangeStaggeredState()
+    {
+        if (CurrentState == EntityLaunchState) return;
+
+        ForceChangeState(EntityStaggeredState);
     }
 
     /// <summary>
