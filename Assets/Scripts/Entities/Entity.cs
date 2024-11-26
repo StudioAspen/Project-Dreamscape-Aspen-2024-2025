@@ -49,7 +49,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Team Variables
-    public int Team { get; private set; }
+    [field: Header("Entity: Team")]
+    [field: SerializeField] public int Team { get; private set; }
     #endregion
 
     #region Attack Variables
@@ -65,7 +66,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<Vector3, GameObject>(); // passes the hit point and the source of the damage
+    [HideInInspector] public UnityEvent<int, Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<int, Vector3, GameObject>(); // passes the hit point and the source of the damage
     [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
     [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
     private protected GameObject lastHitSource;
@@ -346,26 +347,27 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Entity becomes staggered on hit and cannot take damage if it is in the death state.
     /// Takes damage and updates the entity's health while checking to see if the entity's health reaches below zero.
-    /// Also, attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
+    /// Attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
     /// Entity will be invicible if max health is set to 0.
     /// Override this function if you want to add custom damage taking logic.
     /// </summary>
     /// <param name="damage">The amount of damage to take.</param>
     /// <param name="hitPoint">The point where the entity was hit.</param>
     /// <param name="source">The source of the damage.</param>
-    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    /// <param name="willTryStagger">If the instance of damage will try to stagger.</param>
+    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
-        TryChangeStaggeredState();
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
+
+        if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
 
         lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
 
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth > 0)
@@ -375,32 +377,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Entity doesn't become staggered on hit and cannot take damage if it is in the death state.
-    /// Takes damage and updates the entity's health while checking to see if the entity's health reaches below zero.
-    /// Also, attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
-    /// Entity will be invicible if max health is set to 0.
-    /// Override this function if you want to add custom damage taking logic.
+    /// Determines if the entity will die from the given damage.
     /// </summary>
-    /// <param name="damage">The amount of damage to take.</param>
-    /// <param name="hitPoint">The point where the entity was hit.</param>
-    /// <param name="source">The source of the damage.</param>
-    public virtual void TakeDamageWithoutState(int damage, Vector3 hitPoint, GameObject source)
+    /// <param name="damage">The amount of damage.</param>
+    /// <returns>True if the entity will die, false otherwise.</returns>
+    public virtual bool WillDieFromDamage(int damage)
     {
-        if (CurrentState == EntityDeathState) return;
-
-        AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
-
-        CurrentHealth -= damage;
-
-        lastHitSource = source;
-
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
-        //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
-        {
-            OnDeath();
-        }
+        return MaxHealth > 0 && CurrentHealth - damage <= 0;
     }
 
     /// <summary>
@@ -474,43 +457,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Transitions the animator to the specified animation using default transition duration.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    public void DefaultTransitionToAnimation(string animation)
-    {
-        animator.CrossFadeInFixedTime(animation, 0.1f);
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using default transition duration.
-    /// Also specifies the layer to transition to.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    public void DefaultTransitionToAnimation(string animation, string layer)
-    {
-        animator.CrossFadeInFixedTime(animation, 0.1f, animator.GetLayerIndex(layer));
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using the specified transition duration.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    /// <param name="transitionDuration">The duration of the transition.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration)
-    {
-        animator.CrossFadeInFixedTime(animation, transitionDuration);
-    }
-
-    /// <summary>
     /// Transitions the animator to the specified animation using the specified transition duration and layer.
     /// </summary>
     /// <param name="animation">The name of the animation to transition to.</param>
     /// <param name="transitionDuration">The duration of the transition.</param>
-    /// <param name="layer">The layer to transition to.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration, string layer)
+    public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
     {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, animator.GetLayerIndex(layer));
+        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>
@@ -534,10 +487,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Rotates the entity to face the specified target position with a speed of rotationSpeed.
     /// Must be called in Update to work.
+    /// Returns the target rotation of the entity.
     /// Override this function if you want custom LookAt behavior.
     /// </summary>
     /// <param name="target">The position to look at.</param>
-    public virtual void LookAt(Vector3 target)
+    public virtual Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -545,6 +499,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        return targetRotation;
     }
 
     /// <summary>

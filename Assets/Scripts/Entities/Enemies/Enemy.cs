@@ -15,11 +15,11 @@ public class Enemy : Entity
     [field: Header("Enemy: References")]
     [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
-    [SerializeField, Child] private TMP_Text debugStateText;
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
 
+    // custom pathfinding
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
     private bool lookAtPath;
@@ -88,11 +88,6 @@ public class Enemy : Entity
         MoveTowardsDestination();
     }
 
-    private void LateUpdate()
-    {
-        DebugState();
-    }
-
     private void OnAnimatorMove()
     {
         OnOnAnimatorMove();
@@ -127,13 +122,6 @@ public class Enemy : Entity
         base.CheckGrounded();
 
         IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
-    }
-
-    private void DebugState()
-    {
-        debugStateText.transform.parent.rotation = Quaternion.LookRotation(debugStateText.transform.parent.position - Camera.main.transform.position);
-
-        debugStateText.text = $"{CurrentState.GetType()}";
     }
 
     private protected override void HandleAnimations()
@@ -207,7 +195,8 @@ public class Enemy : Entity
     public override void Die()
     {
         base.Die();
-        spawner.RemoveEnemyFromList(this);
+
+        if(spawner != null) spawner.RemoveEnemyFromList(this);
     }
 
     public virtual void TryAssignTarget()
@@ -256,7 +245,7 @@ public class Enemy : Entity
         Target = null;
     }
 
-    public override void LookAt(Vector3 target)
+    public override Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -264,6 +253,8 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+
+        return targetRotation;
     }
 
     public override void Launch(Vector3 direction, float force)

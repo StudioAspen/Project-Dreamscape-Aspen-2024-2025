@@ -36,7 +36,7 @@ public class PlayerLaunchState : EntityLaunchState
 
             player.SetVelocity(Vector3.zero);
 
-            player.DefaultTransitionToAnimation("FlatFallImpact");
+            player.TransitionToAnimation("FlatFallImpact");
         }
 
         player.ApplyGravity();

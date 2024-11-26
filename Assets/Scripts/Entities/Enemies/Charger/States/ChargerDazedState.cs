@@ -15,7 +15,7 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("Hit");
+        charger.TransitionToAnimation("Hit");
 
         charger.SetSpeedModifier(0f);
 
