@@ -37,6 +37,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
 
         playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
+        playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
         player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
 
@@ -107,17 +108,17 @@ public class PlayerAttackState : PlayerBaseState
         if (ComboData.WillLaunchUpwards && !victim.WillDieFromDamage(damage))
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            player.Launch(Vector3.up, ComboData.AirLaunchForce);
+            if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
 
             player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
 
             return;
         }
 
-        if (!player.IsGrounded && !victim.IsGrounded)
+        if (!player.IsGrounded && !victim.IsGrounded && !victim.WillDieFromDamage(damage))
         {
             victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            player.Launch(Vector3.up, ComboData.AirLaunchForce);
+            if(ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
 
             player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
         }
