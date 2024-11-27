@@ -1631,8 +1631,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1984,6 +1984,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 196489911609782724, guid: 19dae7578bc56674dae55670ec5dfbf5,
+        type: 3}
+      propertyPath: <Combos>k__BackingField.Array.data[10]
+      value: 
+      objectReference: {fileID: 11400000, guid: 1b43565460fe02f40ac6638f47062260,
+        type: 2}
     - target: {fileID: 423488981329827098, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: barMaximum

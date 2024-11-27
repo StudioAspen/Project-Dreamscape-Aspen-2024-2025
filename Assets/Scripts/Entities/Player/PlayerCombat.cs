@@ -43,6 +43,7 @@ public class PlayerCombat : MonoBehaviour
         //input.Attack2Charging.AddListener(Input_HandleAttackChargingInput);
 
         input.OnPlayerActionInput.AddListener(Input_HandleOnPlayerActionInput);
+        input.MemoryAttack.AddListener(Input_HandleMemoryAttack);
 
         player.OnGrounded.AddListener(Player_OnGrounded);
         player.OnAirborne.AddListener(Player_OnAirborne);
@@ -58,6 +59,7 @@ public class PlayerCombat : MonoBehaviour
         //input.Attack2Charging.RemoveListener(Input_HandleAttackChargingInput);
 
         input.OnPlayerActionInput.RemoveListener(Input_HandleOnPlayerActionInput);
+        input.MemoryAttack.RemoveListener(Input_HandleMemoryAttack);
 
         player.OnGrounded.RemoveListener(Player_OnGrounded);
         player.OnAirborne.RemoveListener(Player_OnAirborne);
@@ -118,6 +120,18 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK2);
+    }
+
+    private void Input_HandleMemoryAttack()
+    {
+        if (!player.CanAttack) return;
+        if (player.CurrentState == player.PlayerChargeState) return;
+        if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.PlayerDashState) return;
+        if (player.CurrentState == player.EntityLaunchState) return;
+
+
+        input.OnPlayerActionInput?.Invoke(PlayerActions.MEMORY_ATTACK);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)

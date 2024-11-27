@@ -59,6 +59,7 @@ public class Player : Entity
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
+    public PlayerChargerAbilityState PlayerChargerAbilityState { get; internal set; }
 
     private protected override void InitializeStates()
     {
@@ -73,6 +74,7 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
+        PlayerChargerAbilityState = new PlayerChargerAbilityState(this);
         EntityStaggeredState = new PlayerStaggeredState(this);
         EntityDeathState = new PlayerDeathState(this);
         EntityLaunchState = new PlayerLaunchState(this);
@@ -87,6 +89,7 @@ public class Player : Entity
         input.SprintHold.AddListener(Input_HandleSprintInput);
         input.SprintRelease.AddListener(Input_HandleSprintReleaseInput);
         input.Dash.AddListener(Input_HandleDashInput);
+        input.MemoryAttack.AddListener(Input_HandleMemoryAttackInput);
     }
 
     private protected override void OnOnDisable()
@@ -97,6 +100,7 @@ public class Player : Entity
         input.SprintHold.RemoveListener(Input_HandleSprintInput);
         input.SprintRelease.RemoveListener(Input_HandleSprintReleaseInput);
         input.Dash.RemoveListener(Input_HandleDashInput);
+        input.MemoryAttack.RemoveListener(Input_HandleMemoryAttackInput);
     }
 
     private protected override void OnAwake()
@@ -212,6 +216,20 @@ public class Player : Entity
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
+    }
+
+    private void Input_HandleMemoryAttackInput()
+    {
+        if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == PlayerSlideState) return;
+        if (CurrentState == PlayerChargeState) return;
+        if (CurrentState == PlayerAttackState) return;
+        if (CurrentState == EntityStaggeredState) return;
+        if (CurrentState == PlayerDashState) return;
+        if (CurrentState == EntityLaunchState) return;
+
+        input.OnPlayerActionInput.Invoke(PlayerActions.MEMORY_ATTACK);
+        ChangeState(PlayerChargerAbilityState);
     }
 
     public void GroundedMove()

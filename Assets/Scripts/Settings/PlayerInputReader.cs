@@ -23,6 +23,7 @@ public class PlayerInputReader : MonoBehaviour
     [HideInInspector] public UnityEvent Attack2;
     [HideInInspector] public UnityEvent Attack2Charged;
     [HideInInspector] public UnityEvent Attack2Charging;
+    [HideInInspector] public UnityEvent MemoryAttack;
 
     [HideInInspector] public UnityEvent<PlayerActions> OnPlayerActionInput;
 
@@ -60,6 +61,11 @@ public class PlayerInputReader : MonoBehaviour
         if (playerInput.actions["Jump"].WasPressedThisFrame())
         {
             Jump?.Invoke();
+        }
+
+        if (playerInput.actions["MemoryAttack"].WasPressedThisFrame())
+        {
+            MemoryAttack?.Invoke();
         }
     }
 

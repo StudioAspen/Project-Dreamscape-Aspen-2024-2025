@@ -58,6 +58,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MemoryAttack",
+                    "type": "Button",
+                    "id": "7a215411-2d8c-496c-b9ed-6cfe771a57e3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -234,6 +243,17 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "CameraLook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e30d01f2-2687-4cd0-80ad-5989af6bd0c0",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "MemoryAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

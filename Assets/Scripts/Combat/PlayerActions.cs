@@ -5,5 +5,6 @@
     ATTACK2,
     CHARGED_ATTACK2,
     DASH,
-    AIRBORNE
+    AIRBORNE,
+    MEMORY_ATTACK
 }
