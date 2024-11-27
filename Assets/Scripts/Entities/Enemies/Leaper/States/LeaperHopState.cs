@@ -44,7 +44,7 @@ public class LeaperHopState : EnemyBaseState
         if( leaper.debugTimerDuration > leaper.debugTimer )
         {
 
-            // leaper.StartCoroutine(Jump());
+            leaper.StartCoroutine(Jump());
             leaper.ChangeState(leaper.LeaperAttackState);
             
         }

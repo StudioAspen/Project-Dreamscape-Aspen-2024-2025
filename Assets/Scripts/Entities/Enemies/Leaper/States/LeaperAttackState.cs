@@ -60,10 +60,6 @@ public class LeaperAttackState : EnemyBaseState
     {
         // Debug.Log("IN ATTACK STATE");
         
-    }
-
-    public override void FixedUpdate()
-    {   
         timer += Time.deltaTime;
             // previous code works but was very buggy and would only work sometimes
             // might just be on my end so ill keep it here 
@@ -83,6 +79,10 @@ public class LeaperAttackState : EnemyBaseState
         {
             leaper.ChangeState(leaper.LeaperPatrolState);
         }
+    }
+
+    public override void FixedUpdate()
+    {   
 
 
         // leaper.ChangeState(leaper.LeaperPatrolState);
