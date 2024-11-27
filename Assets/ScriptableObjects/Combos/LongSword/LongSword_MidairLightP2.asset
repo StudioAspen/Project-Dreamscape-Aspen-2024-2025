@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b253543ac71d7f14eaf5a73906075e12, type: 3}
   m_Name: LongSword_MidairLightP2
   m_EditorClassIdentifier: 
-  <ComboInputs>k__BackingField: 050000000000000000000000
+  <ComboInputs>k__BackingField: 0000000000000000
   <ComboClip>k__BackingField: {fileID: 6799651534840860903, guid: b8075c9babebc1a4a877c916f1b2fb05,
     type: 3}
   <ComboClipAnimationSpeed>k__BackingField: 2
   <HasRootMotion>k__BackingField: 0
-  <WillIgnoreGravity>k__BackingField: 1
+  <IsAirCombo>k__BackingField: 1
   <WillLaunchUpwards>k__BackingField: 0
   <PercentDamage>k__BackingField: 70
+  <ImpactFramesTimeScale>k__BackingField: 0.01
+  <ImpactFramesDuration>k__BackingField: 0.15
   <AirLaunchForce>k__BackingField: 5

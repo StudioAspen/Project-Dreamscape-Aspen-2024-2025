@@ -7,19 +7,21 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ComboData", order = 1)]
 public class ComboDataSO : ScriptableObject
 {
-    [field: Header("[Combo Data]")]
+    [field: Header("Combo Data")]
     [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
     [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
-    [field: Header("[Filter Options]")]
+    [field: Header("Filter Options")]
     [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
-    [field: SerializeField] public bool WillIgnoreGravity { get; private set; }
+    [field: SerializeField] public bool IsAirCombo { get; private set; }
     [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
 
-    [field: Header("[Hit Options]")]
+    [field: Header("Hit Options")]
     [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
-    [field: Tooltip("Upwards launch force on hit. Only works if IsAirCombo is true.")]
+    [field: SerializeField] public float ImpactFramesTimeScale { get; private set; }
+    [field: SerializeField] public float ImpactFramesDuration { get; private set; } = 0.25f;
+    [field: Tooltip("Upwards launch force on hit. Only works if WillLaunchUpwards is true.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
 
     /// <summary>

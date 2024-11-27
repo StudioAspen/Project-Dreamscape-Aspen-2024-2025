@@ -18,7 +18,7 @@ public class ChargerWindDownState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("FlatMovement");
+        charger.TransitionToAnimation("FlatMovement");
 
         timer = 0f;
         halfWindDownDuration = charger.WindDownDuration / 2f;

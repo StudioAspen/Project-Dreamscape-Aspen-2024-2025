@@ -168,7 +168,7 @@ public class Charger : Enemy
         return;
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -193,19 +193,31 @@ public class Charger : Enemy
             }
         }
 
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
+
         CurrentHealth -= newDamage;
 
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
         }
+    }
+
+    public override bool WillDieFromDamage(int damage)
+    {
+        int newDamage = damage;
+
+        if (HasSuperArmorActive())
+        {
+            if (damage < staggerDamageThreshold) newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
+        }
+
+        return MaxHealth > 0 && CurrentHealth - newDamage <= 0;
     }
 
     private bool HasSuperArmorActive()
