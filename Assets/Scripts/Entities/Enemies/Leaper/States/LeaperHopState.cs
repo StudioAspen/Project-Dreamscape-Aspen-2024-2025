@@ -6,6 +6,7 @@ public class LeaperHopState : EnemyBaseState
 {
     private Leaper leaper;
 
+
     public LeaperHopState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -13,6 +14,7 @@ public class LeaperHopState : EnemyBaseState
 
     public override void OnEnter()
     {
+        leaper.SetSpeedModifier(0);
         // leaper.debugTimerDuration += Time.deltaTime;
         
 
@@ -39,13 +41,14 @@ public class LeaperHopState : EnemyBaseState
 
         leaper.DefaultTransitionToAnimation("Hop");
         // Debug.Log(leaper.debugTimerDuration);
-        if( leaper.debugTimerDuration > leaper.debugTimer)
+        if( leaper.debugTimerDuration > leaper.debugTimer )
         {
-            leaper.StartCoroutine(Jump());
-            leaper.debugTimerDuration = 0;
-            // CoinToss();
+
+            // leaper.StartCoroutine(Jump());
             leaper.ChangeState(leaper.LeaperAttackState);
+            
         }
+        
     }
 
     public override void FixedUpdate()
@@ -77,7 +80,7 @@ public class LeaperHopState : EnemyBaseState
             leaper.transform.position = targetPositionHop;
             startPosition = targetPositionHop;
         }
-
+        CoinToss();
     }
 
     public void CoinToss()

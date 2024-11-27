@@ -94,10 +94,10 @@ MonoBehaviour:
   <HitLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 0
-  <LeapAttackHeight>k__BackingField: 2
+  <LeapAttackHeight>k__BackingField: 3
   <LeapAttackDuration>k__BackingField: 0.75
   <HopCount>k__BackingField: 2
-  <HopDistance>k__BackingField: 5
+  <HopDistance>k__BackingField: 3
   <HopDuration>k__BackingField: 0.5
   <HopHeight>k__BackingField: 0.75
   rb: {fileID: 1001185435268754374}
@@ -107,7 +107,7 @@ MonoBehaviour:
   PatrolJumpHeight: 0
   PatrolJumpDuration: 0
   debugTimerDuration: 0
-  debugTimer: 5
+  <debugTimer>k__BackingField: 2
 --- !u!114 &1064907141835643634
 MonoBehaviour:
   m_ObjectHideFlags: 0

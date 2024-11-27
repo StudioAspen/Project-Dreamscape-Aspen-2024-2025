@@ -21,6 +21,7 @@ public class LeaperPatrolState : EnemyBaseState
     }
     public override void OnEnter() 
     {
+        leaper.SetSpeedModifier(2f);
         enemy.DefaultTransitionToAnimation("FlatMovement");
         leaper.SetSpeedModifier(1f);
         leaper.ClearTarget();
@@ -57,6 +58,7 @@ public class LeaperPatrolState : EnemyBaseState
 
         if (leaper.Target != null) 
         {
+            Debug.Log("switching to chase state");
             //leaper.LeaperTargetDetectedState.AssignCurrentRememberedTarget(leaper.Target);
             leaper.ChangeState(leaper.LeaperChaseState);
             return;

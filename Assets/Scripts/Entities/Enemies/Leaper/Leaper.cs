@@ -25,8 +25,8 @@ public class Leaper : Enemy
 
     [field: Header("Leaper: Hop Settings")]
     [field: SerializeField] public int HopCount { get; private set; } = 2;
-    [field: SerializeField] public float HopDistance { get; private set; } = 5f;
-    [field: SerializeField] public float HopDuration { get; private set; } = .5f;
+    [field: SerializeField] public float HopDistance { get; private set; } = 3f;
+    [field: SerializeField] public float HopDuration { get; private set; } = .25f;
     [field: SerializeField] public float HopHeight { get; private set; } = .75f;
 
 
@@ -45,7 +45,7 @@ public class Leaper : Enemy
     // for fun though take these off lol its funny af 
     [field: Header("Leaper Debug Settings")]
     public float debugTimerDuration = 0;
-    public float debugTimer = 5f;
+    [field: SerializeField] public float debugTimer {get; private set;} = 2f;
 
     
     // add all states here 
@@ -84,7 +84,7 @@ public class Leaper : Enemy
     private protected override void OnStart()
     {
         base.OnStart();
-        SetDefaultState(LeaperPatrolState);
+        // SetDefaultState(LeaperPatrolState);  
         Debug.Log("Starting Leaper");
     } 
 
@@ -144,6 +144,7 @@ public class Leaper : Enemy
 
     public Tween TweenLeap(Vector3 leapDestination, float leapDuration, float leapHeight)
     {
+        Debug.Log(leapDestination);
         Vector3 startPoint = rb.position;
         Vector3 endPoint = leapDestination;
         Vector3 midPoint = (startPoint + endPoint) / 2;

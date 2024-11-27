@@ -5,7 +5,7 @@ using UnityEngine;
 public class LeaperChaseState : EnemyChaseState
 {
     private Leaper leaper; // Reference to the specific Leaper enemy using this state
-    private float safeDistanceForLeap = 10f; // Minimum distance from player before preparing to leap or hop back
+    private float safeDistanceForLeap = 2f; // Minimum distance from player before preparing to leap or hop back
 
     /// <summary>
     /// Constructor initializes the Leaper enemy that uses this chase state.
@@ -46,11 +46,11 @@ public class LeaperChaseState : EnemyChaseState
         base.Update();
 
         // If there is no target, transition to patrol state
-        if (leaper.Target == null)
-        {
-            leaper.ChangeState(leaper.LeaperPatrolState);
-            return;
-        }
+        // if (leaper.Target == null)
+        // {
+        //     leaper.ChangeState(leaper.LeaperPatrolState);
+        //     return;
+        // }
 
         // Calculate the distance to the player or target
         float distanceToTarget = leaper.Distance(leaper.Target);
