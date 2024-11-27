@@ -36,6 +36,12 @@ public class EventManager : MonoBehaviour
     private bool startEscortWaveTimer = false;
     private EscortNpc npcScriptScriptReference;
 
+    [SerializeField] private GameObject defendObject;
+    private float defendWaveTimer;
+    private float defendWaveTimerLength = 15f; //temp value
+    private bool startDefendWaveTimer = false;
+    private DefendObject defendObjectScriptScriptReference;
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -50,6 +56,7 @@ public class EventManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.K) && CurrentWaveType == WorldEvent.ESCORT) FinishEscortWave();
+        if (Input.GetKeyDown(KeyCode.K) && CurrentWaveType == WorldEvent.DEFEND) FinishDefendWave();
 
         switch (CurrentWaveType)
         {
@@ -74,7 +81,6 @@ public class EventManager : MonoBehaviour
             case WorldEvent.ESCORT:
                 if(startEscortWaveTimer)
                 {
-
                     escortWaveTimer -= Time.deltaTime;
                     if(escortWaveTimer <= 0)
                     {
@@ -84,10 +90,14 @@ public class EventManager : MonoBehaviour
                 }
                 break;
             case WorldEvent.DEFEND:
-                // TODO: Check if the timer has ended AND object survival
-                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                if (startDefendWaveTimer)
                 {
-                    WaveCompletion();
+                    defendWaveTimer -= Time.deltaTime;
+                    if (defendWaveTimer <= 0)
+                    {
+                        startDefendWaveTimer = false;
+                        FinishDefendWave();
+                    }
                 }
                 break;
             case WorldEvent.VISIT_ALL:
@@ -239,13 +249,7 @@ public class EventManager : MonoBehaviour
             npcScriptScriptReference = npcObject.GetComponent<EscortNpc>();
 
             escortWaveTimer = escortWaveTimerLength;
-            Debug.Log(escortWaveTimer);
             startEscortWaveTimer = true;
-
-            
-
-
-
         }
     }
 
@@ -261,15 +265,33 @@ public class EventManager : MonoBehaviour
     }
     private void PrepareForDefendWave()
     {
-        activeLandCount = worldManager.SpawnedLands.Count;
-        ResetSpawners();
+        Player[] players = FindObjectsOfType<Player>(); //NEED TO ALTER EOW CONDITIONS SO THAT THEY CHECK IF PLAYERS ARE ALIVE
+
+        if (players.Length == 0) //No players found
+        {
+            return;
+        }
+        else
+        {
+            ResetSpawners();
+
+            int randomPlayerIndex;
+            randomPlayerIndex = UnityEngine.Random.Range(0, players.Length);
+            LandManager defendObjectStartingLand = worldManager.GetLandByWorldPosition(players[randomPlayerIndex].transform.position);
+            GameObject worldDefendObject = Instantiate(defendObject, worldManager.GetLandPositionByGridPosition(defendObjectStartingLand.GridPosition, 1f), Quaternion.identity);
+
+            defendObjectScriptScriptReference = worldDefendObject.GetComponent<DefendObject>();
+
+            defendWaveTimer = defendWaveTimerLength;
+            startDefendWaveTimer = true;
+
+        }
     }
+        #endregion
 
-    #endregion
+        #region Supporting FUN-ctions!!!!!!!
 
-    #region Supporting FUN-ctions!!!!!!!
-
-    public void ResetSpawners()
+        public void ResetSpawners()
     {
         foreach (LandManager land in worldManager.SpawnedLands)
         {
@@ -311,7 +333,6 @@ public class EventManager : MonoBehaviour
 
     public void FinishEscortWave()
     {
-        Debug.Log("END OF ESCORT WAVE");
         foreach(LandManager land in worldManager.SpawnedLands)
         {
             land.EnemySpawner.NpcPresent = false;
@@ -324,6 +345,18 @@ public class EventManager : MonoBehaviour
 
         WaveCompletion();
     }
+
+
+    public void FinishDefendWave()
+    {
+        foreach (LandManager land in worldManager.SpawnedLands)
+        {
+            land.EnemySpawner.DespawnAllEnemies();
+        }
+        defendObjectScriptScriptReference.Destroy();
+        WaveCompletion();
+    }
+
 
     #endregion
 

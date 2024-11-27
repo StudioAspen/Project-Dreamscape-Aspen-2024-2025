@@ -31,7 +31,7 @@ public class WorldManager : MonoBehaviour
     public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>();
 
     //Test replacement for bordersList
-    public Dictionary<Vector2Int, List<LandBorder>> bordersDictionary = new Dictionary<Vector2Int, List<LandBorder>>(); //int is not necessary, but a dictionary needs a key-value pair so its just here
+    public Dictionary<Vector2Int, List<LandBorder>> bordersDictionary = new Dictionary<Vector2Int, List<LandBorder>>();
 
     //Test replacement for SpawnedList
     public Dictionary<Vector2Int, LandManager> SpawnedLandsDictionary = new Dictionary<Vector2Int, LandManager>();
