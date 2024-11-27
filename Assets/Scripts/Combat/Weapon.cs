@@ -29,10 +29,11 @@ public class Weapon : MonoBehaviour
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
-    private Vector2Int damageRange;
+    private float percentDamage;
 
-    [Header("Weapon: Impact Frames")]
-    [SerializeField] private float impactFramesDuration = 0.15f;
+    private float fixedDeltaTime;
+    private float impactFramesTimeScale;
+    private float impactFramesDuration;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void OnValidate()
@@ -47,7 +48,7 @@ public class Weapon : MonoBehaviour
 
         AssignColliderStartEndPositions();
 
-        if(overrideAnimator != null) animator.runtimeAnimatorController = overrideAnimator;
+        fixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Update()
@@ -60,6 +61,7 @@ public class Weapon : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!capsuleCollider.enabled) return;
+        if ((damageableCollidersLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
         Entity enemy = other.GetComponentInParent<Entity>();
 
@@ -131,15 +133,16 @@ public class Weapon : MonoBehaviour
 
     private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
-        StartImpactFrames(0.1f);
+        StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
         //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
-        int damageValue = GetRandomDamage();
-        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
+        int damageValue = holderEntity.CalculateDamage(percentDamage);
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
+
+        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
     private void CreateTempHitVisual(Vector3 pos, Color color, float duration)
@@ -153,24 +156,32 @@ public class Weapon : MonoBehaviour
         Destroy(temp, duration);
     }
 
-    private void StartImpactFrames(float timeScale)
+    private void StartImpactFrames(float timeScale, float duration)
     {
         if (impactFramesDuration <= 0) return;
 
         DOTween.Kill("ImpactFrames");
-        Time.timeScale = 1f;
+        Time.timeScale = timeScale;
+        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
 
-        float speedUpTime = impactFramesDuration / 4f;
-
-        Sequence impactFrameSequence = DOTween.Sequence().SetId("ImpactFrames");
-        impactFrameSequence.Append(DOTween.To(() => Time.timeScale, x => Time.timeScale = x, timeScale, impactFramesDuration - speedUpTime).SetEase(Ease.OutQuint)).SetUpdate(true);
-        impactFrameSequence.Append(DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1f, speedUpTime).SetEase(Ease.InCubic)).SetUpdate(true);
+        DOVirtual.DelayedCall(duration, () => { Time.timeScale = 1f; Time.fixedDeltaTime = fixedDeltaTime; }).SetId("ImpactFrames");
     }
 
     private void AssignColliderStartEndPositions()
     {
         colliderStartTransform.localPosition = capsuleCollider.center - (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
         colliderEndTransform.localPosition = capsuleCollider.center + (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
+    }
+
+    /// <summary>
+    /// Sets the timescale and duration of the impact frames.
+    /// </summary>
+    /// <param name="newScale">The new timescale of the impact frames.</param>
+    /// <param name="newDuration">The new duration of the impact frames.</param>
+    public void ConfigureImpactFrames(float newScale, float newDuration)
+    {
+        impactFramesTimeScale = newScale;
+        impactFramesDuration = newDuration;
     }
 
     public void ClearEnemiesHitList()
@@ -188,18 +199,30 @@ public class Weapon : MonoBehaviour
         capsuleCollider.enabled = false;
     }
 
-    public void SetDamageRange(Vector2Int newRange)
+    public void SetPercentDamage(float newPercent)
     {
-        damageRange = newRange;
-    }
-
-    private int GetRandomDamage()
-    {
-        return Random.Range(damageRange.x, damageRange.y);
+        percentDamage = newPercent;
     }
 
     public void AddCombo(ComboDataSO comboData)
     {
         Combos.Add(comboData);
+    }
+
+    /// <summary>
+    /// Retrieves the list of valid combos based on the specified air combo flag.
+    /// </summary>
+    /// <param name="isAirCombo">Flag indicating whether the combo is an air combo.</param>
+    /// <returns>The list of valid combos.</returns>
+    public List<ComboDataSO> GetCombos(bool isAirCombo)
+    {
+        List<ComboDataSO> validCombos = new List<ComboDataSO>();
+
+        foreach (ComboDataSO comboData in Combos)
+        {
+            if (comboData.IsAirCombo == isAirCombo) validCombos.Add(comboData);
+        }
+
+        return validCombos;
     }
 }

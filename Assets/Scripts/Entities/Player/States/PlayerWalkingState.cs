@@ -9,7 +9,7 @@ public class PlayerWalkingState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("FlatMovement");
+        player.TransitionToAnimation("FlatMovement");
 
         player.SetSpeedModifier(1f);
     }

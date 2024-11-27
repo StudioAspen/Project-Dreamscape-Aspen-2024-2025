@@ -12,11 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b253543ac71d7f14eaf5a73906075e12, type: 3}
   m_Name: LongSword_MidairLightP3
   m_EditorClassIdentifier: 
-  <ComboName>k__BackingField: LongSword_AirTripleSlash
-  <ComboInputs>k__BackingField: 00000000020000000200000002000000
-  <ComboClip>k__BackingField: {fileID: -3891449819406770849, guid: 11c317ca660f7a740b666b9a9e0835e4,
+  _animatorController: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
+  <ComboInputs>k__BackingField: 000000000000000000000000
+  <ComboClip>k__BackingField: {fileID: 7400000, guid: 89d35761eaaf9d849a6fec057e537f45,
     type: 3}
-  <ComboClipAnimationSpeed>k__BackingField: 2
-  <AttackHasRootMotion>k__BackingField: 0
+  _ComboClipChecChangeCheck: {fileID: 7400000, guid: 89d35761eaaf9d849a6fec057e537f45,
+    type: 3}
+  IsComboClipValid: 1
+  <ComboClipAnimationSpeed>k__BackingField: 1.5
+  <HasRootMotion>k__BackingField: 0
   <IsAirCombo>k__BackingField: 1
-  <ComboDamageRange>k__BackingField: {x: 20, y: 25}
+  <WillLaunchUpwards>k__BackingField: 0
+  <PercentDamage>k__BackingField: 120
+  <ImpactFramesTimeScale>k__BackingField: 0.02
+  <ImpactFramesDuration>k__BackingField: 0.75
+  <AirLaunchForce>k__BackingField: -30

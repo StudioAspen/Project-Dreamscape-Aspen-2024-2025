@@ -15,7 +15,7 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("RightJab");
+        charger.TransitionToAnimation("RightJab");
 
         timer = 0f;
     }
@@ -35,7 +35,7 @@ public class ChargerJabRecoverState : EnemyBaseState
             return;
         }
 
-        charger.DefaultTransitionToAnimation("RightJab");
+        charger.TransitionToAnimation("RightJab");
     }
 
     public override void FixedUpdate()

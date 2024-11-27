@@ -57,7 +57,7 @@ public class AspectsTreeUI : MonoBehaviour
     private void OnEnable()
     {
         // reset scroll rect back to center
-        scrollRect.normalizedPosition = Vector2.zero;
+        if(scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
 
         tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
 
@@ -75,7 +75,7 @@ public class AspectsTreeUI : MonoBehaviour
         if(aspectTree == null)
         {
             titleText.text = "Missing Aspect";
-            Debug.LogError("No aspect tree selected");
+            Debug.LogWarning("No aspect tree selected, press T to assign");
             return;
         }
         titleText.text = $"{aspectTree.name}";

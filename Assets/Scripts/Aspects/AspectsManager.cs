@@ -12,7 +12,7 @@ public class AspectsManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T) && CurrentAspectTree == null)
         {
             SetCurrentAspectTree(aspectTrees[0]);
         }
