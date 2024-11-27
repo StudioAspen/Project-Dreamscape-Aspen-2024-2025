@@ -44,10 +44,10 @@ namespace Dreamscape
             foreach (AnimatorControllerLayer layer in controller.layers)
             {
                 // If found state machine, return it
-                AnimatorStateMachine foundSubstateMachine = FindSubStateMachineRecursive(layer.stateMachine, stateMachineName);
-                if (foundSubstateMachine != null)
+                AnimatorStateMachine foundSubStateMachine = FindSubStateMachineRecursive(layer.stateMachine, stateMachineName);
+                if (foundSubStateMachine != null)
                 {
-                    return foundSubstateMachine;
+                    return foundSubStateMachine;
                 }
             }
             return null;
@@ -59,7 +59,7 @@ namespace Dreamscape
         /// 
         public static AnimatorStateMachine FindSubStateMachineRecursive(AnimatorStateMachine stateMachine, string stateMachineName)
         {
-            // Iterate through the subStateMachines for the 'Combos' one
+            // Iterate through the subStateMachines for the given stateMachine name
             foreach (ChildAnimatorStateMachine subStateMachine in stateMachine.stateMachines)
             {
                 // Check current sub stateMachine
@@ -69,23 +69,13 @@ namespace Dreamscape
                 }
                 
                 // Recursively search through current sub stateMachine's sub stateMachines
-                AnimatorStateMachine foundSubstateMachine = FindSubStateMachineRecursive(subStateMachine.stateMachine, stateMachineName);
-                if (foundSubstateMachine != null)
+                AnimatorStateMachine foundSubStateMachine = FindSubStateMachineRecursive(subStateMachine.stateMachine, stateMachineName);
+                if (foundSubStateMachine != null)
                 {
-                    return foundSubstateMachine;
+                    return foundSubStateMachine;
                 }
             }
-
             return null;
-        }
-
-        ///-/////////////////////////////////////////////////////////////////////////////////////
-        ///
-        /// Get the animator  from the given Animator
-        /// 
-        public static AnimatorController GetAnimatorController(Animator animator)
-        {
-            return animator.runtimeAnimatorController as AnimatorController;
         }
     }
 
