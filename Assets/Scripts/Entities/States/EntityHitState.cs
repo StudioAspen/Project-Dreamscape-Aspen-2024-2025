@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
-public class EntityStaggeredState : BaseState
+public class EntityHitState : BaseState
 {
     private Entity entity;
 
-    private protected float timer = 0f;
+    private float timer = 0f;
 
-    public EntityStaggeredState(Entity entity)
+    public EntityHitState(Entity entity)
     {
         this.entity = entity;
     }
@@ -29,12 +30,7 @@ public class EntityStaggeredState : BaseState
     public override void Update()
     {
         timer += Time.deltaTime;
-
-        if (timer > entity.StaggerDuration)
-        {
-            entity.ChangeState(entity.DefaultState);
-            return;
-        }
+        if (timer > 0.5f) entity.ChangeState(entity.DefaultState);
     }
 
     public override void FixedUpdate()

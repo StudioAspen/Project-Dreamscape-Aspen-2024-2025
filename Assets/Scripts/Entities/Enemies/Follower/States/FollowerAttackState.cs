@@ -28,21 +28,19 @@ public class FollowerAttackState : EnemyBaseState
         follower.Weapon.SetDamageRange(new Vector2Int(follower.AttackDamageRange.x, follower.AttackDamageRange.y));
 
         follower.IsAttackAnimationPlaying = true;
-        follower.UseRootMotion = true;
+
+        follower.LookAt(follower.transform.position + attackDir);
     }
 
     public override void OnExit()
     {
         follower.Weapon.OnWeaponEndSwing?.Invoke(follower);
         follower.IsAttackAnimationPlaying = false;
-        follower.UseRootMotion = false;
         follower.DisableWeaponTriggers();
     }
 
     public override void Update()
     {
-        follower.LookAt(follower.transform.position + attackDir);
-
         if (!follower.IsAttackAnimationPlaying)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);

@@ -16,36 +16,27 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
 
     private ObjectPool<GameObject> pool;
 
-    private void OnEnable()
-    {
-        numberText.color = Color.red;
-    }
-
-    private void OnDisable()
-    {
-        DOTween.Kill(transform);
-        DOTween.Kill(numberText);
-    }
-
     private void LateUpdate()
     {
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
-    public void ActivateHitNumberText(int damage, Vector3 spawnPoint, Vector3 direction)
+    public void ActivateHitNumberText(int damage, Vector3 spawnPoint)
     {
         transform.position = spawnPoint;
 
         numberText.text = damage.ToString();
         numberText.fontSize = (maxTextSize - minTextSize) * (damage / (float)maxDamage) + minTextSize;
 
-        FloatAndFade(2f, 1f, direction.normalized);
+        FloatUpAndFade(2f, 1f);
     }
 
-    private void FloatAndFade(float duration, float distance, Vector3 direction)
+    private void FloatUpAndFade(float duration, float distance)
     {
         Sequence sequence = DOTween.Sequence();
-        sequence.Append(transform.DOMove(transform.position + distance * direction, duration / 2f).SetEase(Ease.OutCubic).SetUpdate(true));
+        sequence.Append(numberText.DOColor(Color.red, duration / 2f)).SetUpdate(true).OnComplete(() => {
+            transform.DOMoveY(transform.position.y + distance, duration / 2f).SetUpdate(true);
+        });
         sequence.Append(numberText.DOFade(0f, duration / 2f)).SetUpdate(true);
 
         sequence.OnComplete(() => { pool.Release(gameObject); });

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3490398193883977143}
   - component: {fileID: -71318835558361112}
+  - component: {fileID: 5112144103742148319}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
@@ -51,13 +52,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
-  model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 1
   <Level>k__BackingField: 0
-  baseSpeed: 0
-  rotationSpeed: 5
   IsGrounded: 0
+  baseSpeed: 0
+  velocity: {x: 0, y: 0, z: 0}
+  rotationSpeed: 5
   targetDetectionRadius: 10
   OnEntityTakeDamage:
     m_PersistentCalls:
@@ -68,13 +69,27 @@ MonoBehaviour:
   OnKillEntity:
     m_PersistentCalls:
       m_Calls: []
-  <StaggerDuration>k__BackingField: 0.5
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
+  <Weapon>k__BackingField: {fileID: 7865493764376736012}
   <Cost>k__BackingField: 5
   IsAttackAnimationPlaying: 0
-  UseRootMotion: 0
+--- !u!114 &5112144103742148319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entity: {fileID: -71318835558361112}
+  damagePerTick: 1
+  tickDuration: 0.5
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
@@ -1446,3 +1461,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7327815961281466390}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7865493764376736012 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 618815233110515994, guid: 16906527d2f86ac4083742b94c6e3818,
+    type: 3}
+  m_PrefabInstance: {fileID: 7327815961281466390}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6783d80e507fcc4fb394fa75f758f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

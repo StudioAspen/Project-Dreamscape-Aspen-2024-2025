@@ -39,7 +39,7 @@ public class PlayerAttackState : PlayerBaseState
         player.ApplyRootMotion = false;
         playerCombat.DisableWeaponTriggers();
 
-        player.InstantlySetGroundedSpeed(0f);
+        player.InstantlySetSpeed(0f);
 
         if (ComboData.IsAirCombo) player.ResetYVelocity();
     }
@@ -54,7 +54,7 @@ public class PlayerAttackState : PlayerBaseState
 
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(0f);
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         player.RotateToTargetRotation();

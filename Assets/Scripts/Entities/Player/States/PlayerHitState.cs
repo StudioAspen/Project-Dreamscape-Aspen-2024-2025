@@ -1,8 +1,8 @@
-﻿public class PlayerStaggeredState : EntityStaggeredState
+﻿public class PlayerHitState : EntityHitState
 {
     private Player player;
 
-    public PlayerStaggeredState(Player entity) : base(entity)
+    public PlayerHitState(Player entity) : base(entity)
     {
         player = entity;
     }

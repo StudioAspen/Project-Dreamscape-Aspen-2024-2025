@@ -22,13 +22,16 @@ public class BiomeSelectUI : MonoBehaviour
     private void Awake()
     {
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
-        Disable();
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)

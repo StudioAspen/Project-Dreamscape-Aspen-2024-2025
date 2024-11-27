@@ -36,7 +36,7 @@ public class PlayerChargeState : PlayerBaseState
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
     }
 

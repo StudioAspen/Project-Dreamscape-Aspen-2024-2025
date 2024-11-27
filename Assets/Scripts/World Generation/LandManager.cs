@@ -19,9 +19,14 @@ public class LandManager : MonoBehaviour
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [field: SerializeField] public int Level { get; private set; }
+    [field: SerializeField] public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
+
+    //bool that tracks if the land has been visited
+    [field: Header ("Island Visited Bool")]
+    [SerializeField] private bool isVisited = false;
 
     // This function is called when the script is loaded or when values in the Inspector are changed.
     // It validates the references assigned to the script to ensure they are correctly set.
@@ -135,6 +140,17 @@ public class LandManager : MonoBehaviour
     {
         levelText.gameObject.SetActive(false);
     }
+
+    #region IslandVisited bool
+    public bool GetVisited()
+    {
+        return isVisited;
+    }
+    public void SetVisited(bool visited)
+    {
+        isVisited = visited;
+    }
+    #endregion
 
 
 

@@ -24,6 +24,9 @@ public class EventManager : MonoBehaviour
     [Header("Current Event")]
     [SerializeField] public WorldEvent CurrentWaveType = WorldEvent.START;
 
+    [Header("Event Complete Bool")]
+    [SerializeField] private bool EventClearStatus = false;
+
     private int activeLandCount;
     private int activePrioritiesCount;
 
@@ -50,9 +53,21 @@ public class EventManager : MonoBehaviour
 
         switch (CurrentWaveType)
         {
+            case WorldEvent.START:
+                // TODO: Check if all enemies have been killed
+                if (activeLandCount == 0 && gameManager.CurrentState == GameState.PLAYING)
+                {
+                    WaveCompletion();
+                }
+                break;
             case WorldEvent.SURVIVAL:
                 break;
             case WorldEvent.ZONES:
+                // TODO: Check if all enemies in the 3 highest level islands have been killed
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                {
+                    WaveCompletion();
+                }
                 break;
             case WorldEvent.PRIORITIES:
                 break;
@@ -69,8 +84,21 @@ public class EventManager : MonoBehaviour
                 }
                 break;
             case WorldEvent.DEFEND:
+                // TODO: Check if the timer has ended AND object survival
+                if (EventClearStatus && gameManager.CurrentState == GameState.PLAYING)
+                {
+                    WaveCompletion();
+                }
                 break;
             case WorldEvent.VISIT_ALL:
+                // TODO: Check if all lands have been visited
+                if (worldManager.AreAllLandsVisited() && gameManager.CurrentState == GameState.PLAYING)
+                {
+                    WaveCompletion();
+                }
+                break;
+            default:
+                Debug.LogError("ERROR: No event is active");
                 break;
         }
     }
@@ -88,6 +116,12 @@ public class EventManager : MonoBehaviour
         gameManager.ChangeState(GameState.PLAYING);
     }
 
+    #region Event Clear Status
+    public void setEventClearStatus(bool status)
+    {
+        EventClearStatus = status;
+    }
+    #endregion
 
     #region Preperation Functions
     public void PrepareForNextWave() 
