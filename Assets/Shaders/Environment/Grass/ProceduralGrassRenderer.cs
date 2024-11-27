@@ -10,6 +10,7 @@ namespace Dreamscape.Grass
     [System.Serializable]
     public class GrassSettings
     {
+        [Header("Blades")]
         [Tooltip("Max number of grass segments.")] 
         [Range(1, 5)]
         public int maxSegments = 3;
@@ -27,6 +28,18 @@ namespace Dreamscape.Grass
         public float bladeWidth = 1;
         [Tooltip("The width variance of a blade.")]
         public float bladeWidthVariance = 0.1f;
+
+        [Header("Wind")] 
+        [Tooltip("The noise texture used to control the wind. Red and green channels are used for x and z offsets.")]
+        public Texture2D windNoiseTexture;
+        [Tooltip("The scale of the wind texture.")]
+        public float windTextureScale = 1;
+        [Tooltip("The time multiplier. Used when creating the wind texture's UV.")]
+        public float windTimePeriod = 1;
+        [Tooltip("The multplier to the world XZ position when creating the wind's UV.")]
+        public float windScale = 1;
+        [Tooltip("The maximum wind offset length")]
+        public float windAmplitude = 0;
     }
     
     
@@ -56,6 +69,8 @@ namespace Dreamscape.Grass
         private ComputeBuffer sourceTriBuffer;
         private ComputeBuffer drawBuffer;
         private ComputeBuffer argsBuffer;
+        private ComputeShader instantiatedGrassComputeShader;
+        private Material instantiatedGrassMaterial;
         
         // ID of kernel in grass compute shader
         private int idGrassKernel;
@@ -93,6 +108,10 @@ namespace Dreamscape.Grass
             }
             computeBuffersInitialized = true;
             
+            // Instantiate shader so that each grass renderer has its own buffer
+            instantiatedGrassComputeShader = Instantiate(grassComputeShader);
+            instantiatedGrassMaterial = Instantiate(material);
+            
             // Get data from source mesh
             Vector3[] positions = sourceMesh.vertices;
             int[] tris = sourceMesh.triangles;
@@ -122,21 +141,26 @@ namespace Dreamscape.Grass
             idGrassKernel = grassComputeShader.FindKernel("Main");
             
             // Set buffers and other values on compute shader
-            grassComputeShader.SetBuffer(idGrassKernel, "_SourceVertices", sourceVertBuffer);
-            grassComputeShader.SetBuffer(idGrassKernel, "_SourceTriangles", sourceTriBuffer);
-            grassComputeShader.SetBuffer(idGrassKernel, "_DrawTriangles", drawBuffer);
-            grassComputeShader.SetBuffer(idGrassKernel, "_IndirectArgsBuffer", argsBuffer);
-            grassComputeShader.SetInt("_NumSourceTriangles", numSourceTriangles);
-            grassComputeShader.SetInt("_MaxBladeSegments", grassSettings.maxSegments);
-            grassComputeShader.SetFloat("_MaxBendAngle", grassSettings.maxBendAngle);
-            grassComputeShader.SetFloat("_BladeCurvature", grassSettings.bladeCurvature);
-            grassComputeShader.SetFloat("_BladeHeight", grassSettings.bladeHeight);
-            grassComputeShader.SetFloat("_BladeHeightVariance", grassSettings.bladeHeightVariance);
-            grassComputeShader.SetFloat("_BladeWidth", grassSettings.bladeWidth);
-            grassComputeShader.SetFloat("_BladeWidthVariance", grassSettings.bladeWidthVariance);
+            instantiatedGrassComputeShader.SetBuffer(idGrassKernel, "_SourceVertices", sourceVertBuffer);
+            instantiatedGrassComputeShader.SetBuffer(idGrassKernel, "_SourceTriangles", sourceTriBuffer);
+            instantiatedGrassComputeShader.SetBuffer(idGrassKernel, "_DrawTriangles", drawBuffer);
+            instantiatedGrassComputeShader.SetBuffer(idGrassKernel, "_IndirectArgsBuffer", argsBuffer);
+            instantiatedGrassComputeShader.SetInt("_NumSourceTriangles", numSourceTriangles);
+            instantiatedGrassComputeShader.SetInt("_MaxBladeSegments", grassSettings.maxSegments);
+            instantiatedGrassComputeShader.SetFloat("_MaxBendAngle", grassSettings.maxBendAngle);
+            instantiatedGrassComputeShader.SetFloat("_BladeCurvature", grassSettings.bladeCurvature);
+            instantiatedGrassComputeShader.SetFloat("_BladeHeight", grassSettings.bladeHeight);
+            instantiatedGrassComputeShader.SetFloat("_BladeHeightVariance", grassSettings.bladeHeightVariance);
+            instantiatedGrassComputeShader.SetFloat("_BladeWidth", grassSettings.bladeWidth);
+            instantiatedGrassComputeShader.SetFloat("_BladeWidthVariance", grassSettings.bladeWidthVariance);
+            instantiatedGrassComputeShader.SetTexture(idGrassKernel, "_WindNoiseTexture", grassSettings.windNoiseTexture);
+            instantiatedGrassComputeShader.SetFloat("_WindTimeMultiplier", grassSettings.windTimePeriod);
+            instantiatedGrassComputeShader.SetFloat("_WindTextureMultiplier", grassSettings.windTextureScale);
+            instantiatedGrassComputeShader.SetFloat("_WindPositionMultiplier", grassSettings.windScale);
+            instantiatedGrassComputeShader.SetFloat("_WindAmplitude", grassSettings.windAmplitude);
             
             // Send drawn triangles to the actual shader/material
-            material.SetBuffer("_DrawTriangles", drawBuffer);
+            instantiatedGrassMaterial.SetBuffer("_DrawTriangles", drawBuffer);
             
             // Calculate num threads to use. Get thread size from kernel.
             // Divide num triangles by that size
@@ -155,6 +179,17 @@ namespace Dreamscape.Grass
             // Release the buffers and copied shaders
             if (computeBuffersInitialized)
             {
+                // Destroy immediate or regular destroy depending on if the game is playing or not
+                if (Application.isPlaying)
+                {
+                    Destroy(instantiatedGrassComputeShader);
+                    Destroy(instantiatedGrassMaterial);
+                }
+                else
+                {
+                    DestroyImmediate(instantiatedGrassComputeShader);
+                    DestroyImmediate(instantiatedGrassMaterial);
+                }
                 // Release each buffer
                 sourceVertBuffer.Release();
                 sourceTriBuffer.Release();
@@ -205,14 +240,15 @@ namespace Dreamscape.Grass
             Bounds bounds = TransformBounds(localBounds);
             
             // Update shader with frame specific data
-            grassComputeShader.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
+            instantiatedGrassComputeShader.SetVector("_Time", new Vector4(0, Time.timeSinceLevelLoad, 0, 0));
+            instantiatedGrassComputeShader.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
             
             // Dispatch grass shader to run on GPU
-            grassComputeShader.Dispatch(idGrassKernel, dispatchSize, 1, 1);
+            instantiatedGrassComputeShader.Dispatch(idGrassKernel, dispatchSize, 1, 1);
             
             // DrawProceduralIndirect queues a draw call up for the generated mesh
-            Graphics.DrawProceduralIndirect(material, bounds, MeshTopology.Triangles, argsBuffer, 0, null, null,
-                ShadowCastingMode.Off, true, gameObject.layer);
+            Graphics.DrawProceduralIndirect(instantiatedGrassMaterial, bounds, MeshTopology.Triangles, argsBuffer,
+                0, null, null,ShadowCastingMode.Off, true, gameObject.layer);
         }
     }
 }

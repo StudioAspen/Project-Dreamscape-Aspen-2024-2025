@@ -416,6 +416,90 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &710547170
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710547173}
+  - component: {fileID: 710547171}
+  - component: {fileID: 710547174}
+  m_Layer: 0
+  m_Name: Grass
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &710547171
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710547170}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8628539560550885629, guid: 51f4a579ab531fb4eb532a625cfa18f9, type: 3}
+--- !u!4 &710547173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710547170}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.34, y: 1.78, z: 6.018344}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &710547174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710547170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88002893237a91e43a91e17ab75105fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceMesh: {fileID: -8628539560550885629, guid: 51f4a579ab531fb4eb532a625cfa18f9,
+    type: 3}
+  grassComputeShader: {fileID: 7200000, guid: 366fb4863525f394aa73b757f00860f9, type: 3}
+  material: {fileID: 2100000, guid: 4c0cb533518c6604baa6456df862558a, type: 2}
+  grassSettings:
+    maxSegments: 5
+    maxBendAngle: 0.268
+    bladeCurvature: 1.63
+    bladeHeight: 1
+    bladeHeightVariance: 0.1
+    bladeWidth: 0.5
+    bladeWidthVariance: 0.1
+    windNoiseTexture: {fileID: 2800000, guid: 22b7c602680bbc044904b024b4c2c3bd, type: 3}
+    windTextureScale: 0.1
+    windTimePeriod: 1
+    windScale: 0.2
+    windAmplitude: 0.1
 --- !u!1 &1468419224
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,6 +650,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TileMap
       objectReference: {fileID: 0}
+    - target: {fileID: 5548507516861568887, guid: a408976b03d59344da76bc60deebbd91,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8165705814782852885, guid: a408976b03d59344da76bc60deebbd91,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -631,3 +720,4 @@ SceneRoots:
   - {fileID: 511121436}
   - {fileID: 535976561}
   - {fileID: 1971019899134935389}
+  - {fileID: 710547173}
