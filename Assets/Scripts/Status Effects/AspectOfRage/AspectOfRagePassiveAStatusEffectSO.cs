@@ -7,9 +7,9 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private Weapon ownerWeapon;
 
     [field: Header("Aspect of Rage Passive A: Settings")]
-    [field: SerializeField] public float AOEExplosionRadius { get; private set; } = 2.0f;
-    [field: SerializeField] public int AOEDamage { get; private set; } = 2;
     [field: SerializeField] public StatusEffectSO BurningRageStack { get; private set; }
+    [field: SerializeField] public StatusEffectSO BurningRageStackExtension { get; private set; }
+    private StatusEffectSO currentBurningRageStack;
 
     private void OnValidate()
     {
@@ -19,6 +19,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private protected override void OnApply()
     {
         base.OnApply();
+        currentBurningRageStack = BurningRageStack;
 
         ownerWeapon = entity.GetComponentInChildren<Weapon>();
         if(ownerWeapon == null)
@@ -42,7 +43,8 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     public override bool Override(StatusEffectSO newStatusEffect)
     {
         if (!base.Override(newStatusEffect)) return false;
-
+        // overrides 
+        currentBurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStackExtension;
         // add expansion logic here when stacked
 
         return true;
@@ -53,6 +55,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     {
         EntityStatusEffector statusEffector = victim.GetComponent<EntityStatusEffector>();
         if (statusEffector == null) { return; }
-        statusEffector.ApplyStatusEffect(BurningRageStack, victim.gameObject);
+        statusEffector.ApplyStatusEffect(currentBurningRageStack, victim.gameObject);
     }
 }

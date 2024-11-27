@@ -9,10 +9,11 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 {
     [field: Header("Burning Rage Stacks: Settings")]
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
-    [SerializeField] private int damagePerTick = 1;
-    [SerializeField] private float combustRadius = 7.5f;
+    [SerializeField] private float defaultCombustRadius = 7.5f;
+    [SerializeField] private float combustRadiusMultipler = 1.1f;
     [SerializeField] private float combustDamageMultiplierPerStack = 5f;
-    [SerializeField] private float tickDamageMultiplierPerStack = 0f;
+    [field: SerializeField] public float TickDamageMultiplierPerStack { get; private set; } = 0f;
+    private int damagePerTick;
     private int currentStacks;
 
     private protected override void OnApply()
@@ -20,6 +21,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         base.OnApply();
 
         currentStacks = 1;
+        damagePerTick = (int)(currentStacks * TickDamageMultiplierPerStack);
         entity.TweenTintEntity(new Color((float)currentStacks/MaxStacks, 0f, 0f));
 
         entity.OnEntityDeath.AddListener(Entity_OnEntityDeath);
@@ -60,8 +62,9 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         }
 
         currentTicks = 0; // reset the ticks
+        TickDamageMultiplierPerStack = (newStatusEffect as BurningRageStatusEffectSO).TickDamageMultiplierPerStack;
 
-        damagePerTick = (int)(currentStacks * tickDamageMultiplierPerStack);
+        damagePerTick = (int)(currentStacks * TickDamageMultiplierPerStack);
 
         if (currentStacks + 1 >= MaxStacks) return true; // still successful, we just hit max stacks
 
@@ -76,12 +79,25 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         Vector3 explosionPosition = entity.GetColliderCenterPosition();
 
         int combustExplosionDamage = (int)(currentStacks * combustDamageMultiplierPerStack);
+        float currentCombustRadius = Mathf.Pow(combustRadiusMultipler, currentStacks) * defaultCombustRadius;
+        Debug.Log(currentCombustRadius);
 
         // make a list and grab all entities nearby
-        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(explosionPosition, combustRadius);
+        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(explosionPosition, currentCombustRadius);
         for (int i = 0; i < enemyList.Count; i++) // loop through all entities and filter out friendly ones
         {
             Entity enemy = enemyList[i]; // current entity in the loop
+
+            // gives closest enemy stacks of the dead enemy
+            if (i == 0)
+            {
+                if (enemy.TryGetComponent(out EntityStatusEffector entityStatusEffector))
+                {
+                    for (int j = 0; j < currentStacks; j++)
+                        entityStatusEffector.ApplyStatusEffect(this, killer);
+                    //Debug.Log("gave covid stacks on death count" + (entityStatusEffector.CurrentStatusEffects[GetType()] as BurningRageStatusEffectSO).currentStacks);
+                }
+            }
 
             if (enemy == entity) continue; // filter out self (entity that died)
             if (enemy.Team != entity.Team) continue; // filter out unfriendly entities
@@ -89,7 +105,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
             enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
         }
 
-        CreateTemporaryVisualizer(explosionPosition, combustRadius, 0.25f);
+        CreateTemporaryVisualizer(explosionPosition, currentCombustRadius, 0.25f);
     }
 
     private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)
