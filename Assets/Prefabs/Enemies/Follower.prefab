@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3490398193883977143}
   - component: {fileID: -4810948276731600067}
-  - component: {fileID: 6700608577994973314}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 886317934850423876}
   - component: {fileID: 3915645929625153338}
@@ -53,13 +52,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5860220226555299953}
   physicsSettings: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b, type: 2}
+  model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 50
   <Level>k__BackingField: 1
-  IsGrounded: 0
   baseSpeed: 2
-  velocity: {x: 0, y: 0, z: 0}
   rotationSpeed: 5
+  IsGrounded: 0
   targetDetectionRadius: 20
   OnEntityTakeDamage:
     m_PersistentCalls:
@@ -70,12 +69,14 @@ MonoBehaviour:
   OnKillEntity:
     m_PersistentCalls:
       m_Calls: []
+  <StaggerDuration>k__BackingField: 0.5
   rigidBody: {fileID: 3915645929625153338}
   capsuleCollider: {fileID: 886317934850423876}
   debugStateText: {fileID: 2695811172347028688}
-  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <Cost>k__BackingField: 1
   IsAttackAnimationPlaying: 0
+  UseRootMotion: 0
+  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <AttackRange>k__BackingField: 1
   <AttackDamageRange>k__BackingField: {x: 10, y: 15}
   <AttackReadyDuration>k__BackingField: 0.25
@@ -85,21 +86,6 @@ MonoBehaviour:
   <ChangeDirectionReciprocal>k__BackingField: 10
   <CircleRadius>k__BackingField: 5
   <MaxCircleRadius>k__BackingField: 8
---- !u!114 &6700608577994973314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2211407975701868877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entity: {fileID: -4810948276731600067}
-  damagePerTick: 1
-  tickDuration: 0.5
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
