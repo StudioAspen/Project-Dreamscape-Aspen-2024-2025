@@ -32,14 +32,13 @@ public class Leaper : Enemy
 
     [field: SerializeField] private Rigidbody rb;
 
-    //Cheng - I putted the 5 variables here b/c error I got in patrol state, so I can resume testing, as can be seen
-    //they are not serialized or properly declared. I assume that the patrol team will do more on these.
+    
     public Vector2 PatrolIntervalDurationRange;
     public Vector2 PatrolRadiusRange;
     public float PatrolJumpPrepareTime;
     public float PatrolJumpHeight;
     public float PatrolJumpDuration;
-    //- Cheng
+    
 
     // NOTE: everything was happening to fast initially added a timer to slow and debug
     // for fun though take these off lol its funny af 

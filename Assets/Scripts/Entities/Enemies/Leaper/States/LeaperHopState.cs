@@ -30,7 +30,6 @@ public class LeaperHopState : EnemyBaseState
         
 
         leaper.DefaultTransitionToAnimation("Hop");
-        // Debug.Log(leaper.debugTimerDuration);
         if( leaper.debugTimerDuration > leaper.debugTimer )
         {
 
@@ -76,18 +75,19 @@ public class LeaperHopState : EnemyBaseState
     public void CoinToss()
     {
 
-        leaper.ChangeState(leaper.LeaperAttackState);
-        // bool willGoToAttack = Random.Range(0, 2) == 1;
+        // had for debugging as enemy lost 50/50 a lot
+        // leaper.ChangeState(leaper.LeaperAttackState);
+        bool willGoToAttack = Random.Range(0, 2) == 1;
 
-        // if (willGoToAttack)
-        // {
-        //     leaper.ChangeState(leaper.LeaperAttackState);
-        //     Debug.Log("Attack State");
-        // }
-        // else
-        // {
-        //     leaper.ChangeState(leaper.LeaperPatrolState);
-        //     Debug.Log("Idle State");
-        // }
+        if (willGoToAttack)
+        {
+            leaper.ChangeState(leaper.LeaperAttackState);
+            Debug.Log("Attack State");
+        }
+        else
+        {
+            leaper.ChangeState(leaper.LeaperPatrolState);
+            Debug.Log("Idle State");
+        }
     }
 }

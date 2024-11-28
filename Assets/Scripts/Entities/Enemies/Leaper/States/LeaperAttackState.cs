@@ -9,15 +9,6 @@ public class LeaperAttackState : EnemyBaseState
 {
     private Leaper leaper;
 
-    private float timer;
-   
-    public float HitBoxRadius;
-
-    private GameObject HitBoxLocation;
-    
-    private Tween leapTween;
-   
-
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -42,10 +33,10 @@ public class LeaperAttackState : EnemyBaseState
 
         // NOTE: changed script to use IEnumerator Jump
         // as previous code did not work on my end 
-
+        // have another timer as another delay is necessary
         leaper.debugTimerDuration += Time.deltaTime;
-        Debug.Log(leaper.debugTimerDuration);
-        if (leaper.debugTimerDuration > 5)
+        // Debug.Log(leaper.debugTimerDuration);
+        if (leaper.debugTimerDuration > 3)
         {
             leaper.StartCoroutine(Jump());  
             leaper.CheckForHits();

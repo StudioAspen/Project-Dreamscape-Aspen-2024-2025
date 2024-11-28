@@ -21,7 +21,6 @@ public class LeaperPatrolState : EnemyBaseState
     }
     public override void OnEnter() 
     {
-        leaper.SetSpeedModifier(2f);
         enemy.DefaultTransitionToAnimation("FlatMovement");
         leaper.SetSpeedModifier(1f);
         leaper.ClearTarget();
