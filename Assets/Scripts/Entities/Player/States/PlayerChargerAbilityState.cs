@@ -9,7 +9,7 @@ using UnityEngine.XR;
 public class PlayerChargerAbilityState : PlayerBaseState
 {
     private float timer;
-    private float timeLimit = 15f;
+    private float timeLimit = 5f;
 
     public PlayerChargerAbilityState(Player player) : base(player)
     {
@@ -23,12 +23,18 @@ public class PlayerChargerAbilityState : PlayerBaseState
 
     public override void Update()
     {
-        player.SetVelocity(currentSpeed * boost * Vector3.forward);
+        player.ApplyGravity();
+
+        player.ApplyRotationToNextMovement();
+        player.RotateToTargetRotation();
+        player.AccelerateToSpeed(player.MovementSpeed);
+        player.GroundedMove();
+
         timer -= Time.deltaTime;
 
         if (timer <= 0) 
         {
-            OnExit();
+            player.ChangeState(player.PlayerIdleState);
         }
     }
 
@@ -36,22 +42,20 @@ public class PlayerChargerAbilityState : PlayerBaseState
     public override void OnEnter()
     {
         timer = timeLimit;
+        player.SetSpeedModifier(boost * player.SprintSpeedModifier);
+
         currentVelocity = player.GetVelocity();
-        currentSpeed = player.GetVelocity().magnitude;
     }
 
     public override void OnExit()
     {
-        player.SetVelocity(currentVelocity);
-        player.ChangeState(player.PlayerIdleState);
+        
     }
 
     public override void FixedUpdate()
     {
         
-    }
-
-    
+    } 
 }
 
     

@@ -237,6 +237,11 @@ public class Player : Entity
         controller.Move(GetGroundedVelocity() * Time.deltaTime);
     }
 
+    public void Move(Vector3 dir)
+    {
+        controller.Move(dir * Time.deltaTime);
+    }
+
     public void AccelerateToSpeed(float speed)
     {
         Vector3 groundedVelocity = GetGroundedVelocity();
