@@ -1,14 +1,16 @@
 using KBCore.Refs;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.Events;
+using DG.Tweening;
+using System.Linq;
 
 public class Weapon : MonoBehaviour
 {
     [Header("Weapon: References")]
     [SerializeField, Self] private CapsuleCollider capsuleCollider;
     [SerializeField, Anywhere] private GameObject trailObject;
+    [SerializeField] private Entity holderEntity;
     private Animator animator;
 
     [Header("Weapon: Settings")]
@@ -21,15 +23,18 @@ public class Weapon : MonoBehaviour
     private Ray currentFrameCollisionRay;
     private Ray previousFrameCollisionRay;
     private int currentHitFrame;
+    [HideInInspector] public UnityEvent<Entity> OnWeaponStartSwing = new UnityEvent<Entity>();
+    [HideInInspector] public UnityEvent<Entity> OnWeaponEndSwing = new UnityEvent<Entity>();
+    [HideInInspector] public UnityEvent<Entity, Entity, Vector3, int> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3, int>();
 
-    [Header("Weapon: Combo")]
-    public List<ComboDataSO> Combos;
-    private Vector2Int damageRange;
+    [field: Header("Weapon: Combo")]
+    [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
+    private float percentDamage;
 
-    [Header("Weapon: Impact Frames")]
-    [SerializeField] private float impactFramesDuration = 0.15f;
-    private Coroutine impactFramesCoroutine;
-    private List<Enemy> enemiesHitByCurrentAttack = new List<Enemy>();
+    private float fixedDeltaTime;
+    private float impactFramesTimeScale;
+    private float impactFramesDuration;
+    private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void OnValidate()
     {
@@ -39,10 +44,11 @@ public class Weapon : MonoBehaviour
     private void Awake()
     {
         animator = GetComponentInParent<Animator>();
+        holderEntity = GetComponentInParent<Entity>();
 
         AssignColliderStartEndPositions();
 
-        animator.runtimeAnimatorController = overrideAnimator;
+        fixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Update()
@@ -55,22 +61,13 @@ public class Weapon : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!capsuleCollider.enabled) return;
+        if ((damageableCollidersLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
-        Enemy enemy = other.GetComponentInParent<Enemy>();
-
-        if (enemy == null) return;
-
-        if (enemiesHitByCurrentAttack.Contains(enemy)) return;
-        enemiesHitByCurrentAttack.Add(enemy);
-
-        StartImpactFrames(0.1f);
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        Entity enemy = other.GetComponentInParent<Entity>();
 
         Vector3 hitPoint = other.ClosestPointOnBounds(colliderStartTransform.position);
 
-        CreateTempHitVisual(hitPoint, Color.green, 1.5f);
-
-        enemy.TakeDamage(GetRandomDamage(), hitPoint);
+        AttemptToHitEnemy(enemy, hitPoint, true);
     }
 
     private void HandleHitDetectionBetweenFrames()
@@ -113,23 +110,39 @@ public class Weapon : MonoBehaviour
 
         foreach (RaycastHit hit in hits)
         {
-            Enemy enemy = hit.collider.GetComponentInParent<Enemy>();
-
-            if (enemy == null) continue;
-
-            if (enemiesHitByCurrentAttack.Contains(enemy)) continue;
-            enemiesHitByCurrentAttack.Add(enemy);
-
-            StartImpactFrames(0.1f);
-            CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
-
             Vector3 hitPoint = hit.collider.ClosestPointOnBounds(hit.point);
             if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds((colliderStartTransform.position + colliderEndTransform.position) / 2);
 
-            CreateTempHitVisual(hitPoint, Color.red, 1.5f);
+            Entity enemy = hit.collider.GetComponentInParent<Entity>();
 
-            enemy.TakeDamage(GetRandomDamage(), hitPoint);
+            AttemptToHitEnemy(enemy, hitPoint, false);
         }
+    }
+
+    private void AttemptToHitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    {
+        if (victim == null) return;
+        if (victim.Team == holderEntity.Team) return;
+        if (victim.CurrentState == victim.EntityDeathState) return;
+
+        if (entitiesHitByCurrentAttack.Contains(victim)) return;
+        entitiesHitByCurrentAttack.Add(victim);
+
+        HitEnemy(victim, hitPoint, fromTrigger);
+    }
+
+    private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    {
+        StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+
+        //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
+
+        int damageValue = holderEntity.CalculateDamage(percentDamage);
+
+        OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
+
+        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
     private void CreateTempHitVisual(Vector3 pos, Color color, float duration)
@@ -143,27 +156,15 @@ public class Weapon : MonoBehaviour
         Destroy(temp, duration);
     }
 
-    private void StartImpactFrames(float timeScale)
+    private void StartImpactFrames(float timeScale, float duration)
     {
-        if (impactFramesCoroutine != null) StopCoroutine(impactFramesCoroutine);
-        StartCoroutine(ImpactFramesCoroutine(timeScale, impactFramesDuration));
-    }
+        if (impactFramesDuration <= 0) return;
 
-    private IEnumerator ImpactFramesCoroutine(float timeScale, float duration)
-    {
-        float speedUpTime = duration / 4;
-
+        DOTween.Kill("ImpactFrames");
         Time.timeScale = timeScale;
+        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
 
-        yield return new WaitForSecondsRealtime(duration - speedUpTime);
-
-        for (float t = 0; t < speedUpTime; t += Time.unscaledDeltaTime)
-        {
-            Time.timeScale = Mathf.Lerp(timeScale, 1f, t / speedUpTime);
-            yield return null;
-        }
-
-        Time.timeScale = 1f;
+        DOVirtual.DelayedCall(duration, () => { Time.timeScale = 1f; Time.fixedDeltaTime = fixedDeltaTime; }).SetId("ImpactFrames");
     }
 
     private void AssignColliderStartEndPositions()
@@ -172,9 +173,20 @@ public class Weapon : MonoBehaviour
         colliderEndTransform.localPosition = capsuleCollider.center + (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
     }
 
+    /// <summary>
+    /// Sets the timescale and duration of the impact frames.
+    /// </summary>
+    /// <param name="newScale">The new timescale of the impact frames.</param>
+    /// <param name="newDuration">The new duration of the impact frames.</param>
+    public void ConfigureImpactFrames(float newScale, float newDuration)
+    {
+        impactFramesTimeScale = newScale;
+        impactFramesDuration = newDuration;
+    }
+
     public void ClearEnemiesHitList()
     {
-        enemiesHitByCurrentAttack.Clear();
+        entitiesHitByCurrentAttack.Clear();
     }
 
     public void EnableTriggers()
@@ -187,13 +199,30 @@ public class Weapon : MonoBehaviour
         capsuleCollider.enabled = false;
     }
 
-    public void SetDamageRange(Vector2Int newRange)
+    public void SetPercentDamage(float newPercent)
     {
-        damageRange = newRange;
+        percentDamage = newPercent;
     }
 
-    private int GetRandomDamage()
+    public void AddCombo(ComboDataSO comboData)
     {
-        return Random.Range(damageRange.x, damageRange.y);
+        Combos.Add(comboData);
+    }
+
+    /// <summary>
+    /// Retrieves the list of valid combos based on the specified air combo flag.
+    /// </summary>
+    /// <param name="isAirCombo">Flag indicating whether the combo is an air combo.</param>
+    /// <returns>The list of valid combos.</returns>
+    public List<ComboDataSO> GetCombos(bool isAirCombo)
+    {
+        List<ComboDataSO> validCombos = new List<ComboDataSO>();
+
+        foreach (ComboDataSO comboData in Combos)
+        {
+            if (comboData.IsAirCombo == isAirCombo) validCombos.Add(comboData);
+        }
+
+        return validCombos;
     }
 }

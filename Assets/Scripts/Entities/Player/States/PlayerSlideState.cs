@@ -11,7 +11,7 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Falling");
+        player.TransitionToAnimation("Falling");
     }
 
     public override void OnExit()
@@ -37,7 +37,7 @@ public class PlayerSlideState : PlayerBaseState
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
+        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
         if (!player.IsAbleToSlide()) player.ChangeState(player.DefaultState);

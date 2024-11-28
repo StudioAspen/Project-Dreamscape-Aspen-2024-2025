@@ -4,18 +4,16 @@ public class EntityDeathState : BaseState
 {
     private Entity entity;
 
-    private float timer;
-
-    public EntityDeathState(Entity entity) : base(entity)
+    public EntityDeathState(Entity entity)
     {
         this.entity = entity;
     }
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Death");
+        entity.TransitionToAnimation("Death");
 
-        timer = 0f;
+        entity.SetSpeedModifier(0f);
     }
 
     public override void OnExit()
@@ -25,12 +23,7 @@ public class EntityDeathState : BaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
 
-        if(timer > 1f)
-        {
-            entity.DestroyEntity();
-        }
     }
 
     public override void FixedUpdate()

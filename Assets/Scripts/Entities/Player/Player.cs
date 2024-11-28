@@ -1,43 +1,41 @@
 using KBCore.Refs;
 using System.Collections.Generic;
+using System.Drawing;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : Entity
 {
-    [Header("Player: Debug UI")]
-    [SerializeField] private TMP_Text stateText;
-
     [Header("Player: References")]
     [SerializeField, Self] private CharacterController controller;
-    [SerializeField, Self] private InputReader input;
+    [SerializeField, Self] private PlayerInputReader input;
 
-    [Header("Player: Grounded Movement")]
-    [SerializeField] private float rotationSpeed = 5f;
+    [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
-    public float MovementSpeed => movementOnSlopeSpeedModifier * SpeedModifier * baseSpeed;
+    [SerializeField] private float groundedAcceleration = 4f;
     private float movementOnSlopeSpeedModifier = 1f;
-    private float totalSpeedModifierForAnimation;
     public Vector3 MoveDirection => input.MoveDirection;
     private float forwardAngleBasedOnCamera;
     private Quaternion targetForwardRotation = Quaternion.identity;
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
+    private Vector3 velocity;
+    public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
+    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
-    [SerializeField] private float groundedAcceleration = 4f;
-    [field: SerializeField] public float JumpTimeToFall { get; private set; } = 0.3f;
     private int currentJumpCount;
     
     #region Flags
     [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
     [HideInInspector] public bool CanAttack = true;
-    [HideInInspector] public bool IsJumping;
     [HideInInspector] public bool ApplyRootMotion;
+    private bool isJumping;
     #endregion
 
     [field : Header("Player: Dash")]
@@ -49,9 +47,6 @@ public class Player : Entity
     private float dashDelayTimer = Mathf.Infinity;
     private Coroutine dashCoroutine;
 
-    [Header("Player: Camera")]
-    public bool CameraLocked = true;
-
     #region States 
     public PlayerIdleState PlayerIdleState { get; private set; }
     public PlayerWalkingState PlayerWalkingState { get; private set; }
@@ -62,78 +57,8 @@ public class Player : Entity
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
-    #endregion
 
-    [SerializeField] private float nearbyEntityRadius = 2.5f;
-    public List<Entity> NearbyEntities; 
-
-    private void OnEnable()
-    {
-        input.Jump.AddListener(HandleJumpInput);
-        input.SprintHold.AddListener(HandleSprintInput);
-        input.SprintRelease.AddListener(HandleSprintReleaseInput);
-        input.Dash.AddListener(HandleDashInput);
-    }
-
-    private void OnDisable()
-    {
-        input.Jump.RemoveListener(HandleJumpInput);
-        input.SprintHold.RemoveListener(HandleSprintInput);
-        input.SprintRelease.RemoveListener(HandleSprintReleaseInput);
-        input.Dash.RemoveListener(HandleDashInput);
-    }
-
-    protected override void OnAwake()
-    {
-        //calls OnAwake from the parent class, Entity
-        base.OnAwake();
-    }
-
-    protected override void OnStart()
-    {
-        base.OnStart();
-
-        ChangeTeam(0);
-
-        SetStartState(PlayerIdleState);
-        SetDefaultState(PlayerIdleState);
-    }
-
-    protected override void OnUpdate()
-    {
-        base.OnUpdate();
-
-        NearbyEntities = GetNearbyTargets(nearbyEntityRadius);
-
-        CheckSlopeSliding();
-
-        HandleGrounded();
-        HandleAirborne();
-        HandleDashDelay();
-        HandleDashTrail();
-
-        HandleAnimations();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1)) TakeDamage(25, transform.position);
-
-        //Cursor.lockState = CameraLocked ? CursorLockMode.Locked : CursorLockMode.None;
-
-        stateText.text = $"State: {CurrentState.GetType().ToString()}";
-    }
-
-    private void OnAnimatorMove()
-    {
-        if (CurrentState != PlayerAttackState) return;
-
-        if (!ApplyRootMotion) return;
-
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        //desiredAnimationMovement.y = 0f;
-
-        controller.Move(desiredAnimationMovement);
-    }
-
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -146,33 +71,134 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
+        EntityStaggeredState = new PlayerStaggeredState(this);
+        EntityDeathState = new PlayerDeathState(this);
+        EntityLaunchState = new PlayerLaunchState(this);
+    }
+    #endregion
+
+    private protected override void OnOnEnable()
+    {
+        base.OnOnEnable();
+
+        input.Jump.AddListener(Input_HandleJumpInput);
+        input.SprintHold.AddListener(Input_HandleSprintInput);
+        input.SprintRelease.AddListener(Input_HandleSprintReleaseInput);
+        input.Dash.AddListener(Input_HandleDashInput);
     }
 
-    protected override void CheckGrounded()
+    private protected override void OnOnDisable()
     {
-        //IsGrounded is always false for the first 0.1f seconds of being airborne
+        base.OnOnDisable();
+
+        input.Jump.RemoveListener(Input_HandleJumpInput);
+        input.SprintHold.RemoveListener(Input_HandleSprintInput);
+        input.SprintRelease.RemoveListener(Input_HandleSprintReleaseInput);
+        input.Dash.RemoveListener(Input_HandleDashInput);
+    }
+
+    private protected override void OnAwake()
+    {
+        //calls OnAwake from the parent class, Entity
+        base.OnAwake();
+    }
+
+    private protected override void OnStart()
+    {
+        base.OnStart();
+
+        ChangeTeam(0);
+
+        SetStartState(PlayerIdleState);
+        SetDefaultState(PlayerIdleState);
+    }
+
+    private protected override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        CheckSlopeSliding();
+
+        HandleGrounded();
+        HandleAirborne();
+        HandleDashDelay();
+        HandleDashTrail();
+
+        HandleAnimations();
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (CurrentState != PlayerAttackState) return;
+
+        if (!ApplyRootMotion) return;
+
+        Vector3 desiredAnimationMovement = animator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
+
+        controller.Move(desiredAnimationMovement);
+    }
+
+    private protected override void CheckGrounded()
+    {
+        base.CheckGrounded();
+
+        if(velocity.y > 0f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        //IsGrounded is always false for the first 0.1 seconds in air
         if (inAirTimer > 0f && inAirTimer < 0.1f)
         {
             IsGrounded = false;
             return;
         }
 
-        //direct physics calls r faster than Unity collision boxes
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, physicsSettings.GroundLayer);
+        IsGrounded = GetIsGrounded();
     }
 
-    private void HandleJumpInput()
+    private bool GetIsGrounded()
     {
-        if (!IsGrounded && currentJumpCount >= maxJumpCount) return;
+        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
+        LayerMask mask = LayerMask.GetMask("Ground");
+
+        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
+        foreach (Collider hit in hits)
+        {
+            // normal detection  
+            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
+
+            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
+            {
+                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
+                {
+                    continue;
+                }
+            }
+
+            if (hit.gameObject != gameObject)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void Input_HandleJumpInput()
+    {
+        if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return;
+        if(CurrentState == EntityLaunchState) return;
         if (CurrentState == PlayerSlideState) return;
         if(CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
-
+        if (CurrentState == EntityStaggeredState) return;
 
         ChangeState(PlayerJumpState);
     }
 
-    private void HandleSprintInput()
+    private void Input_HandleSprintInput()
     {
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
@@ -180,16 +206,18 @@ public class Player : Entity
         IsSprinting = true;
     }
 
-    private void HandleSprintReleaseInput()
+    private void Input_HandleSprintReleaseInput()
     {
         IsSprinting = false;
     }
 
-    private void HandleDashInput()
+    private void Input_HandleDashInput()
     {
         if (dashDelayTimer < dashDelayDuration) return;
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerDashState) return;
+        if (CurrentState == EntityStaggeredState) return;
+        if (CurrentState == EntityLaunchState) return;
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
@@ -210,7 +238,7 @@ public class Player : Entity
         velocity.z = groundedVelocity.z;
     }
 
-    public void InstantlySetSpeed(float speed)
+    public void InstantlySetGroundedSpeed(float speed)
     {
         Vector3 groundedVelocity = GetGroundedVelocity();
 
@@ -230,23 +258,26 @@ public class Player : Entity
             }
             inAirTimer = 0f;
             fallVelocityApplied = false;
-            IsJumping = false;
+            isJumping = false;
         }
     }
 
-    public void HandleAirborne()
+    private void HandleAirborne()
     {
         if (!IsGrounded)
         {
-            if (!IsJumping && !fallVelocityApplied) // falling without jumping
+            if (!isJumping && !fallVelocityApplied) // falling without jumping
             {
                 fallVelocityApplied = true;
-                velocity.y = physicsSettings.FallingStartingYVelocity;
+                velocity.y = PhysicsSettings.FallingStartingYVelocity;
 
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState) ChangeState(PlayerFallState);
+                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
+                {
+                    ChangeState(PlayerFallState);
+                }
             }
             inAirTimer += Time.deltaTime;
-            velocity.y += physicsSettings.Gravity * Time.deltaTime;
+            velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
         }
     }
 
@@ -285,7 +316,7 @@ public class Player : Entity
             return;
         }
 
-        Physics.Raycast(transform.position, Vector3.down, out hitBelow, controller.height / 2, physicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(transform.position, Vector3.down, out hitBelow, controller.height / 2, PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
 
         if (hitBelow.collider == null)
         {
@@ -317,7 +348,7 @@ public class Player : Entity
 
     public void ApplySlide(Vector3 slideDirection)
     {
-        velocity.y = physicsSettings.GroundedYVelocity;
+        velocity.y = PhysicsSettings.GroundedYVelocity;
         controller.Move(slideDirection * -velocity.y * Time.deltaTime);
     }
 
@@ -328,21 +359,33 @@ public class Player : Entity
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }
 
-    private void HandleAnimations()
+    /// <summary>
+    /// Applies the given target rotation to the next movement.
+    /// </summary>
+    /// <param name="targetRotation">The target rotation to apply.</param>
+    public void ApplyRotationToNextMovement(Quaternion targetRotation)
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, movementOnSlopeSpeedModifier * SpeedModifier, groundedAcceleration * Time.deltaTime); 
+        targetForwardRotation = targetRotation;
+        targetForwardDirection = targetForwardRotation * Vector3.forward;
+    }
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+    private protected override void HandleAnimations()
+    {
+        base.HandleAnimations();
+    }
+
+    private protected override void EvaluateMovementSpeed()
+    {
+        MovementSpeed = movementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
     public void Jump()
     {
-        input.OnPlayerActionInput?.Invoke(PlayerActions.JUMP);
-
-        IsJumping = true;
         IsGrounded = false;
 
-        velocity.y = Mathf.Sqrt(jumpHeight * -2f * physicsSettings.Gravity);
+        isJumping = true;
+
+        velocity.y = Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity);
         inAirTimer = 0.01f;
 
         currentJumpCount++;
@@ -369,6 +412,16 @@ public class Player : Entity
         return new Vector3(velocity.x, 0f, velocity.z);
     }
 
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
+
+    public void SetVelocity(Vector3 newVelocity)
+    {
+        velocity = newVelocity;
+    }
+
     public float GetMaxSpeed()
     {
         return SprintSpeedModifier * baseSpeed;
@@ -381,32 +434,42 @@ public class Player : Entity
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
     }
 
-    public float Distance(Vector3 pos)
-    {
-        return Vector3.Distance(transform.position, pos);
-    }
-
-    public void ReplaceComboAnimationClip(AnimationClip newClip)
-    {
-        AnimatorOverrideController aoc = new AnimatorOverrideController(animator.runtimeAnimatorController);
-
-        var anims = new List<KeyValuePair<AnimationClip, AnimationClip>>();
-
-        foreach (AnimationClip currentClip in aoc.animationClips)
-        {
-            if (currentClip.name == "ComboPlaceholder")
-            {
-                anims.Add(new KeyValuePair<AnimationClip, AnimationClip>(currentClip, newClip));
-            }
-        }
-
-        aoc.ApplyOverrides(anims);
-
-        animator.runtimeAnimatorController = aoc;
-    }
-
     public void SetComboAnimationSpeed(float speed)
     {
         animator.SetFloat("ComboAnimationSpeed", speed);
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
+    }
+
+    private protected override void TryChangeStaggeredState()
+    {
+        if (CurrentState == PlayerDashState) return;
+        if (CurrentState == PlayerChargeState) return;
+        if (CurrentState == PlayerAttackState) return;
+        if (CurrentState == EntityLaunchState) return;
+
+        ForceChangeState(EntityStaggeredState);
+    }
+
+    /// <summary>
+    /// Simulates launching the player by performing a fake jump and launching them in the specified direction with the given force.
+    /// </summary>
+    /// <param name="direction">The direction in which the player should be launched.</param>
+    /// <param name="force">The force with which the player should be launched.</param>
+    public override void Launch(Vector3 direction, float force)
+    {
+        // Calculate the resulting change in velocity from the impulse
+        Vector3 deltaVelocity = (force * direction.normalized) / mass;
+
+        IsGrounded = false;
+        isJumping = true;
+        inAirTimer = 0.01f;
+        currentJumpCount++;
+
+        // Apply the change to the current velocity
+        velocity = deltaVelocity;
     }
 }
