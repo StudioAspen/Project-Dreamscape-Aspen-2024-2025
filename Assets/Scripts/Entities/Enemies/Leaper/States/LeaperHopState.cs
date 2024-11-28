@@ -15,18 +15,6 @@ public class LeaperHopState : EnemyBaseState
     public override void OnEnter()
     {
         leaper.SetSpeedModifier(0);
-        // leaper.debugTimerDuration += Time.deltaTime;
-        
-
-        // leaper.DefaultTransitionToAnimation("Hop");
-        // Debug.Log(leaper.debugTimerDuration);
-        // if( leaper.debugTimerDuration > leaper.debugTimer)
-        // {
-        //     leaper.StartCoroutine(Jump());
-        //     leaper.debugTimerDuration = 0;
-        //     CoinToss();
-        // }
-        // leaper.StartCoroutine(Jump());
     }
 
     public override void OnExit()
@@ -36,6 +24,8 @@ public class LeaperHopState : EnemyBaseState
 
     public override void Update()
     {
+        //NOTE: Moved from OnEnter to update as the hop state needs a delay
+        // otherwise the game bugs out
         leaper.debugTimerDuration += Time.deltaTime;
         
 
@@ -85,17 +75,19 @@ public class LeaperHopState : EnemyBaseState
 
     public void CoinToss()
     {
-        bool willGoToAttack = Random.Range(0, 2) == 1;
 
-        if (willGoToAttack)
-        {
-            leaper.ChangeState(leaper.LeaperAttackState);
-            Debug.Log("Attack State");
-        }
-        else
-        {
-            leaper.ChangeState(leaper.LeaperPatrolState);
-            Debug.Log("Idle State");
-        }
+        leaper.ChangeState(leaper.LeaperAttackState);
+        // bool willGoToAttack = Random.Range(0, 2) == 1;
+
+        // if (willGoToAttack)
+        // {
+        //     leaper.ChangeState(leaper.LeaperAttackState);
+        //     Debug.Log("Attack State");
+        // }
+        // else
+        // {
+        //     leaper.ChangeState(leaper.LeaperPatrolState);
+        //     Debug.Log("Idle State");
+        // }
     }
 }

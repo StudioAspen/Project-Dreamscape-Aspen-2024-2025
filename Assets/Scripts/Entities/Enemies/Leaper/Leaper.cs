@@ -145,6 +145,8 @@ public class Leaper : Enemy
     public Tween TweenLeap(Vector3 leapDestination, float leapDuration, float leapHeight)
     {
         Debug.Log(leapDestination);
+        Debug.Log(leapDuration);
+        Debug.Log(leapHeight);
         Vector3 startPoint = rb.position;
         Vector3 endPoint = leapDestination;
         Vector3 midPoint = (startPoint + endPoint) / 2;
@@ -152,4 +154,5 @@ public class Leaper : Enemy
         Vector3[] path = { startPoint, midPoint, endPoint };
         return rb.DOPath(path, leapDuration, PathType.CatmullRom).SetEase(Ease.Linear);
     }
+
 }
