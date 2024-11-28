@@ -31,7 +31,6 @@ public class Weapon : MonoBehaviour
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
     private float percentDamage;
 
-    private float fixedDeltaTime;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
@@ -47,8 +46,6 @@ public class Weapon : MonoBehaviour
         holderEntity = GetComponentInParent<Entity>();
 
         AssignColliderStartEndPositions();
-
-        fixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Update()
@@ -160,11 +157,22 @@ public class Weapon : MonoBehaviour
     {
         if (impactFramesDuration <= 0) return;
 
+        // cant change timescale without game manager
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        if (gameManager == null) return;
+
         DOTween.Kill("ImpactFrames");
         Time.timeScale = timeScale;
-        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
+        Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime * Time.timeScale;
 
-        DOVirtual.DelayedCall(duration, () => { Time.timeScale = 1f; Time.fixedDeltaTime = fixedDeltaTime; }).SetId("ImpactFrames");
+        DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames");
+
+        // local function to reset timescale
+        void ResetTimeScale()
+        {
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime;
+        }
     }
 
     private void AssignColliderStartEndPositions()

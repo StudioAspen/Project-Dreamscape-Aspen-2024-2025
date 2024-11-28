@@ -105,31 +105,35 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (ComboData.WillLaunchUpwards && !victim.WillDieFromDamage(damage))
-        {
-            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
+        HandleLaunchingVictims(victim, damage);
 
-            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+        HandleAirComboingVictims(victim, damage);
+    }
 
-            return;
-        }
+    private void HandleLaunchingVictims(Entity victim, int damage)
+    {
+        if (!ComboData.WillLaunchUpwards) return;
+        if (victim.WillDieFromDamage(damage)) return;
 
-        if (!player.IsGrounded && !victim.IsGrounded && !victim.WillDieFromDamage(damage))
-        {
-            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            if(ComboData.AirLaunchForce > 0)
-            {
-                player.Launch(Vector3.up, ComboData.AirLaunchForce);
-            }
-            else
-            {
-                player.ResetYVelocity();
-            }
-                
+        victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
-            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
-        }
+        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
+
+        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+    }
+
+    private void HandleAirComboingVictims(Entity victim, int damage)
+    {
+        if (player.IsGrounded) return;
+        if (victim.IsGrounded) return;
+
+        if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
+        else victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+
+        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
+        else player.ResetYVelocity();
+
+        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
     }
 }
 

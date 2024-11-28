@@ -33,10 +33,10 @@ public class ComboDataSO : ScriptableObject
 
     [field: Header("Hit Options")]
     [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
+    [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
+    [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float ImpactFramesTimeScale { get; private set; }
     [field: SerializeField] public float ImpactFramesDuration { get; private set; } = 0.25f;
-    [field: Tooltip("Upwards launch force on hit. Only works if WillLaunchUpwards is true.")]
-    [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
 
     /// <summary>
     /// Checks to see if the given combo (starting from the front) is potentially in the other combo
