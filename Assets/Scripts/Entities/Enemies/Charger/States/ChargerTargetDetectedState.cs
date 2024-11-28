@@ -44,7 +44,7 @@ public class ChargerTargetDetectedState : EnemyBaseState
             return;
         }
 
-        timer += Time.deltaTime;
+        timer += charger.LocalDeltaTime;
 
         charger.LookAt(rememberedTarget.transform.position);
         

@@ -27,7 +27,7 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        timer += charger.LocalDeltaTime;
 
         if (timer > charger.JabRecoverDuration)
         {

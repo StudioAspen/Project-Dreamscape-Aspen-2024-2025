@@ -35,7 +35,7 @@ public class ChargerWanderState : EnemyBaseState
 
     public override void Update()
     {
-        wanderTimeElapsed += Time.deltaTime;
+        wanderTimeElapsed += charger.LocalDeltaTime;
 
         charger.TryAssignTarget();
 

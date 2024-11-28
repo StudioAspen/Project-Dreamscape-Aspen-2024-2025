@@ -31,7 +31,7 @@ public class FollowerReadyAttackState : EnemyBaseState
     {
         follower.TransitionToAnimation("Attack");
 
-        readyTimer += Time.deltaTime;
+        readyTimer += follower.LocalDeltaTime;
 
         if (readyTimer > readyDuration)
         {

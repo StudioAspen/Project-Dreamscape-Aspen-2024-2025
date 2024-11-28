@@ -2,11 +2,6 @@
 {
     private Entity entity;
 
-    private bool bingus;
-    private bool bongus;
-    private bool bungus;
-    private bool pingus;
-
     public EntityEmptyState(Entity entity)
     {
         this.entity = entity;

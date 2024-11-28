@@ -28,7 +28,7 @@ public class EntityStaggeredState : BaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        timer += entity.LocalDeltaTime;
 
         if (timer > entity.StaggerDuration)
         {

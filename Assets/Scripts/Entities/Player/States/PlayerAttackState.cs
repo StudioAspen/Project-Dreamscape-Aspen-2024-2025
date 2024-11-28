@@ -97,20 +97,28 @@ public class PlayerAttackState : PlayerBaseState
 
     }
 
+    /// <summary>
+    /// Prevents the player from cancelling the animation for the first half of the animation.
+    /// Ensures that the player cant unexpectedly cancel the animation in a bug.
+    /// </summary>
     private void HandleAnimationCancellingBuffer()
     {
-        timer += Time.deltaTime;
+        timer += player.LocalDeltaTime;
         if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        HandleLaunchingVictims(victim, damage);
-
-        HandleAirComboingVictims(victim, damage);
+        TryLaunchVictim(victim, damage);
+        TryAirComboVictim(victim, damage);
     }
 
-    private void HandleLaunchingVictims(Entity victim, int damage)
+    /// <summary>
+    /// Tries to launch victim on hit to start air combo
+    /// </summary>
+    /// <param name="victim">The victim entity.</param>
+    /// <param name="damage">The damage inflicted on the victim.</param>
+    private void TryLaunchVictim(Entity victim, int damage)
     {
         if (!ComboData.WillLaunchUpwards) return;
         if (victim.WillDieFromDamage(damage)) return;
@@ -122,7 +130,12 @@ public class PlayerAttackState : PlayerBaseState
         player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
     }
 
-    private void HandleAirComboingVictims(Entity victim, int damage)
+    /// <summary>
+    /// Tries to air combo victim on hit.
+    /// </summary>
+    /// <param name="victim">The victim entity.</param>
+    /// <param name="damage">The damage inflicted on the victim.</param>
+    private void TryAirComboVictim(Entity victim, int damage)
     {
         if (player.IsGrounded) return;
         if (victim.IsGrounded) return;

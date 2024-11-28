@@ -42,7 +42,7 @@ public class PlayerSprintingState : PlayerBaseState
 
         if (isSprintDependentOnTimer)
         {
-            timer += Time.deltaTime;
+            timer += player.LocalDeltaTime;
 
             if (timer > duration)
             {

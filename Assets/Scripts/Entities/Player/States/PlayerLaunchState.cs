@@ -22,7 +22,7 @@ public class PlayerLaunchState : EntityLaunchState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        timer += player.LocalDeltaTime;
 
         if (timer > stunDuration)
         {

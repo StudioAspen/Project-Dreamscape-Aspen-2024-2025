@@ -9,6 +9,11 @@ public class PlayerSlideState : PlayerBaseState
         this.player = player;
     }
 
+    public void SetSlideDirection(Vector3 dir)
+    {
+        slideDirection = dir;
+    }
+
     public override void OnEnter()
     {
         player.TransitionToAnimation("Falling");
@@ -46,10 +51,5 @@ public class PlayerSlideState : PlayerBaseState
     public override void FixedUpdate()
     {
 
-    }
-
-    public void SetSlideDirection(Vector3 dir)
-    {
-        slideDirection = dir;
     }
 }

@@ -61,7 +61,7 @@ public class PlayerDashState : PlayerBaseState
 
     private void DashUpdate()
     {
-        timer += Time.deltaTime;
+        timer += player.LocalDeltaTime;
 
         currDashSpeed = (player.InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / player.DashDuration - 1, 2))) + maxSpeed;
 

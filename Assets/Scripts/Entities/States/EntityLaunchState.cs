@@ -43,7 +43,7 @@ public class EntityLaunchState : BaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        timer += entity.LocalDeltaTime;
 
         if (timer > stunDuration)
         {

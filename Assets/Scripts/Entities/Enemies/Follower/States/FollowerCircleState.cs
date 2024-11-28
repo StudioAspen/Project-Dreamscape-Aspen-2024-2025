@@ -71,9 +71,9 @@ public class FollowerCircleState : EnemyBaseState
             return;
         }
 
-        canChaseTimer += Time.deltaTime;
+        canChaseTimer += follower.LocalDeltaTime;
 
-        changeDirTimer += Time.deltaTime;
+        changeDirTimer += follower.LocalDeltaTime;
 
         if(changeDirTimer > follower.ChangeDirectionInterval)
         {

@@ -47,7 +47,7 @@ public class ChargerChargeState : EnemyBaseState
             return;
         }
 
-        timer += Time.deltaTime;
+        timer += charger.LocalDeltaTime;
         if(timer > charger.ChargeDuration)
         {
             charger.ChangeState(charger.ChargerWindDownState);
@@ -57,11 +57,13 @@ public class ChargerChargeState : EnemyBaseState
         CheckCollisions();
 
         charger.LookAt(rememberedTarget.transform.position);
+
+        charger.Move(charger.transform.forward);
     }
 
     public override void FixedUpdate()
     {
-        charger.Move(charger.transform.forward);
+        
     }
 
     private void CheckCollisions()

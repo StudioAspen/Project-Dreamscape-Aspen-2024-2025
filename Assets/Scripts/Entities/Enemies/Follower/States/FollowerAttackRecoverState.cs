@@ -25,7 +25,7 @@ public class FollowerAttackRecoverState : EnemyBaseState
 
     public override void Update()
     {
-        recoverTimer += Time.deltaTime;
+        recoverTimer += follower.LocalDeltaTime;
 
         if (recoverTimer > follower.AttackRecoverDuration)
         {

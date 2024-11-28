@@ -31,7 +31,7 @@ public class ChargerWindDownState : EnemyBaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        timer += charger.LocalDeltaTime;
 
         if (timer > charger.WindDownDuration)
         {

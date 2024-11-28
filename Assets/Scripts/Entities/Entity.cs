@@ -10,6 +10,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     [Header("Entity: References")]
+    [SerializeField, Self] private protected Rigidbody rigidBody;
     [SerializeField, Self] private protected Animator animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
@@ -31,6 +32,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     [Header("Entity: Speed")]
     [SerializeField] private protected float baseSpeed = 3f;
     [SerializeField] private protected float rotationSpeed = 5f;
+    [SerializeField] private protected float mass = 1f;
+    [SerializeField] private protected Vector3 velocity;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
     public float MovementSpeed { get; protected set; }
@@ -59,6 +62,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
     #endregion
 
+    #region Stagger Variables
+    [field: Header("Entity: Stagger")]
+    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+    #endregion
+
     #region Movement Events
     [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
     [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
@@ -72,9 +80,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected GameObject lastHitSource;
     #endregion
 
-    #region Stagger Variables
-    [field: Header("Entity: Stagger")]
-    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+    #region Local Time Scale
+    [field: Header("Local Time Scale")]
+    [field: SerializeField] public float LocalTimeScale { get; protected set; } = 1f;
+    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale;
+    public float LocalFixedDeltaTime => Time.fixedDeltaTime * LocalTimeScale;
     #endregion
 
     #region Pooling Variables
@@ -286,9 +296,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void HandleAnimations()
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
         animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        animator.speed = LocalTimeScale;
     }
 
     /// <summary>
@@ -498,7 +509,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
 
         return targetRotation;
     }

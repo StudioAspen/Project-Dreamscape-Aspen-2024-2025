@@ -21,11 +21,9 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
-    private Vector3 velocity;
     public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
-    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
     private int currentJumpCount;
@@ -225,14 +223,14 @@ public class Player : Entity
 
     public void GroundedMove()
     {
-        controller.Move(GetGroundedVelocity() * Time.deltaTime);
+        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
     }
 
     public void AccelerateToSpeed(float speed)
     {
         Vector3 groundedVelocity = GetGroundedVelocity();
 
-        groundedVelocity = Vector3.Lerp(groundedVelocity, speed * targetForwardDirection, groundedAcceleration * Time.deltaTime);
+        groundedVelocity = Vector3.Lerp(groundedVelocity, speed * targetForwardDirection, groundedAcceleration * LocalDeltaTime);
 
         velocity.x = groundedVelocity.x;
         velocity.z = groundedVelocity.z;
@@ -276,14 +274,14 @@ public class Player : Entity
                     ChangeState(PlayerFallState);
                 }
             }
-            inAirTimer += Time.deltaTime;
-            velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
+            inAirTimer += LocalDeltaTime;
+            velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
         }
     }
 
     public void ApplyGravity()
     {
-        controller.Move(Time.deltaTime * velocity.y * Vector3.up);
+        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
     }
 
     public void ResetYVelocity()
@@ -293,12 +291,12 @@ public class Player : Entity
 
     public void RotateToTargetRotation()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * LocalDeltaTime);
     }
 
     private void HandleDashDelay()
     {
-        dashDelayTimer += Time.deltaTime;
+        dashDelayTimer += LocalDeltaTime;
     }
 
     public void ResetDashDelay()
@@ -349,7 +347,7 @@ public class Player : Entity
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * Time.deltaTime);
+        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
     }
 
     public void ApplyRotationToNextMovement()

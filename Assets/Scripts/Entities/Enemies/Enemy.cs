@@ -13,7 +13,6 @@ using UnityEngine.Pool;
 public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
     [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
 
     [field : Header("Enemy: Settings")]
@@ -33,6 +32,14 @@ public class Enemy : Entity
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
     public EnemyChaseState EnemyChaseState { get; protected set; }
+
+    private protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        EnemyIdleState = new EnemyIdleState(this);
+        EnemyChaseState = new EnemyChaseState(this);
+    }
     #endregion
 
     public void Init(EnemySpawner e)
@@ -74,18 +81,15 @@ public class Enemy : Entity
 
         HandleAnimations();
 
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
-            ForceChangeState(EntityLaunchState);
-        }
+        HandleAirborne();
+        ApplyVelocity();
+
+        MoveTowardsDestination();
     }
 
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        
-        MoveTowardsDestination();
     }
 
     private void OnAnimatorMove()
@@ -101,20 +105,12 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
+        transform.Translate(desiredAnimationMovement, Space.World);
     }
 
     private protected virtual void OnTick()
     {
         TryAssignTarget();
-    }
-
-    private protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
     }
 
     private protected override void CheckGrounded()
@@ -127,6 +123,34 @@ public class Enemy : Entity
     private protected override void HandleAnimations()
     {
         base.HandleAnimations();
+    }
+
+    /// <summary>
+    /// Applies gravity to the enemy's velocity.
+    /// </summary>
+    private void HandleAirborne()
+    {
+        if (IsGrounded)
+        {
+            velocity.y = PhysicsSettings.GroundedYVelocity;
+            return;
+        }
+
+        velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
+    }
+
+    /// <summary>
+    /// Applies the velocity to the enemy's transform.
+    /// </summary>
+    private void ApplyVelocity()
+    {
+        rigidBody.velocity = Vector3.zero;
+
+        Vector3 capsuleStart = capsuleCollider.bounds.center + LocalDeltaTime * velocity - (capsuleCollider.height / 2f - capsuleCollider.radius) * Vector3.up;
+        Vector3 capsuleEnd = capsuleCollider.bounds.center + LocalDeltaTime * velocity + (capsuleCollider.height / 2f - capsuleCollider.radius) * Vector3.up;
+
+        if(Physics.CheckCapsule(capsuleStart, capsuleEnd, capsuleCollider.radius, PhysicsSettings.GroundLayer))
+            transform.Translate(LocalDeltaTime * velocity, Space.World);
     }
 
     private List<Vector3> GetPathToDestination(Vector3 dest)
@@ -176,7 +200,7 @@ public class Enemy : Entity
 
     public void Move(Vector3 dir)
     {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
+        transform.Translate(MovementSpeed* LocalDeltaTime * dir.normalized, Space.World);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -252,14 +276,17 @@ public class Enemy : Entity
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
 
         return targetRotation;
     }
 
     public override void Launch(Vector3 direction, float force)
     {
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
+        // Calculate the resulting change in velocity from the impulse
+        Vector3 deltaVelocity = (force * direction.normalized) / mass;
+
+        // Apply the change to the current velocity
+        velocity = deltaVelocity;
     }
 }

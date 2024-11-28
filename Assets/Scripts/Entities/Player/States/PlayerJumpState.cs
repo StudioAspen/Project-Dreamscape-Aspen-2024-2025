@@ -43,12 +43,6 @@ public class PlayerJumpState : PlayerBaseState
             player.ChangeState(player.PlayerFallState);
             return;
         }
-
-/*        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }*/
     }
 
     public override void FixedUpdate()
