@@ -8,7 +8,6 @@ using UnityEngine.Events;
 public class Player : Entity
 {
     [Header("Player: References")]
-    [SerializeField, Self] private CharacterController controller;
     [SerializeField, Self] private PlayerInputReader input;
 
     [field: Header("Player: Grounded Movement")]
@@ -21,7 +20,6 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
-    public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
     [SerializeField] private float jumpHeight = 2f;
@@ -120,11 +118,6 @@ public class Player : Entity
         HandleAnimations();
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        CurrentState?.OnCollisionEnter(hit.collider);
-    }
-
     private void OnAnimatorMove()
     {
         if (CurrentState != PlayerAttackState) return;
@@ -135,26 +128,6 @@ public class Player : Entity
         desiredAnimationMovement.y = 0f;
 
         controller.Move(desiredAnimationMovement);
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        if (velocity.y > 0f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        //IsGrounded is always false for the first 0.1 seconds in air
-        if (inAirTimer > 0f && inAirTimer < 0.1f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        IsGrounded = GetIsGrounded(controller.radius);
     }
 
     private void Input_HandleJumpInput()
@@ -192,11 +165,6 @@ public class Player : Entity
 
         input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
         ChangeState(PlayerDashState);
-    }
-
-    public override void GroundedMove()
-    {
-        controller.Move(GetGroundedVelocity() * LocalFixedDeltaTime);
     }
 
     public void AccelerateToSpeed(float speed)
@@ -250,16 +218,6 @@ public class Player : Entity
             }
             inAirTimer += LocalDeltaTime;
         }
-    }
-
-    private protected override void HandleYVelocity()
-    {
-        base.HandleYVelocity();
-    }
-
-    public override void ApplyGravity()
-    {
-        controller.Move(LocalFixedDeltaTime * velocity.y * Vector3.up);
     }
 
     public void RotateToTargetRotation()

@@ -6,12 +6,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     [Header("Entity: References")]
-    [SerializeField, Self] private protected Rigidbody rigidBody;
+    [SerializeField, Self] private protected CharacterController controller;
     [SerializeField, Self] private protected Animator animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
@@ -34,7 +35,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected float baseSpeed = 3f;
     [SerializeField] private protected float rotationSpeed = 5f;
     [SerializeField] private protected float mass = 1f;
-    [SerializeField] private protected Vector3 velocity;
+    private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
@@ -200,6 +201,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentHealth = MaxHealth;
 
         SetStartState(EntityEmptyState);
+
+        ResetLocalTimeScale();
     }
 
     private void OnDisable()
@@ -275,10 +278,9 @@ public class Entity : MonoBehaviour, IPoolableObject
         CheckGrounded();
         HandleYVelocity();
     }
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        OnOnCollisionEnter(collision.collider);
+        CurrentState?.OnControllerColliderHit(hit);
     }
 
     /// <summary>
@@ -286,9 +288,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Override this function if you want to add custom collision enter logic.
     /// </summary>
     /// <param name="collision">The collision data.</param>
-    private protected virtual void OnOnCollisionEnter(Collider collider)
+    private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
-        CurrentState?.OnCollisionEnter(collider);
+        CurrentState?.OnControllerColliderHit(hit);
     }
 
     /// <summary>
@@ -298,6 +300,21 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void CheckGrounded()
     {
         InvokeVerticalMovementEvents();
+
+        if (velocity.y > 0f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        //IsGrounded is always false for the first 0.1 seconds in air
+        if (inAirTimer > 0f && inAirTimer < 0.1f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        IsGrounded = GetIsGrounded();
     }
 
     /// <summary>
@@ -324,12 +341,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <param name="colliderRadius">The radius of the collider.</param>
     /// <returns>True if the entity is grounded, false otherwise.</returns>
-    private protected bool GetIsGrounded(float colliderRadius)
+    private protected bool GetIsGrounded()
     {
         //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
         LayerMask mask = LayerMask.GetMask("Ground");
 
-        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * colliderRadius / 10f * Vector3.up, colliderRadius, mask);
+        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
         foreach (Collider hit in hits)
         {
             // normal detection  
@@ -387,17 +404,15 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             velocity.y += LocalFixedDeltaTime * PhysicsSettings.Gravity;
         }
-    }
+    }
+
     /// <summary>
     /// Applies gravity to the entity if it is not grounded.
     /// Override this function if you want to add custom gravity logic.
     /// </summary>
     public virtual void ApplyGravity()
     {
-        if (!IsGrounded)
-        {
-            //rigidBody.MovePosition(transform.position + LocalFixedDeltaTime * velocity.y * Vector3.up);
-        }
+        controller.Move(LocalFixedDeltaTime * velocity.y * Vector3.up);
     }
 
     /// <summary>
@@ -432,7 +447,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void GroundedMove()
     {
-        //rigidBody.MovePosition(transform.position + LocalFixedDeltaTime * GetGroundedVelocity());
+        controller.Move(GetGroundedVelocity() * LocalFixedDeltaTime);
     }
 
     /// <summary>
@@ -1012,6 +1027,26 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetDamageModifier(float newModifier)
     {
         DamageModifier = newModifier;
+    }
+
+    /// <summary>
+    /// Sets the local time scale for the entity.
+    /// Cant set time scale if entity is dead.
+    /// </summary>
+    /// <param name="newTimeScale">The new time scale value.</param>
+    public void SetLocalTimeScale(float newTimeScale)
+    {
+        if(CurrentState == EntityDeathState) return;
+
+        LocalTimeScale = newTimeScale;
+    }
+
+    /// <summary>
+    /// Resets the local time scale to its default value of 1.
+    /// </summary>
+    public void ResetLocalTimeScale()
+    {
+        LocalTimeScale = 1f;
     }
 
     /// <summary>

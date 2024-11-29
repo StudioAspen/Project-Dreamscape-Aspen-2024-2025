@@ -807,17 +807,6 @@ PrefabInstance:
       propertyPath: worldManager
       value: 
       objectReference: {fileID: 333654149}
-    - target: {fileID: 2866989536264367900, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: enemyPrefabs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2866989536264367900, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: enemyPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376,
-        type: 3}
     - target: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_Name
@@ -828,11 +817,6 @@ PrefabInstance:
       propertyPath: worldManager
       value: 
       objectReference: {fileID: 333654149}
-    - target: {fileID: 5096604435508627016, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: <Level>k__BackingField
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8938620608541455539, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2564,7 +2548,7 @@ PrefabInstance:
     - target: {fileID: 5104155415629920173, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_CollisionDetection
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7536978621657743438, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}

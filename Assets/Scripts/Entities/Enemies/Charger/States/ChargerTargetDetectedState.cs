@@ -45,8 +45,6 @@ public class ChargerTargetDetectedState : EnemyBaseState
         }
 
         timer += charger.LocalDeltaTime;
-
-        charger.LookAt(rememberedTarget.transform.position);
         
         if(timer > charger.TargetDetectedDuration)
         {
@@ -70,5 +68,7 @@ public class ChargerTargetDetectedState : EnemyBaseState
     public override void FixedUpdate()
     {
         charger.ApplyGravity();
+
+        charger.LookAt(rememberedTarget.transform.position);
     }
 }

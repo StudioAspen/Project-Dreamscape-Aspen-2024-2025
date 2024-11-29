@@ -68,17 +68,11 @@ public class EntityLaunchState : BaseState
         entity.GroundedMove();
     }
 
-    public override void OnCollisionEnter(Collider collider)
+    public override void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if(collider.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
+        if(hit.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
 
-        Vector3 closestPoint = collider.ClosestPoint(entity.transform.position); // Closest point on the collider
-        Vector3 directionToCollider = entity.transform.position - closestPoint; // Direction to the closest point
-
-        RaycastHit raycastHit;
-        Physics.Raycast(entity.transform.position, directionToCollider, out raycastHit, directionToCollider.magnitude * 1.1f, LayerMask.GetMask("Ground")); // Raycast to get normal
-
-        Vector3 bounceVelocity = Vector3.Reflect(entity.GetGroundedVelocity(), raycastHit.normal);
+        Vector3 bounceVelocity = Vector3.Reflect(entity.GetGroundedVelocity(), hit.normal);
         bounceVelocity.y = entity.Velocity.y;
 
         entity.SetVelocity(bounceVelocity);

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -4810948276731600067}
   - component: {fileID: 364766872975019307}
   - component: {fileID: 5860220226555299953}
-  - component: {fileID: 886317934850423876}
+  - component: {fileID: 8702003990657789017}
   - component: {fileID: 3915645929625153338}
   m_Layer: 16
   m_Name: Follower
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7894c5e290feeb840a15d05698e254c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigidBody: {fileID: 3915645929625153338}
+  controller: {fileID: 8702003990657789017}
   animator: {fileID: 5860220226555299953}
   <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
@@ -85,7 +85,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   <LocalTimeScale>k__BackingField: 1
-  capsuleCollider: {fileID: 886317934850423876}
   <Cost>k__BackingField: 1
   IsAttackAnimationPlaying: 0
   UseRootMotion: 0
@@ -132,8 +131,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!136 &886317934850423876
-CapsuleCollider:
+--- !u!143 &8702003990657789017
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -150,11 +149,14 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
+  m_Height: 1.8
   m_Radius: 0.25
-  m_Height: 1.8351798
-  m_Direction: 1
-  m_Center: {x: -0, y: 0.9175899, z: 0}
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.0001
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.9175899, z: 0}
 --- !u!54 &3915645929625153338
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -178,10 +180,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 2
+  m_CollisionDetection: 1
 --- !u!1 &2299435363706797073
 GameObject:
   m_ObjectHideFlags: 0

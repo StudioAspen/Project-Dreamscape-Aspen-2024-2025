@@ -14,6 +14,8 @@ public class EntityDeathState : BaseState
         entity.TransitionToAnimation("Death");
 
         entity.SetSpeedModifier(0f);
+
+        entity.ResetLocalTimeScale();
     }
 
     public override void OnExit()

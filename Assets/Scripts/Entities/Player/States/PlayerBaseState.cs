@@ -8,6 +8,4 @@ public class PlayerBaseState : BaseState
     {
         this.player = player;
     }
-
-    public virtual void OnControllerColliderHit(ControllerColliderHit hit) { }
 }

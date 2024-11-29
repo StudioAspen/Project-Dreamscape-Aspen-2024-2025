@@ -7,5 +7,5 @@ public class BaseState
     public virtual void OnExit() { }
     public virtual void Update() { }
     public virtual void FixedUpdate() { }
-    public virtual void OnCollisionEnter(Collider collider) { }
+    public virtual void OnControllerColliderHit(ControllerColliderHit hit) { }
 }

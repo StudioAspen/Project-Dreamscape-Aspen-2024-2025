@@ -12,9 +12,6 @@ using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
-    [field: Header("Enemy: References")]
-    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
-
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
 
@@ -83,8 +80,6 @@ public class Enemy : Entity
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-
-        rigidBody.velocity = velocity;
     }
 
     private void OnAnimatorMove()
@@ -100,32 +95,12 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
+        controller.Move(desiredAnimationMovement);
     }
 
     private protected virtual void OnTick()
     {
         TryAssignTarget();
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        if (rigidBody.velocity.y > 0f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        //IsGrounded is always false for the first 0.1 seconds in air
-        if (inAirTimer > 0f && inAirTimer < 0.1f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        IsGrounded = GetIsGrounded(capsuleCollider.radius);
     }
 
     /// <summary>
@@ -154,12 +129,12 @@ public class Enemy : Entity
         if (path.Count < 2) return;
 
         #region Debug
-        /*        Vector3 prevCorner = transform.position;
-            foreach (Vector3 wayPoint in path)
-            {
-                Debug.DrawLine(prevCorner, wayPoint, Color.red);
-                prevCorner = wayPoint;
-            }*/
+        Vector3 prevCorner = transform.position;
+        foreach (Vector3 wayPoint in path)
+        {
+            Debug.DrawLine(prevCorner, wayPoint, Color.red);
+            prevCorner = wayPoint;
+        }
         #endregion
 
         Vector3 currDest = path[1];
@@ -246,17 +221,5 @@ public class Enemy : Entity
     public void ClearTarget()
     {
         Target = null;
-    }
-
-    public override Quaternion LookAt(Vector3 target)
-    {
-        Vector3 dir = target - transform.position;
-
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
-
-        return targetRotation;
     }
 }

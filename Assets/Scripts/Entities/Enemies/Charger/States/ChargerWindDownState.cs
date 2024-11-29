@@ -93,7 +93,6 @@ public class ChargerWindDownState : EnemyBaseState
     {
         if (hit.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            Debug.Log("Hit a wall...");
             return true;
         }
 

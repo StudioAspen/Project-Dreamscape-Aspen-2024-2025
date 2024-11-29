@@ -27,8 +27,8 @@ public class Charger : Enemy
     [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
     [field: SerializeField] public float ChargeFlingForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (capsuleCollider.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (capsuleCollider.height / 2 - ChargeCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (controller.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (controller.height / 2 - ChargeCollisionRadius) * Vector3.up;
     private float originalRotationSpeed;
 
     [field: Header("Charger: Wind Down Settings")]

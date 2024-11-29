@@ -56,8 +56,6 @@ public class ChargerChargeState : EnemyBaseState
 
         CheckCollisions();
 
-        charger.LookAt(rememberedTarget.transform.position);
-
         charger.UpdateGroundedVelocity(charger.transform.forward);
 
     }
@@ -66,6 +64,8 @@ public class ChargerChargeState : EnemyBaseState
     {
         charger.ApplyGravity();
         charger.GroundedMove();
+
+        charger.LookAt(rememberedTarget.transform.position);
     }
 
     /// <summary>
