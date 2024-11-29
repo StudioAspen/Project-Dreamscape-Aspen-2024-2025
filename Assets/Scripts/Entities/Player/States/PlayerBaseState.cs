@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class PlayerBaseState : BaseState
+public class PlayerBaseState : BaseState
 {
     private protected Player player;
 
@@ -8,4 +8,6 @@ public abstract class PlayerBaseState : BaseState
     {
         this.player = player;
     }
+
+    public virtual void OnControllerColliderHit(ControllerColliderHit hit) { }
 }

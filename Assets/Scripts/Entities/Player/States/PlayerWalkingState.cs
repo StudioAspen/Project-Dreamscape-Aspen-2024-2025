@@ -21,12 +21,9 @@ public class PlayerWalkingState : PlayerBaseState
 
     public override void Update()
     {
-        player.ApplyGravity();
-
         player.ApplyRotationToNextMovement();
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(player.MovementSpeed);
-        player.GroundedMove();
 
         if (player.MoveDirection == Vector3.zero)
         {
@@ -41,6 +38,7 @@ public class PlayerWalkingState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
+        player.ApplyGravity();
+        player.GroundedMove();
     }
 }

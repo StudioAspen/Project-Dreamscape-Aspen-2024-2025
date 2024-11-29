@@ -20,8 +20,6 @@ public class PlayerFallState : PlayerBaseState
 
     public override void Update()
     {
-        player.ApplyGravity();
-
         if (player.MoveDirection != Vector3.zero)
         {
             player.AccelerateToSpeed(player.MovementSpeed);
@@ -35,8 +33,7 @@ public class PlayerFallState : PlayerBaseState
             
         player.RotateToTargetRotation(); 
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
-
+        
         if (player.IsGrounded)
         {
             player.ChangeState(player.PlayerIdleState);
@@ -46,7 +43,8 @@ public class PlayerFallState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
+        player.ApplyGravity();
+        player.GroundedMove();
     }
 
 }

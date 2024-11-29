@@ -40,6 +40,6 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        
+        charger.ApplyGravity();
     }
 }

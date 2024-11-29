@@ -58,14 +58,19 @@ public class ChargerChargeState : EnemyBaseState
 
         charger.LookAt(rememberedTarget.transform.position);
 
-        charger.Move(charger.transform.forward);
+        charger.UpdateGroundedVelocity(charger.transform.forward);
+
     }
 
     public override void FixedUpdate()
     {
-        
+        charger.ApplyGravity();
+        charger.GroundedMove();
     }
 
+    /// <summary>
+    /// Checks for collisions during the charger's charge state.
+    /// </summary>
     private void CheckCollisions()
     {
         // charge layer mask should only be ground and damageable entities
@@ -76,11 +81,11 @@ public class ChargerChargeState : EnemyBaseState
 
         List<Collider> orderedHits = hits.OrderBy(hit => charger.Distance(hit.ClosestPoint(charger.GetColliderCenterPosition()))).ToList();
 
-        foreach(Collider hit in orderedHits)
+        foreach (Collider hit in orderedHits)
         {
-            if(IsOwnDamageableEntityCollider(hit)) continue;
+            if (IsOwnDamageableEntityCollider(hit)) continue;
 
-            if(DidChargerHitWall(hit))
+            if (DidChargerHitWall(hit))
             {
                 CameraShakeManager.Instance.ShakeCamera(3f, 0.5f);
 
@@ -88,7 +93,7 @@ public class ChargerChargeState : EnemyBaseState
                 return;
             }
 
-            if(DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
+            if (DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
@@ -96,7 +101,7 @@ public class ChargerChargeState : EnemyBaseState
                 TryFlingEntity(friendlyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
             }
 
-            if(DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
+            if (DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
             {
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 

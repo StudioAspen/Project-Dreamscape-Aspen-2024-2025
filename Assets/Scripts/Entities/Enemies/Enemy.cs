@@ -42,9 +42,9 @@ public class Enemy : Entity
     }
     #endregion
 
-    public void Init(EnemySpawner e)
+    public void Init(EnemySpawner enemySpawner)
     {
-        spawner = e;
+        spawner = enemySpawner;
     }
 
     private protected override void OnAwake()
@@ -78,18 +78,13 @@ public class Enemy : Entity
     private protected override void OnUpdate()
     {
         base.OnUpdate();
-
-        HandleAnimations();
-
-        HandleAirborne();
-        ApplyVelocity();
-
-        MoveTowardsDestination();
     }
 
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
+
+        rigidBody.velocity = velocity;
     }
 
     private void OnAnimatorMove()
@@ -105,7 +100,7 @@ public class Enemy : Entity
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        transform.Translate(desiredAnimationMovement, Space.World);
+        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
     private protected virtual void OnTick()
@@ -117,42 +112,27 @@ public class Enemy : Entity
     {
         base.CheckGrounded();
 
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
-    }
-
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
-    }
-
-    /// <summary>
-    /// Applies gravity to the enemy's velocity.
-    /// </summary>
-    private void HandleAirborne()
-    {
-        if (IsGrounded)
+        if (rigidBody.velocity.y > 0f)
         {
-            velocity.y = PhysicsSettings.GroundedYVelocity;
+            IsGrounded = false;
             return;
         }
 
-        velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
+        //IsGrounded is always false for the first 0.1 seconds in air
+        if (inAirTimer > 0f && inAirTimer < 0.1f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        IsGrounded = GetIsGrounded(capsuleCollider.radius);
     }
 
     /// <summary>
-    /// Applies the velocity to the enemy's transform.
+    /// Calculates the path from the current position to the destination using NavMesh.
     /// </summary>
-    private void ApplyVelocity()
-    {
-        rigidBody.velocity = Vector3.zero;
-
-        Vector3 capsuleStart = capsuleCollider.bounds.center + LocalDeltaTime * velocity - (capsuleCollider.height / 2f - capsuleCollider.radius) * Vector3.up;
-        Vector3 capsuleEnd = capsuleCollider.bounds.center + LocalDeltaTime * velocity + (capsuleCollider.height / 2f - capsuleCollider.radius) * Vector3.up;
-
-        if(Physics.CheckCapsule(capsuleStart, capsuleEnd, capsuleCollider.radius, PhysicsSettings.GroundLayer))
-            transform.Translate(LocalDeltaTime * velocity, Space.World);
-    }
-
+    /// <param name="dest">The destination position.</param>
+    /// <returns>The list of positions representing the calculated path.</returns>
     private List<Vector3> GetPathToDestination(Vector3 dest)
     {
         NavMeshPath path = new NavMeshPath();
@@ -160,23 +140,26 @@ public class Enemy : Entity
         bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
 
         if (!hasPath) return null;
-        if(path.corners.Length == 0) return null;
+        if (path.corners.Length == 0) return null;
 
         return path.corners.ToList();
     }
 
-    private void MoveTowardsDestination()
+    /// <summary>
+    /// Moves the enemy towards its destination along the calculated path.
+    /// </summary>
+    public void MoveTowardsDestination()
     {
         if (path == null) return;
-        if(path.Count < 2) return;
+        if (path.Count < 2) return;
 
         #region Debug
-/*        Vector3 prevCorner = transform.position;
-        foreach (Vector3 wayPoint in path)
-        {
-            Debug.DrawLine(prevCorner, wayPoint, Color.red);
-            prevCorner = wayPoint;
-        }*/
+        /*        Vector3 prevCorner = transform.position;
+            foreach (Vector3 wayPoint in path)
+            {
+                Debug.DrawLine(prevCorner, wayPoint, Color.red);
+                prevCorner = wayPoint;
+            }*/
         #endregion
 
         Vector3 currDest = path[1];
@@ -185,7 +168,8 @@ public class Enemy : Entity
         Vector3 dir = currDest - transform.position;
         dir.Normalize();
 
-        Move(dir);
+        UpdateGroundedVelocity(dir);
+        GroundedMove();
 
         if (Distance(currDest) < 0.05f)
         {
@@ -196,11 +180,6 @@ public class Enemy : Entity
     public void CancelPath()
     {
         path = null;
-    }
-
-    public void Move(Vector3 dir)
-    {
-        transform.Translate(MovementSpeed* LocalDeltaTime * dir.normalized, Space.World);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -279,14 +258,5 @@ public class Enemy : Entity
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
 
         return targetRotation;
-    }
-
-    public override void Launch(Vector3 direction, float force)
-    {
-        // Calculate the resulting change in velocity from the impulse
-        Vector3 deltaVelocity = (force * direction.normalized) / mass;
-
-        // Apply the change to the current velocity
-        velocity = deltaVelocity;
     }
 }

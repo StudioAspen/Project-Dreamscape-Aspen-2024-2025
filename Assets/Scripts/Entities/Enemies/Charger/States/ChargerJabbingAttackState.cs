@@ -90,6 +90,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        charger.ApplyGravity();
     }
 }

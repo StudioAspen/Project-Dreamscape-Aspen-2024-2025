@@ -46,11 +46,14 @@ public class ChargerWindDownState : EnemyBaseState
 
             CheckCollisions();
         }
+
+        charger.UpdateGroundedVelocity(charger.transform.forward);
     }
 
     public override void FixedUpdate()
     {
-        charger.Move(charger.transform.forward);
+        charger.ApplyGravity();
+        charger.GroundedMove();
     }
 
     private void CheckCollisions()

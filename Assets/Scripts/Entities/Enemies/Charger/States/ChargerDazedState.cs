@@ -38,5 +38,8 @@ public class ChargerDazedState : EnemyBaseState
         }
     }
 
-    public override void FixedUpdate() { }
+    public override void FixedUpdate()
+    {
+        charger.ApplyGravity();
+    }
 }

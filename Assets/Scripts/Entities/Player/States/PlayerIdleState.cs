@@ -21,11 +21,8 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void Update()
     {
-        player.ApplyGravity();
-
         player.AccelerateToSpeed(0f);
-        player.GroundedMove();
-
+        
         if (player.MoveDirection != Vector3.zero && player.IsSprinting)
         {
             player.ChangeState(player.PlayerSprintingState);
@@ -40,6 +37,7 @@ public class PlayerIdleState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
+        player.ApplyGravity();
+        player.GroundedMove();
     }
 }

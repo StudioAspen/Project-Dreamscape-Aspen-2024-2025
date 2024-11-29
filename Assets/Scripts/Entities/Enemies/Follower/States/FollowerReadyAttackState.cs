@@ -42,6 +42,6 @@ public class FollowerReadyAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        follower.ApplyGravity();
     }
 }

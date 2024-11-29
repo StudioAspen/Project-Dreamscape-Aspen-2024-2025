@@ -36,5 +36,8 @@ public class ChargerStaggeredState : EntityStaggeredState
         }
     }
 
-    public override void FixedUpdate() { }
+    public override void FixedUpdate()
+    {
+        charger.ApplyGravity();
+    }
 }

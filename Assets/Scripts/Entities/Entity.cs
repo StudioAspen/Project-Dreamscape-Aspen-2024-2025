@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
 
 public class Entity : MonoBehaviour, IPoolableObject
@@ -34,6 +35,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [SerializeField] private protected float rotationSpeed = 5f;
     [SerializeField] private protected float mass = 1f;
     [SerializeField] private protected Vector3 velocity;
+    public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
     public float MovementSpeed { get; protected set; }
@@ -249,10 +251,11 @@ public class Entity : MonoBehaviour, IPoolableObject
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.Update();
 
-        CheckGrounded();
-
         HandleAnimations();
         EvaluateMovementSpeed();
+
+        HandleGrounded();
+        HandleAirborne();
     }
 
     private void FixedUpdate()
@@ -268,6 +271,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
+
+        CheckGrounded();
+        HandleYVelocity();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        OnOnCollisionEnter(collision.collider);
+    }
+
+    /// <summary>
+    /// Handles the collision enter event for the entity.
+    /// Override this function if you want to add custom collision enter logic.
+    /// </summary>
+    /// <param name="collision">The collision data.</param>
+    private protected virtual void OnOnCollisionEnter(Collider collider)
+    {
+        CurrentState?.OnCollisionEnter(collider);
     }
 
     /// <summary>
@@ -276,7 +297,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void CheckGrounded()
     {
-        if(prevIsGrounded != IsGrounded)
+        InvokeVerticalMovementEvents();
+    }
+
+    /// <summary>
+    /// Invokes the vertical movement events based on the current grounded state.
+    /// </summary>
+    private protected void InvokeVerticalMovementEvents()
+    {
+        if (prevIsGrounded != IsGrounded)
         {
             if (IsGrounded)
             {
@@ -288,6 +317,134 @@ public class Entity : MonoBehaviour, IPoolableObject
             }
             prevIsGrounded = IsGrounded;
         }
+    }
+
+    /// <summary>
+    /// Checks if the entity is grounded based on the collider radius.
+    /// </summary>
+    /// <param name="colliderRadius">The radius of the collider.</param>
+    /// <returns>True if the entity is grounded, false otherwise.</returns>
+    private protected bool GetIsGrounded(float colliderRadius)
+    {
+        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
+        LayerMask mask = LayerMask.GetMask("Ground");
+
+        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * colliderRadius / 10f * Vector3.up, colliderRadius, mask);
+        foreach (Collider hit in hits)
+        {
+            // normal detection  
+            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
+
+            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
+            {
+                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
+                {
+                    continue;
+                }
+            }
+
+            if (hit.gameObject != gameObject)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Handles the behavior when the entity is grounded.
+    /// Override this function if you want to add custom grounded logic.
+    /// </summary>
+    private protected virtual void HandleGrounded()
+    {
+        if (IsGrounded)
+        {
+            inAirTimer = 0f;
+            fallVelocityApplied = false;
+
+            velocity.y = PhysicsSettings.GroundedYVelocity;
+        }
+    }
+
+    /// <summary>
+    /// Handles the behavior when the entity is airborne.
+    /// Override this function if you want to add custom grounded logic.
+    /// </summary>
+    private protected virtual void HandleAirborne()
+    {
+        if (!IsGrounded)
+        {
+            inAirTimer += LocalDeltaTime;
+        }
+    }
+
+    /// <summary>
+    /// Handles the vertical velocity of the entity.
+    /// </summary>
+    private protected virtual void HandleYVelocity()
+    {
+        if (!IsGrounded)
+        {
+            velocity.y += LocalFixedDeltaTime * PhysicsSettings.Gravity;
+        }
+    }
+    /// <summary>
+    /// Applies gravity to the entity if it is not grounded.
+    /// Override this function if you want to add custom gravity logic.
+    /// </summary>
+    public virtual void ApplyGravity()
+    {
+        if (!IsGrounded)
+        {
+            //rigidBody.MovePosition(transform.position + LocalFixedDeltaTime * velocity.y * Vector3.up);
+        }
+    }
+
+    /// <summary>
+    /// Resets the Y velocity of the entity to zero.
+    /// </summary>
+    public void ResetYVelocity()
+    {
+        velocity.y = 0f;
+    }
+
+    /// <summary>
+    /// Gets the grounded velocity of the entity.
+    /// </summary>
+    /// <returns>The grounded velocity.</returns>
+    public Vector3 GetGroundedVelocity()
+    {
+        return new Vector3(velocity.x, 0f, velocity.z);
+    }
+
+    /// <summary>
+    /// Sets the velocity of the entity.
+    /// </summary>
+    /// <param name="newVelocity">The new velocity to set.</param>
+    public void SetVelocity(Vector3 newVelocity)
+    {
+        velocity = newVelocity;
+    }
+
+    /// <summary>
+    /// Moves the entity while it is grounded.
+    /// Override this function if you want to add custom grounded movement logic.
+    /// </summary>
+    public virtual void GroundedMove()
+    {
+        //rigidBody.MovePosition(transform.position + LocalFixedDeltaTime * GetGroundedVelocity());
+    }
+
+    /// <summary>
+    /// Updates the grounded velocity of the entity based on the given direction.
+    /// </summary>
+    /// <param name="direction">The direction of movement.</param>
+    public void UpdateGroundedVelocity(Vector3 direction)
+    {
+        Vector3 groundedVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
+
+        velocity.x = groundedVelocity.x;
+        velocity.z = groundedVelocity.z;
     }
 
     /// <summary>
@@ -709,7 +866,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="force">The force of the launch.</param>
     public virtual void Launch(Vector3 direction, float force)
     {
+        // Calculate the resulting change in velocity from the impulse
+        Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
+        IsGrounded = false;
+        inAirTimer = 0.01f;
+
+        // Apply the change to the current velocity
+        velocity = deltaVelocity;
     }
 
     /// <summary>

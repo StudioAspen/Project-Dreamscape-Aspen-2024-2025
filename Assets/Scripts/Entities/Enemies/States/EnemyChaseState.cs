@@ -33,6 +33,7 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        enemy.ApplyGravity();
+        enemy.MoveTowardsDestination();
     }
 }

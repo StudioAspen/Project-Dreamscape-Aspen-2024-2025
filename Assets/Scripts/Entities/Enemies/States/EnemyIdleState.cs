@@ -27,6 +27,6 @@
 
     public override void FixedUpdate()
     {
-
+        enemy.ApplyGravity();
     }
 }

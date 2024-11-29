@@ -58,7 +58,11 @@ public class ChargerWanderState : EnemyBaseState
         }
     }
 
-    public override void FixedUpdate() { }
+    public override void FixedUpdate()
+    {
+        charger.ApplyGravity();
+        charger.MoveTowardsDestination();
+    }
 
     private bool CloseToPoint(Vector3 point, float error)
     {

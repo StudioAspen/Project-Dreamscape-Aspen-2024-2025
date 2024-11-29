@@ -69,6 +69,6 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        charger.ApplyGravity();
     }
 }

@@ -11,6 +11,13 @@ public class PlayerSprintingState : PlayerBaseState
         this.player = player;
     }
 
+    public void SetSprintDuration(float d)
+    {
+        timer = 0f;
+        duration = d;
+        isSprintDependentOnTimer = true;
+    }
+
     public override void OnEnter()
     {
         player.TransitionToAnimation("FlatMovement");
@@ -26,12 +33,9 @@ public class PlayerSprintingState : PlayerBaseState
 
     public override void Update()
     {
-        player.ApplyGravity();
-
         player.ApplyRotationToNextMovement();
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(player.MovementSpeed);
-        player.GroundedMove();
 
         if (player.MoveDirection == Vector3.zero)
         {
@@ -60,13 +64,7 @@ public class PlayerSprintingState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
-    }
-
-    public void SetSprintDuration(float d)
-    {
-        timer = 0f;
-        duration = d;
-        isSprintDependentOnTimer = true;
+        player.ApplyGravity();
+        player.GroundedMove();
     }
 }

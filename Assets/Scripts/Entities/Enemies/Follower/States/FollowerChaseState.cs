@@ -45,6 +45,11 @@ public class FollowerChaseState : EnemyChaseState
         }
     }
 
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
     private void CheckCanCircle()
     {
         if (follower.Target.TryGetComponent(out Player player))
@@ -62,10 +67,5 @@ public class FollowerChaseState : EnemyChaseState
 
             follower.ChangeState(follower.FollowerCircleState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

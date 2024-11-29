@@ -1,10 +1,11 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class BaseState
+public class BaseState
 {
-    public abstract void OnEnter();
-    public abstract void OnExit();
-    public abstract void Update();
-    public abstract void FixedUpdate();
+    public virtual void OnEnter() { }
+    public virtual void OnExit() { }
+    public virtual void Update() { }
+    public virtual void FixedUpdate() { }
+    public virtual void OnCollisionEnter(Collider collider) { }
 }

@@ -73,8 +73,6 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Update()
     {
-        player.ApplyGravity();
-
         if (!playerCombat.IsAnimationPlaying) // if the animation is done playing, go back to the default state
         {
             player.ChangeState(player.DefaultState);
@@ -89,12 +87,12 @@ public class PlayerAttackState : PlayerBaseState
         player.RotateToTargetRotation();
         player.AccelerateToSpeed(0f);
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
     }
 
     public override void FixedUpdate()
     {
-
+        player.ApplyGravity();
+        player.GroundedMove();
     }
 
     /// <summary>

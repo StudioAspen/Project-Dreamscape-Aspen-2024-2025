@@ -39,6 +39,6 @@ public class EntityStaggeredState : BaseState
 
     public override void FixedUpdate()
     {
-
+        entity.ApplyGravity();
     }
 }

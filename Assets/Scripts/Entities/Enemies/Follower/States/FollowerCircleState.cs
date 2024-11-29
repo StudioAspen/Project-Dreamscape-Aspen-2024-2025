@@ -59,7 +59,7 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void Update()
     {
-        if(follower.Target == null)
+        if (follower.Target == null)
         {
             follower.ChangeState(follower.EnemyIdleState);
             return;
@@ -85,6 +85,12 @@ public class FollowerCircleState : EnemyBaseState
         follower.LookAt(follower.Target.transform.position);
     }
 
+    public override void FixedUpdate()
+    {
+        follower.ApplyGravity();
+        follower.MoveTowardsDestination();
+    }
+
     private void TryToChasePlayer()
     {
         if (canChaseTimer < canChaseCooldown) return;
@@ -104,11 +110,6 @@ public class FollowerCircleState : EnemyBaseState
 
             follower.ChangeState(follower.EnemyChaseState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 
     private Vector3 CalculateCircumferenceOffset(Vector3 center, Vector3 outside, float radius, float angleOffset)

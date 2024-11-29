@@ -69,9 +69,6 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
-        EntityStaggeredState = new PlayerStaggeredState(this);
-        EntityDeathState = new PlayerDeathState(this);
-        EntityLaunchState = new PlayerLaunchState(this);
     }
     #endregion
 
@@ -117,12 +114,15 @@ public class Player : Entity
 
         CheckSlopeSliding();
 
-        HandleGrounded();
-        HandleAirborne();
         HandleDashDelay();
         HandleDashTrail();
 
         HandleAnimations();
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        CurrentState?.OnCollisionEnter(hit.collider);
     }
 
     private void OnAnimatorMove()
@@ -141,7 +141,7 @@ public class Player : Entity
     {
         base.CheckGrounded();
 
-        if(velocity.y > 0f)
+        if (velocity.y > 0f)
         {
             IsGrounded = false;
             return;
@@ -154,34 +154,7 @@ public class Player : Entity
             return;
         }
 
-        IsGrounded = GetIsGrounded();
-    }
-
-    private bool GetIsGrounded()
-    {
-        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
-        LayerMask mask = LayerMask.GetMask("Ground");
-
-        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
-        foreach (Collider hit in hits)
-        {
-            // normal detection  
-            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
-
-            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
-            {
-                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
-                {
-                    continue;
-                }
-            }
-
-            if (hit.gameObject != gameObject)
-            {
-                return true;
-            }
-        }
-        return false;
+        IsGrounded = GetIsGrounded(controller.radius);
     }
 
     private void Input_HandleJumpInput()
@@ -221,9 +194,9 @@ public class Player : Entity
         ChangeState(PlayerDashState);
     }
 
-    public void GroundedMove()
+    public override void GroundedMove()
     {
-        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
+        controller.Move(GetGroundedVelocity() * LocalFixedDeltaTime);
     }
 
     public void AccelerateToSpeed(float speed)
@@ -246,7 +219,7 @@ public class Player : Entity
         velocity.z = groundedVelocity.z;
     }
 
-    private void HandleGrounded()
+    private protected override void HandleGrounded()
     {
         if (IsGrounded)
         {
@@ -257,10 +230,11 @@ public class Player : Entity
             inAirTimer = 0f;
             fallVelocityApplied = false;
             isJumping = false;
+            velocity.y = PhysicsSettings.GroundedYVelocity;
         }
     }
 
-    private void HandleAirborne()
+    private protected override void HandleAirborne()
     {
         if (!IsGrounded)
         {
@@ -275,18 +249,17 @@ public class Player : Entity
                 }
             }
             inAirTimer += LocalDeltaTime;
-            velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
         }
     }
 
-    public void ApplyGravity()
+    private protected override void HandleYVelocity()
     {
-        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
+        base.HandleYVelocity();
     }
 
-    public void ResetYVelocity()
+    public override void ApplyGravity()
     {
-        velocity.y = 0f;
+        controller.Move(LocalFixedDeltaTime * velocity.y * Vector3.up);
     }
 
     public void RotateToTargetRotation()
@@ -347,7 +320,7 @@ public class Player : Entity
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
+        controller.Move(slideDirection * -velocity.y * LocalFixedDeltaTime);
     }
 
     public void ApplyRotationToNextMovement()
@@ -403,21 +376,6 @@ public class Player : Entity
         movementOnSlopeSpeedModifier = slopeSpeedModifier;
 
         return slopeSpeedModifier;
-    }
-
-    public Vector3 GetGroundedVelocity()
-    {
-        return new Vector3(velocity.x, 0f, velocity.z);
-    }
-
-    public Vector3 GetVelocity()
-    {
-        return velocity;
-    }
-
-    public void SetVelocity(Vector3 newVelocity)
-    {
-        velocity = newVelocity;
     }
 
     public float GetMaxSpeed()
