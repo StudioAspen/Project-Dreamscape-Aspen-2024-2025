@@ -148,6 +148,7 @@ public class EnemySpawner : MonoBehaviour
 
                 if (eventManager.CurrentWaveType == WorldEvent.DEFEND)
                 {
+                    CreateEnemy(i);
                     currentShopCurrency -= enemyPrefabs[i].Cost;
                 }
 
