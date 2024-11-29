@@ -20,7 +20,7 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnEnter()
     {
-        follower.DefaultTransitionToAnimation("FlatMovement");
+        follower.TransitionToAnimation("FlatMovement");
 
         follower.SetSpeedModifier(0.5f);
 

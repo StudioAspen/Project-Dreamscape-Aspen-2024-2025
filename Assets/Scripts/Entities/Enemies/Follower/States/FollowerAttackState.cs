@@ -18,7 +18,7 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
-        follower.DefaultTransitionToAnimation("Attack");
+        follower.TransitionToAnimation("Attack");
 
         follower.SetSpeedModifier(0f);
 

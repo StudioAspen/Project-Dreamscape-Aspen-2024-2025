@@ -15,7 +15,7 @@ public class EntityHitState : BaseState
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Hit");
+        entity.TransitionToAnimation("Hit");
 
         timer = 0f;
 

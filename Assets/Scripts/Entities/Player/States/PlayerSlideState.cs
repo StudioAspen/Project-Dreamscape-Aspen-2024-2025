@@ -11,7 +11,7 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Falling");
+        player.TransitionToAnimation("Falling");
     }
 
     public override void OnExit()

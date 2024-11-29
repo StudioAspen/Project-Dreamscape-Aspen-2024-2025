@@ -14,23 +14,21 @@ public class Enemy : Entity
 {
     [field: Header("Enemy: References")]
     [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] private CapsuleCollider capsuleCollider;
-    [SerializeField, Child] private TMP_Text debugStateText;
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
+    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
 
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
-    public float MovementSpeed => SpeedModifier * baseSpeed;
-    private float totalSpeedModifierForAnimation;
 
+    // custom pathfinding
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
     private bool lookAtPath;
 
-    public Entity Target { get; private set; }
+    public Entity Target { get; protected set; }
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
+    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -42,53 +40,52 @@ public class Enemy : Entity
         spawner = e;
     }
 
-    protected override void OnAwake()
+    private protected override void OnAwake()
     {
         base.OnAwake();
 
         if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
-    protected override void OnOnEnable()
+    private protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
         SetStartState(EnemyIdleState);
     }
 
-    protected override void OnOnDisable()
+    private protected override void OnOnDisable()
     {
         base.OnOnDisable();
     }
 
-    protected override void OnStart()
+    private protected override void OnStart()
     {
         base.OnStart();
 
         ChangeTeam(1);
 
         SetDefaultState(EnemyIdleState);
-
-        FinishAnimation(); // disable attack animation
     }
 
-    protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
         base.OnUpdate();
 
         HandleAnimations();
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
+            ForceChangeState(EntityLaunchState);
+        }
     }
 
-    protected override void OnFixedUpdate()
+    private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
         
         MoveTowardsDestination();
-    }
-
-    private void LateUpdate()
-    {
-        DebugState();
     }
 
     private void OnAnimatorMove()
@@ -96,22 +93,23 @@ public class Enemy : Entity
         OnOnAnimatorMove();
     }
 
-    protected virtual void OnOnAnimatorMove()
+    private protected virtual void OnOnAnimatorMove()
     {
-        if (!IsAttackAnimationPlaying) return;
+        if (!UseRootMotion) return;
 
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        //desiredAnimationMovement.y = 0f;
+        float modelScale = model.localScale.x;
+        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
 
-        Move(desiredAnimationMovement);
+        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
-    protected virtual void OnTick()
+    private protected virtual void OnTick()
     {
-        AssignTarget();
+        TryAssignTarget();
     }
 
-    protected override void InitializeStates()
+    private protected override void InitializeStates()
     {
         base.InitializeStates();
 
@@ -119,23 +117,16 @@ public class Enemy : Entity
         EnemyChaseState = new EnemyChaseState(this);
     }
 
-    protected override void CheckGrounded()
+    private protected override void CheckGrounded()
     {
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, physicsSettings.GroundLayer);
+        base.CheckGrounded();
+
+        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
     }
 
-    private void DebugState()
+    private protected override void HandleAnimations()
     {
-        debugStateText.transform.parent.rotation = Quaternion.LookRotation(debugStateText.transform.parent.position - Camera.main.transform.position);
-
-        debugStateText.text = $"{CurrentState.GetType()}";
-    }
-
-    private void HandleAnimations()
-    {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 5f * Time.deltaTime);
-
-        animator.SetFloat("MovementSpeed", MovementSpeed);
+        base.HandleAnimations();
     }
 
     private List<Vector3> GetPathToDestination(Vector3 dest)
@@ -178,9 +169,14 @@ public class Enemy : Entity
         }
     }
 
+    public void CancelPath()
+    {
+        path = null;
+    }
+
     public void Move(Vector3 dir)
     {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir);
+        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -190,7 +186,7 @@ public class Enemy : Entity
         this.lookAtPath = lookAtPath;
     }
 
-    protected override void OnDeath()
+    private protected override void OnDeath()
     {
         base.OnDeath();
         if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
@@ -199,10 +195,11 @@ public class Enemy : Entity
     public override void Die()
     {
         base.Die();
-        spawner.RemoveEnemyFromList(this);
+
+        if(spawner != null) spawner.RemoveEnemyFromList(this);
     }
 
-    protected virtual void AssignTarget()
+    public virtual void TryAssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
         if (targets.Count == 0)
@@ -214,7 +211,41 @@ public class Enemy : Entity
         Target = targets[0];
     }
 
-    public override void LookAt(Vector3 target)
+    /// <summary>
+    /// Filters targets in a cone shape starting from the center of the collider with a total angle of 2 * coneHalfAngle.
+    /// </summary>
+    /// <param name="targets">The list of targets to filter.</param>
+    /// <param name="center">The center position of the collider.</param>
+    /// <param name="coneHalfAngle">Half of the total angle of the cone.</param>
+    /// <returns>The filtered list of targets.</returns>
+    public virtual List<Entity> FilterTargetsInConeShape(List<Entity> targets, Vector3 center, float coneHalfAngle)
+    {
+        if (targets.Count == 0) return targets;
+
+        List<Entity> filteredTargets = new List<Entity>();
+
+        Vector3 forwardDirection = transform.forward;
+
+        foreach (Entity target in targets)
+        {
+            Vector3 directionToTarget = target.GetColliderCenterPosition() - center;
+
+            // Calculate the angle between the forward direction and the direction to the target
+            float angle = Vector3.Angle(forwardDirection, directionToTarget.normalized);
+
+            // If angle is within half of the cone's angle, add to filtered targets
+            if (angle <= coneHalfAngle) filteredTargets.Add(target);
+        }
+
+        return filteredTargets;
+    }
+
+    public void ClearTarget()
+    {
+        Target = null;
+    }
+
+    public override Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -222,21 +253,13 @@ public class Enemy : Entity
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
+
+        return targetRotation;
     }
 
-    public virtual void FinishAnimation()
+    public override void Launch(Vector3 direction, float force)
     {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
-    }
-
-    public virtual void EnableWeaponTriggers()
-    {
-        Weapon.EnableTriggers();
-    }
-
-    public virtual void DisableWeaponTriggers()
-    {
-        Weapon.DisableTriggers();
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }

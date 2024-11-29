@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3164a92823762a747af746d3e44ad133
+guid: 8d626ce75c7a2a244b07cc714a582605
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -497,7 +497,7 @@ ModelImporter:
     second: root
   - first:
       74: 7400000
-    second: ComboPlaceholder
+    second: Frank_Air_Light_1
   - first:
       95: 9500000
     second: //RootNode
@@ -517,12 +517,9 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
       copied configuration does not match position in animation file:\n\t'thigh_l'
-      : position error = 1.872691 mm\n\t'thigh_r' : position error = 4.456556 mm\n\t'upperarm_l'
-      : position error = 1.534861 mm\n\t'lowerarm_l' : position error = 1.915457
-      mm\n\t'hand_l' : position error = 8.933290 mm\n\t'middle_03_l' : position error
-      = 1.026829 mm\n\t'upperarm_r' : position error = 1.668709 mm\n\t'hand_r' :
-      position error = 11.098305 mm\n\t'middle_03_r' : position error = 1.024601
-      mm\n"
+      : position error = 2.061260 mm\n\t'hand_l' : position error = 1.373636 mm\n\t'lowerarm_r'
+      : position error = 1.494650 mm\n\t'hand_r' : position error = 2.410588 mm\n\t'middle_03_r'
+      : position error = 1.024500 mm\n"
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar
@@ -564,14 +561,14 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: ComboPlaceholder
+      name: Frank_Air_Light_1
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 0
-      lastFrame: 5
+      firstFrame: 48
+      lastFrame: 68
       wrapMode: 0
       orientationOffsetY: 0
-      level: 0
+      level: 2.11
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
@@ -581,22 +578,36 @@ ModelImporter:
       loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
-      keepOriginalPositionY: 0
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.67926544
-        functionName: EnableWeaponTriggers
+      - time: 0.2846846
+        functionName: StartHit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.76694596
-        functionName: DisableWeaponTriggers
+      - time: 0.58423436
+        functionName: EndHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: FinishAnimation
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7837839
+        functionName: EnableCombo
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

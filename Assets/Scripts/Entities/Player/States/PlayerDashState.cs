@@ -17,7 +17,7 @@ public class PlayerDashState : PlayerBaseState
     {
         player.ResetDashDelay();
 
-        player.DefaultTransitionToAnimation("Dash");
+        player.TransitionToAnimation("Dash");
 
         timer = 0f;
         currDashSpeed = player.InitialDashVelocity;

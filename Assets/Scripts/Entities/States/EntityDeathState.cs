@@ -11,7 +11,7 @@ public class EntityDeathState : BaseState
 
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Death");
+        entity.TransitionToAnimation("Death");
 
         entity.SetSpeedModifier(0f);
     }
