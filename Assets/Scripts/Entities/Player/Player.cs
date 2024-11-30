@@ -195,14 +195,29 @@ public class Player : Entity
             {
                 fallVelocityApplied = true;
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
-
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
-                {
-                    ChangeState(PlayerFallState);
-                }
+            }
+            if (CanBeForcedToFall())
+            {
+                ChangeState(PlayerFallState);
             }
             inAirTimer += LocalDeltaTime;
         }
+    }
+
+    /// <summary>
+    /// Determines whether the player can be forced to fall based on the current state.
+    /// </summary>
+    /// <returns>True if the player can be forced to fall, false otherwise.</returns>
+    private bool CanBeForcedToFall()
+    {
+        bool opposite = CurrentState == PlayerJumpState
+            || CurrentState == PlayerFallState
+            || CurrentState == PlayerDashState
+            || CurrentState == PlayerChargeState
+            || CurrentState == PlayerAttackState
+            || CurrentState == EntityLaunchState;
+
+        return !opposite;
     }
 
     public void RotateToTargetRotation()

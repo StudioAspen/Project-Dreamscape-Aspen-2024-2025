@@ -287,6 +287,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         CheckGrounded();
         HandleYVelocity();
     }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         CurrentState?.OnControllerColliderHit(hit);
@@ -366,35 +367,36 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Checks if the entity is grounded based on the collider radius.
+    /// Checks if the entity is grounded.
     /// </summary>
-    /// <param name="colliderRadius">The radius of the collider.</param>
     /// <returns>True if the entity is grounded, false otherwise.</returns>
     private protected bool GetIsGrounded()
     {
-        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
-        LayerMask mask = LayerMask.GetMask("Ground");
+        return Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, LayerMask.GetMask("Ground"));
+    }
 
-        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
-        foreach (Collider hit in hits)
+    /// <summary>
+    /// Gets the list of RaycastHit objects below the entity within a specified distance and on specified layers.
+    /// </summary>
+    /// <param name="mask">The layer mask to filter the raycast hits.</param>
+    /// <param name="distance">The maximum distance to perform the raycast.</param>
+    /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
+    public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
+    {
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), controller.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        List<RaycastHit> result = new List<RaycastHit>();
+
+        if (hits == null) return result;
+
+        foreach (RaycastHit hit in hits)
         {
-            // normal detection  
-            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
-
-            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
+            if (hit.collider.gameObject != gameObject)
             {
-                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
-                {
-                    continue;
-                }
-            }
-
-            if (hit.gameObject != gameObject)
-            {
-                return true;
+                result.Add(hit);
             }
         }
-        return false;
+
+        return result;
     }
 
     /// <summary>
@@ -486,6 +488,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void UpdateGroundedVelocity(Vector3 direction)
     {
         Vector3 groundedVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
+
+        velocity.x = groundedVelocity.x;
+        velocity.z = groundedVelocity.z;
+    }
+
+    /// <summary>
+    /// Forces an update to the grounded velocity of the entity, ignoring the current speed modifier.
+    /// </summary>
+    /// <param name="direction">The direction of the velocity.</param>
+    /// <param name="speed">The speed of the velocity.</param>
+    public void ForceUpdateGroundedVelocity(Vector3 direction, float speed)
+    {
+        Vector3 groundedVelocity = speed * new Vector3(direction.x, 0f, direction.z).normalized;
 
         velocity.x = groundedVelocity.x;
         velocity.z = groundedVelocity.z;

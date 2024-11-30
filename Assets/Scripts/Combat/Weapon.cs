@@ -133,7 +133,7 @@ public class Weapon : MonoBehaviour
         StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
-        CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
+        //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
 
         int damageValue = holderEntity.CalculateDamage(percentDamage);
 

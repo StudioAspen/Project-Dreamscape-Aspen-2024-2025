@@ -76,8 +76,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
         charger.LookAt(rememberedTarget.transform.position);
 
-        charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
-
         // blocks update until attack animation is done
         if (charger.IsAttackAnimationPlaying) return;
 
