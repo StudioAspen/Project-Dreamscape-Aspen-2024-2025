@@ -152,7 +152,7 @@ public class Charger : Enemy
             return;
         }
 
-        if(filteredTargetsByCone.Count > 0)
+        if(filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0]))
         {
             Target = filteredTargetsByCone[0];
             return;

@@ -224,7 +224,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnOnDisable()
     {
-
+        Warp(new Vector3(0f, 10000f, 0f));
     }
 
     private void Start()

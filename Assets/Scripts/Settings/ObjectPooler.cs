@@ -28,7 +28,7 @@ public class ObjectPooler : MonoBehaviour
 
     private GameObject CreateObject()
     {
-        GameObject o = Instantiate(objectPrefab, transform);
+        GameObject o = Instantiate(objectPrefab, new Vector3(0f, 100000f, 0f), Quaternion.identity, transform);
         o.GetComponent<IPoolableObject>().SetObjectPool(objectPool);
 
         return o;
@@ -36,7 +36,6 @@ public class ObjectPooler : MonoBehaviour
 
     private void OnGetFromPool(GameObject pooledObject)
     {
-        pooledObject.transform.position = new Vector3(0f, 100000f, 0f);
         pooledObject.gameObject.SetActive(true);
     }
 
