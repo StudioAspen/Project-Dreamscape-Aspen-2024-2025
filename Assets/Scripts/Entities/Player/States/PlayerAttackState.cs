@@ -39,7 +39,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
-        player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
+        playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
 
         player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
@@ -49,7 +49,7 @@ public class PlayerAttackState : PlayerBaseState
         duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
         timer = 0f; // reset the timer
 
-        player.ApplyRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
         if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
@@ -61,7 +61,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
 
         playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
-        player.ApplyRootMotion = false; // stops root motion
+        player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
@@ -97,39 +97,56 @@ public class PlayerAttackState : PlayerBaseState
 
     }
 
+    /// <summary>
+    /// Prevents the player from cancelling the animation for the first half of the animation.
+    /// Ensures that the player cant unexpectedly cancel the animation in a bug.
+    /// </summary>
     private void HandleAnimationCancellingBuffer()
     {
-        timer += Time.deltaTime;
+        timer += player.LocalDeltaTime;
         if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (ComboData.WillLaunchUpwards && !victim.WillDieFromDamage(damage))
-        {
-            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
+        TryLaunchVictim(victim, damage);
+        TryAirComboVictim(victim, damage);
+    }
 
-            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+    /// <summary>
+    /// Tries to launch victim on hit to start air combo
+    /// </summary>
+    /// <param name="victim">The victim entity.</param>
+    /// <param name="damage">The damage inflicted on the victim.</param>
+    private void TryLaunchVictim(Entity victim, int damage)
+    {
+        if (!ComboData.WillLaunchUpwards) return;
+        if (victim.WillDieFromDamage(damage)) return;
 
-            return;
-        }
+        victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
 
-        if (!player.IsGrounded && !victim.IsGrounded && !victim.WillDieFromDamage(damage))
-        {
-            victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-            if(ComboData.AirLaunchForce > 0)
-            {
-                player.Launch(Vector3.up, ComboData.AirLaunchForce);
-            }
-            else
-            {
-                player.ResetYVelocity();
-            }
-                
+        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
 
-            player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
-        }
+        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+    }
+
+    /// <summary>
+    /// Tries to air combo victim on hit.
+    /// </summary>
+    /// <param name="victim">The victim entity.</param>
+    /// <param name="damage">The damage inflicted on the victim.</param>
+    private void TryAirComboVictim(Entity victim, int damage)
+    {
+        if (player.IsGrounded) return;
+        if (victim.IsGrounded) return;
+
+        if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
+        else victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+
+        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
+        else player.ResetYVelocity();
+
+        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
     }
 }
 

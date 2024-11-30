@@ -12,10 +12,6 @@ using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
-    [field: Header("Enemy: References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
-
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
 
@@ -28,16 +24,23 @@ public class Enemy : Entity
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
-    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
     public EnemyChaseState EnemyChaseState { get; protected set; }
+
+    private protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        EnemyIdleState = new EnemyIdleState(this);
+        EnemyChaseState = new EnemyChaseState(this);
+    }
     #endregion
 
-    public void Init(EnemySpawner e)
+    public void Init(EnemySpawner enemySpawner)
     {
-        spawner = e;
+        spawner = enemySpawner;
     }
 
     private protected override void OnAwake()
@@ -71,37 +74,11 @@ public class Enemy : Entity
     private protected override void OnUpdate()
     {
         base.OnUpdate();
-
-        HandleAnimations();
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
-            ForceChangeState(EntityLaunchState);
-        }
     }
 
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        
-        MoveTowardsDestination();
-    }
-
-    private void OnAnimatorMove()
-    {
-        OnOnAnimatorMove();
-    }
-
-    private protected virtual void OnOnAnimatorMove()
-    {
-        if (!UseRootMotion) return;
-
-        float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
     }
 
     private protected virtual void OnTick()
@@ -109,26 +86,11 @@ public class Enemy : Entity
         TryAssignTarget();
     }
 
-    private protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
-    }
-
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
-    }
-
+    /// <summary>
+    /// Calculates the path from the current position to the destination using NavMesh.
+    /// </summary>
+    /// <param name="dest">The destination position.</param>
+    /// <returns>The list of positions representing the calculated path.</returns>
     private List<Vector3> GetPathToDestination(Vector3 dest)
     {
         NavMeshPath path = new NavMeshPath();
@@ -136,15 +98,18 @@ public class Enemy : Entity
         bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
 
         if (!hasPath) return null;
-        if(path.corners.Length == 0) return null;
+        if (path.corners.Length == 0) return null;
 
         return path.corners.ToList();
     }
 
-    private void MoveTowardsDestination()
+    /// <summary>
+    /// Moves the enemy towards its destination along the calculated path.
+    /// </summary>
+    public void MoveTowardsDestination()
     {
         if (path == null) return;
-        if(path.Count < 2) return;
+        if (path.Count < 2) return;
 
         #region Debug
 /*        Vector3 prevCorner = transform.position;
@@ -161,7 +126,8 @@ public class Enemy : Entity
         Vector3 dir = currDest - transform.position;
         dir.Normalize();
 
-        Move(dir);
+        UpdateGroundedVelocity(dir);
+        GroundedMove();
 
         if (Distance(currDest) < 0.05f)
         {
@@ -172,11 +138,6 @@ public class Enemy : Entity
     public void CancelPath()
     {
         path = null;
-    }
-
-    public void Move(Vector3 dir)
-    {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
     }
 
     public void SetDestination(Vector3 dest, bool lookAtPath)
@@ -243,23 +204,5 @@ public class Enemy : Entity
     public void ClearTarget()
     {
         Target = null;
-    }
-
-    public override Quaternion LookAt(Vector3 target)
-    {
-        Vector3 dir = target - transform.position;
-
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
-
-        return targetRotation;
-    }
-
-    public override void Launch(Vector3 direction, float force)
-    {
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }

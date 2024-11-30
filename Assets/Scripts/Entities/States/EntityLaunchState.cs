@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EntityLaunchState : BaseState
+public class EntityLaunchState : EntityBaseState
 {
     private Entity entity;
 
@@ -43,7 +43,11 @@ public class EntityLaunchState : BaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        entity.ApplyGravity();
+
+        entity.GroundedMove();
+
+        timer += entity.LocalDeltaTime;
 
         if (timer > stunDuration)
         {
@@ -51,9 +55,12 @@ public class EntityLaunchState : BaseState
             return;
         }
 
-        if (timer > 0.05f && entity.IsGrounded && !touchedGround)
+        if (entity.IsGrounded && !touchedGround)
         {
             touchedGround = true;
+
+            entity.SetVelocity(Vector3.zero);
+
             entity.TransitionToAnimation("FlatFallImpact");
         }
     }
@@ -61,5 +68,15 @@ public class EntityLaunchState : BaseState
     public override void FixedUpdate()
     {
 
+    }
+
+    public override void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
+
+        Vector3 bounceVelocity = Vector3.Reflect(entity.GetGroundedVelocity(), hit.normal);
+        bounceVelocity.y = entity.Velocity.y;
+
+        entity.SetVelocity(bounceVelocity);
     }
 }

@@ -8,7 +8,6 @@ using UnityEngine.Events;
 public class Player : Entity
 {
     [Header("Player: References")]
-    [SerializeField, Self] private CharacterController controller;
     [SerializeField, Self] private PlayerInputReader input;
 
     [field: Header("Player: Grounded Movement")]
@@ -21,11 +20,8 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
-    private Vector3 velocity;
-    public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
-    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
     private int currentJumpCount;
@@ -34,7 +30,6 @@ public class Player : Entity
     [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
     [HideInInspector] public bool CanAttack = true;
-    [HideInInspector] public bool ApplyRootMotion;
     private bool isJumping;
     #endregion
 
@@ -71,9 +66,6 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
-        EntityStaggeredState = new PlayerStaggeredState(this);
-        EntityDeathState = new PlayerDeathState(this);
-        EntityLaunchState = new PlayerLaunchState(this);
     }
     #endregion
 
@@ -119,71 +111,8 @@ public class Player : Entity
 
         CheckSlopeSliding();
 
-        HandleGrounded();
-        HandleAirborne();
         HandleDashDelay();
         HandleDashTrail();
-
-        HandleAnimations();
-    }
-
-    private void OnAnimatorMove()
-    {
-        if (CurrentState != PlayerAttackState) return;
-
-        if (!ApplyRootMotion) return;
-
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        controller.Move(desiredAnimationMovement);
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        if(velocity.y > 0f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        //IsGrounded is always false for the first 0.1 seconds in air
-        if (inAirTimer > 0f && inAirTimer < 0.1f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        IsGrounded = GetIsGrounded();
-    }
-
-    private bool GetIsGrounded()
-    {
-        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
-        LayerMask mask = LayerMask.GetMask("Ground");
-
-        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
-        foreach (Collider hit in hits)
-        {
-            // normal detection  
-            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
-
-            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
-            {
-                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
-                {
-                    continue;
-                }
-            }
-
-            if (hit.gameObject != gameObject)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void Input_HandleJumpInput()
@@ -223,16 +152,11 @@ public class Player : Entity
         ChangeState(PlayerDashState);
     }
 
-    public void GroundedMove()
-    {
-        controller.Move(GetGroundedVelocity() * Time.deltaTime);
-    }
-
     public void AccelerateToSpeed(float speed)
     {
         Vector3 groundedVelocity = GetGroundedVelocity();
 
-        groundedVelocity = Vector3.Lerp(groundedVelocity, speed * targetForwardDirection, groundedAcceleration * Time.deltaTime);
+        groundedVelocity = Vector3.Lerp(groundedVelocity, speed * targetForwardDirection, groundedAcceleration * LocalDeltaTime);
 
         velocity.x = groundedVelocity.x;
         velocity.z = groundedVelocity.z;
@@ -248,7 +172,7 @@ public class Player : Entity
         velocity.z = groundedVelocity.z;
     }
 
-    private void HandleGrounded()
+    private protected override void HandleGrounded()
     {
         if (IsGrounded)
         {
@@ -259,10 +183,11 @@ public class Player : Entity
             inAirTimer = 0f;
             fallVelocityApplied = false;
             isJumping = false;
+            velocity.y = PhysicsSettings.GroundedYVelocity;
         }
     }
 
-    private void HandleAirborne()
+    private protected override void HandleAirborne()
     {
         if (!IsGrounded)
         {
@@ -270,35 +195,39 @@ public class Player : Entity
             {
                 fallVelocityApplied = true;
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
-
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
-                {
-                    ChangeState(PlayerFallState);
-                }
             }
-            inAirTimer += Time.deltaTime;
-            velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
+            if (CanBeForcedToFall())
+            {
+                ChangeState(PlayerFallState);
+            }
+            inAirTimer += LocalDeltaTime;
         }
     }
 
-    public void ApplyGravity()
+    /// <summary>
+    /// Determines whether the player can be forced to fall based on the current state.
+    /// </summary>
+    /// <returns>True if the player can be forced to fall, false otherwise.</returns>
+    private bool CanBeForcedToFall()
     {
-        controller.Move(Time.deltaTime * velocity.y * Vector3.up);
-    }
+        bool opposite = CurrentState == PlayerJumpState
+            || CurrentState == PlayerFallState
+            || CurrentState == PlayerDashState
+            || CurrentState == PlayerChargeState
+            || CurrentState == PlayerAttackState
+            || CurrentState == EntityLaunchState;
 
-    public void ResetYVelocity()
-    {
-        velocity.y = 0f;
+        return !opposite;
     }
 
     public void RotateToTargetRotation()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * LocalDeltaTime);
     }
 
     private void HandleDashDelay()
     {
-        dashDelayTimer += Time.deltaTime;
+        dashDelayTimer += LocalDeltaTime;
     }
 
     public void ResetDashDelay()
@@ -349,7 +278,7 @@ public class Player : Entity
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * Time.deltaTime);
+        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
     }
 
     public void ApplyRotationToNextMovement()
@@ -367,11 +296,6 @@ public class Player : Entity
     {
         targetForwardRotation = targetRotation;
         targetForwardDirection = targetForwardRotation * Vector3.forward;
-    }
-
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
     }
 
     private protected override void EvaluateMovementSpeed()
@@ -407,21 +331,6 @@ public class Player : Entity
         return slopeSpeedModifier;
     }
 
-    public Vector3 GetGroundedVelocity()
-    {
-        return new Vector3(velocity.x, 0f, velocity.z);
-    }
-
-    public Vector3 GetVelocity()
-    {
-        return velocity;
-    }
-
-    public void SetVelocity(Vector3 newVelocity)
-    {
-        velocity = newVelocity;
-    }
-
     public float GetMaxSpeed()
     {
         return SprintSpeedModifier * baseSpeed;
@@ -432,16 +341,6 @@ public class Player : Entity
         float maxSpeed = SprintSpeedModifier * baseSpeed;
 
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
-    }
-
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
-    }
-
-    public override void Die()
-    {
-        Destroy(gameObject);
     }
 
     private protected override void TryChangeStaggeredState()

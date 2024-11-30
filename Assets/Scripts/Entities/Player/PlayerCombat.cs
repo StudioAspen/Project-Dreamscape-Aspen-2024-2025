@@ -133,7 +133,7 @@ public class PlayerCombat : MonoBehaviour
         GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
-        if (!IsAttackAction(incomingAction)) StartDelayedComboReset();
+        if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset();
 
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
@@ -249,10 +249,19 @@ public class PlayerCombat : MonoBehaviour
     /// <summary>
     /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
     /// </summary>
-    private void StartDelayedComboReset()
+    private void StartDelayedComboListsReset()
     {
         DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(comboResetDelay, ResetCombos).SetId("DelayedComboReset");
+        DOVirtual.DelayedCall(comboResetDelay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset");
+    }
+
+    /// <summary>
+    /// Sets the speed of the combo animation.
+    /// </summary>
+    /// <param name="speed">The speed value to set.</param>
+    public void SetComboAnimationSpeed(float speed)
+    {
+        animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     /// <summary>

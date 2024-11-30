@@ -66,13 +66,13 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerJabRecoverState);
             return;
         }
-
-        charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
 
         charger.LookAt(rememberedTarget.transform.position);
 

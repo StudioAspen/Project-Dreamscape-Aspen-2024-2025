@@ -1,4 +1,4 @@
-﻿public abstract class EnemyBaseState : BaseState
+﻿public class EnemyBaseState : EntityBaseState
 {
     private protected Enemy enemy;
 
