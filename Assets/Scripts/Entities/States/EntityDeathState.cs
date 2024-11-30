@@ -15,7 +15,7 @@ public class EntityDeathState : EntityBaseState
 
         entity.SetSpeedModifier(0f);
 
-        entity.ResetLocalTimeScale();
+        entity.SetLocalTimeScale(1f);
     }
 
     public override void OnExit()

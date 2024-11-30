@@ -252,7 +252,7 @@ public class PlayerCombat : MonoBehaviour
     private void StartDelayedComboListsReset()
     {
         DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(comboResetDelay, ResetCombos).SetId("DelayedComboReset");
+        DOVirtual.DelayedCall(comboResetDelay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset");
     }
 
     /// <summary>

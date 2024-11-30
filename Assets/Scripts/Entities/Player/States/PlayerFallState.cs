@@ -34,11 +34,6 @@ public class PlayerFallState : PlayerBaseState
         }
             
         player.RotateToTargetRotation(); 
-
-        if (player.GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
-        {
-            player.ForceUpdateGroundedVelocity(player.transform.forward, 5f);
-        }
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 

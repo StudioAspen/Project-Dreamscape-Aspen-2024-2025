@@ -207,11 +207,10 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         lastHitSource = null;
 
-        ResetLocalTimeScale();
-
         CurrentHealth = MaxHealth;
 
         SetStartState(EntityEmptyState);
+        SetLocalTimeScale(1f);
     }
 
     private void OnDisable()
@@ -268,6 +267,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         HandleGrounded();
         HandleAirborne();
+
+        SlideOffOtherEntities();
     }
 
     private void FixedUpdate()
@@ -444,6 +445,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual void ApplyGravity()
     {
         controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
+    }
+
+    /// <summary>
+    /// Slides off other entities if there are any below the entity.
+    /// </summary>
+    private void SlideOffOtherEntities()
+    {
+        if (GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
+        {
+            ForceUpdateGroundedVelocity(transform.forward, 3f);
+            GroundedMove();
+        }
     }
 
     /// <summary>
@@ -1093,14 +1106,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         if(CurrentState == EntityDeathState) return;
 
         LocalTimeScale = newTimeScale;
-    }
-
-    /// <summary>
-    /// Resets the local time scale to its default value of 1.
-    /// </summary>
-    public void ResetLocalTimeScale()
-    {
-        LocalTimeScale = 1f;
     }
 
     /// <summary>
