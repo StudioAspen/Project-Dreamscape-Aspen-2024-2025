@@ -112,12 +112,12 @@ public class Enemy : Entity
         if (path.Count < 2) return;
 
         #region Debug
-        Vector3 prevCorner = transform.position;
+/*        Vector3 prevCorner = transform.position;
         foreach (Vector3 wayPoint in path)
         {
             Debug.DrawLine(prevCorner, wayPoint, Color.red);
             prevCorner = wayPoint;
-        }
+        }*/
         #endregion
 
         Vector3 currDest = path[1];
