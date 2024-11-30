@@ -44,6 +44,7 @@ public class PlayerDashState : PlayerBaseState
         player.RotateToTargetRotation();
 
         player.InstantlySetGroundedSpeed(currDashSpeed);
+        player.GroundedMove();
 
         if (timer > player.DashDuration)
         {
@@ -63,6 +64,6 @@ public class PlayerDashState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-        player.GroundedMove();
+        
     }
 }

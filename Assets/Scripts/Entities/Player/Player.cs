@@ -263,7 +263,7 @@ public class Player : Entity
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * LocalFixedDeltaTime);
+        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
     }
 
     public void ApplyRotationToNextMovement()

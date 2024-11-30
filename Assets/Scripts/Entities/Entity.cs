@@ -88,7 +88,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Local Time Scale")]
     [field: SerializeField] public float LocalTimeScale { get; protected set; } = 1f;
     public float LocalDeltaTime => Time.deltaTime * LocalTimeScale;
-    public float LocalFixedDeltaTime => Time.fixedDeltaTime * LocalTimeScale;
     #endregion
 
     #region Pooling Variables
@@ -432,7 +431,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (!IsGrounded)
         {
-            velocity.y += LocalFixedDeltaTime * PhysicsSettings.Gravity;
+            velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
         }
     }
 
@@ -442,7 +441,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyGravity()
     {
-        controller.Move(LocalFixedDeltaTime * velocity.y * Vector3.up);
+        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
     }
 
     /// <summary>
@@ -477,7 +476,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void GroundedMove()
     {
-        controller.Move(GetGroundedVelocity() * LocalFixedDeltaTime);
+        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
     }
 
     /// <summary>

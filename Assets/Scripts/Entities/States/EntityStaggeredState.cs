@@ -28,6 +28,8 @@ public class EntityStaggeredState : EntityBaseState
 
     public override void Update()
     {
+        entity.ApplyGravity();
+
         timer += entity.LocalDeltaTime;
 
         if (timer > entity.StaggerDuration)
@@ -39,6 +41,6 @@ public class EntityStaggeredState : EntityBaseState
 
     public override void FixedUpdate()
     {
-        entity.ApplyGravity();
+        
     }
 }

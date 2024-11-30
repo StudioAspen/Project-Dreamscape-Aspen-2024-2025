@@ -66,6 +66,10 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
+        charger.LookAt(rememberedTarget.transform.position);
+
         if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerJabRecoverState);
@@ -88,8 +92,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
 
-        charger.LookAt(rememberedTarget.transform.position);
     }
 }

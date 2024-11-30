@@ -21,6 +21,8 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void Update()
     {
+        player.ApplyGravity();
+
         player.TransitionToAnimation("Charge");
 
         if (player.MoveDirection != Vector3.zero)
@@ -35,11 +37,11 @@ public class PlayerChargeState : PlayerBaseState
 
         player.RotateToTargetRotation();
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.GroundedMove();
     }
 
     public override void FixedUpdate()
     {
-        player.ApplyGravity();
-        player.GroundedMove();
+
     }
 }

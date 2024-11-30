@@ -35,6 +35,8 @@ public class ChargerWanderState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         wanderTimeElapsed += charger.LocalDeltaTime;
 
         charger.TryAssignTarget();
@@ -48,9 +50,10 @@ public class ChargerWanderState : EnemyBaseState
             charger.SetDestination(currentWanderDestination, true);
         }
 
+        charger.MoveTowardsDestination();
         charger.SetSpeedModifier(CloseToPoint(currentWanderDestination, 0.05f) ? 0f : 1f);
 
-        if(charger.Target != null)
+        if (charger.Target != null)
         {
             charger.ChargerTargetDetectedState.AssignCurrentRememberedTarget(charger.Target);
             charger.ChangeState(charger.ChargerTargetDetectedState);
@@ -60,8 +63,7 @@ public class ChargerWanderState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
-        charger.MoveTowardsDestination();
+        
     }
 
     private bool CloseToPoint(Vector3 point, float error)

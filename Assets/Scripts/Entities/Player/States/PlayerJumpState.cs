@@ -21,6 +21,8 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void Update()
     {
+        player.ApplyGravity();
+
         if (player.MoveDirection != Vector3.zero)
         {
             player.AccelerateToSpeed(player.MovementSpeed);
@@ -34,8 +36,9 @@ public class PlayerJumpState : PlayerBaseState
 
         player.RotateToTargetRotation();
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.GroundedMove();
 
-        if(player.Velocity.y < 0f)
+        if (player.Velocity.y < 0f)
         {
             player.ChangeState(player.PlayerFallState);
             return;
@@ -44,7 +47,6 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-        player.ApplyGravity();
-        player.GroundedMove();
+        
     }
 }

@@ -26,6 +26,8 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void Update()
     {
+        player.ApplyGravity();
+
         player.IsGrounded = true;
 
         if (player.MoveDirection != Vector3.zero)
@@ -40,14 +42,15 @@ public class PlayerSlideState : PlayerBaseState
 
         player.RotateToTargetRotation();
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
+        player.GroundedMove();
 
         if (!player.IsAbleToSlide()) player.ChangeState(player.DefaultState);
+
+        player.ApplySlide(slideDirection);
     }
 
     public override void FixedUpdate()
     {
-        player.ApplyGravity();
-        player.ApplySlide(slideDirection);
-        player.GroundedMove();
+
     }
 }

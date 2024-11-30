@@ -31,6 +31,8 @@ public class ChargerWindDownState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         timer += charger.LocalDeltaTime;
 
         if (timer > charger.WindDownDuration)
@@ -48,12 +50,12 @@ public class ChargerWindDownState : EnemyBaseState
         }
 
         charger.UpdateGroundedVelocity(charger.transform.forward);
+        charger.GroundedMove();
     }
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
-        charger.GroundedMove();
+
     }
 
     private void CheckCollisions()

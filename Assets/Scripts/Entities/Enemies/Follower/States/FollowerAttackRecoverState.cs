@@ -25,6 +25,8 @@ public class FollowerAttackRecoverState : EnemyBaseState
 
     public override void Update()
     {
+        follower.ApplyGravity();
+
         recoverTimer += follower.LocalDeltaTime;
 
         if (recoverTimer > follower.AttackRecoverDuration)
@@ -36,6 +38,6 @@ public class FollowerAttackRecoverState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        follower.ApplyGravity();
+        
     }
 }

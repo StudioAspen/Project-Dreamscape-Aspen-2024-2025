@@ -38,11 +38,15 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
+
+        charger.LookAt(rememberedTarget.transform.position);
 
         timer += charger.LocalDeltaTime;
         
@@ -67,8 +71,6 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
-
-        charger.LookAt(rememberedTarget.transform.position);
+        
     }
 }

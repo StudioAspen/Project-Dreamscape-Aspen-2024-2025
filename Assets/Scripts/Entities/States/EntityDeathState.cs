@@ -25,11 +25,11 @@ public class EntityDeathState : EntityBaseState
 
     public override void Update()
     {
-        
+        entity.ApplyGravity();
     }
 
     public override void FixedUpdate()
     {
-        entity.ApplyGravity();
+        
     }
 }

@@ -43,6 +43,10 @@ public class EntityLaunchState : EntityBaseState
 
     public override void Update()
     {
+        entity.ApplyGravity();
+
+        entity.GroundedMove();
+
         timer += entity.LocalDeltaTime;
 
         if (timer > stunDuration)
@@ -63,9 +67,7 @@ public class EntityLaunchState : EntityBaseState
 
     public override void FixedUpdate()
     {
-        entity.ApplyGravity();
 
-        entity.GroundedMove();
     }
 
     public override void OnControllerColliderHit(ControllerColliderHit hit)

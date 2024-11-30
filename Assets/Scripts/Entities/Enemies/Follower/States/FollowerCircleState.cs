@@ -59,6 +59,8 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void Update()
     {
+        follower.ApplyGravity();
+
         if (follower.Target == null)
         {
             follower.ChangeState(follower.EnemyIdleState);
@@ -81,13 +83,14 @@ public class FollowerCircleState : EnemyBaseState
             follower.SetDestination(CalculateCircleDestination(), false);
             cwCircle = Random.Range(0, follower.ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
         }
+
+        follower.MoveTowardsDestination();
+        follower.LookAt(follower.Target.transform.position);
     }
 
     public override void FixedUpdate()
     {
-        follower.ApplyGravity();
-        follower.MoveTowardsDestination();
-        follower.LookAt(follower.Target.transform.position);
+
     }
 
     private void TryToChasePlayer()

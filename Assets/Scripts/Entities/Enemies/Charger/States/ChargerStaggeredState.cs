@@ -27,6 +27,8 @@ public class ChargerStaggeredState : EntityStaggeredState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         timer += charger.LocalDeltaTime;
 
         if (timer > charger.StaggerDuration)
@@ -38,6 +40,6 @@ public class ChargerStaggeredState : EntityStaggeredState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
+        
     }
 }

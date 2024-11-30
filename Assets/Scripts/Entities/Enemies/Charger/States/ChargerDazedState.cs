@@ -29,6 +29,8 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         timer += charger.LocalDeltaTime;
 
         if(timer > charger.DazedDuration)
@@ -40,6 +42,6 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
+        
     }
 }

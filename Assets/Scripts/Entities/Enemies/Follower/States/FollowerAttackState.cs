@@ -41,6 +41,10 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void Update()
     {
+        follower.ApplyGravity();
+
+        follower.LookAt(follower.transform.position + attackDir);
+
         if (!follower.IsAttackAnimationPlaying)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);
@@ -50,8 +54,6 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        follower.ApplyGravity();
-
-        follower.LookAt(follower.transform.position + attackDir);
+        
     }
 }

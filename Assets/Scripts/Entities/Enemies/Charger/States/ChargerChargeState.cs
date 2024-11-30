@@ -41,7 +41,9 @@ public class ChargerChargeState : EnemyBaseState
 
     public override void Update()
     {
-        if(rememberedTarget == null)
+        charger.ApplyGravity();
+
+        if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerWindDownState);
             return;
@@ -57,15 +59,14 @@ public class ChargerChargeState : EnemyBaseState
         CheckCollisions();
 
         charger.UpdateGroundedVelocity(charger.transform.forward);
+        charger.GroundedMove();
 
+        charger.LookAt(rememberedTarget.transform.position);
     }
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
-        charger.GroundedMove();
 
-        charger.LookAt(rememberedTarget.transform.position);
     }
 
     /// <summary>

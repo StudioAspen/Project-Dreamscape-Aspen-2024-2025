@@ -27,6 +27,8 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         timer += charger.LocalDeltaTime;
 
         if (timer > charger.JabRecoverDuration)
@@ -40,6 +42,6 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-        charger.ApplyGravity();
+        
     }
 }
