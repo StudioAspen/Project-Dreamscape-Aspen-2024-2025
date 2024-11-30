@@ -256,6 +256,15 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the speed of the combo animation.
+    /// </summary>
+    /// <param name="speed">The speed value to set.</param>
+    public void SetComboAnimationSpeed(float speed)
+    {
+        animator.SetFloat("ComboAnimationSpeed", speed);
+    }
+
+    /// <summary>
     /// Handles the weapon triggers based on the player's current state.
     /// A backup in case the PlayerAttackState doesn't do it.
     /// If the player's current state is not the PlayerAttackState, it calls the EndHit method.

@@ -1,4 +1,4 @@
-﻿public class EntityEmptyState : BaseState
+﻿public class EntityEmptyState : EntityBaseState
 {
     private Entity entity;
 

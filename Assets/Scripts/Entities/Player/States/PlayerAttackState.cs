@@ -39,7 +39,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
-        player.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
+        playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
 
         player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
@@ -49,7 +49,7 @@ public class PlayerAttackState : PlayerBaseState
         duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
         timer = 0f; // reset the timer
 
-        player.ApplyRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
         if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
@@ -61,7 +61,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
 
         playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
-        player.ApplyRootMotion = false; // stops root motion
+        player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
         playerCombat.EndHit(); // stops the hitbox on the weapon

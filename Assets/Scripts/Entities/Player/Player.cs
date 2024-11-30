@@ -30,7 +30,6 @@ public class Player : Entity
     [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
     [HideInInspector] public bool CanAttack = true;
-    [HideInInspector] public bool ApplyRootMotion;
     private bool isJumping;
     #endregion
 
@@ -114,20 +113,6 @@ public class Player : Entity
 
         HandleDashDelay();
         HandleDashTrail();
-
-        HandleAnimations();
-    }
-
-    private void OnAnimatorMove()
-    {
-        if (CurrentState != PlayerAttackState) return;
-
-        if (!ApplyRootMotion) return;
-
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        controller.Move(desiredAnimationMovement);
     }
 
     private void Input_HandleJumpInput()
@@ -298,11 +283,6 @@ public class Player : Entity
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }
 
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
-    }
-
     private protected override void EvaluateMovementSpeed()
     {
         MovementSpeed = movementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
@@ -346,16 +326,6 @@ public class Player : Entity
         float maxSpeed = SprintSpeedModifier * baseSpeed;
 
         DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
-    }
-
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
-    }
-
-    public override void Die()
-    {
-        Destroy(gameObject);
     }
 
     private protected override void TryChangeStaggeredState()

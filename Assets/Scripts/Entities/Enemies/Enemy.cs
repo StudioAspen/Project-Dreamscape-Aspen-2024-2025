@@ -24,7 +24,6 @@ public class Enemy : Entity
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
-    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
@@ -80,22 +79,6 @@ public class Enemy : Entity
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-    }
-
-    private void OnAnimatorMove()
-    {
-        OnOnAnimatorMove();
-    }
-
-    private protected virtual void OnOnAnimatorMove()
-    {
-        if (!UseRootMotion) return;
-
-        float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        controller.Move(desiredAnimationMovement);
     }
 
     private protected virtual void OnTick()

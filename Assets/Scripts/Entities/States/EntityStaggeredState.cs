@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class EntityStaggeredState : BaseState
+public class EntityStaggeredState : EntityBaseState
 {
     private Entity entity;
 

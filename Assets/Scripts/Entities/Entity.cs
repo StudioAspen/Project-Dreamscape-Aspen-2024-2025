@@ -63,6 +63,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    [HideInInspector] public bool UseRootMotion;
     #endregion
 
     #region Stagger Variables
@@ -95,8 +96,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
-    public BaseState CurrentState { get; private set; }
-    public BaseState DefaultState { get; private set; }
+    public EntityBaseState CurrentState { get; private set; }
+    public EntityBaseState DefaultState { get; private set; }
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
@@ -120,7 +121,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the start state of the entity.
     /// </summary>
     /// <param name="state">The start state to set.</param>
-    private protected void SetStartState(BaseState state)
+    private protected void SetStartState(EntityBaseState state)
     {
         CurrentState = state;
         CurrentState.OnEnter();
@@ -130,7 +131,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the default state of the entity.
     /// </summary>
     /// <param name="state">The default state to set.</param>
-    private protected void SetDefaultState(BaseState state)
+    private protected void SetDefaultState(EntityBaseState state)
     {
         DefaultState = state;
     }
@@ -139,7 +140,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Change the state machine state to the specified new state if the current state is not the same as the new state.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
-    public void ChangeState(BaseState state)
+    public void ChangeState(EntityBaseState state)
     {
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == state) return;
@@ -153,7 +154,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Forces a change of state to the specified new state even when in that same state.
     /// </summary>
     /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(BaseState newState)
+    public void ForceChangeState(EntityBaseState newState)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -198,11 +199,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnOnEnable()
     {
+        velocity = Vector3.zero;
+
+        IsGrounded = false;
+        prevIsGrounded = true;
+        inAirTimer = 0f;
+        fallVelocityApplied = false;
+
+        lastHitSource = null;
+
+        ResetLocalTimeScale();
+
         CurrentHealth = MaxHealth;
 
         SetStartState(EntityEmptyState);
-
-        ResetLocalTimeScale();
     }
 
     private void OnDisable()
@@ -291,6 +301,26 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
         CurrentState?.OnControllerColliderHit(hit);
+    }
+
+    private void OnAnimatorMove()
+    {
+        OnOnAnimatorMove();
+    }
+
+    /// <summary>
+    /// Handles the OnAnimatorMove event to apply root motion to the character controller.
+    /// Override this function if you want to add custom root motion logic.
+    /// </summary>
+    private protected virtual void OnOnAnimatorMove()
+    {
+        if (!UseRootMotion) return;
+
+        float modelScale = model.localScale.x;
+        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
+
+        controller.Move(desiredAnimationMovement);
     }
 
     /// <summary>
@@ -618,6 +648,16 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void Kill()
     {
         TakeDamage(int.MaxValue, transform.position, gameObject);
+    }
+
+    /// <summary>
+    /// Warps the entity to the specified position accounting for character controller physics issues.
+    /// </summary>
+    /// <param name="newPosition">The new position to warp to.</param>
+    public void Warp(Vector3 newPosition)
+    {
+        transform.position = newPosition;
+        Physics.SyncTransforms();
     }
 
     /// <summary>

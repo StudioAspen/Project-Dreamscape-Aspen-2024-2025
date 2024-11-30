@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EntityLaunchState : BaseState
+public class EntityLaunchState : EntityBaseState
 {
     private Entity entity;
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EntityDeathState : BaseState
+public class EntityDeathState : EntityBaseState
 {
     private Entity entity;
 
