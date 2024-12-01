@@ -38,21 +38,15 @@ public class PlayerJumpState : PlayerBaseState
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
-        if(player.Velocity.y < 0f)
+        if (player.Velocity.y < 0f)
         {
             player.ChangeState(player.PlayerFallState);
             return;
         }
-
-/*        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }*/
     }
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

@@ -41,6 +41,6 @@ public class PlayerWalkingState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

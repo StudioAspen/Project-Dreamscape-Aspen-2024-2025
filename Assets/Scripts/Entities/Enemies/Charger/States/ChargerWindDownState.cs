@@ -31,7 +31,9 @@ public class ChargerWindDownState : EnemyBaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        charger.ApplyGravity();
+
+        timer += charger.LocalDeltaTime;
 
         if (timer > charger.WindDownDuration)
         {
@@ -46,11 +48,14 @@ public class ChargerWindDownState : EnemyBaseState
 
             CheckCollisions();
         }
+
+        charger.UpdateGroundedVelocity(charger.transform.forward);
+        charger.GroundedMove();
     }
 
     public override void FixedUpdate()
     {
-        charger.Move(charger.transform.forward);
+
     }
 
     private void CheckCollisions()
@@ -90,7 +95,6 @@ public class ChargerWindDownState : EnemyBaseState
     {
         if (hit.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            Debug.Log("Hit a wall...");
             return true;
         }
 

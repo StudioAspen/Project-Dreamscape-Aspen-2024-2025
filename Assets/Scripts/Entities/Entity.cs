@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     [Header("Entity: References")]
+    [SerializeField, Self] private protected CharacterController controller;
     [SerializeField, Self] private protected Animator animator;
     [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
@@ -31,6 +34,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     [Header("Entity: Speed")]
     [SerializeField] private protected float baseSpeed = 3f;
     [SerializeField] private protected float rotationSpeed = 5f;
+    [SerializeField] private protected float mass = 1f;
+    private protected Vector3 velocity;
+    public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
     public float StatusSpeedModifier { get; protected set; } = 1f;
     public float MovementSpeed { get; protected set; }
@@ -57,6 +63,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    [HideInInspector] public bool UseRootMotion;
+    #endregion
+
+    #region Stagger Variables
+    [field: Header("Entity: Stagger")]
+    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
     #endregion
 
     #region Movement Events
@@ -72,9 +84,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected GameObject lastHitSource;
     #endregion
 
-    #region Stagger Variables
-    [field: Header("Entity: Stagger")]
-    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
+    #region Local Time Scale
+    [field: Header("Local Time Scale")]
+    [field: SerializeField] public float LocalTimeScale { get; protected set; } = 1f;
+    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale;
     #endregion
 
     #region Pooling Variables
@@ -82,8 +95,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
-    public BaseState CurrentState { get; private set; }
-    public BaseState DefaultState { get; private set; }
+    public EntityBaseState CurrentState { get; private set; }
+    public EntityBaseState DefaultState { get; private set; }
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
@@ -107,7 +120,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the start state of the entity.
     /// </summary>
     /// <param name="state">The start state to set.</param>
-    private protected void SetStartState(BaseState state)
+    private protected void SetStartState(EntityBaseState state)
     {
         CurrentState = state;
         CurrentState.OnEnter();
@@ -117,7 +130,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the default state of the entity.
     /// </summary>
     /// <param name="state">The default state to set.</param>
-    private protected void SetDefaultState(BaseState state)
+    private protected void SetDefaultState(EntityBaseState state)
     {
         DefaultState = state;
     }
@@ -126,7 +139,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Change the state machine state to the specified new state if the current state is not the same as the new state.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
-    public void ChangeState(BaseState state)
+    public void ChangeState(EntityBaseState state)
     {
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == state) return;
@@ -140,7 +153,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Forces a change of state to the specified new state even when in that same state.
     /// </summary>
     /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(BaseState newState)
+    public void ForceChangeState(EntityBaseState newState)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -185,9 +198,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnOnEnable()
     {
+        velocity = Vector3.zero;
+
+        IsGrounded = false;
+        prevIsGrounded = true;
+        inAirTimer = 0f;
+        fallVelocityApplied = false;
+
+        lastHitSource = null;
+
         CurrentHealth = MaxHealth;
 
         SetStartState(EntityEmptyState);
+        SetLocalTimeScale(1f);
     }
 
     private void OnDisable()
@@ -201,7 +224,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnOnDisable()
     {
-
+        Warp(new Vector3(0f, 10000f, 0f));
     }
 
     private void Start()
@@ -239,10 +262,13 @@ public class Entity : MonoBehaviour, IPoolableObject
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.Update();
 
-        CheckGrounded();
-
         HandleAnimations();
         EvaluateMovementSpeed();
+
+        HandleGrounded();
+        HandleAirborne();
+
+        SlideOffOtherEntities();
     }
 
     private void FixedUpdate()
@@ -258,6 +284,44 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnFixedUpdate()
     {
         CurrentState?.FixedUpdate();
+
+        CheckGrounded();
+        HandleYVelocity();
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        CurrentState?.OnControllerColliderHit(hit);
+    }
+
+    /// <summary>
+    /// Handles the collision enter event for the entity.
+    /// Override this function if you want to add custom collision enter logic.
+    /// </summary>
+    /// <param name="collision">The collision data.</param>
+    private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
+    {
+        CurrentState?.OnControllerColliderHit(hit);
+    }
+
+    private void OnAnimatorMove()
+    {
+        OnOnAnimatorMove();
+    }
+
+    /// <summary>
+    /// Handles the OnAnimatorMove event to apply root motion to the character controller.
+    /// Override this function if you want to add custom root motion logic.
+    /// </summary>
+    private protected virtual void OnOnAnimatorMove()
+    {
+        if (!UseRootMotion) return;
+
+        float modelScale = model.localScale.x;
+        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
+
+        controller.Move(desiredAnimationMovement);
     }
 
     /// <summary>
@@ -266,7 +330,30 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void CheckGrounded()
     {
-        if(prevIsGrounded != IsGrounded)
+        InvokeVerticalMovementEvents();
+
+        if (velocity.y > 0f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        //IsGrounded is always false for the first 0.1 seconds in air
+        if (inAirTimer > 0f && inAirTimer < 0.1f)
+        {
+            IsGrounded = false;
+            return;
+        }
+
+        IsGrounded = GetIsGrounded();
+    }
+
+    /// <summary>
+    /// Invokes the vertical movement events based on the current grounded state.
+    /// </summary>
+    private protected void InvokeVerticalMovementEvents()
+    {
+        if (prevIsGrounded != IsGrounded)
         {
             if (IsGrounded)
             {
@@ -281,14 +368,167 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Checks if the entity is grounded.
+    /// </summary>
+    /// <returns>True if the entity is grounded, false otherwise.</returns>
+    private protected bool GetIsGrounded()
+    {
+        return Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, LayerMask.GetMask("Ground"));
+    }
+
+    /// <summary>
+    /// Gets the list of RaycastHit objects below the entity within a specified distance and on specified layers.
+    /// </summary>
+    /// <param name="mask">The layer mask to filter the raycast hits.</param>
+    /// <param name="distance">The maximum distance to perform the raycast.</param>
+    /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
+    public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
+    {
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), controller.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        List<RaycastHit> result = new List<RaycastHit>();
+
+        if (hits == null) return result;
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.gameObject != gameObject)
+            {
+                result.Add(hit);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Handles the behavior when the entity is grounded.
+    /// Override this function if you want to add custom grounded logic.
+    /// </summary>
+    private protected virtual void HandleGrounded()
+    {
+        if (IsGrounded)
+        {
+            inAirTimer = 0f;
+            fallVelocityApplied = false;
+
+            velocity.y = PhysicsSettings.GroundedYVelocity;
+        }
+    }
+
+    /// <summary>
+    /// Handles the behavior when the entity is airborne.
+    /// Override this function if you want to add custom grounded logic.
+    /// </summary>
+    private protected virtual void HandleAirborne()
+    {
+        if (!IsGrounded)
+        {
+            inAirTimer += LocalDeltaTime;
+        }
+    }
+
+    /// <summary>
+    /// Handles the vertical velocity of the entity.
+    /// </summary>
+    private protected virtual void HandleYVelocity()
+    {
+        if (!IsGrounded)
+        {
+            velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
+        }
+    }
+
+    /// <summary>
+    /// Applies gravity to the entity if it is not grounded.
+    /// Override this function if you want to add custom gravity logic.
+    /// </summary>
+    public virtual void ApplyGravity()
+    {
+        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
+    }
+
+    /// <summary>
+    /// Slides off other entities if there are any below the entity.
+    /// </summary>
+    private void SlideOffOtherEntities()
+    {
+        if (GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
+        {
+            ForceUpdateGroundedVelocity(transform.forward, 3f);
+            GroundedMove();
+        }
+    }
+
+    /// <summary>
+    /// Resets the Y velocity of the entity to zero.
+    /// </summary>
+    public void ResetYVelocity()
+    {
+        velocity.y = 0f;
+    }
+
+    /// <summary>
+    /// Gets the grounded velocity of the entity.
+    /// </summary>
+    /// <returns>The grounded velocity.</returns>
+    public Vector3 GetGroundedVelocity()
+    {
+        return new Vector3(velocity.x, 0f, velocity.z);
+    }
+
+    /// <summary>
+    /// Sets the velocity of the entity.
+    /// </summary>
+    /// <param name="newVelocity">The new velocity to set.</param>
+    public void SetVelocity(Vector3 newVelocity)
+    {
+        velocity = newVelocity;
+    }
+
+    /// <summary>
+    /// Moves the entity while it is grounded.
+    /// Override this function if you want to add custom grounded movement logic.
+    /// </summary>
+    public virtual void GroundedMove()
+    {
+        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
+    }
+
+    /// <summary>
+    /// Updates the grounded velocity of the entity based on the given direction.
+    /// </summary>
+    /// <param name="direction">The direction of movement.</param>
+    public void UpdateGroundedVelocity(Vector3 direction)
+    {
+        Vector3 groundedVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
+
+        velocity.x = groundedVelocity.x;
+        velocity.z = groundedVelocity.z;
+    }
+
+    /// <summary>
+    /// Forces an update to the grounded velocity of the entity, ignoring the current speed modifier.
+    /// </summary>
+    /// <param name="direction">The direction of the velocity.</param>
+    /// <param name="speed">The speed of the velocity.</param>
+    public void ForceUpdateGroundedVelocity(Vector3 direction, float speed)
+    {
+        Vector3 groundedVelocity = speed * new Vector3(direction.x, 0f, direction.z).normalized;
+
+        velocity.x = groundedVelocity.x;
+        velocity.z = groundedVelocity.z;
+    }
+
+    /// <summary>
     /// Handles the animations of the entity.
     /// Sets the MovementSpeed parameter for the FlatMovement blend tree
     /// </summary>
     private protected virtual void HandleAnimations()
     {
-        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * Time.deltaTime);
+        totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
         animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        animator.speed = LocalTimeScale;
     }
 
     /// <summary>
@@ -438,6 +678,16 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Warps the entity to the specified position accounting for character controller physics issues.
+    /// </summary>
+    /// <param name="newPosition">The new position to warp to.</param>
+    public void Warp(Vector3 newPosition)
+    {
+        transform.position = newPosition;
+        Physics.SyncTransforms();
+    }
+
+    /// <summary>
     /// Changes the team of the entity to the specified new team.
     /// Equal teams cannot damage each other.
     /// </summary>
@@ -498,7 +748,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
 
         return targetRotation;
     }
@@ -698,7 +948,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="force">The force of the launch.</param>
     public virtual void Launch(Vector3 direction, float force)
     {
+        // Calculate the resulting change in velocity from the impulse
+        Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
+        IsGrounded = false;
+        inAirTimer = 0.01f;
+
+        // Apply the change to the current velocity
+        velocity = deltaVelocity;
     }
 
     /// <summary>
@@ -837,6 +1094,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetDamageModifier(float newModifier)
     {
         DamageModifier = newModifier;
+    }
+
+    /// <summary>
+    /// Sets the local time scale for the entity.
+    /// Cant set time scale if entity is dead.
+    /// </summary>
+    /// <param name="newTimeScale">The new time scale value.</param>
+    public void SetLocalTimeScale(float newTimeScale)
+    {
+        if(CurrentState == EntityDeathState) return;
+
+        LocalTimeScale = newTimeScale;
     }
 
     /// <summary>

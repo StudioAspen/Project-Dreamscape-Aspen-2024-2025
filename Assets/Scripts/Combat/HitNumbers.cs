@@ -18,15 +18,25 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
 
     private void OnDisable()
     {
+        // cancel all tweens
         DOTween.Kill(transform);
         DOTween.Kill(numberText);
     }
 
     private void LateUpdate()
     {
+        // look at the main camera
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
+    /// <summary>
+    /// Activates the hit number text with the specified damage, spawn point, direction, and color.
+    /// Needs to be called when spawned.
+    /// </summary>
+    /// <param name="damage">The damage value.</param>
+    /// <param name="spawnPoint">The spawn point of the hit number text.</param>
+    /// <param name="direction">The direction in which the hit number text should float.</param>
+    /// <param name="color">The color of the hit number text.</param>
     public void ActivateHitNumberText(int damage, Vector3 spawnPoint, Vector3 direction, Color color)
     {
         transform.position = spawnPoint;
@@ -38,6 +48,12 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
         FloatAndFade(2f, 1f, direction);
     }
 
+    /// <summary>
+    /// Floats and fades the hit number text for a specified duration, distance, and direction.
+    /// </summary>
+    /// <param name="duration">The duration of the floating and fading animation.</param>
+    /// <param name="distance">The distance the hit number text should float.</param>
+    /// <param name="direction">The direction in which the hit number text should float.</param>
     private void FloatAndFade(float duration, float distance, Vector3 direction)
     {
         Sequence sequence = DOTween.Sequence();

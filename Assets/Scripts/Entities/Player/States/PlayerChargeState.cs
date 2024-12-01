@@ -21,9 +21,9 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void Update()
     {
-        player.TransitionToAnimation("Charge");
-
         player.ApplyGravity();
+
+        player.TransitionToAnimation("Charge");
 
         if (player.MoveDirection != Vector3.zero)
         {

@@ -36,7 +36,15 @@ public class PlayerDashState : PlayerBaseState
 
     public override void Update()
     {
-        DashUpdate();
+        timer += player.LocalDeltaTime;
+
+        currDashSpeed = (player.InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / player.DashDuration - 1, 2))) + maxSpeed;
+
+        if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement();
+        player.RotateToTargetRotation();
+
+        player.InstantlySetGroundedSpeed(currDashSpeed);
+        player.GroundedMove();
 
         if (timer > player.DashDuration)
         {
@@ -57,19 +65,5 @@ public class PlayerDashState : PlayerBaseState
     public override void FixedUpdate()
     {
         
-    }
-
-    private void DashUpdate()
-    {
-        timer += Time.deltaTime;
-
-        currDashSpeed = (player.InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / player.DashDuration - 1, 2))) + maxSpeed;
-
-        if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement();
-        
-        player.RotateToTargetRotation();
-
-        player.InstantlySetGroundedSpeed(currDashSpeed);
-        player.GroundedMove();
     }
 }
