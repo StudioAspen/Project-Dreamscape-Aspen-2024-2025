@@ -10,7 +10,7 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void OnEnter()
     {
-        enemy.DefaultTransitionToAnimation("FlatMovement");
+        enemy.TransitionToAnimation("FlatMovement");
 
         enemy.SetSpeedModifier(1f);
     }
@@ -22,6 +22,8 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void Update()
     {
+        enemy.ApplyGravity();
+
         if (enemy.Target == null)
         {
             enemy.ChangeState(enemy.EnemyIdleState);
@@ -29,6 +31,7 @@ public class EnemyChaseState : EnemyBaseState
         }
 
         enemy.SetDestination(enemy.Target.transform.position, true);
+        enemy.MoveTowardsDestination();
     }
 
     public override void FixedUpdate()

@@ -27,8 +27,8 @@ public class Charger : Enemy
     [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
     [field: SerializeField] public float ChargeFlingForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (capsuleCollider.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (capsuleCollider.height / 2 - ChargeCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (controller.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (controller.height / 2 - ChargeCollisionRadius) * Vector3.up;
     private float originalRotationSpeed;
 
     [field: Header("Charger: Wind Down Settings")]
@@ -152,7 +152,7 @@ public class Charger : Enemy
             return;
         }
 
-        if(filteredTargetsByCone.Count > 0)
+        if(filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0]))
         {
             Target = filteredTargetsByCone[0];
             return;
@@ -168,7 +168,7 @@ public class Charger : Enemy
         return;
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source)
+    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -193,19 +193,31 @@ public class Charger : Enemy
             }
         }
 
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
+
         CurrentHealth -= newDamage;
 
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 
-        OnEntityTakeDamage?.Invoke(hitPoint, source);
-
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth > 0)
         {
             OnDeath();
         }
+    }
+
+    public override bool WillDieFromDamage(int damage)
+    {
+        int newDamage = damage;
+
+        if (HasSuperArmorActive())
+        {
+            if (damage < staggerDamageThreshold) newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
+        }
+
+        return MaxHealth > 0 && CurrentHealth - newDamage <= 0;
     }
 
     private bool HasSuperArmorActive()

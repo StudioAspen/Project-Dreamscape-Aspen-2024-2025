@@ -9,14 +9,14 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("JumpingUp");
+        player.TransitionToAnimation("JumpingUp");
 
         player.Jump();
     }
 
     public override void OnExit()
     {
-
+        
     }
 
     public override void Update()
@@ -38,21 +38,15 @@ public class PlayerJumpState : PlayerBaseState
         player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
         player.GroundedMove();
 
-        if(player.Velocity.y < 0f)
+        if (player.Velocity.y < 0f)
         {
             player.ChangeState(player.PlayerFallState);
             return;
         }
-
-/*        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }*/
     }
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

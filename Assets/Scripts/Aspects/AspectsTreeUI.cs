@@ -57,7 +57,7 @@ public class AspectsTreeUI : MonoBehaviour
     private void OnEnable()
     {
         // reset scroll rect back to center
-        scrollRect.normalizedPosition = Vector2.zero;
+        if(scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
 
         tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
 

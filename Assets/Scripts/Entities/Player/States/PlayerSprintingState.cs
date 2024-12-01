@@ -11,9 +11,16 @@ public class PlayerSprintingState : PlayerBaseState
         this.player = player;
     }
 
+    public void SetSprintDuration(float d)
+    {
+        timer = 0f;
+        duration = d;
+        isSprintDependentOnTimer = true;
+    }
+
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("FlatMovement");
+        player.TransitionToAnimation("FlatMovement");
 
         player.SetSpeedModifier(player.SprintSpeedModifier);
     }
@@ -36,13 +43,14 @@ public class PlayerSprintingState : PlayerBaseState
         if (player.MoveDirection == Vector3.zero)
         {
             player.ChangeState(player.PlayerIdleState);
+            return;
         }
 
         if (player.IsSprinting) isSprintDependentOnTimer = false;
 
         if (isSprintDependentOnTimer)
         {
-            timer += Time.deltaTime;
+            timer += player.LocalDeltaTime;
 
             if (timer > duration)
             {
@@ -60,13 +68,7 @@ public class PlayerSprintingState : PlayerBaseState
 
     public override void FixedUpdate()
     {
-
-    }
-
-    public void SetSprintDuration(float d)
-    {
-        timer = 0f;
-        duration = d;
-        isSprintDependentOnTimer = true;
+        
+        
     }
 }
