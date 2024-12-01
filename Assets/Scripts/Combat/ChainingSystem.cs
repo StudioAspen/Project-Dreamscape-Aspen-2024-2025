@@ -2,21 +2,18 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 public class ChainingSystem : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private PlayerCombat playerCombat;
-    [SerializeField] private TMP_Text debugText;
 
     [Header("Settings")]
     [SerializeField] private float timeBetween = 1f;
     private float timer;
 
-    private int chainCount;
-    public int ChainCount => chainCount;
+    public int ChainCount { get; private set; }
 
     private void OnValidate()
     {
@@ -25,7 +22,7 @@ public class ChainingSystem : MonoBehaviour
 
     private void Start()
     {
-        Reset();
+        ResetChain();
     }
 
     private void OnEnable()
@@ -43,37 +40,33 @@ public class ChainingSystem : MonoBehaviour
         HandleChaining();
     }
 
-    private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint)
+    private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
         AddChain();
     }
 
     private void HandleChaining()
     {
-        if (chainCount > 0)
+        if (ChainCount > 0)
         {
             timer += Time.deltaTime;
         }
 
         if (timer > timeBetween)
         {
-            Reset();
+            ResetChain();
         }
     }
 
     public void AddChain()
     {
-        chainCount++;
+        ChainCount++;
         timer = 0f;
-
-        debugText.text = $"Chain: {chainCount}";
     }
 
-    private void Reset()
+    private void ResetChain()
     {
-        chainCount = 0;
+        ChainCount = 0;
         timer = 0;
-
-        debugText.text = $"Chain: {chainCount}";
     }
 }

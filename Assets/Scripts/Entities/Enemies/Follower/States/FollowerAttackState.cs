@@ -18,14 +18,14 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
-        follower.DefaultTransitionToAnimation("Attack");
+        follower.TransitionToAnimation("Attack");
 
         follower.SetSpeedModifier(0f);
 
         follower.Weapon.OnWeaponStartSwing?.Invoke(follower);
         follower.Weapon.ClearEnemiesHitList();
 
-        follower.Weapon.SetDamageRange(new Vector2Int(follower.AttackDamageRange.x, follower.AttackDamageRange.y));
+        follower.Weapon.SetPercentDamage(follower.AttackPercentDamage);
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;

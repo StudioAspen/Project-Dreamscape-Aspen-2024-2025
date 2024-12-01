@@ -29,7 +29,7 @@ public class FollowerReadyAttackState : EnemyBaseState
 
     public override void Update()
     {
-        follower.DefaultTransitionToAnimation("Attack");
+        follower.TransitionToAnimation("Attack");
 
         readyTimer += Time.deltaTime;
 

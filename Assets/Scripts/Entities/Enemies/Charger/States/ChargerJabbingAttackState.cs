@@ -23,24 +23,26 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
         if (charger.RemainingJabs % 2 == 1)
         {
-            charger.DefaultTransitionToAnimation("RightJab");
+            charger.TransitionToAnimation("RightJab");
 
             charger.RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
             charger.RightFistWeapon.ClearEnemiesHitList();
 
-            charger.RightFistWeapon.SetDamageRange(charger.JabDamageRange);
+            charger.RightFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
         else
         {
-            charger.DefaultTransitionToAnimation("LeftJab");
+            charger.TransitionToAnimation("LeftJab");
 
             charger.LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
             charger.LeftFistWeapon.ClearEnemiesHitList();
 
-            charger.LeftFistWeapon.SetDamageRange(charger.JabDamageRange);
+            charger.LeftFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
+
+        charger.SetRotationSpeed(charger.JabRotationSpeed);
     }
 
     public override void OnExit()
@@ -58,10 +60,18 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
 
         charger.DisableWeaponTriggers();
+
+        charger.ResetRotationSpeed();
     }
 
     public override void Update()
     {
+        if (rememberedTarget == null)
+        {
+            charger.ChangeState(charger.ChargerJabRecoverState);
+            return;
+        }
+
         charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
 
         charger.LookAt(rememberedTarget.transform.position);
