@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Charger : Enemy
@@ -22,14 +23,9 @@ public class Charger : Enemy
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
-    [field: SerializeField] public float ChargeCollisionRadius { get; private set; } = 2f;
-    [field: SerializeField] public float ChargeCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
-    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
-    [field: SerializeField] public float ChargeFlingForce { get; private set; } = 10f;
+    [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() - (controller.height / 2 - ChargeCollisionRadius - ChargeCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 ChargeCollisionTopPoint => GetColliderCenterPosition() + (controller.height / 2 - ChargeCollisionRadius) * Vector3.up;
-    private float originalRotationSpeed;
+    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
 
     [field: Header("Charger: Wind Down Settings")]
     [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
@@ -95,8 +91,6 @@ public class Charger : Enemy
         base.OnStart();
 
         SetDefaultState(ChargerWanderState);
-
-        originalRotationSpeed = rotationSpeed; // cache original rotation speed;
     }
 
     private protected override void OnUpdate()
@@ -111,18 +105,7 @@ public class Charger : Enemy
 
     private protected override void OnTick()
     {
-        
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomGizmos.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
-        CustomGizmos.DrawWireCone(ChargeCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
-
-        Gizmos.color = Color.white;
-        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, ChargeCollisionTopPoint, ChargeCollisionRadius);
+        // dont inherit base to leave target assignment to certain states
     }
 
     private protected override void OnOnAnimatorMove()
@@ -130,42 +113,20 @@ public class Charger : Enemy
         base.OnOnAnimatorMove();
     }
 
-    public void SetRotationSpeed(float newRotationSpeed)
+    private protected override void OnOnDrawGizmos()
     {
-        rotationSpeed = newRotationSpeed;
-    }
+        base.OnOnDrawGizmos();
 
-    public void ResetRotationSpeed()
-    {
-        rotationSpeed = originalRotationSpeed;
+        Gizmos.color = Color.red;
+        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomGizmos.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
+        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
     }
 
     public override void TryAssignTarget()
     {
-        List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(DetectionDistance);
-        List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, ChargeCollisionTopPoint, DetectionConeHalfAngle);
-
-        if (largeRadiusTargets.Count == 0)
-        {
-            Target = null;
-            return;
-        }
-
-        if(filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0]))
-        {
-            Target = filteredTargetsByCone[0];
-            return;
-        }
-
-        if (smallRadiusTargets.Count > 0)
-        {
-            Target = smallRadiusTargets[0];
-            return;
-        }
-
-        Target = null;
-        return;
+        // replace default radius-based target assignment with cone-based target assignment
+        TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
     public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
@@ -220,6 +181,10 @@ public class Charger : Enemy
         return MaxHealth > 0 && CurrentHealth - newDamage <= 0;
     }
 
+    /// <summary>
+    /// Determines if the Charger has super armor active based on its current state.
+    /// </summary>
+    /// <returns>True if the Charger has super armor active, false otherwise.</returns>
     private bool HasSuperArmorActive()
     {
         return CurrentState == ChargerChargeState
@@ -227,6 +192,10 @@ public class Charger : Enemy
             || CurrentState == ChargerTargetDetectedState;
     }
 
+    /// <summary>
+    /// Determines if the Charger can be staggered based on its current state.
+    /// </summary>
+    /// <returns>True if the Charger can be staggered, false otherwise.</returns>
     private bool CanBeStaggered()
     {
         return CurrentState == ChargerWanderState

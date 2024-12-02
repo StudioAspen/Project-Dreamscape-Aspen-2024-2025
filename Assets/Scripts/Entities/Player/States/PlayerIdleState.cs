@@ -23,8 +23,8 @@ public class PlayerIdleState : PlayerBaseState
     {
         player.ApplyGravity();
 
-        player.AccelerateToSpeed(0f);
-        player.GroundedMove();
+        player.AccelerateToHorizontalSpeed(0f);
+        player.ApplyHorizontalVelocity();
 
         if (player.MoveDirection != Vector3.zero && player.IsSprinting)
         {

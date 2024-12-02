@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class ChargerChargeState : EnemyBaseState
 {
@@ -29,14 +30,13 @@ public class ChargerChargeState : EnemyBaseState
         charger.TransitionToAnimation("FlatMovement");
         
         charger.SetSpeedModifier(charger.ChargeSpeedModifier);
-        charger.SetRotationSpeed(charger.ChargeRotationSpeed);
 
         timer = 0f;
     }
 
     public override void OnExit() 
     {
-        charger.ResetRotationSpeed();
+        
     }
 
     public override void Update()
@@ -58,10 +58,10 @@ public class ChargerChargeState : EnemyBaseState
 
         CheckCollisions();
 
-        charger.UpdateGroundedVelocity(charger.transform.forward);
-        charger.GroundedMove();
+        charger.UpdateHorizontalVelocity(charger.transform.forward);
+        charger.ApplyHorizontalVelocity();
 
-        charger.LookAt(rememberedTarget.transform.position);
+        charger.LookAt(rememberedTarget.transform.position, charger.ChargeRotationSpeed);
     }
 
     public override void FixedUpdate()
@@ -74,19 +74,11 @@ public class ChargerChargeState : EnemyBaseState
     /// </summary>
     private void CheckCollisions()
     {
-        // charge layer mask should only be ground and damageable entities
-        Collider[] hits = Physics.OverlapCapsule(charger.ChargeCollisionBottomPoint, charger.ChargeCollisionTopPoint, charger.ChargeCollisionRadius, charger.ChargeLayerMask);
-
-        if (hits == null) return;
-        if (hits.Length == 0) return;
-
-        List<Collider> orderedHits = hits.OrderBy(hit => charger.Distance(hit.ClosestPoint(charger.GetColliderCenterPosition()))).ToList();
+        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargeLayerMask);
 
         foreach (Collider hit in orderedHits)
         {
-            if (IsOwnDamageableEntityCollider(hit)) continue;
-
-            if (DidChargerHitWall(hit))
+            if (charger.DidHitWall(hit))
             {
                 CameraShakeManager.Instance.ShakeCamera(3f, 0.5f);
 
@@ -94,20 +86,20 @@ public class ChargerChargeState : EnemyBaseState
                 return;
             }
 
-            if (DidChargerHitFriendlyEntity(hit, out Entity friendlyEntity))
+            if (charger.DidHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
-                Vector3 flingDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
-                TryFlingEntity(friendlyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
+                Vector3 launchDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
+                friendlyEntity.TryChangeToLaunchState(launchDirection, charger.ChargeOnImpactLaunchForce, charger.ChargeStunDuration);
             }
 
-            if (DidChargerHitEnemyEntity(hit, out Entity enemyEntity))
+            if (charger.DidHitEnemyEntity(hit, out Entity enemyEntity))
             {
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
-                Vector3 flingDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
-                TryFlingEntity(enemyEntity, flingDirection, charger.ChargeFlingForce, charger.ChargeStunDuration);
+                Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
+                enemyEntity.TryChangeToLaunchState(launchDirection, charger.ChargeOnImpactLaunchForce, charger.ChargeStunDuration);
 
                 enemyEntity.TakeDamage(charger.CalculateDamage(charger.ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject, false);
 
@@ -115,48 +107,5 @@ public class ChargerChargeState : EnemyBaseState
                 return;
             }
         }
-    }
-
-    private bool IsOwnDamageableEntityCollider(Collider hit)
-    {
-        // check if hit is a child of charger's collider
-        Charger selfCharger = hit.GetComponentInParent<Charger>();
-
-        if(selfCharger == null) return false;
-        if (selfCharger == charger) return true;
-
-        return false;
-    }
-
-    private bool DidChargerHitFriendlyEntity(Collider hit, out Entity entity)
-    {
-        entity = hit.GetComponentInParent<Entity>();
-
-        if(entity == null) return false;
-        if (entity.Team != charger.Team) return false;
-
-        return true;
-    }
-
-    private bool DidChargerHitEnemyEntity(Collider hit, out Entity entity)
-    {
-        entity = hit.GetComponentInParent<Entity>();
-
-        if (entity == null) return false;
-        if (entity.Team == charger.Team) return false;
-
-        return true;
-    }
-
-    private bool DidChargerHitWall(Collider hit)
-    {
-        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
-    }
-
-    private void TryFlingEntity(Entity entity, Vector3 direction, float force, float stunDuration)
-    {
-        //if (entity.GetType() == typeof(Charger)) return; // prevents chargers from flinging other chargers
-
-        entity.TryChangeToLaunchState(direction, force, stunDuration);
     }
 }

@@ -37,8 +37,8 @@ public class PlayerSprintingState : PlayerBaseState
 
         player.ApplyRotationToNextMovement();
         player.RotateToTargetRotation();
-        player.AccelerateToSpeed(player.MovementSpeed);
-        player.GroundedMove();
+        player.AccelerateToHorizontalSpeed(player.MovementSpeed);
+        player.ApplyHorizontalVelocity();
 
         if (player.MoveDirection == Vector3.zero)
         {

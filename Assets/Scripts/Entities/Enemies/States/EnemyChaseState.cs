@@ -30,7 +30,7 @@ public class EnemyChaseState : EnemyBaseState
             return;
         }
 
-        enemy.SetDestination(enemy.Target.transform.position, true);
+        enemy.SetDestination(enemy.Target.transform.position);
         enemy.MoveTowardsDestination();
     }
 

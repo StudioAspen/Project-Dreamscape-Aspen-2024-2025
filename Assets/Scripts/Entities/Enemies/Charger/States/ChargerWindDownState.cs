@@ -49,8 +49,8 @@ public class ChargerWindDownState : EnemyBaseState
             CheckCollisions();
         }
 
-        charger.UpdateGroundedVelocity(charger.transform.forward);
-        charger.GroundedMove();
+        charger.UpdateHorizontalVelocity(charger.transform.forward);
+        charger.ApplyHorizontalVelocity();
     }
 
     public override void FixedUpdate()
@@ -60,44 +60,15 @@ public class ChargerWindDownState : EnemyBaseState
 
     private void CheckCollisions()
     {
-        // charge layer mask should only be ground and damageable entities
-        Collider[] hits = Physics.OverlapCapsule(charger.ChargeCollisionBottomPoint, charger.ChargeCollisionTopPoint, charger.ChargeCollisionRadius, charger.ChargeLayerMask);
-
-        if (hits == null) return;
-        if (hits.Length == 0) return;
-
-        List<Collider> orderedHits = hits.OrderBy(hit => charger.Distance(hit.ClosestPoint(charger.GetColliderCenterPosition()))).ToList();
+        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargeLayerMask);
 
         foreach (Collider hit in orderedHits)
         {
-            if (IsOwnDamageableEntityCollider(hit)) continue;
-
-            if (DidChargerHitWall(hit))
+            if (charger.DidHitWall(hit))
             {
                 charger.ChangeState(charger.ChargerDazedState);
                 return;
             }
         }
-    }
-
-    private bool IsOwnDamageableEntityCollider(Collider hit)
-    {
-        // check if hit is a child of charger's collider
-        Charger selfCharger = hit.GetComponentInParent<Charger>();
-
-        if (selfCharger == null) return false;
-        if (selfCharger == charger) return true;
-
-        return false;
-    }
-
-    private bool DidChargerHitWall(Collider hit)
-    {
-        if (hit.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            return true;
-        }
-
-        return false;
     }
 }

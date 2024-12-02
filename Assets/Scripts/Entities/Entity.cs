@@ -2,6 +2,7 @@
 using KBCore.Refs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem.XR;
@@ -286,7 +287,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState?.FixedUpdate();
 
         CheckGrounded();
-        HandleYVelocity();
+        HandleVerticalVelocity();
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -322,6 +323,20 @@ public class Entity : MonoBehaviour, IPoolableObject
         desiredAnimationMovement.y = 0f;
 
         controller.Move(desiredAnimationMovement);
+    }
+
+    private void OnDrawGizmos()
+    {
+        OnOnDrawGizmos();
+    }
+
+    /// <summary>
+    /// Handles the drawing of Gizmos in the scene view.
+    /// Override this function if you want to add custom gizmo drawing logic.
+    /// </summary>
+    private protected virtual void OnOnDrawGizmos()
+    {
+
     }
 
     /// <summary>
@@ -430,7 +445,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Handles the vertical velocity of the entity.
     /// </summary>
-    private protected virtual void HandleYVelocity()
+    private protected virtual void HandleVerticalVelocity()
     {
         if (!IsGrounded)
         {
@@ -454,8 +469,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
         {
-            ForceUpdateGroundedVelocity(transform.forward, 3f);
-            GroundedMove();
+            ForceUpdateHorizontalVelocity(transform.forward, 3f);
+            ApplyHorizontalVelocity();
         }
     }
 
@@ -468,10 +483,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets the grounded velocity of the entity.
+    /// Gets the horizontal velocity of the entity.
     /// </summary>
     /// <returns>The grounded velocity.</returns>
-    public Vector3 GetGroundedVelocity()
+    public Vector3 GetHorizontalVelocity()
     {
         return new Vector3(velocity.x, 0f, velocity.z);
     }
@@ -486,32 +501,32 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Moves the entity while it is grounded.
-    /// Override this function if you want to add custom grounded movement logic.
+    /// Moves the entity in its horizontal velocity direction.
+    /// Override this function if you want to add custom horizontal movement logic.
     /// </summary>
-    public virtual void GroundedMove()
+    public virtual void ApplyHorizontalVelocity()
     {
-        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
+        controller.Move(GetHorizontalVelocity() * LocalDeltaTime);
     }
 
     /// <summary>
-    /// Updates the grounded velocity of the entity based on the given direction.
+    /// Updates the horizontal velocity of the entity based on the given direction.
     /// </summary>
     /// <param name="direction">The direction of movement.</param>
-    public void UpdateGroundedVelocity(Vector3 direction)
+    public void UpdateHorizontalVelocity(Vector3 direction)
     {
-        Vector3 groundedVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
+        Vector3 horizontalVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
 
-        velocity.x = groundedVelocity.x;
-        velocity.z = groundedVelocity.z;
+        velocity.x = horizontalVelocity.x;
+        velocity.z = horizontalVelocity.z;
     }
 
     /// <summary>
-    /// Forces an update to the grounded velocity of the entity, ignoring the current speed modifier.
+    /// Forces an update to the horizontal velocity of the entity, ignoring the current speed modifier.
     /// </summary>
     /// <param name="direction">The direction of the velocity.</param>
     /// <param name="speed">The speed of the velocity.</param>
-    public void ForceUpdateGroundedVelocity(Vector3 direction, float speed)
+    public void ForceUpdateHorizontalVelocity(Vector3 direction, float speed)
     {
         Vector3 groundedVelocity = speed * new Vector3(direction.x, 0f, direction.z).normalized;
 
@@ -735,13 +750,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Rotates the entity to face the specified target position with a speed of rotationSpeed.
+    /// Rotates the entity to face the specified target position with a the default rotationSpeed.
     /// Must be called in Update to work.
     /// Returns the target rotation of the entity.
-    /// Override this function if you want custom LookAt behavior.
     /// </summary>
     /// <param name="target">The position to look at.</param>
-    public virtual Quaternion LookAt(Vector3 target)
+    public Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -749,6 +763,26 @@ public class Entity : MonoBehaviour, IPoolableObject
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
+
+        return targetRotation;
+    }
+
+    /// <summary>
+    /// Rotates the entity to face the specified target with a given speed.
+    /// Must be called in Update to work.
+    /// Returns the target rotation of the entity.
+    /// </summary>
+    /// <param name="target">The target position to look at.</param>
+    /// <param name="speed">The rotation speed.</param>
+    /// <returns>The target rotation.</returns>
+    public Quaternion LookAt(Vector3 target, float speed)
+    {
+        Vector3 dir = target - transform.position;
+
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, speed * LocalDeltaTime);
 
         return targetRotation;
     }
@@ -771,6 +805,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     public float Distance(Entity entity)
     {
         return Vector3.Distance(entity.transform.position, transform.position);
+    }
+
+    /// <summary>
+    /// Checks if the entity is close to a specified point within a given error margin.
+    /// Error is defaulted to 0.05f.
+    /// </summary>
+    /// <param name="point">The point to check against.</param>
+    /// <param name="error">The maximum allowed distance from the point.</param>
+    /// <returns>True if the entity is close to the point within the error margin, false otherwise.</returns>
+    public bool CloseToPoint(Vector3 point, float error = 0.05f)
+    {
+        return Distance(point) < error;
     }
 
     /// <summary>
@@ -1145,5 +1191,64 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
 
         return entities.OrderBy(target => Vector3.SqrMagnitude(hitPosition - target.transform.position)).ToList();
+    }
+
+    /// <summary>
+    /// Checks if the given collider belongs to the entity or its child colliders.
+    /// </summary>
+    /// <param name="hit">The collider to check.</param>
+    /// <returns>True if the collider belongs to the Charger or its child colliders, false otherwise.</returns>
+    public bool IsOwnCollider(Collider hit)
+    {
+        Entity selfEntity = hit.GetComponentInParent<Entity>();
+
+        if (selfEntity == null) return false;
+        if (selfEntity == this) return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if the enemy hit a wall.
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <returns>True if the entity hit a wall, false otherwise.</returns>
+    public bool DidHitWall(Collider hit)
+    {
+        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
+    }
+
+    /// <summary>
+    /// Checks if entity hit a friendly entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The friendly entity that was hit.</param>
+    /// <returns>True if the entity hit a friendly entity, false otherwise.</returns>
+    public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) entity = hit.GetComponent<Entity>();
+        if (entity.Team != Team) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if entity hit an enemy entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The enemy entity that was hit.</param>
+    /// <returns>True if the entity hit an enemy entity, false otherwise.</returns>
+    public bool DidHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == Team) return false;
+
+        return true;
     }
 }

@@ -27,7 +27,7 @@ public class FollowerChaseState : EnemyChaseState
 
         if(follower.Target == null)
         {
-            follower.ChangeState(follower.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 
