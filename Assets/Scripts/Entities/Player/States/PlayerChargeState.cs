@@ -27,17 +27,17 @@ public class PlayerChargeState : PlayerBaseState
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
     }
 
     public override void FixedUpdate()

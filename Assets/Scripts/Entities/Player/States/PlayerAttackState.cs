@@ -66,7 +66,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
 
-        player.InstantlySetGroundedSpeed(0f); // stops the player from moving
+        player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
         playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit); // remove the onhit listener
     }
@@ -87,9 +87,9 @@ public class PlayerAttackState : PlayerBaseState
         if (player.IsGrounded && player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); 
 
         player.RotateToTargetRotation();
-        player.AccelerateToSpeed(0f);
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.AccelerateToHorizontalSpeed(0f);
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
     }
 
     public override void FixedUpdate()

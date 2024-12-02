@@ -62,12 +62,12 @@ MonoBehaviour:
   baseSpeed: 2
   rotationSpeed: 5
   mass: 1
-  velocity: {x: 0, y: 0, z: 0}
   IsGrounded: 0
   targetDetectionRadius: Infinity
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField: 1
+  UseRootMotion: 0
   <StaggerDuration>k__BackingField: 0.5
   OnGrounded:
     m_PersistentCalls:
@@ -86,8 +86,10 @@ MonoBehaviour:
       m_Calls: []
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 1
+  <CustomCollisionRadius>k__BackingField: 0
+  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
+  <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   IsAttackAnimationPlaying: 0
-  UseRootMotion: 0
   <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <AttackRange>k__BackingField: 1
   <AttackPercentDamage>k__BackingField: 100

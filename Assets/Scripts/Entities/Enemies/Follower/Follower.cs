@@ -12,7 +12,6 @@ public class Follower : Enemy
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 
-
     [field: Header("Follower: Circle Settings")]
     [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
     [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
@@ -46,14 +45,11 @@ public class Follower : Enemy
         base.OnOnDisable();
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnStart()
     {
         base.OnStart();
+
+        SetDefaultState(EnemyIdleState);
 
         FinishAnimation();
     }

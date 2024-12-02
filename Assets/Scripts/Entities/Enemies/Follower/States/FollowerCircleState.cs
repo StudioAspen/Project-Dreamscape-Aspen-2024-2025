@@ -80,11 +80,11 @@ public class FollowerCircleState : EnemyBaseState
         if(changeDirTimer > follower.ChangeDirectionInterval)
         {
             changeDirTimer = 0f;
-            follower.SetDestination(CalculateCircleDestination(), false);
+            follower.SetDestination(CalculateCircleDestination());
             cwCircle = Random.Range(0, follower.ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
         }
 
-        follower.MoveTowardsDestination();
+        follower.MoveTowardsDestination(false);
         follower.LookAt(follower.Target.transform.position);
     }
 

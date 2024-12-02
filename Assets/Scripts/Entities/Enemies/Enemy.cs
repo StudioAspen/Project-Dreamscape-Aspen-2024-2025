@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,12 +16,20 @@ public class Enemy : Entity
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
 
-    // custom pathfinding
+    [field: Header("Enemy: Custom Collider Settings")]
+    [field: SerializeField] public float CustomCollisionRadius { get; private set; }
+    [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
+    [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (controller.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (controller.height / 2 - CustomCollisionRadius) * Vector3.up;
+
+    #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
-    private bool lookAtPath;
+    #endregion
 
     public Entity Target { get; protected set; }
+
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
@@ -81,6 +90,34 @@ public class Enemy : Entity
         base.OnFixedUpdate();
     }
 
+    private protected override void OnDeath()
+    {
+        base.OnDeath();
+
+        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+    }
+
+    private protected override void OnOnDrawGizmos()
+    {
+        base.OnOnDrawGizmos();
+
+        if(CustomCollisionRadius <= 0) return;
+
+        Gizmos.color = Color.white;
+        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+    }
+
+    public override void Die()
+    {
+        base.Die();
+
+        if (spawner != null) spawner.RemoveEnemyFromList(this);
+    }
+
+    /// <summary>
+    /// Called every tick from the Ticker singleton.
+    /// Tries to assign a target to the enemy here.
+    /// </summary>
     private protected virtual void OnTick()
     {
         TryAssignTarget();
@@ -105,8 +142,10 @@ public class Enemy : Entity
 
     /// <summary>
     /// Moves the enemy towards its destination along the calculated path.
+    /// Looks at the path by default.
+    /// /// <param name="lookAtPath">Whether to look at the path.</param>
     /// </summary>
-    public void MoveTowardsDestination()
+    public void MoveTowardsDestination(bool lookAtPath = true)
     {
         if (path == null) return;
         if (path.Count < 2) return;
@@ -126,40 +165,67 @@ public class Enemy : Entity
         Vector3 dir = currDest - transform.position;
         dir.Normalize();
 
-        UpdateGroundedVelocity(dir);
-        GroundedMove();
+        UpdateHorizontalVelocity(dir);
+        ApplyHorizontalVelocity();
 
-        if (Distance(currDest) < 0.05f)
+        if (CloseToPoint(currDest, 0.05f))
         {
             path.RemoveAt(0);
         }
     }
 
+    /// <summary>
+    /// Cancels the current path of the enemy.
+    /// </summary>
     public void CancelPath()
     {
         path = null;
     }
 
-    public void SetDestination(Vector3 dest, bool lookAtPath)
+    /// <summary>
+    /// Sets the destination for the enemy to move towards.
+    /// You can specify whether you want the enemy to look at the path while moving.
+    /// </summary>
+    /// <param name="dest">The destination position.</param>
+    /// <param name="lookAtPath">Whether the enemy should look at the path while moving.</param>
+    public void SetDestination(Vector3 dest)
     {
         Destination = dest;
         path = GetPathToDestination(dest);
-        this.lookAtPath = lookAtPath;
     }
 
-    private protected override void OnDeath()
+    /// <summary>
+    /// Generates a random wander point within a specified radius range.
+    /// Returns itself it cannot find a valid point after a certain number of iterations.
+    /// Iteration count is set to 16 by default.
+    /// </summary>
+    /// <param name="wanderRadiusRange">The range of the wander radius.</param>
+    /// <param name="iterationTryCount">The number of iterations to try finding a valid point.</param>
+    /// <returns>The randomly generated wander point.</returns>
+    public Vector3 GetRandomWanderPoint(Vector2 wanderRadiusRange, int iterationTryCount = 16)
     {
-        base.OnDeath();
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+        // Raycast downwards to prevent charger from not wandering at all because it cannot reach
+        RaycastHit raycastHit;
+        for (int i = 0; i < iterationTryCount; i++)
+        {
+            float randomRadius = Random.Range(wanderRadiusRange.x, wanderRadiusRange.y);
+            Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
+            randomPointOnUnitCircle.y = 0;
+            Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + transform.position;
+            bool isValidPoint =
+                Physics.Raycast(randomPoint + 100f * Vector3.up, Vector3.down, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Ground"))
+                && NavMesh.SamplePosition(raycastHit.point, out _, 0.5f, NavMesh.AllAreas);
+
+            if (isValidPoint) return raycastHit.point;
+        }
+
+        return transform.position;
     }
 
-    public override void Die()
-    {
-        base.Die();
-
-        if(spawner != null) spawner.RemoveEnemyFromList(this);
-    }
-
+    /// <summary>
+    /// Tries to assign a target to the enemy by getting nearby targets and selecting the first one.
+    /// If no targets are found, sets the target to null.
+    /// </summary>
     public virtual void TryAssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
@@ -199,6 +265,78 @@ public class Enemy : Entity
         }
 
         return filteredTargets;
+    }
+
+    /// <summary>
+    /// Gets the colliders that overlap with the custom collision capsule of the enemy.
+    /// Filters out the enemy's own colliders.
+    /// The list will be ordered by ascending distance by default.
+    /// </summary>
+    /// <param name="mask">The layer mask to filter the colliders.</param>
+    /// <param name="isOrderedByAscendingDistance">Whether to order the colliders by ascending distance.</param>
+    /// <returns>The list of colliders that overlap with the custom collision capsule.</returns>
+    public List<Collider> GetCustomCollisionHits(LayerMask mask, bool isOrderedByAscendingDistance = true)
+    {
+        List<Collider> result = new List<Collider>();
+
+        if (CustomCollisionRadius <= 0) return result;
+
+        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius, mask);
+        if (hits == null) return result;
+        if (hits.Length == 0) return result;
+
+        foreach(Collider hit in hits)
+        {
+            if(IsOwnCollider(hit)) continue; // filter out own colliders
+
+            result.Add(hit);
+        }
+
+        return isOrderedByAscendingDistance ? result.OrderBy(hit => Distance(hit.ClosestPoint(GetColliderCenterPosition() + CustomCollisionCenterOffset))).ToList() : result.ToList();
+    }
+
+    /// <summary>
+    /// Checks if the enemy hit a wall.
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <returns>True if the enemy hit a wall, false otherwise.</returns>
+    public bool DidHitWall(Collider hit)
+    {
+        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
+    }
+
+    /// <summary>
+    /// Checks if the enemy hit a friendly entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The friendly entity that was hit.</param>
+    /// <returns>True if the enemy hit a friendly entity, false otherwise.</returns>
+    public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) entity = hit.GetComponent<Entity>();
+        if (entity.Team != Team) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if the enemy hit an enemy entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The enemy entity that was hit.</param>
+    /// <returns>True if the enemy hit an enemy entity, false otherwise.</returns>
+    public bool DidHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == Team) return false;
+
+        return true;
     }
 
     public void ClearTarget()
