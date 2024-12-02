@@ -1207,4 +1207,48 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         return false;
     }
+
+    /// <summary>
+    /// Checks if the enemy hit a wall.
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <returns>True if the entity hit a wall, false otherwise.</returns>
+    public bool DidHitWall(Collider hit)
+    {
+        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
+    }
+
+    /// <summary>
+    /// Checks if entity hit a friendly entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The friendly entity that was hit.</param>
+    /// <returns>True if the entity hit a friendly entity, false otherwise.</returns>
+    public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) entity = hit.GetComponent<Entity>();
+        if (entity.Team != Team) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if entity hit an enemy entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The enemy entity that was hit.</param>
+    /// <returns>True if the entity hit an enemy entity, false otherwise.</returns>
+    public bool DidHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == Team) return false;
+
+        return true;
+    }
 }

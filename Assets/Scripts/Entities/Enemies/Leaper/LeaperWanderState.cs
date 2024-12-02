@@ -26,24 +26,32 @@ public class LeaperWanderState : EnemyBaseState
 
         leaper.SetSpeedModifier(0f);
 
-        wanderTimeElapsed = Mathf.Infinity;
+        wanderTimeElapsed = 0;
         randomWanderIntervalDuration = Random.Range(leaper.WanderIntervalDurationRange.x, leaper.WanderIntervalDurationRange.y);
 
         entitiesHitByCurrentLeap.Clear();
-
-        leaper.OnGrounded.AddListener(Leaper_OnGrounded);
     }
 
     public override void OnExit()
     {
-        leaper.OnGrounded.RemoveListener(Leaper_OnGrounded);
+        
     }
 
     public override void Update()
     {
         leaper.ApplyGravity();
 
-        if(leaper.IsGrounded) wanderTimeElapsed += leaper.LocalDeltaTime;
+        if (leaper.IsGrounded)
+        {
+            if (leaper.Target != null) // once target is discovered
+            {
+                leaper.LeaperChaseState.AssignCurrentRememberedTarget(leaper.Target);
+                leaper.ChangeState(leaper.EnemyChaseState);
+                return;
+            }
+
+            wanderTimeElapsed += leaper.LocalDeltaTime;
+        }
 
         // if ready to hop
         if (wanderTimeElapsed > randomWanderIntervalDuration)
@@ -58,8 +66,6 @@ public class LeaperWanderState : EnemyBaseState
             leaper.Hop(currentWanderDestination, leaper.WanderHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
-
-            leaper.CreateTempHitVisual(currentWanderDestination, 1f, Color.red, 5f);
         }
         
         leaper.SetSpeedModifier(leaper.IsGrounded ? 0f : 1f);
@@ -70,24 +76,7 @@ public class LeaperWanderState : EnemyBaseState
 
             leaper.ApplyHorizontalVelocity();
 
-            leaper.CheckCollisions(ref entitiesHitByCurrentLeap);
+            leaper.CheckCollisions(leaper.RegularContactDamagePercent, ref entitiesHitByCurrentLeap);
         }
-
-        if (leaper.Target != null)
-        {
-            //leaper.LeaperTargetDetectedState.AssignCurrentRememberedTarget(leaper.Target);
-            //leaper.ChangeState(leaper.EnemyChaseState);
-            return;
-        }
-    }
-
-    public override void FixedUpdate()
-    {
-    
-    }
-
-    private void Leaper_OnGrounded(Vector3 groundedPosition)
-    {
-        leaper.TransitionToAnimation("FlatMovement");
     }
 }

@@ -105,7 +105,7 @@ public class Charger : Enemy
 
     private protected override void OnTick()
     {
-        
+        // dont inherit base to leave target assignment to certain states
     }
 
     private protected override void OnOnAnimatorMove()
@@ -125,30 +125,8 @@ public class Charger : Enemy
 
     public override void TryAssignTarget()
     {
-        List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(DetectionDistance);
-        List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, DetectionConeHalfAngle);
-
-        if (largeRadiusTargets.Count == 0)
-        {
-            Target = null;
-            return;
-        }
-
-        if(filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0]))
-        {
-            Target = filteredTargetsByCone[0];
-            return;
-        }
-
-        if (smallRadiusTargets.Count > 0)
-        {
-            Target = smallRadiusTargets[0];
-            return;
-        }
-
-        Target = null;
-        return;
+        // replace default radius-based target assignment with cone-based target assignment
+        TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
     public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)

@@ -63,7 +63,7 @@ public class FollowerCircleState : EnemyBaseState
 
         if (follower.Target == null)
         {
-            follower.ChangeState(follower.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 

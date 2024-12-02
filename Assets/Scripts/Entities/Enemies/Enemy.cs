@@ -64,6 +64,8 @@ public class Enemy : Entity
         base.OnOnEnable();
 
         SetStartState(EnemyIdleState);
+
+        Target = null;
     }
 
     private protected override void OnOnDisable()
@@ -128,7 +130,7 @@ public class Enemy : Entity
     /// </summary>
     /// <param name="dest">The destination position.</param>
     /// <returns>The list of positions representing the calculated path.</returns>
-    private List<Vector3> GetPathToDestination(Vector3 dest)
+    public List<Vector3> GetPathToDestination(Vector3 dest)
     {
         NavMeshPath path = new NavMeshPath();
 
@@ -159,16 +161,15 @@ public class Enemy : Entity
         }*/
         #endregion
 
-        Vector3 currDest = path[1];
-        if (lookAtPath) LookAt(currDest);
+        Vector3 currentDestination = path[1];
+        if (lookAtPath) LookAt(currentDestination);
 
-        Vector3 dir = currDest - transform.position;
-        dir.Normalize();
+        Vector3 direction = (currentDestination - transform.position).normalized;
 
-        UpdateHorizontalVelocity(dir);
+        UpdateHorizontalVelocity(direction);
         ApplyHorizontalVelocity();
 
-        if (CloseToPoint(currDest, 0.05f))
+        if (CloseToPoint(currentDestination, 0.05f))
         {
             path.RemoveAt(0);
         }
@@ -195,6 +196,27 @@ public class Enemy : Entity
     }
 
     /// <summary>
+    /// Checks if a given point is on the NavMesh using raycast from maxHeight above the point.
+    /// Also returns the valid point on the NavMesh or the enemy's current position if not valid.
+    /// The y value doesn't matter, and the point will always be checked at the navmesh ground level.
+    /// </summary>
+    /// <param name="point">The point to check.</param>
+    /// <param name="maxHeight">The max height above the point to start raycasting down from.</param>
+    /// <param name="outputPoint">The output point.</param>
+    /// <returns>True if the point is on the NavMesh, false otherwise.</returns>
+    public bool IsValidPointOnNavMesh(Vector3 point, float maxHeight, out Vector3 outputPoint)
+    {
+        RaycastHit raycastHit;
+        bool isValidPoint =
+            Physics.Raycast(point + maxHeight * Vector3.up, Vector3.down, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Ground"))
+            && NavMesh.SamplePosition(raycastHit.point, out _, 0.5f, NavMesh.AllAreas);
+
+        outputPoint = isValidPoint ? raycastHit.point : transform.position;
+
+        return isValidPoint;
+    }
+
+    /// <summary>
     /// Generates a random wander point within a specified radius range.
     /// Returns itself it cannot find a valid point after a certain number of iterations.
     /// Iteration count is set to 16 by default.
@@ -204,19 +226,14 @@ public class Enemy : Entity
     /// <returns>The randomly generated wander point.</returns>
     public Vector3 GetRandomWanderPoint(Vector2 wanderRadiusRange, int iterationTryCount = 16)
     {
-        // Raycast downwards to prevent charger from not wandering at all because it cannot reach
-        RaycastHit raycastHit;
         for (int i = 0; i < iterationTryCount; i++)
         {
             float randomRadius = Random.Range(wanderRadiusRange.x, wanderRadiusRange.y);
             Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
             randomPointOnUnitCircle.y = 0;
             Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + transform.position;
-            bool isValidPoint =
-                Physics.Raycast(randomPoint + 100f * Vector3.up, Vector3.down, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Ground"))
-                && NavMesh.SamplePosition(raycastHit.point, out _, 0.5f, NavMesh.AllAreas);
 
-            if (isValidPoint) return raycastHit.point;
+            if (IsValidPointOnNavMesh(randomPoint, 100f, out Vector3 validPoint)) return validPoint;
         }
 
         return transform.position;
@@ -236,6 +253,40 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
+    }
+
+    /// <summary>
+    /// Tries to assign a target to the enemy within a cone-shaped detection area.
+    /// Override TryAssignTarget() and call this function to use cone-shaped detection.
+    /// </summary>
+    /// <param name="detectionDistance">The distance of the detection area.</param>
+    /// <param name="detectionConeHalfAngle">Half of the total angle of the detection cone.</param>
+    private protected void TryAssignTargetWithCone(float detectionDistance, float detectionConeHalfAngle)
+    {
+        List<Entity> smallRadiusTargets = GetNearbyTargets();
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance);
+        List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, detectionConeHalfAngle);
+
+        if (largeRadiusTargets.Count == 0) // if no targets in large radius that includes cone
+        {
+            Target = null;
+            return;
+        }
+
+        if (filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0])) // if no targets in cone that are not blocked
+        {
+            Target = filteredTargetsByCone[0];
+            return;
+        }
+
+        if (smallRadiusTargets.Count > 0) // if no targets in cone, but there are targets in very small radius
+        {
+            Target = smallRadiusTargets[0];
+            return;
+        }
+
+        Target = null;
+        return;
     }
 
     /// <summary>
@@ -293,50 +344,6 @@ public class Enemy : Entity
         }
 
         return isOrderedByAscendingDistance ? result.OrderBy(hit => Distance(hit.ClosestPoint(GetColliderCenterPosition() + CustomCollisionCenterOffset))).ToList() : result.ToList();
-    }
-
-    /// <summary>
-    /// Checks if the enemy hit a wall.
-    /// </summary>
-    /// <param name="hit">The collider that was hit.</param>
-    /// <returns>True if the enemy hit a wall, false otherwise.</returns>
-    public bool DidHitWall(Collider hit)
-    {
-        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
-    }
-
-    /// <summary>
-    /// Checks if the enemy hit a friendly entity.
-    /// Hit must come from Damageable Colliders layer;
-    /// </summary>
-    /// <param name="hit">The collider that was hit.</param>
-    /// <param name="entity">The friendly entity that was hit.</param>
-    /// <returns>True if the enemy hit a friendly entity, false otherwise.</returns>
-    public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
-    {
-        entity = hit.GetComponentInParent<Entity>();
-
-        if (entity == null) entity = hit.GetComponent<Entity>();
-        if (entity.Team != Team) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Checks if the enemy hit an enemy entity.
-    /// Hit must come from Damageable Colliders layer;
-    /// </summary>
-    /// <param name="hit">The collider that was hit.</param>
-    /// <param name="entity">The enemy entity that was hit.</param>
-    /// <returns>True if the enemy hit an enemy entity, false otherwise.</returns>
-    public bool DidHitEnemyEntity(Collider hit, out Entity entity)
-    {
-        entity = hit.GetComponentInParent<Entity>();
-
-        if (entity == null) return false;
-        if (entity.Team == Team) return false;
-
-        return true;
     }
 
     public void ClearTarget()

@@ -5,33 +5,48 @@ using System.Runtime.InteropServices;
 
 public class Leaper : Enemy
 {
+    [field: Header("Leaper: Cone Detection Settings")]
+    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
+    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
+
     [field: Header("Leaper: Wander Settings")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public float WanderHopHeight { get; private set; } = 2f;
 
+    [field: Header("Leaper: Chase Settings")]
+    [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
+    [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
+    [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 2f;
+
     [field: Header("Leaper: Attack Settings")]
     [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
-    [field: SerializeField] public float LeapAttackContactDamagePercent { get; private set; } = 100f;
+    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
+    [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
+    [field: SerializeField] public float AttackHopDuration { get; private set; } = .75f;
+    [field: SerializeField] public float AttackHopOvershootDistance { get; private set; } = .75f;
 
-    [field: Header("Leaper: Hop Settings")]
-    [field: SerializeField] public int HopCount { get; private set; } = 2;
-    [field: SerializeField] public float HopDistance { get; private set; } = 3f;
-    [field: SerializeField] public float HopHeight { get; private set; } = .75f;
+    [field: Header("Leaper: Ready Attack (Hop) Settings")]
+    [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;
+    [field: SerializeField] public float ReadyAttackHopDistance { get; private set; } = 3f;
+    [field: SerializeField] public float ReadyAttackHopHeight { get; private set; } = .75f;
+    [field: SerializeField] public float ReadyAttackStartDelay { get; private set; } = 0.75f;
 
     #region States
-    public LeaperAttackState LeaperAttackState { get; private set; }
-    public LeaperHopState LeaperHopState { get; private set; }
     public LeaperWanderState LeaperWanderState { get; private set; }
+    public LeaperChaseState LeaperChaseState { get; private set; }
+    public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
+    public LeaperAttackState LeaperAttackState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        LeaperAttackState = new LeaperAttackState(this);
-        LeaperHopState = new LeaperHopState(this);
         LeaperWanderState = new LeaperWanderState(this);
         EnemyChaseState = new LeaperChaseState(this);
+        LeaperReadyAttackState = new LeaperReadyAttackState(this);
+        LeaperAttackState = new LeaperAttackState(this);
+        LeaperChaseState = EnemyChaseState as LeaperChaseState;
     }
     #endregion
 
@@ -45,11 +60,15 @@ public class Leaper : Enemy
         base.OnOnEnable();
 
         SetStartState(LeaperWanderState);
+
+        OnGrounded.AddListener(Leaper_OnGrounded);
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
+
+        OnGrounded.RemoveListener(Leaper_OnGrounded);
     }
 
     private protected override void OnStart()
@@ -72,6 +91,16 @@ public class Leaper : Enemy
     private protected override void OnOnDrawGizmos()
     {
         base.OnOnDrawGizmos();
+
+        Gizmos.color = Color.red;
+        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+    }
+
+    public override void TryAssignTarget()
+    {
+        // replace default radius-based target assignment with cone-based target assignment
+        TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
     /// <summary>
@@ -79,7 +108,7 @@ public class Leaper : Enemy
     /// Pass in a reference to a list of hit entities to prevent multiple hits on the same entity.
     /// </summary>
     /// <param name="hitEntities">A reference to the list of hit entities.</param>
-    public void CheckCollisions(ref List<Entity> hitEntities)
+    public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
     {
         List<Collider> hits = GetCustomCollisionHits(LeapAttackLayerMask);
 
@@ -90,19 +119,23 @@ public class Leaper : Enemy
                 if (hitEntities.Contains(enemyEntity)) continue;
                 hitEntities.Add(enemyEntity);
 
-                enemyEntity.TakeDamage(CalculateDamage(LeapAttackContactDamagePercent), hit.ClosestPoint(GetColliderCenterPosition()), gameObject, true);
+                enemyEntity.TakeDamage(CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()), gameObject, true);
+
+                //switch to some state
             }
         }
     }
 
     /// <summary>
-    /// Calculates the velocity required to hop from the current position to an end position
-    /// with a specified maximum hop height.
+    /// Calculates the velocity required to hop from the current position to an end position with a specified maximum hop height.
+    /// Default hop duration is calculated based on the height difference between the current and end positions, unless specified.
+    /// If a hop duration is specified, the hop height is ignored.
     /// </summary>
     /// <param name="endPosition">The target position to reach.</param>
     /// <param name="hopHeight">The maximum height of the hop.</param>
+    /// <param name="hopDuration">The duration of the hop.</param>
     /// <returns>The initial velocity vector needed to make the hop.</returns>
-    public Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight)
+    private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         // Gravity constant (positive value, assuming downward acceleration)
         float gravity = Mathf.Abs(Physics.gravity.y);
@@ -122,12 +155,29 @@ public class Leaper : Enemy
         // Vertical displacement (difference in height)
         float verticalDisplacement = endPosition.y - startPosition.y;
 
-        // Calculate initial vertical velocity required to reach hopHeight
-        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+        float totalFlightTime;
 
-        // Total time of flight
-        float timeToApex = initialVerticalVelocity / gravity; // Time to reach the peak
-        float totalFlightTime = timeToApex + Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+        float initialVerticalVelocity;
+
+        if (hopDuration == 0f)
+        {
+            // Calculate initial vertical velocity required to reach hopHeight
+            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+
+            // Total time of flight
+            float timeToApex = initialVerticalVelocity / gravity; // Time to reach the peak
+            totalFlightTime = timeToApex + Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+        }
+        else
+        {
+            // Use the provided hopDuration to calculate vertical velocity
+            totalFlightTime = hopDuration;
+
+            // Using kinematic equation to solve for initial vertical velocity
+            // s = v*t - 0.5*g*t^2
+            // verticalDisplacement = v * totalFlightTime - 0.5 * gravity * totalFlightTime^2
+            initialVerticalVelocity = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(totalFlightTime, 2)) / totalFlightTime;
+        }
 
         // Calculate the horizontal velocity
         Vector3 horizontalVelocity = horizontalDisplacement / totalFlightTime;
@@ -140,24 +190,21 @@ public class Leaper : Enemy
 
     /// <summary>
     /// Makes the enemy hop to a specified end position with a given hop height.
+    /// Default hop duration is calculated based on the height difference between the current and end positions, unless specified.
     /// </summary>
     /// <param name="endPosition">The target position to hop to.</param>
     /// <param name="hopHeight">The maximum height of the hop.</param>
-    public void Hop(Vector3 endPosition, float hopHeight)
+    public void Hop(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
-        Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight);
+        Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight, hopDuration);
 
         Launch(hopVelocity.normalized, hopVelocity.magnitude);
     }
 
-    public void CreateTempHitVisual(Vector3 pos, float radius, Color color, float duration)
+    private void Leaper_OnGrounded(Vector3 groundedPosition)
     {
-        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        temp.name = "TempHitVisual";
-        temp.GetComponent<Collider>().enabled = false;
-        temp.transform.localScale = radius * Vector3.one;
-        temp.transform.position = pos;
-        temp.GetComponent<Renderer>().material.color = color;
-        Destroy(temp, duration);
+        if (CurrentState == EntityDeathState) return;
+
+        TransitionToAnimation("FlatMovement");
     }
 }

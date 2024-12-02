@@ -63,7 +63,7 @@ MonoBehaviour:
   rotationSpeed: 5
   mass: 1
   IsGrounded: 0
-  targetDetectionRadius: Infinity
+  targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField: 1
@@ -90,16 +90,18 @@ MonoBehaviour:
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   IsAttackAnimationPlaying: 0
-  <Weapon>k__BackingField: {fileID: 3945500814101211304}
-  <AttackRange>k__BackingField: 1
-  <AttackPercentDamage>k__BackingField: 100
-  <AttackReadyDuration>k__BackingField: 0.25
-  <AttackRecoverDuration>k__BackingField: 0.4
+  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
   <CircleFollowerCountThreshold>k__BackingField: 2
   <ChangeDirectionInterval>k__BackingField: 0.3
   <ChangeDirectionReciprocal>k__BackingField: 10
   <CircleRadius>k__BackingField: 5
   <MaxCircleRadius>k__BackingField: 8
+  <Weapon>k__BackingField: {fileID: 3945500814101211304}
+  <AttackRange>k__BackingField: 1
+  <AttackPercentDamage>k__BackingField: 100
+  <AttackReadyDuration>k__BackingField: 0.25
+  <AttackRecoverDuration>k__BackingField: 0.4
 --- !u!114 &364766872975019307
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,49 +1,102 @@
-﻿public class LeaperChaseState : EnemyChaseState
+﻿
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class LeaperChaseState : EnemyChaseState
 {
     private Leaper leaper; // Reference to the specific Leaper enemy using this state
-    private float safeDistanceForLeap = 2f; // Minimum distance from player before preparing to leap or hop back
+
+    private Entity rememberedTarget;
+
+    private Vector3 currentHopDestination;
+
+    private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
 
     public LeaperChaseState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
     }
 
+    /// <summary>
+    /// Assigns a remembered target entity to the Leaper enemy to lock onto.
+    /// Must be called right before changing to its chase state.
+    /// </summary>
+    /// <param name="target">The entity to assign as the remembered target.</param>
+    public void AssignCurrentRememberedTarget(Entity target)
+    {
+        rememberedTarget = target;
+    }
+
     public override void OnEnter()
     {
         base.OnEnter();
 
-        leaper.SetSpeedModifier(0.8f); // Slightly reduce speed to allow for reaction time during hops
+        leaper.SetSpeedModifier(0f);
+
+        entitiesHitByCurrentLeap.Clear();
     }
 
     public override void OnExit()
     {
         base.OnExit();
+
+        rememberedTarget = null;
     }
 
     public override void Update()
     {
-        base.Update();
+        leaper.ApplyGravity();
 
-        if (leaper.Target == null)
+        if(leaper.IsGrounded)
         {
-            leaper.ChangeState(leaper.EnemyIdleState);
-            return;
+            if (rememberedTarget == null)
+            {
+                leaper.ChangeState(leaper.LeaperWanderState);
+                return;
+            }
+
+            if (leaper.Distance(rememberedTarget) < leaper.StartReadyAttackDistance)
+            {
+                leaper.LeaperReadyAttackState.AssignCurrentRememberedTarget(rememberedTarget);
+                leaper.ChangeState(leaper.LeaperReadyAttackState);
+                return;
+            }
+
+            currentHopDestination = GetCurrentHopDestination();
+
+            leaper.Hop(currentHopDestination, leaper.ChaseHopHeight);
+
+            leaper.TransitionToAnimation("JumpingUp");
+
+            entitiesHitByCurrentLeap.Clear();
         }
 
-/*        // Move towards the player if the target is beyond the safe distance threshold
-        if (leaper.Distance(leaper.Target) > safeDistanceForLeap)
+        leaper.LookAt(currentHopDestination);
+
+        if (!leaper.IsGrounded)
         {
-            leaper.SetDestination(leaper.Target.transform.position, true);
+            leaper.ApplyHorizontalVelocity();
+
+            leaper.CheckCollisions(leaper.RegularContactDamagePercent, ref entitiesHitByCurrentLeap);
         }
-        else
-        {
-            // If within the safe distance, prepare for hop or leap back
-            leaper.ChangeState(leaper.LeaperHopState);
-        }*/
     }
 
-    public override void FixedUpdate()
+    /// <summary>
+    /// Calculates the current hop destination for the Leaper enemy based on the remembered target entity.
+    /// </summary>
+    /// <returns>The current hop destination vector.</returns>
+    private Vector3 GetCurrentHopDestination()
     {
+        List<Vector3> path = leaper.GetPathToDestination(rememberedTarget.transform.position);
+        if (path == null) return leaper.transform.position;
+        if (path.Count < 2) return leaper.transform.position;
 
+        Vector3 currentDestination = path[1];
+
+        Vector3 direction = (currentDestination - leaper.transform.position).normalized;
+        Vector3 currentHopDestination = leaper.ChaseHopDistance * direction + leaper.transform.position;
+
+        return leaper.IsValidPointOnNavMesh(currentHopDestination, leaper.ChaseHopHeight, out Vector3 validDestination) ? validDestination : leaper.transform.position;
     }
 }
