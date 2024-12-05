@@ -7,6 +7,7 @@ public class LeaperAttackState : EnemyBaseState
     private Leaper leaper;
 
     private Entity rememberedTarget;
+    private Vector3 hopDestination;
 
     private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
 
@@ -33,9 +34,11 @@ public class LeaperAttackState : EnemyBaseState
 
         leaper.SetSpeedModifier(0f);
 
-        Vector3 directionToTarget  = (rememberedTarget.transform.position - leaper.transform.position).normalized;
+        Vector3 predictedMovement =  rememberedTarget.MovementSpeed * leaper.AttackHopDuration * rememberedTarget.transform.forward;
+        hopDestination = rememberedTarget.GetColliderCenterPosition() + predictedMovement;
+
         // 0 hop height, because duration overrides that
-        leaper.Hop(leaper.AttackHopOvershootDistance * directionToTarget + rememberedTarget.transform.position, 0f, leaper.AttackHopDuration);
+        leaper.Hop(hopDestination, 0f, leaper.AttackHopDuration);
 
         entitiesHitByCurrentLeap.Clear();
     }
@@ -49,19 +52,13 @@ public class LeaperAttackState : EnemyBaseState
     {
         leaper.ApplyGravity();
 
-        if (rememberedTarget == null)
-        {
-            leaper.ChangeState(leaper.LeaperWanderState);
-            return;
-        }
-
         if (leaper.IsGrounded)
         {
             leaper.ChangeState(leaper.LeaperWanderState);
             return;
         }
 
-        leaper.LookAt(rememberedTarget.transform.position);
+        leaper.LookAt(hopDestination);
 
         if (!leaper.IsGrounded)
         {
