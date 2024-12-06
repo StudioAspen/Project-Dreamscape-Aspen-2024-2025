@@ -67,7 +67,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Recalculate damage per tick based on our multiplier
 
-        if (currentStacks + 1 >= MaxStacks) return true; // still successful, we just hit max stacks
+        if (currentStacks >= MaxStacks) return true; // still successful, we just hit max stacks
 
         currentStacks++;
 

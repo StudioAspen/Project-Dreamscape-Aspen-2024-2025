@@ -65,7 +65,7 @@ MonoBehaviour:
   IsGrounded: 0
   targetDetectionRadius: 3
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <BaseDamageRange>k__BackingField: {x: 5, y: 10}
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <StaggerDuration>k__BackingField: 0.5
@@ -104,7 +104,6 @@ MonoBehaviour:
   <AttackContactDamagePercent>k__BackingField: 200
   <RegularContactDamagePercent>k__BackingField: 100
   <AttackHopDuration>k__BackingField: 0.35
-  <AttackHopOvershootDistance>k__BackingField: 0.75
   <ReadyAttackHopCount>k__BackingField: 2
   <ReadyAttackHopDistance>k__BackingField: 2
   <ReadyAttackHopHeight>k__BackingField: 1
