@@ -55,13 +55,13 @@ public class Enemy : Entity
     private protected override void OnAwake()
     {
         base.OnAwake();
-
-        if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
+
+        if (Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
 
         SetStartState(EnemyIdleState);
 
@@ -71,6 +71,8 @@ public class Enemy : Entity
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
+
+        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
     }
 
     private protected override void OnStart()
@@ -95,8 +97,6 @@ public class Enemy : Entity
     private protected override void OnDeath()
     {
         base.OnDeath();
-
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
     }
 
     private protected override void OnOnDrawGizmos()

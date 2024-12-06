@@ -24,7 +24,6 @@ public class Leaper : Enemy
     [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
     [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
     [field: SerializeField] public float AttackHopDuration { get; private set; } = .75f;
-    [field: SerializeField] public float AttackHopOvershootDistance { get; private set; } = .75f;
 
     [field: Header("Leaper: Ready Attack (Hop) Settings")]
     [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;

@@ -34,7 +34,7 @@ public class LeaperAttackState : EnemyBaseState
 
         leaper.SetSpeedModifier(0f);
 
-        Vector3 predictedMovement =  rememberedTarget.MovementSpeed * leaper.AttackHopDuration * rememberedTarget.transform.forward;
+        Vector3 predictedMovement = rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed * leaper.AttackHopDuration * rememberedTarget.transform.forward;
         hopDestination = rememberedTarget.GetColliderCenterPosition() + predictedMovement;
 
         // 0 hop height, because duration overrides that
