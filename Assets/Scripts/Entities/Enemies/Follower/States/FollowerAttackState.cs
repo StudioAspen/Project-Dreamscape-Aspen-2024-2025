@@ -18,7 +18,7 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
-        follower.DefaultTransitionToAnimation("Attack");
+        follower.TransitionToAnimation("Attack");
 
         follower.SetSpeedModifier(0f);
 
@@ -41,6 +41,8 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void Update()
     {
+        follower.ApplyGravity();
+
         follower.LookAt(follower.transform.position + attackDir);
 
         if (!follower.IsAttackAnimationPlaying)
@@ -52,6 +54,6 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

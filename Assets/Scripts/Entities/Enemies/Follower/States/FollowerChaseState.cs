@@ -27,7 +27,7 @@ public class FollowerChaseState : EnemyChaseState
 
         if(follower.Target == null)
         {
-            follower.ChangeState(follower.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 
@@ -43,6 +43,11 @@ public class FollowerChaseState : EnemyChaseState
         {
             CheckCanCircle();
         }
+    }
+
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
     }
 
     private void CheckCanCircle()
@@ -62,10 +67,5 @@ public class FollowerChaseState : EnemyChaseState
 
             follower.ChangeState(follower.FollowerCircleState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

@@ -23,7 +23,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
         if (charger.RemainingJabs % 2 == 1)
         {
-            charger.DefaultTransitionToAnimation("RightJab");
+            charger.TransitionToAnimation("RightJab");
 
             charger.RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
@@ -33,7 +33,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
         else
         {
-            charger.DefaultTransitionToAnimation("LeftJab");
+            charger.TransitionToAnimation("LeftJab");
 
             charger.LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
@@ -41,8 +41,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.LeftFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
-
-        charger.SetRotationSpeed(charger.JabRotationSpeed);
     }
 
     public override void OnExit()
@@ -60,21 +58,19 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
 
         charger.DisableWeaponTriggers();
-
-        charger.ResetRotationSpeed();
     }
 
     public override void Update()
     {
+        charger.ApplyGravity();
+
         if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerJabRecoverState);
             return;
         }
 
-        charger.UseRootMotion = charger.Distance(rememberedTarget.transform.position) > charger.JabStandStillRadius;
-
-        charger.LookAt(rememberedTarget.transform.position);
+        charger.LookAt(rememberedTarget.transform.position, charger.JabRotationSpeed);
 
         // blocks update until attack animation is done
         if (charger.IsAttackAnimationPlaying) return;

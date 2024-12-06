@@ -9,9 +9,14 @@ public class PlayerSlideState : PlayerBaseState
         this.player = player;
     }
 
+    public void SetSlideDirection(Vector3 dir)
+    {
+        slideDirection = dir;
+    }
+
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Falling");
+        player.TransitionToAnimation("Falling");
     }
 
     public override void OnExit()
@@ -21,35 +26,31 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void Update()
     {
-        player.IsGrounded = true;
-
         player.ApplyGravity();
-        player.ApplySlide(slideDirection);
+
+        player.IsGrounded = true;
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
 
-        if (!player.IsAbleToSlide()) player.ChangeState(player.DefaultState);
+        if (!player.CanSlide()) player.ChangeState(player.DefaultState);
+
+        player.ApplySlide(slideDirection);
     }
 
     public override void FixedUpdate()
     {
 
-    }
-
-    public void SetSlideDirection(Vector3 dir)
-    {
-        slideDirection = dir;
     }
 }
