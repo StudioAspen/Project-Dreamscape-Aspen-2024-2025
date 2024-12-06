@@ -21,8 +21,10 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         base.OnApply();
 
         currentStacks = 1;
-        damagePerTick = (int)(currentStacks * TickDamageMultiplierPerStack);
-        entity.TweenTintEntity(new Color((float)currentStacks/MaxStacks, 0f, 0f));
+
+        damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate initial damage per tick
+
+        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks));
 
         entity.OnEntityDeath.AddListener(Entity_OnEntityDeath);
     }
@@ -52,7 +54,6 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    // for when a status is stacking
     public override bool Override(StatusEffectSO newStatusEffect)
     {
         if (newStatusEffect.GetType() != GetType())
@@ -62,14 +63,17 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         }
 
         currentTicks = 0; // reset the ticks
-        TickDamageMultiplierPerStack = (newStatusEffect as BurningRageStatusEffectSO).TickDamageMultiplierPerStack;
+        TickDamageMultiplierPerStack = (newStatusEffect as BurningRageStatusEffectSO).TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
 
-        damagePerTick = (int)(currentStacks * TickDamageMultiplierPerStack);
+        damagePerTick = CalculateDamagePerTick(currentStacks); // Recalculate damage per tick based on our multiplier
 
         if (currentStacks + 1 >= MaxStacks) return true; // still successful, we just hit max stacks
 
         currentStacks++;
-        entity.TweenTintEntity(new Color(((float)(currentStacks) / MaxStacks), 0, 0));
+
+        damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate again based on new stacks
+
+        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
 
         return true;
     }
@@ -80,32 +84,63 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         int combustExplosionDamage = (int)(currentStacks * combustDamageMultiplierPerStack);
         float currentCombustRadius = Mathf.Pow(combustRadiusMultipler, currentStacks) * defaultCombustRadius;
-        Debug.Log(currentCombustRadius);
 
-        // make a list and grab all entities nearby
-        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(explosionPosition, currentCombustRadius);
+        bool hasSpreadedToNearestAlly = false;
+
+        // make a list and grab all non-dead entities nearby
+        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(explosionPosition, currentCombustRadius, false);
         for (int i = 0; i < enemyList.Count; i++) // loop through all entities and filter out friendly ones
         {
             Entity enemy = enemyList[i]; // current entity in the loop
 
-            // gives closest enemy stacks of the dead enemy
-            if (i == 0)
-            {
-                if (enemy.TryGetComponent(out EntityStatusEffector entityStatusEffector))
-                {
-                    for (int j = 0; j < currentStacks; j++)
-                        entityStatusEffector.ApplyStatusEffect(this, killer);
-                    //Debug.Log("gave covid stacks on death count" + (entityStatusEffector.CurrentStatusEffects[GetType()] as BurningRageStatusEffectSO).currentStacks);
-                }
-            }
-
             if (enemy == entity) continue; // filter out self (entity that died)
+
             if (enemy.Team != entity.Team) continue; // filter out unfriendly entities
+
+            TrySpreadToNearbyAlly(enemy, source, ref hasSpreadedToNearestAlly); // try to spread to nearby ally (if not already spreaded)
 
             enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
         }
 
         CreateTemporaryVisualizer(explosionPosition, currentCombustRadius, 0.25f);
+    }
+
+    /// <summary>
+    /// Returns the color based on the number of stacks.
+    /// </summary>
+    /// <param name="stacks">The number of stacks.</param>
+    /// <returns>The color based on the number of stacks.</returns>
+    private Color GetColorBasedOnStacks(int stacks)
+    {
+
+        return new Color((float)stacks / MaxStacks, 0f, 0f);
+
+    }
+
+    /// <summary>
+    /// Calculates the damage per tick based on the number of stacks.
+    /// </summary>
+    /// <param name="stacks">The number of stacks.</param>
+    /// <returns>The damage per tick based on the number of stacks.</returns>
+    private int CalculateDamagePerTick(int stacks)
+    {
+        return (int)(stacks * TickDamageMultiplierPerStack);
+    }
+
+    /// <summary>
+    /// Tries to spread the status effect to a nearby ally entity.
+    /// </summary>
+    /// <param name="target">The target entity to spread the status effect to.</param>
+    /// <param name="killerObject">The object responsible for killing the entity.</param>
+    /// <param name="hasSpreadedToNearbyAlly">A reference to a boolean indicating whether the status effect has already spread to a nearby ally.</param>
+    private void TrySpreadToNearbyAlly(Entity target, GameObject killerObject, ref bool hasSpreadedToNearbyAlly)
+    {
+        if (hasSpreadedToNearbyAlly) return;
+        hasSpreadedToNearbyAlly = true;
+
+        if (TickDamageMultiplierPerStack == 0) return; // This isnt the extended version of the status effect
+
+        for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, killerObject);
     }
 
     private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)

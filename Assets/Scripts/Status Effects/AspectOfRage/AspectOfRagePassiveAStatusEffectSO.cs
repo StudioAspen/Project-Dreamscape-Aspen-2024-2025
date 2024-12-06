@@ -19,6 +19,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private protected override void OnApply()
     {
         base.OnApply();
+
         currentBurningRageStack = BurningRageStack;
 
         ownerWeapon = entity.GetComponentInChildren<Weapon>();
@@ -28,7 +29,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
-        //ownerWeapon.OnWeaponHit.AddListener(WeaponExplosion_OnWeaponHit);
         ownerWeapon.OnWeaponHit.AddListener(WeaponStacks_OnWeaponHit);
     }
 
@@ -36,16 +36,14 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     {
         base.Cancel();
 
-        //ownerWeapon.OnWeaponHit.RemoveListener(WeaponExplosion_OnWeaponHit);
         ownerWeapon.OnWeaponHit.RemoveListener(WeaponStacks_OnWeaponHit);
     }
 
     public override bool Override(StatusEffectSO newStatusEffect)
     {
         if (!base.Override(newStatusEffect)) return false;
-        // overrides 
+ 
         currentBurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStackExtension;
-        // add expansion logic here when stacked
 
         return true;
     }
@@ -53,8 +51,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     // for stacks
     private void WeaponStacks_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        EntityStatusEffector statusEffector = victim.GetComponent<EntityStatusEffector>();
-        if (statusEffector == null) { return; }
-        statusEffector.ApplyStatusEffect(currentBurningRageStack, victim.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, currentBurningRageStack, entity.gameObject);
     }
 }
