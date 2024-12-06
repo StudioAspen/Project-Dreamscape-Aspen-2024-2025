@@ -8,7 +8,6 @@ using UnityEngine.Events;
 public class Player : Entity
 {
     [Header("Player: References")]
-    [SerializeField, Self] private CharacterController controller;
     [SerializeField, Self] private PlayerInputReader input;
 
     [field: Header("Player: Grounded Movement")]
@@ -21,11 +20,8 @@ public class Player : Entity
     private Vector3 targetForwardDirection = Vector3.forward;
     private RaycastHit hitBelow;
     private float hitBelowSlopeAngle;
-    private Vector3 velocity;
-    public Vector3 Velocity => velocity;
 
     [Header("Player: Gravity")]
-    [SerializeField] private float mass = 1f;
     [SerializeField] private float jumpHeight = 2f;
     [SerializeField] private int maxJumpCount = 1;
     private int currentJumpCount;
@@ -34,7 +30,6 @@ public class Player : Entity
     [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
     [HideInInspector] public bool CanAttack = true;
-    [HideInInspector] public bool ApplyRootMotion;
     private bool isJumping;
     #endregion
 
@@ -71,9 +66,6 @@ public class Player : Entity
         PlayerSlideState = new PlayerSlideState(this);
         PlayerAttackState = new PlayerAttackState(this);
         PlayerChargeState = new PlayerChargeState(this);
-        EntityStaggeredState = new PlayerStaggeredState(this);
-        EntityDeathState = new PlayerDeathState(this);
-        EntityLaunchState = new PlayerLaunchState(this);
     }
     #endregion
 
@@ -119,71 +111,8 @@ public class Player : Entity
 
         CheckSlopeSliding();
 
-        HandleGrounded();
-        HandleAirborne();
         HandleDashDelay();
         HandleDashTrail();
-
-        HandleAnimations();
-    }
-
-    private void OnAnimatorMove()
-    {
-        if (CurrentState != PlayerAttackState) return;
-
-        if (!ApplyRootMotion) return;
-
-        Vector3 desiredAnimationMovement = animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        controller.Move(desiredAnimationMovement);
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        if(velocity.y > 0f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        //IsGrounded is always false for the first 0.1 seconds in air
-        if (inAirTimer > 0f && inAirTimer < 0.1f)
-        {
-            IsGrounded = false;
-            return;
-        }
-
-        IsGrounded = GetIsGrounded();
-    }
-
-    private bool GetIsGrounded()
-    {
-        //LayerMask mask = LayerMask.GetMask("Entity", "Ground");
-        LayerMask mask = LayerMask.GetMask("Ground");
-
-        Collider[] hits = Physics.OverlapSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, mask);
-        foreach (Collider hit in hits)
-        {
-            // normal detection  
-            Vector3 closestPointToPlayer = hit.ClosestPoint(transform.position);
-
-            if (hit.Raycast(new Ray(closestPointToPlayer + Vector3.up, Vector3.down), out RaycastHit raycastHit, 10f))
-            {
-                if (Vector3.Angle(raycastHit.normal, Vector3.up) > 90f)
-                {
-                    continue;
-                }
-            }
-
-            if (hit.gameObject != gameObject)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void Input_HandleJumpInput()
@@ -223,32 +152,35 @@ public class Player : Entity
         ChangeState(PlayerDashState);
     }
 
-    public void GroundedMove()
+    /// <summary>
+    /// Accelerates the player's horizontal velocity to the specified speed.
+    /// </summary>
+    /// <param name="speed">The target speed to accelerate to.</param>
+    public void AccelerateToHorizontalSpeed(float speed)
     {
-        controller.Move(GetGroundedVelocity() * Time.deltaTime);
+        Vector3 horizontalVelocity = GetHorizontalVelocity();
+
+        horizontalVelocity = Vector3.Lerp(horizontalVelocity, speed * targetForwardDirection, groundedAcceleration * LocalDeltaTime);
+
+        velocity.x = horizontalVelocity.x;
+        velocity.z = horizontalVelocity.z;
     }
 
-    public void AccelerateToSpeed(float speed)
+    /// <summary>
+    /// Instantly sets the horizontal speed of the player to the specified value.
+    /// </summary>
+    /// <param name="speed">The target speed to set.</param>
+    public void InstantlySetHorizontalSpeed(float speed)
     {
-        Vector3 groundedVelocity = GetGroundedVelocity();
+        Vector3 horizontalVelocity = GetHorizontalVelocity();
 
-        groundedVelocity = Vector3.Lerp(groundedVelocity, speed * targetForwardDirection, groundedAcceleration * Time.deltaTime);
+        horizontalVelocity = speed * targetForwardDirection;
 
-        velocity.x = groundedVelocity.x;
-        velocity.z = groundedVelocity.z;
+        velocity.x = horizontalVelocity.x;
+        velocity.z = horizontalVelocity.z;
     }
 
-    public void InstantlySetGroundedSpeed(float speed)
-    {
-        Vector3 groundedVelocity = GetGroundedVelocity();
-
-        groundedVelocity = speed * targetForwardDirection;
-
-        velocity.x = groundedVelocity.x;
-        velocity.z = groundedVelocity.z;
-    }
-
-    private void HandleGrounded()
+    private protected override void HandleGrounded()
     {
         if (IsGrounded)
         {
@@ -259,10 +191,11 @@ public class Player : Entity
             inAirTimer = 0f;
             fallVelocityApplied = false;
             isJumping = false;
+            velocity.y = PhysicsSettings.GroundedYVelocity;
         }
     }
 
-    private void HandleAirborne()
+    private protected override void HandleAirborne()
     {
         if (!IsGrounded)
         {
@@ -270,42 +203,60 @@ public class Player : Entity
             {
                 fallVelocityApplied = true;
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
-
-                if (CurrentState != PlayerAttackState && CurrentState != PlayerDashState)
-                {
-                    ChangeState(PlayerFallState);
-                }
             }
-            inAirTimer += Time.deltaTime;
-            velocity.y += PhysicsSettings.Gravity * Time.deltaTime;
+            if (CanBeForcedToFall())
+            {
+                ChangeState(PlayerFallState);
+            }
+            inAirTimer += LocalDeltaTime;
         }
     }
 
-    public void ApplyGravity()
+    /// <summary>
+    /// Determines whether the player can be forced to fall based on the current state.
+    /// </summary>
+    /// <returns>True if the player can be forced to fall, false otherwise.</returns>
+    private bool CanBeForcedToFall()
     {
-        controller.Move(Time.deltaTime * velocity.y * Vector3.up);
+        bool willNotFall = CurrentState == PlayerJumpState
+            || CurrentState == PlayerFallState
+            || CurrentState == PlayerDashState
+            || CurrentState == PlayerChargeState
+            || CurrentState == PlayerAttackState
+            || CurrentState == EntityLaunchState;
+
+        return !willNotFall;
     }
 
-    public void ResetYVelocity()
-    {
-        velocity.y = 0f;
-    }
-
+    /// <summary>
+    /// Rotates the player to the target rotation over time.
+    /// Must be called in update to work.
+    /// </summary>
     public void RotateToTargetRotation()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * LocalDeltaTime);
     }
 
+    /// <summary>
+    /// Handles the delay for the dash ability.
+    /// Counts up the timer.
+    /// </summary>
     private void HandleDashDelay()
     {
-        dashDelayTimer += Time.deltaTime;
+        dashDelayTimer += LocalDeltaTime;
     }
 
+    /// <summary>
+    /// Resets the dash delay timer.
+    /// </summary>
     public void ResetDashDelay()
     {
         dashDelayTimer = 0f;
     }
 
+    /// <summary>
+    /// Calculates the slope angle and checks if the player can slide on the slope.
+    /// </summary>
     private void CheckSlopeSliding()
     {
         GetAndSetSlopeSpeedModifierOnAngle(hitBelowSlopeAngle);
@@ -328,7 +279,7 @@ public class Player : Entity
 
         hitBelowSlopeAngle = Vector3.Angle(normal, Vector3.up);
 
-        if (IsAbleToSlide())
+        if (CanSlide())
         {
             Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, normal);
 
@@ -337,7 +288,11 @@ public class Player : Entity
         }
     }
 
-    public bool IsAbleToSlide()
+    /// <summary>
+    /// Determines whether the player can slide on the current slope.
+    /// </summary>
+    /// <returns>True if the player can slide, false otherwise.</returns>
+    public bool CanSlide()
     {
         if (!IsGrounded) return false;
         if (hitBelow.collider == null) return false;
@@ -346,12 +301,20 @@ public class Player : Entity
         return hitBelowSlopeAngle > controller.slopeLimit;
     }
 
+    /// <summary>
+    /// Applies the given slide direction to the player's movement.
+    /// </summary>
+    /// <param name="slideDirection">The direction of the slide.</param>
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * Time.deltaTime);
+        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
     }
 
+    /// <summary>
+    /// Applies the calculated rotation based off the player's movement and camera to the next movement.
+    /// Doesn't actually rotate the player until you call RotateToTargetRotation().
+    /// </summary>
     public void ApplyRotationToNextMovement()
     {
         forwardAngleBasedOnCamera = Mathf.Atan2(input.MoveDirection.x, input.MoveDirection.z) * Mathf.Rad2Deg + Camera.main.transform.rotation.eulerAngles.y;
@@ -361,6 +324,7 @@ public class Player : Entity
 
     /// <summary>
     /// Applies the given target rotation to the next movement.
+    /// Doesn't actually rotate the player until you call RotateToTargetRotation().
     /// </summary>
     /// <param name="targetRotation">The target rotation to apply.</param>
     public void ApplyRotationToNextMovement(Quaternion targetRotation)
@@ -369,16 +333,14 @@ public class Player : Entity
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }
 
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
-    }
-
     private protected override void EvaluateMovementSpeed()
     {
         MovementSpeed = movementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
+    /// <summary>
+    /// Makes the player jump by setting the necessary variables and applying the jump force.
+    /// </summary>
     public void Jump()
     {
         IsGrounded = false;
@@ -391,11 +353,11 @@ public class Player : Entity
         currentJumpCount++;
     }
 
-    public void DashTrailSetActive(bool b)
-    {
-        dashTrailObject.SetActive(b);
-    }
-
+    /// <summary>
+    /// Gets and sets the slope speed modifier based on the ground angle.
+    /// </summary>
+    /// <param name="groundAngle">The angle of the ground.</param>
+    /// <returns>The slope speed modifier.</returns>
     private float GetAndSetSlopeSpeedModifierOnAngle(float groundAngle)
     {
         float slopeSpeedModifier = 1f - (0.15f) * groundAngle / controller.slopeLimit;
@@ -407,41 +369,23 @@ public class Player : Entity
         return slopeSpeedModifier;
     }
 
-    public Vector3 GetGroundedVelocity()
-    {
-        return new Vector3(velocity.x, 0f, velocity.z);
-    }
-
-    public Vector3 GetVelocity()
-    {
-        return velocity;
-    }
-
-    public void SetVelocity(Vector3 newVelocity)
-    {
-        velocity = newVelocity;
-    }
-
+    /// <summary>
+    /// Gets the maximum speed of the player, taking into account the sprint speed modifier.
+    /// </summary>
+    /// <returns>The maximum speed of the player.</returns>
     public float GetMaxSpeed()
     {
         return SprintSpeedModifier * baseSpeed;
     }
 
+    /// <summary>
+    /// Handles the dash trail effect based on the player's speed.
+    /// </summary>
     private void HandleDashTrail()
     {
         float maxSpeed = SprintSpeedModifier * baseSpeed;
 
-        DashTrailSetActive(GetGroundedVelocity().magnitude > maxSpeed);
-    }
-
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
-    }
-
-    public override void Die()
-    {
-        Destroy(gameObject);
+        dashTrailObject.SetActive(GetHorizontalVelocity().magnitude > maxSpeed);
     }
 
     private protected override void TryChangeStaggeredState()

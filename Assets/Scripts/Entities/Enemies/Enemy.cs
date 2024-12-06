@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,51 +13,66 @@ using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
-    [field: Header("Enemy: References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
-    [SerializeField, Self] private protected CapsuleCollider capsuleCollider;
-
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
 
-    // custom pathfinding
+    [field: Header("Enemy: Custom Collider Settings")]
+    [field: SerializeField] public float CustomCollisionRadius { get; private set; }
+    [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
+    [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (controller.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (controller.height / 2 - CustomCollisionRadius) * Vector3.up;
+
+    #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }
     private List<Vector3> path;
-    private bool lookAtPath;
+    #endregion
 
     public Entity Target { get; protected set; }
+
     private EnemySpawner spawner;
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
-    [HideInInspector] public bool UseRootMotion;
 
     #region States
     public EnemyIdleState EnemyIdleState { get; protected set; }
     public EnemyChaseState EnemyChaseState { get; protected set; }
+
+    private protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        EnemyIdleState = new EnemyIdleState(this);
+        EnemyChaseState = new EnemyChaseState(this);
+    }
     #endregion
 
-    public void Init(EnemySpawner e)
+    public void Init(EnemySpawner enemySpawner)
     {
-        spawner = e;
+        spawner = enemySpawner;
     }
 
     private protected override void OnAwake()
     {
         base.OnAwake();
-
-        if(Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
     }
 
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
 
+        if (Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
+
         SetStartState(EnemyIdleState);
+
+        Target = null;
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
+
+        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
     }
 
     private protected override void OnStart()
@@ -71,80 +87,70 @@ public class Enemy : Entity
     private protected override void OnUpdate()
     {
         base.OnUpdate();
-
-        HandleAnimations();
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            EntityLaunchState.SetLaunchSettings(Vector3.up, 10f, 3f);
-            ForceChangeState(EntityLaunchState);
-        }
     }
 
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-        
-        MoveTowardsDestination();
     }
 
-    private void OnAnimatorMove()
+    private protected override void OnDeath()
     {
-        OnOnAnimatorMove();
+        base.OnDeath();
     }
 
-    private protected virtual void OnOnAnimatorMove()
+    private protected override void OnOnDrawGizmos()
     {
-        if (!UseRootMotion) return;
+        base.OnOnDrawGizmos();
 
-        float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
+        if(CustomCollisionRadius <= 0) return;
 
-        rigidBody.MovePosition(transform.position + desiredAnimationMovement);
+        Gizmos.color = Color.white;
+        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
     }
 
+    public override void Die()
+    {
+        base.Die();
+
+        if (spawner != null) spawner.RemoveEnemyFromList(this);
+    }
+
+    /// <summary>
+    /// Called every tick from the Ticker singleton.
+    /// Tries to assign a target to the enemy here.
+    /// </summary>
     private protected virtual void OnTick()
     {
         TryAssignTarget();
     }
 
-    private protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
-    }
-
-    private protected override void CheckGrounded()
-    {
-        base.CheckGrounded();
-
-        IsGrounded = Physics.CheckSphere(transform.position + 9f * capsuleCollider.radius / 10f * Vector3.up, capsuleCollider.radius, PhysicsSettings.GroundLayer);
-    }
-
-    private protected override void HandleAnimations()
-    {
-        base.HandleAnimations();
-    }
-
-    private List<Vector3> GetPathToDestination(Vector3 dest)
+    /// <summary>
+    /// Calculates the path from the current position to the destination using NavMesh.
+    /// </summary>
+    /// <param name="dest">The destination position.</param>
+    /// <returns>The list of positions representing the calculated path.</returns>
+    public List<Vector3> GetPathToDestination(Vector3 dest)
     {
         NavMeshPath path = new NavMeshPath();
 
         bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
 
         if (!hasPath) return null;
-        if(path.corners.Length == 0) return null;
+        if (path.corners.Length == 0) return null;
 
         return path.corners.ToList();
     }
 
-    private void MoveTowardsDestination()
+    /// <summary>
+    /// Moves the enemy towards its destination along the calculated path.
+    /// Looks at the path by default.
+    /// /// <param name="lookAtPath">Whether to look at the path.</param>
+    /// </summary>
+    public void MoveTowardsDestination(bool lookAtPath = true)
     {
         if (path == null) return;
-        if(path.Count < 2) return;
+        if (path.Count < 2) return;
 
         #region Debug
 /*        Vector3 prevCorner = transform.position;
@@ -155,50 +161,88 @@ public class Enemy : Entity
         }*/
         #endregion
 
-        Vector3 currDest = path[1];
-        if (lookAtPath) LookAt(currDest);
+        Vector3 currentDestination = path[1];
+        if (lookAtPath) LookAt(currentDestination);
 
-        Vector3 dir = currDest - transform.position;
-        dir.Normalize();
+        Vector3 direction = (currentDestination - transform.position).normalized;
 
-        Move(dir);
+        UpdateHorizontalVelocity(direction);
+        ApplyHorizontalVelocity();
 
-        if (Distance(currDest) < 0.05f)
+        if (CloseToPoint(currentDestination, 0.05f))
         {
             path.RemoveAt(0);
         }
     }
 
+    /// <summary>
+    /// Cancels the current path of the enemy.
+    /// </summary>
     public void CancelPath()
     {
         path = null;
     }
 
-    public void Move(Vector3 dir)
-    {
-        rigidBody.MovePosition(transform.position + MovementSpeed * Time.deltaTime * dir.normalized);
-    }
-
-    public void SetDestination(Vector3 dest, bool lookAtPath)
+    /// <summary>
+    /// Sets the destination for the enemy to move towards.
+    /// You can specify whether you want the enemy to look at the path while moving.
+    /// </summary>
+    /// <param name="dest">The destination position.</param>
+    /// <param name="lookAtPath">Whether the enemy should look at the path while moving.</param>
+    public void SetDestination(Vector3 dest)
     {
         Destination = dest;
         path = GetPathToDestination(dest);
-        this.lookAtPath = lookAtPath;
     }
 
-    private protected override void OnDeath()
+    /// <summary>
+    /// Checks if a given point is on the NavMesh using raycast from maxHeight above the point.
+    /// Also returns the valid point on the NavMesh or the enemy's current position if not valid.
+    /// The y value doesn't matter, and the point will always be checked at the navmesh ground level.
+    /// </summary>
+    /// <param name="point">The point to check.</param>
+    /// <param name="maxHeight">The max height above the point to start raycasting down from.</param>
+    /// <param name="outputPoint">The output point.</param>
+    /// <returns>True if the point is on the NavMesh, false otherwise.</returns>
+    public bool IsValidPointOnNavMesh(Vector3 point, float maxHeight, out Vector3 outputPoint)
     {
-        base.OnDeath();
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+        RaycastHit raycastHit;
+        bool isValidPoint =
+            Physics.Raycast(point + maxHeight * Vector3.up, Vector3.down, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Ground"))
+            && NavMesh.SamplePosition(raycastHit.point, out _, 0.5f, NavMesh.AllAreas);
+
+        outputPoint = isValidPoint ? raycastHit.point : transform.position;
+
+        return isValidPoint;
     }
 
-    public override void Die()
+    /// <summary>
+    /// Generates a random wander point within a specified radius range.
+    /// Returns itself it cannot find a valid point after a certain number of iterations.
+    /// Iteration count is set to 16 by default.
+    /// </summary>
+    /// <param name="wanderRadiusRange">The range of the wander radius.</param>
+    /// <param name="iterationTryCount">The number of iterations to try finding a valid point.</param>
+    /// <returns>The randomly generated wander point.</returns>
+    public Vector3 GetRandomWanderPoint(Vector2 wanderRadiusRange, int iterationTryCount = 16)
     {
-        base.Die();
+        for (int i = 0; i < iterationTryCount; i++)
+        {
+            float randomRadius = Random.Range(wanderRadiusRange.x, wanderRadiusRange.y);
+            Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
+            randomPointOnUnitCircle.y = 0;
+            Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + transform.position;
 
-        if(spawner != null) spawner.RemoveEnemyFromList(this);
+            if (IsValidPointOnNavMesh(randomPoint, 100f, out Vector3 validPoint)) return validPoint;
+        }
+
+        return transform.position;
     }
 
+    /// <summary>
+    /// Tries to assign a target to the enemy by getting nearby targets and selecting the first one.
+    /// If no targets are found, sets the target to null.
+    /// </summary>
     public virtual void TryAssignTarget()
     {
         List<Entity> targets = GetNearbyTargets();
@@ -209,6 +253,40 @@ public class Enemy : Entity
         }
 
         Target = targets[0];
+    }
+
+    /// <summary>
+    /// Tries to assign a target to the enemy within a cone-shaped detection area.
+    /// Override TryAssignTarget() and call this function to use cone-shaped detection.
+    /// </summary>
+    /// <param name="detectionDistance">The distance of the detection area.</param>
+    /// <param name="detectionConeHalfAngle">Half of the total angle of the detection cone.</param>
+    private protected void TryAssignTargetWithCone(float detectionDistance, float detectionConeHalfAngle)
+    {
+        List<Entity> smallRadiusTargets = GetNearbyTargets();
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance);
+        List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, detectionConeHalfAngle);
+
+        if (largeRadiusTargets.Count == 0) // if no targets in large radius that includes cone
+        {
+            Target = null;
+            return;
+        }
+
+        if (filteredTargetsByCone.Count > 0 && !IsBlockedFromEntity(filteredTargetsByCone[0])) // if no targets in cone that are not blocked
+        {
+            Target = filteredTargetsByCone[0];
+            return;
+        }
+
+        if (smallRadiusTargets.Count > 0) // if no targets in cone, but there are targets in very small radius
+        {
+            Target = smallRadiusTargets[0];
+            return;
+        }
+
+        Target = null;
+        return;
     }
 
     /// <summary>
@@ -240,26 +318,36 @@ public class Enemy : Entity
         return filteredTargets;
     }
 
+    /// <summary>
+    /// Gets the colliders that overlap with the custom collision capsule of the enemy.
+    /// Filters out the enemy's own colliders.
+    /// The list will be ordered by ascending distance by default.
+    /// </summary>
+    /// <param name="mask">The layer mask to filter the colliders.</param>
+    /// <param name="isOrderedByAscendingDistance">Whether to order the colliders by ascending distance.</param>
+    /// <returns>The list of colliders that overlap with the custom collision capsule.</returns>
+    public List<Collider> GetCustomCollisionHits(LayerMask mask, bool isOrderedByAscendingDistance = true)
+    {
+        List<Collider> result = new List<Collider>();
+
+        if (CustomCollisionRadius <= 0) return result;
+
+        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius, mask);
+        if (hits == null) return result;
+        if (hits.Length == 0) return result;
+
+        foreach(Collider hit in hits)
+        {
+            if(IsOwnCollider(hit)) continue; // filter out own colliders
+
+            result.Add(hit);
+        }
+
+        return isOrderedByAscendingDistance ? result.OrderBy(hit => Distance(hit.ClosestPoint(GetColliderCenterPosition() + CustomCollisionCenterOffset))).ToList() : result.ToList();
+    }
+
     public void ClearTarget()
     {
         Target = null;
-    }
-
-    public override Quaternion LookAt(Vector3 target)
-    {
-        Vector3 dir = target - transform.position;
-
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-
-        rigidBody.MoveRotation(Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime));
-
-        return targetRotation;
-    }
-
-    public override void Launch(Vector3 direction, float force)
-    {
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.AddForce(force * direction.normalized, ForceMode.Impulse);
     }
 }

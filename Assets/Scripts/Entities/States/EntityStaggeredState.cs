@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class EntityStaggeredState : BaseState
+public class EntityStaggeredState : EntityBaseState
 {
     private Entity entity;
 
@@ -28,7 +28,9 @@ public class EntityStaggeredState : BaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        entity.ApplyGravity();
+
+        timer += entity.LocalDeltaTime;
 
         if (timer > entity.StaggerDuration)
         {
@@ -39,6 +41,6 @@ public class EntityStaggeredState : BaseState
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

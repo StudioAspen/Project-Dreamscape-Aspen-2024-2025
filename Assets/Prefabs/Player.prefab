@@ -1375,6 +1375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5e643d4e063db48bc180c997910eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 7237775664649881152}
   animator: {fileID: 2171180168782530629}
   <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
@@ -1384,11 +1385,14 @@ MonoBehaviour:
   <Level>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 10
+  mass: 1
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField: 1
+  UseRootMotion: 0
+  <StaggerDuration>k__BackingField: 0.5
   OnGrounded:
     m_PersistentCalls:
       m_Calls: []
@@ -1404,20 +1408,17 @@ MonoBehaviour:
   OnKillEntity:
     m_PersistentCalls:
       m_Calls: []
-  <StaggerDuration>k__BackingField: 0.5
-  controller: {fileID: 7237775664649881152}
+  <LocalTimeScale>k__BackingField: 1
   input: {fileID: 6714409095086020908}
   <SprintSpeedModifier>k__BackingField: 1.66
   groundedAcceleration: 4
-  mass: 1
   jumpHeight: 2
   maxJumpCount: 1
   IsSprinting: 0
   CanAttack: 1
-  ApplyRootMotion: 0
   <DashDuration>k__BackingField: 0.25
   <InitialDashVelocity>k__BackingField: 75
-  dashDelayDuration: 0.5
+  dashDelayDuration: 1
   <SprintDurationAfterDash>k__BackingField: 2
   dashTrailObject: {fileID: 3883737560833677611}
 --- !u!114 &5620550920081884860
@@ -1508,7 +1509,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 97ada40f57d401540b8eafeeba1f0e9c, type: 3}
   m_Controller: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 1
+  m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

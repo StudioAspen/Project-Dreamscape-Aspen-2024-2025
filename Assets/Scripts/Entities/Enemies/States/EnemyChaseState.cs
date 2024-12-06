@@ -22,13 +22,16 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void Update()
     {
+        enemy.ApplyGravity();
+
         if (enemy.Target == null)
         {
             enemy.ChangeState(enemy.EnemyIdleState);
             return;
         }
 
-        enemy.SetDestination(enemy.Target.transform.position, true);
+        enemy.SetDestination(enemy.Target.transform.position);
+        enemy.MoveTowardsDestination();
     }
 
     public override void FixedUpdate()

@@ -5,13 +5,9 @@ using UnityEngine;
 
 public class Follower : Enemy
 {
-    [field: Header("Follower: Attack Settings")]
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
-    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
-    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
-
+    [field: Header("Follower: Wander Settings")]
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
     [field: Header("Follower: Circle Settings")]
     [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
@@ -20,11 +16,31 @@ public class Follower : Enemy
     [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
     [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
 
+    [field: Header("Follower: Attack Settings")]
+    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
+    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
+
     #region States
     public FollowerAttackState FollowerAttackState { get; private set; }
+    public FollowerWanderState FollowerWanderState { get; private set; }
     public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
     public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
     public FollowerCircleState FollowerCircleState { get; private set; }
+
+    private protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        EnemyChaseState = new FollowerChaseState(this);
+        FollowerWanderState = new FollowerWanderState(this);
+        FollowerCircleState = new FollowerCircleState(this);
+        FollowerAttackState = new FollowerAttackState(this);
+        FollowerReadyAttackState = new FollowerReadyAttackState(this);
+        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
+    }
     #endregion
 
     private protected override void OnAwake()
@@ -36,7 +52,7 @@ public class Follower : Enemy
     {
         base.OnOnEnable();
 
-        // SetStartState(EnemyIdleState);
+        SetStartState(FollowerWanderState);
 
         FinishAnimation();
     }
@@ -46,14 +62,11 @@ public class Follower : Enemy
         base.OnOnDisable();
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnStart()
     {
         base.OnStart();
+
+        SetDefaultState(FollowerWanderState);
 
         FinishAnimation();
     }
@@ -66,17 +79,6 @@ public class Follower : Enemy
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-    }
-
-    private protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        EnemyChaseState = new FollowerChaseState(this);
-        FollowerCircleState = new FollowerCircleState(this);
-        FollowerAttackState = new FollowerAttackState(this);
-        FollowerReadyAttackState = new FollowerReadyAttackState(this);
-        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
     }
 
     public void FinishAnimation()
