@@ -1613,8 +1613,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 8852926688546275590}
-  barMaximum: 100
-  memoryBarTransform: {fileID: 0}
+  barMaximum: 10
+  memoryBarTransform: {fileID: 6964810360631873856}
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0
@@ -8072,11 +8072,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7,
+    type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0

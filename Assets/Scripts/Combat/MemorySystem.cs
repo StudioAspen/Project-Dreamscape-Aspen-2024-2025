@@ -6,7 +6,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class MemorySystem : MonoBehaviour
 {
@@ -14,7 +14,10 @@ public class MemorySystem : MonoBehaviour
     [SerializeField]private int barMaximum; //amount of memory points to fill the memory bar
     Dictionary<Type, int> memories = new Dictionary<Type, int>(); //dictionary so we can add new memory types whenever, tied to enemy class ooooo
     [SerializeField]private RectTransform memoryBarTransform;
-    private List<RectTransform> memoryTransforms = new List<RectTransform>();
+    private List<Image> memoryTransforms = new List<Image>();
+    private Color followerColor = Color.red;
+    private Color chargerColor = Color.blue;
+    private Color defaultColor = Color.white;
 
     private void OnValidate()
     {
@@ -51,7 +54,7 @@ public class MemorySystem : MonoBehaviour
 
         if (MemoryIsFull())
         {
-            
+            Debug.Log(memories.Values.Max());
         }
     }
 
@@ -84,27 +87,35 @@ public class MemorySystem : MonoBehaviour
 
     private void UpdateDebugMeter()
     {
-        float maxWidth = memoryBarTransform.sizeDelta.x;
-        float height = memoryBarTransform.sizeDelta.y;
 
         int i = 0;
         float meterOffset = 0f;
         foreach(Type memory in memories.Keys)
         {
+            //if theres more unique memory types than there are bars, add a new one
             if( i+1 > memoryTransforms.Count)
             {
-                memoryTransforms.Add(Instantiate(memoryBarTransform.gameObject, transform).GetComponent<RectTransform>());
+                memoryTransforms.Add(Instantiate(memoryBarTransform, memoryBarTransform,true).GetComponent<Image>());
+                //match color to type of enemy
+                if(memory == typeof(Follower))
+                {
+                    memoryTransforms[i].color = followerColor;
+                }
+                else if(memory == typeof(Charger))
+                {
+                    memoryTransforms[i].color = chargerColor;
+                }
+                else
+                {
+                    memoryTransforms[i].color = defaultColor;
+                }
+                
             }
+
             float percentOfMeter = (float)memories[memory] / barMaximum;
-            Vector2 targetSize = new Vector2(maxWidth * percentOfMeter , height);
-            if (i > 0)
-            {
-                memoryTransforms[i].localPosition = new Vector2(memoryTransforms[i].localPosition.x, meterOffset);
-            }
-            memoryTransforms[i].sizeDelta = Vector2.Lerp(memoryTransforms[i].sizeDelta, targetSize, 10f * Time.deltaTime);
-            meterOffset += memoryTransforms[i].sizeDelta.x + memoryTransforms[i].localPosition.x;
+            memoryTransforms[i].fillAmount = percentOfMeter + meterOffset;
+            meterOffset += memoryTransforms[i].fillAmount;
             i++;
-            
         }
     }
 }
