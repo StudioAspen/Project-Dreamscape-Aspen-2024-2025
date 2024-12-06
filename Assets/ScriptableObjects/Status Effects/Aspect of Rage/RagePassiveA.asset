@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 316781c8c67aa124f97b8a306c49377d, type: 3}
-  m_Name: Passive A
+  m_Name: RagePassiveA
   m_EditorClassIdentifier: 
   <Stackable>k__BackingField: 1
   <AOEExplosionRadius>k__BackingField: 2
   <AOEDamage>k__BackingField: 2
   <BurningRageStack>k__BackingField: {fileID: 11400000, guid: fcf193a5c0c719f489756473afed2395,
+    type: 2}
+  <BurningRageStackExtension>k__BackingField: {fileID: 11400000, guid: 31e900500e5c8c54ebad2f9d74c64b7e,
     type: 2}

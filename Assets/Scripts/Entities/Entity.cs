@@ -1167,14 +1167,16 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
     }
-    
+
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
     /// List is sorted from closest to farthest entity from the hit position.
+    /// By default, the list will include dead entities.
     /// </summary>
     /// <param name="hitPosition">The center position of the AOE.</param>
     /// <param name="radius">The radius of the AOE.</param>
+    /// <param name="willGetDyingEntities">Whether to get dead entities.</param>
     /// <returns>A list of entities within the AOE, ordered by their distance from the hit position.</returns>
-    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius)
+    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius, bool willGetDyingEntities = true)
     {
         List<Entity> entities = new List<Entity>();
 
@@ -1186,6 +1188,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             Entity potentialTarget = hit.GetComponent<Entity>();
             if (potentialTarget == null) continue;
+            if(!willGetDyingEntities && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
 
             entities.Add(potentialTarget);
         }
