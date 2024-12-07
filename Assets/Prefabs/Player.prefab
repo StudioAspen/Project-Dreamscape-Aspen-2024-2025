@@ -1219,6 +1219,7 @@ GameObject:
   - component: {fileID: 3702187593430642151}
   - component: {fileID: 5066363359248579512}
   - component: {fileID: 4562688828567907799}
+  - component: {fileID: 8619784732810869170}
   - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
@@ -1497,6 +1498,21 @@ MonoBehaviour:
   aspectTrees:
   - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
   <AspectTokens>k__BackingField: 10
+--- !u!114 &8619784732810869170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a8b2b498028db442898de9a0d47189d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 8852926688546275590}
+  barMaximum: 10
+  memoryBarTransform: {fileID: 6964810360631873856}
 --- !u!95 &2171180168782530629
 Animator:
   serializedVersion: 5
@@ -2024,6 +2040,7 @@ RectTransform:
   - {fileID: 413209826407038700}
   - {fileID: 926976133870212481}
   - {fileID: 4351085708691253259}
+  - {fileID: 6964810360631873856}
   m_Father: {fileID: 7536978621657743438}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

@@ -54,7 +54,7 @@ public class MemorySystem : MonoBehaviour
 
         if (MemoryIsFull())
         {
-            Debug.Log(memories.Values.Max());
+            MemoryEarned();
         }
     }
 
@@ -87,35 +87,27 @@ public class MemorySystem : MonoBehaviour
 
     private void UpdateDebugMeter()
     {
+        int totalEnemyCount = 3;
+        Color startColor = Color.red;
+        Color endColor = Color.blue;
 
-        int i = 0;
         float meterOffset = 0f;
-        foreach(Type memory in memories.Keys)
+        for(int i = 0; i < memories.Keys.Count; i++)
         {
+            Type memory = memories.Keys.ElementAt(i);
             //if theres more unique memory types than there are bars, add a new one
-            if( i+1 > memoryTransforms.Count)
+            if (i + 1 > memoryTransforms.Count)
             {
-                memoryTransforms.Add(Instantiate(memoryBarTransform, memoryBarTransform,true).GetComponent<Image>());
-                //match color to type of enemy
-                if(memory == typeof(Follower))
-                {
-                    memoryTransforms[i].color = followerColor;
-                }
-                else if(memory == typeof(Charger))
-                {
-                    memoryTransforms[i].color = chargerColor;
-                }
-                else
-                {
-                    memoryTransforms[i].color = defaultColor;
-                }
+                memoryTransforms.Add(Instantiate(memoryBarTransform, memoryBarTransform, true).GetComponent<Image>());
+
+                memoryTransforms[i].color = Color.Lerp(startColor, endColor, (float) i / (totalEnemyCount - 1));
                 
+
             }
 
             float percentOfMeter = (float)memories[memory] / barMaximum;
             memoryTransforms[i].fillAmount = percentOfMeter + meterOffset;
             meterOffset += memoryTransforms[i].fillAmount;
-            i++;
         }
     }
 }
