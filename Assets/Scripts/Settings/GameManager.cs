@@ -19,9 +19,13 @@ public class GameManager : MonoBehaviour
     public GameState CurrentState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
 
+    #region Time Scale
+    public float DefaultFixedDeltaTime { get; private set; }
+    #endregion
+
     private void Awake()
     {
-        
+        DefaultFixedDeltaTime = Time.fixedDeltaTime;
     }
 
     private void Start()

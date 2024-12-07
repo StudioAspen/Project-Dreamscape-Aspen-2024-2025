@@ -29,9 +29,11 @@ public class FollowerReadyAttackState : EnemyBaseState
 
     public override void Update()
     {
-        follower.DefaultTransitionToAnimation("Attack");
+        follower.ApplyGravity();
 
-        readyTimer += Time.deltaTime;
+        follower.TransitionToAnimation("Attack");
+
+        readyTimer += follower.LocalDeltaTime;
 
         if (readyTimer > readyDuration)
         {
@@ -42,6 +44,6 @@ public class FollowerReadyAttackState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

@@ -85,6 +85,18 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
+    /// Tries to apply a status effect to the target GameObject.
+    /// If the target has an EntityStatusEffector component, the status effect will be applied.
+    /// </summary>
+    public static void TryApplyStatusEffect(GameObject target, StatusEffectSO statusEffect, GameObject source)
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return;
+
+        statusEffector.ApplyStatusEffect(statusEffect, source);
+    }
+
+    /// <summary>
     /// Cancels and removes all current status effects from the entity when it is disabled.
     /// </summary>
     private void OnDisable()

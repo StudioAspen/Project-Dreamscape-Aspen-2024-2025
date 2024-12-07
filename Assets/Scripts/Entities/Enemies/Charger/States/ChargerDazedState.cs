@@ -15,7 +15,7 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.DefaultTransitionToAnimation("Hit");
+        charger.TransitionToAnimation("Hit");
 
         charger.SetSpeedModifier(0f);
 
@@ -29,7 +29,9 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void Update()
     {
-        timer += Time.deltaTime;
+        charger.ApplyGravity();
+
+        timer += charger.LocalDeltaTime;
 
         if(timer > charger.DazedDuration)
         {
@@ -38,5 +40,8 @@ public class ChargerDazedState : EnemyBaseState
         }
     }
 
-    public override void FixedUpdate() { }
+    public override void FixedUpdate()
+    {
+        
+    }
 }

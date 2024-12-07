@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class FollowerAttackRecoverState : EnemyBaseState
+﻿public class FollowerAttackRecoverState : EnemyBaseState
 {
     private Follower follower;
 
@@ -25,7 +23,9 @@ public class FollowerAttackRecoverState : EnemyBaseState
 
     public override void Update()
     {
-        recoverTimer += Time.deltaTime;
+        follower.ApplyGravity();
+
+        recoverTimer += follower.LocalDeltaTime;
 
         if (recoverTimer > follower.AttackRecoverDuration)
         {
@@ -36,6 +36,6 @@ public class FollowerAttackRecoverState : EnemyBaseState
 
     public override void FixedUpdate()
     {
-
+        
     }
 }

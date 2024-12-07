@@ -8,7 +8,6 @@ public class ChainingSystem : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Self] private PlayerCombat playerCombat;
-    [SerializeField] private TMP_Text debugText;
 
     [Header("Settings")]
     [SerializeField] private float timeBetween = 1f;
@@ -63,15 +62,11 @@ public class ChainingSystem : MonoBehaviour
     {
         ChainCount++;
         timer = 0f;
-
-        debugText.text = $"Chain: {ChainCount}";
     }
 
     private void ResetChain()
     {
         ChainCount = 0;
         timer = 0;
-
-        debugText.text = $"Chain: {ChainCount}";
     }
 }

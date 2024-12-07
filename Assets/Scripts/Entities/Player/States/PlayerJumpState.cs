@@ -9,14 +9,14 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("JumpingUp");
+        player.TransitionToAnimation("JumpingUp");
 
         player.Jump();
     }
 
     public override void OnExit()
     {
-
+        
     }
 
     public override void Update()
@@ -25,34 +25,28 @@ public class PlayerJumpState : PlayerBaseState
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
             player.SetSpeedModifier(0.25f);
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
 
-        if(player.Velocity.y < 0f)
+        if (player.Velocity.y < 0f)
         {
             player.ChangeState(player.PlayerFallState);
             return;
         }
-
-/*        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }*/
     }
 
     public override void FixedUpdate()
     {
-
+        
     }
 }
