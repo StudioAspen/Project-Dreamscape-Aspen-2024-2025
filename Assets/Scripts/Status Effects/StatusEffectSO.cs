@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
-    private EntityStatusEffector entityStatusEffectorOwner;
+    private protected EntityStatusEffector entityStatusEffectorOwner;
     private protected Entity entity;
     private protected GameObject source;
 

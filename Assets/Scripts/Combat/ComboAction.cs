@@ -1,4 +1,4 @@
-﻿public enum PlayerActions
+﻿public enum ComboAction
 {
     ATTACK1,
     CHARGED_ATTACK1,

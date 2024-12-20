@@ -2,6 +2,7 @@ using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EntityStatusEffector : MonoBehaviour
@@ -97,11 +98,24 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the status effect of the specified type from the entity.
+    /// Tries to get the status effect of the specified type from the target object.
     /// </summary>
     /// <param name="statusEffectType">The type of the status effect.</param>
     /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
-    public StatusEffectSO GetStatusEffect(Type statusEffectType)
+    public static StatusEffectSO TryGetStatusEffect(GameObject target, Type statusEffectType)
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return null;
+
+        return statusEffector.TryGetStatusEffect(statusEffectType);
+    }
+
+    /// <summary>
+    /// Tries to get the status effect of the specified type from the entity.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public StatusEffectSO TryGetStatusEffect(Type statusEffectType)
     {
         if (CurrentStatusEffects.ContainsKey(statusEffectType))
         {
@@ -116,8 +130,9 @@ public class EntityStatusEffector : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        foreach (StatusEffectSO statusEffect in CurrentStatusEffects.Values)
+        for(int i = 0; i < CurrentStatusEffects.Count; i++)
         {
+            StatusEffectSO statusEffect = CurrentStatusEffects.Values.ElementAt(i);
             statusEffect.Cancel();
             Destroy(statusEffect);
         }

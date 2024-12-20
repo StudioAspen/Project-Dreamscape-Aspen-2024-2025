@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burning Rage Stacks")]
+[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Aspect of Rage/Passive A/Burning Rage Stacks")]
 public class BurningRageStatusEffectSO : TickStatusEffectSO
 {
     [field: Header("Burning Rage Stacks: Settings")]

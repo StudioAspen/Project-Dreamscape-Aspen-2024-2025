@@ -7,8 +7,8 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private Weapon ownerWeapon;
 
     [field: Header("Aspect of Rage Passive A: Settings")]
-    [field: SerializeField] public StatusEffectSO BurningRageStack { get; private set; }
-    [field: SerializeField] public StatusEffectSO BurningRageStackExtension { get; private set; }
+    [field: SerializeField] public BurningRageStatusEffectSO BurningRageStack { get; private set; }
+    [field: SerializeField] public BurningRageStatusEffectSO BurningRageStackExtension { get; private set; }
     private StatusEffectSO currentBurningRageStack;
 
     private void OnValidate()

@@ -18,7 +18,7 @@ public class ComboDataSO : ScriptableObject
 #endif // UNITY_EDITOR
     
     [field: Header("Combo Data")]
-    [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
+    [field: SerializeField] public List<ComboAction> ComboInputs { get; private set; } = new List<ComboAction>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
     [HideInInspector]
     [field: SerializeField] private AnimationClip _ComboClipChecChangeCheck;
@@ -44,11 +44,11 @@ public class ComboDataSO : ScriptableObject
     /// <param name="givenComboList"></param>
     /// <param name="otherComboList"></param>
     /// <returns></returns>
-    public static bool IsPotentiallyIn(List<PlayerActions> givenComboList, List<PlayerActions> otherComboList)
+    public static bool IsPotentiallyIn(List<ComboAction> givenComboList, List<ComboAction> otherComboList)
     {
         if (otherComboList.Count > givenComboList.Count) return false;
 
-        List<PlayerActions> subList = givenComboList.GetRange(0, Mathf.Min(givenComboList.Count, otherComboList.Count));
+        List<ComboAction> subList = givenComboList.GetRange(0, Mathf.Min(givenComboList.Count, otherComboList.Count));
 
         return IsIn(subList, otherComboList);
     }
@@ -59,7 +59,7 @@ public class ComboDataSO : ScriptableObject
     /// <param name="givenComboList"></param>
     /// <param name="otherComboList"></param>
     /// <returns></returns>
-    public static bool IsIn(List<PlayerActions> givenComboList, List<PlayerActions> otherComboList)
+    public static bool IsIn(List<ComboAction> givenComboList, List<ComboAction> otherComboList)
     {
         if (givenComboList.Count > otherComboList.Count) return false;
 
@@ -71,8 +71,8 @@ public class ComboDataSO : ScriptableObject
             {
                 if (i + j >= otherComboList.Count) break;
 
-                PlayerActions otherAction = otherComboList[i + j];
-                PlayerActions currAction = givenComboList[j];
+                ComboAction otherAction = otherComboList[i + j];
+                ComboAction currAction = givenComboList[j];
 
                 if (otherAction == currAction) matches++;
             }
@@ -89,7 +89,7 @@ public class ComboDataSO : ScriptableObject
     /// <param name="combos"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static ComboDataSO GetSingleActionCombo(List<ComboDataSO> combos, PlayerActions action)
+    public static ComboDataSO GetSingleActionCombo(List<ComboDataSO> combos, ComboAction action)
     {
         foreach (ComboDataSO combo in combos)
         {
