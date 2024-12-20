@@ -42,7 +42,7 @@ public class EntityStatusEffector : MonoBehaviour
             }
 
             StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-            currentStatusEffect.Override(newStatusEffect); // extend and override
+            currentStatusEffect.OnStack(newStatusEffect); // extend and override
         }
         else
         {
@@ -94,6 +94,21 @@ public class EntityStatusEffector : MonoBehaviour
         if (statusEffector == null) return;
 
         statusEffector.ApplyStatusEffect(statusEffect, source);
+    }
+
+    /// <summary>
+    /// Gets the status effect of the specified type from the entity.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public StatusEffectSO GetStatusEffect(Type statusEffectType)
+    {
+        if (CurrentStatusEffects.ContainsKey(statusEffectType))
+        {
+            return CurrentStatusEffects[statusEffectType];
+        }
+
+        return null;
     }
 
     /// <summary>

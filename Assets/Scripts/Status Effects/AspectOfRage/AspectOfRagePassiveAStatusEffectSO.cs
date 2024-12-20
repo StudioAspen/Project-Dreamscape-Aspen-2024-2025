@@ -39,9 +39,9 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         ownerWeapon.OnWeaponHit.RemoveListener(WeaponStacks_OnWeaponHit);
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
  
         currentBurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStackExtension;
 

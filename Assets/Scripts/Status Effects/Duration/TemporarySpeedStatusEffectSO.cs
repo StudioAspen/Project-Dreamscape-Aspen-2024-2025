@@ -27,9 +27,9 @@ public class TemporarySpeedStatusEffectSO : DurationStatusEffectSO
         entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / SpeedMultiplier);
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
 
         entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / SpeedMultiplier);
         SpeedMultiplier *= (newStatusEffect as TemporarySpeedStatusEffectSO).SpeedMultiplier;

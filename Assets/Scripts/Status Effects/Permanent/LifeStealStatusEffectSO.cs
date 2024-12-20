@@ -39,9 +39,9 @@ public class LifeStealStatusEffectSO : StatusEffectSO
         ownerWeapon.OnWeaponHit.RemoveListener(Weapon_OnWeaponHit);
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
 
         // add expansion logic here when stacked
 
