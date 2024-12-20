@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dreamscapes.TileEditor
+namespace Dreamscape.TileEditor
 {
 	///-//////////////////////////////////////////////////////////////////
 	///
