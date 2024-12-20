@@ -33,7 +33,7 @@ public class PlayerDebugUI : MonoBehaviour
 
         player.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
         
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.AddListener(Weapon_OnWeaponStartSwing);
+        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void Start()
@@ -45,7 +45,7 @@ public class PlayerDebugUI : MonoBehaviour
     {
         player.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
 
-        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.RemoveListener(Weapon_OnWeaponStartSwing);
+        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
 
     }
 

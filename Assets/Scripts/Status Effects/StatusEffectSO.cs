@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
-    private protected EntityStatusEffector entityStatusEffectorOwner;
-    private protected Entity entity;
-    private protected GameObject source;
+    private protected EntityStatusEffector entityStatusEffectorOwner; // the EntityStatusEffector that the status effect is applied to
+    private protected Entity entity; // the entity that the status effect is applied to
+    private protected GameObject source; // the source game object that applied the status effect
 
     [field: Header("Status Effect: Settings")]
     [field: SerializeField] public bool Stackable { get; protected set; } // if the status effect can stack with itself (all augments should be stackable)

@@ -165,6 +165,7 @@ public class PlayerInputReader : MonoBehaviour
     {
         if (!playerCombat.CanCharge()) return;
 
+        player.PlayerChargeState.SetChargeAttackInput(1);
         player.ChangeState(player.PlayerChargeState);
     }
 
@@ -172,6 +173,7 @@ public class PlayerInputReader : MonoBehaviour
     {
         if (!playerCombat.CanCharge()) return;
 
+        player.PlayerChargeState.SetChargeAttackInput(2);
         player.ChangeState(player.PlayerChargeState);
     }
 }

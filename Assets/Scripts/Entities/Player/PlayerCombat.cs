@@ -27,6 +27,9 @@ public class PlayerCombat : MonoBehaviour
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
+    public Action<int> OnChargeStart = delegate { }; // parameter is which attack is charging
+    public Action<int, float> OnChargeRelease = delegate { }; // parameter is which attack is released and the charge time
+
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -72,6 +75,7 @@ public class PlayerCombat : MonoBehaviour
     /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
     public bool CanChargedAttack()
     {
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
         if (player.CurrentState == player.PlayerAttackState && !CanCombo) return false;
 
@@ -84,7 +88,7 @@ public class PlayerCombat : MonoBehaviour
     /// <returns>True if the player can charge, false otherwise.</returns>
     public bool CanCharge()
     {
-        if(EntityStatusEffector.TryGetStatusEffect(player.gameObject, typeof(ChargeAttackActivatedStatusEffectSO)) == null) return false;
+        if(EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
         if (player.CurrentState == player.PlayerChargeState) return false;
         if (player.CurrentState == player.PlayerAttackState) return false;
         if (player.CurrentState == player.PlayerDashState) return false;

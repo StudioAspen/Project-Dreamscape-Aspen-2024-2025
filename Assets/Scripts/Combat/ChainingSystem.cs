@@ -27,12 +27,12 @@ public class ChainingSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerWeapon_OnWeaponHit);
+        playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
     }
 
     private void OnDisable()
     {
-        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerWeapon_OnWeaponHit);
+        playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
     }
 
     private void Update()

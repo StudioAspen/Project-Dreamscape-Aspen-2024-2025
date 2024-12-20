@@ -29,14 +29,14 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
-        ownerWeapon.OnWeaponHit.AddListener(WeaponStacks_OnWeaponHit);
+        ownerWeapon.OnWeaponHit += WeaponStacks_OnWeaponHit;
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        ownerWeapon.OnWeaponHit.RemoveListener(WeaponStacks_OnWeaponHit);
+        ownerWeapon.OnWeaponHit -= WeaponStacks_OnWeaponHit;
     }
 
     public override bool OnStack(StatusEffectSO newStatusEffect)
