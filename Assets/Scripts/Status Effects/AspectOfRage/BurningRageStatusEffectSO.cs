@@ -54,7 +54,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
         if (newStatusEffect.GetType() != GetType())
         {
