@@ -1,37 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+using Dreamscape;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Animations;
+#endif
 
 [CreateAssetMenu(fileName = "Data", menuName = "ComboData", order = 1)]
 public class ComboDataSO : ScriptableObject
 {
-    [field: Header("[Combo Data]")]
-    [field: SerializeField] public string ComboName { get; private set; } = "";
+#if UNITY_EDITOR
+    // Serialize AnimatorController for validating animation states
+    [SerializeField, HideInInspector] private AnimatorController _animatorController;
+#endif // UNITY_EDITOR
+    
+    [field: Header("Combo Data")]
     [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
-    [field: SerializeField] [field: Range(0.01f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
+    [HideInInspector]
+    [field: SerializeField] private AnimationClip _ComboClipChecChangeCheck;
+    [HideInInspector] 
+    [field: SerializeField] public bool IsComboClipValid = true;
+    [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
-    [field: Header("[Filter Options]")]
-    [field: SerializeField] public bool AttackHasRootMotion { get; private set; } = true;
+    [field: Header("Filter Options")]
+    [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
     [field: SerializeField] public bool IsAirCombo { get; private set; }
-    //[field: SerializeField] public bool IsSprintCombo { get; private set; }
+    [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
 
-    [field: Header("[Hit Options]")]
-    [field: SerializeField] public Vector2Int ComboDamageRange { get; private set; } = new Vector2Int(10, 15);
-
-    private void OnValidate()
-    {
-#if UNITY_EDITOR
-        ComboName = Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
-#endif
-    }
-
-    public void SetName(string name)
-    {
-        ComboName = name;
-    }
+    [field: Header("Hit Options")]
+    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
+    [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
+    [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
+    [field: SerializeField] public float ImpactFramesTimeScale { get; private set; }
+    [field: SerializeField] public float ImpactFramesDuration { get; private set; } = 0.25f;
 
     /// <summary>
     /// Checks to see if the given combo (starting from the front) is potentially in the other combo
@@ -122,4 +127,20 @@ public class ComboDataSO : ScriptableObject
 
         return result;
     }
+
+#if UNITY_EDITOR
+    
+    ///-/////////////////////////////////////////////////////////////////////////////////////
+    ///
+    private void OnValidate()
+    {
+        if (_ComboClipChecChangeCheck != ComboClip)
+        {
+            IsComboClipValid = _animatorController.ValidateAnimationClip("Combos", ComboClip);
+            Debug.Log(ComboClip.name + " - " + IsComboClipValid);
+            _ComboClipChecChangeCheck = ComboClip;
+        }
+    }
+    
+#endif // UNITY_EDITOR
 }

@@ -1,13 +1,8 @@
-﻿public class EntityEmptyState : BaseState
+﻿public class EntityEmptyState : EntityBaseState
 {
     private Entity entity;
 
-    private bool bingus;
-    private bool bongus;
-    private bool bungus;
-    private bool pingus;
-
-    public EntityEmptyState(Entity entity) : base(entity)
+    public EntityEmptyState(Entity entity)
     {
         this.entity = entity;
     }

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-public abstract class PlayerBaseState : BaseState
+public class PlayerBaseState : EntityBaseState
 {
     private protected Player player;
 
-    public PlayerBaseState(Player player) : base(player)
+    public PlayerBaseState(Player player)
     {
         this.player = player;
     }

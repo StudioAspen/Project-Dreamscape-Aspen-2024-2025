@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class FollowerCircleState : EnemyBaseState
 {
@@ -6,9 +8,7 @@ public class FollowerCircleState : EnemyBaseState
 
     private bool cwCircle;
 
-    private float changeDirInterval = 0.25f;
     private float changeDirTimer;
-    private float circlingRadius = 5f;
 
     private float canChaseTimer;
     private float canChaseCooldown = 3f;
@@ -20,9 +20,11 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnEnter()
     {
-        enemy.DefaultTransitionToAnimation("FlatMovement");
+        follower.TransitionToAnimation("FlatMovement");
 
-        enemy.SetSpeedModifier(0.5f);
+        follower.SetSpeedModifier(0.5f);
+
+        Ticker.Instance.OnTick.AddListener(Ticker_OnTick);
 
         changeDirTimer = 0f;
 
@@ -31,53 +33,85 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnExit()
     {
+        Ticker.Instance.OnTick.RemoveListener(Ticker_OnTick);
+    }
 
+    private void Ticker_OnTick()
+    {
+        if (follower.Target == null) return;
+
+        if(follower.Distance(follower.Target) > follower.MaxCircleRadius)
+        {
+            follower.ChangeState(follower.EnemyChaseState);
+            return;
+        }
+
+        if (follower.Distance(follower.Target) < follower.AttackRange)
+        {
+            Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
+            follower.FollowerAttackState.SetAttackDirection(attackDir);
+            follower.ChangeState(follower.FollowerReadyAttackState);
+            return;
+        }
+
+        TryToChasePlayer();
     }
 
     public override void Update()
     {
-        if(enemy.Target == null)
+        follower.ApplyGravity();
+
+        if (follower.Target == null)
         {
-            enemy.ChangeState(enemy.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 
-        canChaseTimer += Time.deltaTime;
-
-        if (enemy.Target.TryGetComponent(out Player player))
+        if (follower.IsBlockedFromEntity(follower.Target))
         {
-            if (player.NearbyEntities.Count > 0)
-            {
-                if (player.NearbyEntities.Count < follower.CircleEntityCountThreshold && canChaseTimer > canChaseCooldown)
-                {
-                    enemy.ChangeState(enemy.EnemyChaseState);
-                }
-
-                for (int i = 0; i < Mathf.Min(follower.CircleEntityCountThreshold, player.NearbyEntities.Count); i++)
-                {
-                    if (player.NearbyEntities[i] == enemy)
-                    {
-                        enemy.ChangeState(enemy.EnemyChaseState);
-                    }
-                }
-            }
+            follower.ChangeState(follower.EnemyChaseState);
+            return;
         }
 
-        changeDirTimer += Time.deltaTime;
+        canChaseTimer += follower.LocalDeltaTime;
 
-        if(changeDirTimer > changeDirInterval)
+        changeDirTimer += follower.LocalDeltaTime;
+
+        if(changeDirTimer > follower.ChangeDirectionInterval)
         {
             changeDirTimer = 0f;
-            enemy.SetDestination(CalculateCircleDestination(), false);
-            cwCircle = Random.Range(0, 25) == 0 ? !cwCircle : cwCircle;
+            follower.SetDestination(CalculateCircleDestination());
+            cwCircle = Random.Range(0, follower.ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
         }
 
-        enemy.LookAt(enemy.Target.transform.position);
+        follower.MoveTowardsDestination(false);
+        follower.LookAt(follower.Target.transform.position);
     }
 
     public override void FixedUpdate()
     {
 
+    }
+
+    private void TryToChasePlayer()
+    {
+        if (canChaseTimer < canChaseCooldown) return;
+
+        if (follower.Target.TryGetComponent(out Player player))
+        {
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f);
+
+            foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
+            {
+                if (f.CurrentState == f.EntityDeathState) playerNearbyFollowers.Remove(f);
+            }
+
+            playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
+
+            if (!playerNearbyFollowers.Contains(follower)) return;
+
+            follower.ChangeState(follower.EnemyChaseState);
+        }
     }
 
     private Vector3 CalculateCircumferenceOffset(Vector3 center, Vector3 outside, float radius, float angleOffset)
@@ -92,6 +126,6 @@ public class FollowerCircleState : EnemyBaseState
     {
         int dirMultiplier = cwCircle ? -1 : 1;
 
-        return CalculateCircumferenceOffset(enemy.Target.transform.position, enemy.transform.position, circlingRadius, dirMultiplier * 30f);
+        return CalculateCircumferenceOffset(follower.Target.transform.position, follower.transform.position, follower.CircleRadius, dirMultiplier * 10f);
     }
 }

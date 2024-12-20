@@ -9,7 +9,7 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Charge");
+        player.TransitionToAnimation("Charge");
 
         player.SetSpeedModifier(0);
     }
@@ -21,23 +21,23 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void Update()
     {
-        player.DefaultTransitionToAnimation("Charge");
-
         player.ApplyGravity();
+
+        player.TransitionToAnimation("Charge");
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
     }
 
     public override void FixedUpdate()
