@@ -102,7 +102,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
             enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
         }
 
-        CreateTemporaryVisualizer(explosionPosition, currentCombustRadius, 0.25f);
+        CustomGizmos.InstantiateTemporarySphere(explosionPosition, currentCombustRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 
     /// <summary>
@@ -140,42 +140,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         if (TickDamageMultiplierPerStack == 0) return; // This isnt the extended version of the status effect
 
+        // repeatedly apply the status effect to the target entity based on the number of stacks
         for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, killerObject);
-    }
-
-    private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)
-    {
-        // creates a sphere of the explosion radius
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = hitPoint;
-        sphere.GetComponent<Collider>().isTrigger = true;
-        sphere.transform.localScale = radius * Vector3.one;
-        SetTransparent(sphere.GetComponent<Renderer>().material);
-        sphere.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        sphere.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 0.2f);
-        Destroy(sphere, expireDuration);
-    }
-
-    private void SetTransparent(Material targetMaterial)
-    {
-        if (targetMaterial == null) return;
-
-        targetMaterial.shader = Shader.Find("Universal Render Pipeline/Unlit");
-
-        // Change Surface Type to Transparent
-        targetMaterial.SetFloat("_Surface", 1); // 1 = Transparent, 0 = Opaque
-
-        // Enable required shader keywords
-        targetMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        targetMaterial.DisableKeyword("_SURFACE_TYPE_OPAQUE");
-
-        // Set rendering mode for transparency
-        targetMaterial.SetOverrideTag("RenderType", "Transparent");
-        targetMaterial.SetInt("_ZWrite", 0); // Disable ZWrite for transparency
-        targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-
-        // Apply the changes to the material
-        targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
     }
 }

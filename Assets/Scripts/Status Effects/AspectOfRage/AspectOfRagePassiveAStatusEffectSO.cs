@@ -20,23 +20,24 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     {
         base.OnApply();
 
-        currentBurningRageStack = BurningRageStack;
-
         ownerWeapon = entity.GetComponentInChildren<Weapon>();
-        if(ownerWeapon == null)
+        if (ownerWeapon == null)
         {
             Debug.LogError($"{name}: Weapon not found on entity: {entity.name}");
+            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false); // If theres no Weapon, remove this passive
             return;
         }
 
-        ownerWeapon.OnWeaponHit += WeaponStacks_OnWeaponHit;
+        currentBurningRageStack = BurningRageStack;
+
+        ownerWeapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        ownerWeapon.OnWeaponHit -= WeaponStacks_OnWeaponHit;
+        ownerWeapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
     public override bool OnStack(StatusEffectSO newStatusEffect)
@@ -49,7 +50,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     }
 
     // for stacks
-    private void WeaponStacks_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
         EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, currentBurningRageStack, entity.gameObject);
     }

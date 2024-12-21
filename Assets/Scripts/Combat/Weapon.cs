@@ -143,17 +143,6 @@ public class Weapon : MonoBehaviour
         victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
-    private void CreateTempHitVisual(Vector3 pos, Color color, float duration)
-    {
-        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        temp.name = "TempHitVisual";
-        temp.GetComponent<Collider>().enabled = false;
-        temp.transform.localScale = 0.1f * Vector3.one;
-        temp.transform.position = pos;
-        temp.GetComponent<Renderer>().material.color = color;
-        Destroy(temp, duration);
-    }
-
     private void StartImpactFrames(float timeScale, float duration)
     {
         if (impactFramesDuration <= 0) return;
