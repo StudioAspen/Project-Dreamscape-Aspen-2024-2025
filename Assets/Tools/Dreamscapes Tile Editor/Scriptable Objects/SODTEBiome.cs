@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 using UnityEngine;
 #endif // UNITY_EDITOR
 
-namespace Dreamscapes.TileEditor
+namespace Dreamscape.TileEditor
 {
 	///-/////////////////////////////////////////////////////////////////////////
 	///

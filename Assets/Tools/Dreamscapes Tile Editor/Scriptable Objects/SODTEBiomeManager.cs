@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dreamscapes.TileEditor
+namespace Dreamscape.TileEditor
 {
 	///-/////////////////////////////////////////////////////////////////////////
 	///
@@ -10,6 +10,7 @@ namespace Dreamscapes.TileEditor
 	public class SODTEBiomeManager : ScriptableObject
 	{
 		public Vector2 tileSize;
+		public int tileCountMultiplier = 1;
 		public SODTEBiome[] biomes;
 	}
 
