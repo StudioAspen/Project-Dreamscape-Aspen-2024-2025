@@ -554,6 +554,7 @@ namespace Dreamscape.TileEditor
 			}
 			else
 			{
+				selectedTileBrushPreview.SetLayerInAllChildren(2);
 				selectedTileBrushPreview.SetActive(false);
 				SetHiddenTile(null);
 			}

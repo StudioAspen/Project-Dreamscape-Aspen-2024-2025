@@ -17,15 +17,17 @@ namespace Dreamscape.TileEditor
 		[MenuItem("GameObject/Dreamscapes/TileMap")]
 		public static void CreateTileMap(MenuCommand menuCommand)
 		{
-			CreatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(TILE_MAP_PREFAB_PATH));
+			GameObject tileMap = CreatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(TILE_MAP_PREFAB_PATH));
+			tileMap.GetComponent<DTETileMap>().SetBiomeType(BiomeType.Dreamscape);
 		}
 
 		///-/////////////////////////////////////////////////////////////////////////
 		///
-		public static void CreatePrefab(GameObject prefab)
+		public static GameObject CreatePrefab(GameObject prefab)
 		{
 			GameObject newObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 			PlaceObjectInSceneView(newObject);
+			return newObject;
 		}
 
 		///-/////////////////////////////////////////////////////////////////////////
