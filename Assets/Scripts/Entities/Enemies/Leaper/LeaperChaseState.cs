@@ -11,8 +11,6 @@ public class LeaperChaseState : EnemyChaseState
 
     private Vector3 currentHopDestination;
 
-    private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
-
     public LeaperChaseState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -33,8 +31,6 @@ public class LeaperChaseState : EnemyChaseState
         base.OnEnter();
 
         leaper.SetSpeedModifier(0f);
-
-        entitiesHitByCurrentLeap.Clear();
     }
 
     public override void OnExit()
@@ -68,8 +64,6 @@ public class LeaperChaseState : EnemyChaseState
             leaper.Hop(currentHopDestination, leaper.ChaseHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
-
-            entitiesHitByCurrentLeap.Clear();
         }
 
         leaper.LookAt(currentHopDestination);
@@ -77,8 +71,6 @@ public class LeaperChaseState : EnemyChaseState
         if (!leaper.IsGrounded)
         {
             leaper.ApplyHorizontalVelocity();
-
-            leaper.CheckCollisions(leaper.RegularContactDamagePercent, ref entitiesHitByCurrentLeap);
         }
     }
 

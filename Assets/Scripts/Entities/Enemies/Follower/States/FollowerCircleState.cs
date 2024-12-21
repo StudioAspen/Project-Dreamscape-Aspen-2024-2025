@@ -24,7 +24,7 @@ public class FollowerCircleState : EnemyBaseState
 
         follower.SetSpeedModifier(0.5f);
 
-        Ticker.Instance.OnTick.AddListener(Ticker_OnTick);
+        Ticker.Instance.OnTick += Ticker_OnTick;
 
         changeDirTimer = 0f;
 
@@ -33,7 +33,7 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnExit()
     {
-        Ticker.Instance.OnTick.RemoveListener(Ticker_OnTick);
+        Ticker.Instance.OnTick -= Ticker_OnTick;
     }
 
     private void Ticker_OnTick()

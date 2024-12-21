@@ -61,7 +61,7 @@ public class Enemy : Entity
     {
         base.OnOnEnable();
 
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
+        if (Ticker.Instance != null) Ticker.Instance.OnTick += OnTick;
 
         SetStartState(EnemyIdleState);
 
@@ -72,7 +72,7 @@ public class Enemy : Entity
     {
         base.OnOnDisable();
 
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+        if (Ticker.Instance != null) Ticker.Instance.OnTick -= OnTick;
     }
 
     private protected override void OnStart()

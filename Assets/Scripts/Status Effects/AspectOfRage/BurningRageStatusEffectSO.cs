@@ -26,7 +26,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks));
 
-        entity.OnEntityDeath.AddListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath += Entity_OnEntityDeath;
     }
 
     private protected override void OnTick()
@@ -40,7 +40,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     {
         entity.TweenUnTintEntity();
 
-        entity.OnEntityDeath.RemoveListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath -= Entity_OnEntityDeath;
 
         base.OnExpire();
     }
@@ -49,7 +49,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     {
         entity.ResetTint();
 
-        entity.OnEntityDeath.RemoveListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath -= Entity_OnEntityDeath;
 
         base.Cancel();
     }

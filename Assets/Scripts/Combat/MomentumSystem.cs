@@ -30,14 +30,14 @@ public class MomentumSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        player.OnEntityTakeDamage.AddListener(Player_OnEntityTakeDamage);
-        player.OnKillEntity.AddListener(Player_OnKillEntity);
+        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
+        player.OnKillEntity += Player_OnKillEntity;
     }
 
     private void OnDisable()
     {
-        player.OnEntityTakeDamage.RemoveListener(Player_OnEntityTakeDamage);
-        player.OnKillEntity.RemoveListener(Player_OnKillEntity);
+        player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
+        player.OnKillEntity -= Player_OnKillEntity;
     }
 
     void Update()

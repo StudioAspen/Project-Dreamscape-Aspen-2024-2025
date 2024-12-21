@@ -39,16 +39,16 @@ public class PlayerCombat : MonoBehaviour
     {
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
-        player.OnGrounded.AddListener(Player_OnGrounded);
-        player.OnAirborne.AddListener(Player_OnAirborne);
+        player.OnGrounded += Player_OnGrounded;
+        player.OnAirborne += Player_OnAirborne;
     }
 
     private void OnDisable()
     {
         playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
-        player.OnGrounded.RemoveListener(Player_OnGrounded);
-        player.OnAirborne.RemoveListener(Player_OnAirborne);
+        player.OnGrounded -= Player_OnGrounded;
+        player.OnAirborne -= Player_OnAirborne;
     }
 
     private void Update()

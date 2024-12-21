@@ -11,8 +11,6 @@ public class LeaperAttackState : EnemyBaseState
 
     private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
 
-    private bool isAttackStarted;
-
     public LeaperAttackState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
