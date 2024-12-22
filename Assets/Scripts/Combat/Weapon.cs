@@ -9,25 +9,25 @@ using System;
 public class Weapon : MonoBehaviour
 {
     [Header("Weapon: References")]
-    [SerializeField, Self] private CapsuleCollider capsuleCollider;
-    [SerializeField, Anywhere] private GameObject trailObject;
-    [SerializeField] private Entity holderEntity;
-    private Animator animator;
+    [SerializeField, Self] private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
+    [SerializeField, Child] private ParticleSystem trailParticle;
+    private Entity holderEntity;
+    private LayerMask hitLayerMask; // Assigned in awake
 
-    [Header("Weapon: Settings")]
-    [SerializeField] private AnimatorOverrideController overrideAnimator;
-
-    [Header("Weapon: Collisions")]
-    [SerializeField] private LayerMask damageableCollidersLayerMask;
-    [SerializeField] private Transform colliderStartTransform;
-    [SerializeField] private Transform colliderEndTransform;
-    private Ray currentFrameCollisionRay;
-    private Ray previousFrameCollisionRay;
+    #region Between-Frame Collisions
+    private bool isCheckingCollisions = false;
+    private List<Transform> colliderStartTransforms = new List<Transform>();
+    private List<Transform> colliderEndTransforms = new List<Transform>();
+    private Ray[] currentFrameCollisionRays;
+    private Ray[] previousFrameCollisionRays;
     private int currentHitFrame;
+    #endregion
 
+    #region Events
     public Action<Entity> OnWeaponStartSwing = delegate { }; // parameter is the entity that started the swing
     public Action<Entity> OnWeaponEndSwing = delegate { }; // parameter is the entity that ended the swing
     public Action<Entity, Entity, Vector3, int> OnWeaponHit = delegate { }; // parameters: attacker, victim, hit point, damage
+    #endregion
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
@@ -43,65 +43,115 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponentInParent<Animator>();
         holderEntity = GetComponentInParent<Entity>();
 
-        AssignColliderStartEndPositions();
+        hitLayerMask = LayerMask.GetMask("Damageable Entity");
+
+        PopulateColliderStartEndPositions();
+    }
+
+    /// <summary>
+    /// Creates and assigns the start and end positions for each collider attached to the weapon.
+    /// This method is responsible for populating the colliderStartTransforms and colliderEndTransforms lists,
+    /// as well as initializing the currentFrameCollisionRays and previousFrameCollisionRays arrays.
+    /// </summary>
+    private void PopulateColliderStartEndPositions()
+    {
+        for (int i = 0; i < capsuleColliders.Count; i++)
+        {
+            GameObject start = new GameObject($"Collider{i} Start");
+            GameObject end = new GameObject($"Collider{i} End");
+
+            start.transform.SetParent(transform);
+            end.transform.SetParent(transform);
+
+            start.transform.localPosition = capsuleColliders[i].center - (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * Vector3.up;
+            end.transform.localPosition = capsuleColliders[i].center + (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * Vector3.up;
+
+            colliderStartTransforms.Add(start.transform);
+            colliderEndTransforms.Add(end.transform);
+        }
+
+        currentFrameCollisionRays = new Ray[capsuleColliders.Count];
+        previousFrameCollisionRays = new Ray[capsuleColliders.Count];
+    }
+
+    private void Start()
+    {
+        trailParticle.Stop();
     }
 
     private void Update()
     {
-        trailObject.SetActive(capsuleCollider.enabled);
-
         HandleHitDetectionBetweenFrames();
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (!capsuleCollider.enabled) return;
-        if ((damageableCollidersLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
+        if (!isCheckingCollisions) return;
+        if ((hitLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
         Entity enemy = other.GetComponentInParent<Entity>();
 
-        Vector3 hitPoint = other.ClosestPointOnBounds(colliderStartTransform.position);
+        Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
 
         AttemptToHitEnemy(enemy, hitPoint, true);
     }
 
+    /// <summary>
+    /// Handles hit detection between frames.
+    /// </summary>
     private void HandleHitDetectionBetweenFrames()
     {
-        if (!capsuleCollider.enabled)
+        if (!isCheckingCollisions)
         {
             currentHitFrame = 0;
 
             return;
         }
 
-        previousFrameCollisionRay = currentFrameCollisionRay;
-
-        Vector3 dir = colliderEndTransform.position - colliderStartTransform.position;
-        currentFrameCollisionRay = new Ray(colliderStartTransform.position, dir);
-
-        if(currentHitFrame > 0)
+        // Loop through every capsule collider attached
+        for (int i = 0; i < capsuleColliders.Count; i++)
         {
-            int segments = (int)Mathf.Ceil(dir.magnitude / capsuleCollider.radius);
-            for(int i = 0; i <= segments; i++)
+            previousFrameCollisionRays[i] = currentFrameCollisionRays[i];
+
+            // Calculate the current frame collision ray (from start to end)
+            Vector3 dir = colliderEndTransforms[i].position - colliderStartTransforms[i].position;
+            currentFrameCollisionRays[i] = new Ray(colliderStartTransforms[i].position, dir);
+
+            if (currentHitFrame > 0)
             {
-                Vector3 currPoint = currentFrameCollisionRay.origin + i / (float)segments * currentFrameCollisionRay.direction;
-                Vector3 prevPoint = previousFrameCollisionRay.origin + i / (float)segments * previousFrameCollisionRay.direction;
+                // Split the current fram ray into segments and sphere cast between each frame's segment
+                int segments = (int)Mathf.Ceil(dir.magnitude / capsuleColliders[i].radius);
+                for (int s = 0; s <= segments; s++)
+                {
+                    Vector3 currPoint = currentFrameCollisionRays[i].origin + s / (float)segments * currentFrameCollisionRays[i].direction;
+                    Vector3 prevPoint = previousFrameCollisionRays[i].origin + s / (float)segments * previousFrameCollisionRays[i].direction;
 
-                CheckCollisionsWithRays(new Ray(prevPoint, currPoint-prevPoint), Vector3.Distance(currPoint, prevPoint));
+                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius);
 
-                //Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
+                    // Debugging
+                    /*Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
+                    CustomGizmos.InstantiateTemporarySphere(currPoint, capsuleColliders[i].radius, 5f,
+                        Color.Lerp(new Color(1f, 0, 0, 0.1f), new Color(0, 0, 1f, 0.1f), (i + 1) / capsuleColliders.Count));
+                    CustomGizmos.InstantiateTemporarySphere(prevPoint, capsuleColliders[i].radius, 5f,
+                        Color.Lerp(new Color(1f, 0, 0, 0.1f), new Color(0, 0, 1f, 0.1f), (i + 1) / capsuleColliders.Count));*/
+                }
             }
         }
 
         currentHitFrame++;
     }
 
-    private void CheckCollisionsWithRays(Ray ray, float distance)
+    /// <summary>
+    /// Checks for hits using a sphere cast and attempts to hit the enemy.
+    /// </summary>
+    /// <param name="ray">The ray to cast.</param>
+    /// <param name="distance">The distance of the sphere cast.</param>
+    /// <param name="radius">The radius of the sphere cast.</param>
+    private void CheckHitsWithSphereCast(Ray ray, float distance, float radius)
     {
-        RaycastHit[] hits = Physics.RaycastAll(ray, distance, damageableCollidersLayerMask);
+        RaycastHit[] hits = Physics.SphereCastAll(ray, radius, distance, hitLayerMask);
 
         if (hits == null) return;
         if (hits.Length == 0) return;
@@ -109,7 +159,7 @@ public class Weapon : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             Vector3 hitPoint = hit.collider.ClosestPointOnBounds(hit.point);
-            if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds((colliderStartTransform.position + colliderEndTransform.position) / 2);
+            if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds(transform.position);
 
             Entity enemy = hit.collider.GetComponentInParent<Entity>();
 
@@ -117,6 +167,12 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempts to hit an enemy with the weapon.
+    /// </summary>
+    /// <param name="victim">The enemy to hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
     private void AttemptToHitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         if (victim == null) return;
@@ -129,12 +185,18 @@ public class Weapon : MonoBehaviour
         HitEnemy(victim, hitPoint, fromTrigger);
     }
 
+    /// <summary>
+    /// Hits an enemy with the weapon, triggering impact frames, camera shake, and damage calculation.
+    /// </summary>
+    /// <param name="victim">The enemy to hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    /// <param name="fromTrigger">Flag indicating if the hit is from the trigger.</param>
     private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
-        //CreateTempHitVisual(hitPoint, fromTrigger ? Color.green : Color.red, 1.5f);
+        // CustomGizmos.InstantiateTemporarySphere(hitPoint, 0.1f, 1.5f, fromTrigger ? Color.green : Color.red);
 
         int damageValue = holderEntity.CalculateDamage(percentDamage);
 
@@ -143,6 +205,11 @@ public class Weapon : MonoBehaviour
         victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
+    /// <summary>
+    /// Starts the impact frames with the specified time scale and duration.
+    /// </summary>
+    /// <param name="timeScale">The time scale of the impact frames.</param>
+    /// <param name="duration">The duration of the impact frames.</param>
     private void StartImpactFrames(float timeScale, float duration)
     {
         if (impactFramesDuration <= 0) return;
@@ -165,12 +232,6 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private void AssignColliderStartEndPositions()
-    {
-        colliderStartTransform.localPosition = capsuleCollider.center - (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
-        colliderEndTransform.localPosition = capsuleCollider.center + (0.5f * capsuleCollider.height - capsuleCollider.radius) * Vector3.up;
-    }
-
     /// <summary>
     /// Sets the timescale and duration of the impact frames.
     /// </summary>
@@ -182,21 +243,50 @@ public class Weapon : MonoBehaviour
         impactFramesDuration = newDuration;
     }
 
+    /// <summary>
+    /// Clears the list of enemies hit by the current attack.
+    /// </summary>
     public void ClearEnemiesHitList()
     {
         entitiesHitByCurrentAttack.Clear();
     }
 
+    /// <summary>
+    /// Enables all the colliders attached to the weapon.
+    /// Sets the isCheckingCollisions flag to true.
+    /// </summary>
     public void EnableTriggers()
     {
-        capsuleCollider.enabled = true;
+        isCheckingCollisions = true;
+
+        trailParticle.Play();
+
+        foreach (CapsuleCollider collider in capsuleColliders)
+        {
+            collider.enabled = true;
+        }
     }
 
+    /// <summary>
+    /// Disables all the colliders attached to the weapon.
+    /// /// Sets the isCheckingCollisions flag to false.
+    /// </summary>
     public void DisableTriggers()
     {
-        capsuleCollider.enabled = false;
+        isCheckingCollisions = false;
+
+        trailParticle.Stop();
+
+        foreach (CapsuleCollider collider in capsuleColliders)
+        {
+            collider.enabled = false;
+        }
     }
 
+    /// <summary>
+    /// Sets the percentage of damage for the weapon.
+    /// </summary>
+    /// <param name="newPercent">The new percentage of damage.</param>
     public void SetPercentDamage(float newPercent)
     {
         percentDamage = newPercent;

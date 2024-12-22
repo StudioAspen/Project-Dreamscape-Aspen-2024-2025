@@ -9,7 +9,7 @@
 
     public override void OnEnter()
     {
-        
+        entity.TransitionToAnimation("FlatMovement");
     }
 
     public override void OnExit()
