@@ -8,8 +8,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
 
     [field: Header("Aspect of Rage Passive A: Settings")]
     [field: SerializeField] public BurningRageStatusEffectSO BurningRageStack { get; private set; }
-    [field: SerializeField] public BurningRageStatusEffectSO BurningRageStackExtension { get; private set; }
-    private StatusEffectSO currentBurningRageStack;
 
     private void OnValidate()
     {
@@ -28,8 +26,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
-        currentBurningRageStack = BurningRageStack;
-
         ownerWeapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
@@ -43,8 +39,8 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     public override bool OnStack(StatusEffectSO newStatusEffect)
     {
         if (!base.OnStack(newStatusEffect)) return false;
- 
-        currentBurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStackExtension;
+
+        BurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStack;
 
         return true;
     }
@@ -52,6 +48,6 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     // for stacks
     private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, currentBurningRageStack, entity.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, entity.gameObject);
     }
 }

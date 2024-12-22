@@ -2,19 +2,17 @@
 
 public class PlayerChargeState : PlayerBaseState
 {
-    private PlayerInputReader playerInputReader;
     private PlayerCombat playerCombat;
 
     private int attackInputNumber;
 
-    private float timer;
+    public float Timer { get; private set; }
     private float duration;
 
     public PlayerChargeState(Player player) : base(player)
     {
         this.player = player;
         playerCombat = player.GetComponent<PlayerCombat>();
-        playerInputReader = player.GetComponent<PlayerInputReader>();
     }
 
     /// <summary>
@@ -33,7 +31,7 @@ public class PlayerChargeState : PlayerBaseState
 
         player.SetSpeedModifier(0);
 
-        timer = 0f;
+        Timer = 0f;
 
         playerCombat.OnChargeStart?.Invoke(attackInputNumber);
 
@@ -44,23 +42,18 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void OnExit()
     {
-        playerCombat.OnChargeRelease?.Invoke(attackInputNumber, timer);
+        playerCombat.OnChargeRelease?.Invoke(attackInputNumber, Timer);
+
+        Timer = 0f;
     }
 
     public override void Update()
     {
-        timer += player.LocalDeltaTime;
+        Timer += player.LocalDeltaTime;
 
         player.ApplyGravity();
 
         player.TransitionToAnimation("Charge");
-
-        if(timer >= duration)
-        {
-            player.ChangeState(player.DefaultState);
-            playerInputReader.OnComboAction?.Invoke(attackInputNumber == 1 ? ComboAction.CHARGED_ATTACK1 : ComboAction.CHARGED_ATTACK2);
-            return;
-        }
 
         if (player.MoveDirection != Vector3.zero)
         {

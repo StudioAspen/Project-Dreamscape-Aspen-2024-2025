@@ -36,7 +36,7 @@ public class PlayerAttackState : PlayerBaseState
     /// Sets the extra percent damage for this swing.
     /// </summary>
     /// <param name="extraPercentDamage">The extra percent damage to set.</param>
-    public void SetExtraPercentDamage(float extraPercentDamage)
+    public void SetBonusPercentDamage(float extraPercentDamage)
     {
         this.extraPercentDamage = extraPercentDamage;
     }

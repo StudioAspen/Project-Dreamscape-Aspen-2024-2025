@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2972bcafc4279ab47af29a7728e5a172, type: 3}
-  m_Name: RagePassiveB
+  m_Name: RagePassiveBExtended
   m_EditorClassIdentifier: 
   <Stackable>k__BackingField: 1
   <ChargedAttackActivatedStatusEffect>k__BackingField: {fileID: 11400000, guid: b747af478b61f154a97eb22b4601a702,
@@ -22,6 +22,6 @@ MonoBehaviour:
   - 250
   <ChargedOnHitExplosionPercentDamage>k__BackingField: 100
   <ChargedOnHitExplosionRadius>k__BackingField: 3
-  <PerfectTimingWindowDuration>k__BackingField: 0
-  <PerfectTimingBonusPercentDamage>k__BackingField: 100
-  <PerfectTimingOnHitExplosionRadiusMultiplier>k__BackingField: 1
+  <PerfectTimingWindowDuration>k__BackingField: 0.5
+  <PerfectTimingBonusPercentDamage>k__BackingField: 200
+  <PerfectTimingOnHitExplosionRadiusMultiplier>k__BackingField: 2

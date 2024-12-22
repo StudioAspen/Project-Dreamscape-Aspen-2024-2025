@@ -15,6 +15,12 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
     [field: SerializeField] public float ChargedOnHitExplosionPercentDamage { get; private set; } = 100f;
     [field: SerializeField] public float ChargedOnHitExplosionRadius { get; private set; } = 5f;
 
+    [field: Header("Aspect of Rage Passive B: Perfect Timing Settings")]
+    [field: SerializeField] public float PerfectTimingWindowDuration { get; private set; } = 0.5f;
+    [field: SerializeField] public float PerfectTimingBonusPercentDamage { get; private set; } = 200f;
+    [field: SerializeField] public float PerfectTimingOnHitExplosionRadiusMultiplier { get; private set; } = 2f;
+    private bool isCurrentSwingPerfectlyTimed = false;
+
     private void OnValidate()
     {
         Stackable = true; // force stackable otherwise override wont work
@@ -38,8 +44,9 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         ChargeAttackActivatedStatusEffectSO chargeAttackActivatedStatusEffectInstance =
             entityStatusEffectorOwner.ApplyStatusEffect(ChargedAttackActivatedStatusEffect, entity.gameObject) as ChargeAttackActivatedStatusEffectSO;
         chargeAttackActivatedStatusEffectInstance.SetMaxChargeDuration(MaxChargeDuration); // Set the new max charge duration
-            
+
         playerCombat.OnChargeRelease += PlayerCombat_OnChargeRelease;
+        playerCombat.Weapon.OnWeaponEndSwing += Weapon_OnWeaponEndSwing;
         playerCombat.Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
@@ -50,6 +57,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         entityStatusEffectorOwner.RemoveStatusEffect(ChargedAttackActivatedStatusEffect.GetType(), true);
 
         playerCombat.OnChargeRelease -= PlayerCombat_OnChargeRelease;
+        playerCombat.Weapon.OnWeaponEndSwing -= Weapon_OnWeaponEndSwing;
         playerCombat.Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
@@ -58,8 +66,8 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         if (!base.OnStack(newStatusEffect)) return false;
 
         // Set new max charge duration
-        EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(entity.gameObject)
-            .SetMaxChargeDuration((newStatusEffect as ChargeAttackActivatedStatusEffectSO).MaxChargeDuration);
+        entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>()
+            .SetMaxChargeDuration((newStatusEffect as AspectOfRagePassiveBStatusEffectSO).MaxChargeDuration);
 
         // Set new damage bonus values
         ChargeDurationBonusPercentDamages = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargeDurationBonusPercentDamages;
@@ -68,28 +76,48 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         ChargedOnHitExplosionPercentDamage = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargedOnHitExplosionPercentDamage;
         ChargedOnHitExplosionRadius = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargedOnHitExplosionRadius;
 
+        // Set extended passive config values
+        PerfectTimingWindowDuration = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingWindowDuration;
+        PerfectTimingBonusPercentDamage = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingBonusPercentDamage;
+        PerfectTimingOnHitExplosionRadiusMultiplier = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingOnHitExplosionRadiusMultiplier;
+
         return true;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if(IsPerfectTimingBonusActive(player.PlayerChargeState.Timer))
+            Debug.Log($"Perfect Timing Window!");
+    }
+
+    /// <summary>
+    /// Checks if the perfect timing bonus is active based on the charge duration.
+    /// </summary>
+    /// <param name="chargeDuration">The duration of the charge attack.</param>
+    /// <returns>True if the perfect timing bonus is active, false otherwise.</returns>
+    private bool IsPerfectTimingBonusActive(float chargeDuration)
+    {
+        if (PerfectTimingWindowDuration <= 0) return false;
+
+        return chargeDuration >= MaxChargeDuration
+            && chargeDuration <= MaxChargeDuration + PerfectTimingWindowDuration;
     }
 
     private void PlayerCombat_OnChargeRelease(int attackInputNumber, float chargeDuration)
     {
-        if(ChargeDurationBonusPercentDamages.Count == 0) return;
+        float bonusDamageFromDuration = CalculateBonusOnHitDamageFromChargeDuration(chargeDuration);
+        float bonusDamageFromPerfectTiming = IsPerfectTimingBonusActive(chargeDuration) ? PerfectTimingBonusPercentDamage : 100f;
+        isCurrentSwingPerfectlyTimed = IsPerfectTimingBonusActive(chargeDuration);
 
-        float intervalSize = MaxChargeDuration / ChargeDurationBonusPercentDamages.Count;
+        Debug.Log($"Duration Bonus: {bonusDamageFromDuration}, Timing Bonus: {bonusDamageFromPerfectTiming}, Total: {bonusDamageFromDuration * bonusDamageFromPerfectTiming / 100f}");
+        player.PlayerAttackState.SetBonusPercentDamage(bonusDamageFromDuration * bonusDamageFromPerfectTiming/100f);
+    }
 
-        for(int i = 0; i < ChargeDurationBonusPercentDamages.Count; i++)
-        {
-            if(chargeDuration <= intervalSize)
-            {
-                return;
-            }
-            if(chargeDuration <= intervalSize * (i + 2))
-            {
-                player.PlayerAttackState.SetExtraPercentDamage(ChargeDurationBonusPercentDamages[i]);
-                //Debug.Log($"Charge Duration: {chargeDuration}, {chargeDuration/ChargeDurationBonusPercentDamages.Count}, Bonus: {ChargeDurationBonusPercentDamages[i]}");
-                return;
-            }
-        }
+    private void Weapon_OnWeaponEndSwing(Entity attacker)
+    {
+        isCurrentSwingPerfectlyTimed = false;
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
@@ -99,8 +127,49 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
 
         if(!isChargedHit) return;
 
+        float explosionRadius = ChargedOnHitExplosionRadius *
+            (isCurrentSwingPerfectlyTimed ? PerfectTimingOnHitExplosionRadiusMultiplier : 1f);
+
+        ExplodeOnHit(attacker, victim, hitPoint, explosionRadius);
+    }
+
+    /// <summary>
+    /// Calculates the bonus damage based on the charge duration.
+    /// </summary>
+    /// <param name="chargeDuration">The duration of the charge attack.</param>
+    /// <returns>The bonus damage based on the charge duration.</returns>
+    private float CalculateBonusOnHitDamageFromChargeDuration(float chargeDuration)
+    {
+        if (ChargeDurationBonusPercentDamages.Count == 0) return 100f;
+
+        float intervalSize = MaxChargeDuration / ChargeDurationBonusPercentDamages.Count;
+
+        for (int i = 0; i < ChargeDurationBonusPercentDamages.Count; i++)
+        {
+            if (chargeDuration <= intervalSize)
+            {
+                return 100f;
+            }
+            if (chargeDuration <= intervalSize * (i + 2))
+            {
+                //Debug.Log($"Charge Duration: {chargeDuration}, {chargeDuration/ChargeDurationBonusPercentDamages.Count}, Bonus: {ChargeDurationBonusPercentDamages[i]}");
+                return ChargeDurationBonusPercentDamages[i];
+            }
+        }
+
+        return ChargeDurationBonusPercentDamages[ChargeDurationBonusPercentDamages.Count - 1];
+    }
+
+    /// <summary>
+    /// Explodes on hit, dealing damage to nearby enemy entities.
+    /// </summary>
+    /// <param name="attacker">The entity that initiated the attack.</param>
+    /// <param name="victim">The entity that was hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    private void ExplodeOnHit(Entity attacker, Entity victim, Vector3 hitPoint, float radius)
+    {
         // make a list and grab all non-dead entities nearby
-        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(hitPoint, ChargedOnHitExplosionRadius, false);
+        List<Entity> enemyList = Entity.GetEntitiesThroughAOE(hitPoint, radius, false);
         for (int i = 0; i < enemyList.Count; i++) // loop through all entities and deal damage to only the victim's allies
         {
             Entity enemy = enemyList[i]; // current entity in the loop
@@ -108,11 +177,11 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
             if (enemy == victim) continue; // filter out victim
             if (enemy.Team != victim.Team) continue; // filter out attacker's allies
 
-            int explosionDamage = attacker.CalculateDamage(ChargedOnHitExplosionPercentDamage); // calculate the damage
+            int explosionDamage = attacker.CalculateDamage(radius); // calculate the damage
 
             enemy.TakeDamage(explosionDamage, hitPoint, attacker.gameObject); // deal damage to enemy entities
         }
 
-        CustomGizmos.InstantiateTemporarySphere(hitPoint, ChargedOnHitExplosionRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
+        CustomGizmos.InstantiateTemporarySphere(hitPoint, radius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 }
