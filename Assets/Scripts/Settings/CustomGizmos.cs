@@ -90,9 +90,9 @@ public static class CustomGizmos
     public static void InstantiateTemporarySphere(Vector3 center, float radius, float expireDuration, UnityEngine.Color color)
     {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        GameObject.Destroy(sphere.GetComponent<Collider>());
         sphere.name = "Temporary Sphere";
         sphere.transform.position = center;
-        sphere.GetComponent<Collider>().isTrigger = true;
         sphere.transform.localScale = radius * 2f * Vector3.one;
         SetTransparent(sphere.GetComponent<Renderer>().material);
         sphere.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

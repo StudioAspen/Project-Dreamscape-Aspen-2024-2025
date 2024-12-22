@@ -69,21 +69,6 @@ MonoBehaviour:
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <StaggerDuration>k__BackingField: 4
-  OnGrounded:
-    m_PersistentCalls:
-      m_Calls: []
-  OnAirborne:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEntityTakeDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEntityDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  OnKillEntity:
-    m_PersistentCalls:
-      m_Calls: []
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 2
   <CustomCollisionRadius>k__BackingField: 0.4
@@ -507,6 +492,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Radius
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2382167382557116116, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.17500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2628417811129990337, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.17500001
       objectReference: {fileID: 0}
     - target: {fileID: 3649179186203773579, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}
@@ -1648,6 +1643,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Radius
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2382167382557116116, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.17500001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2628417811129990337, guid: 16906527d2f86ac4083742b94c6e3818,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.17500001
       objectReference: {fileID: 0}
     - target: {fileID: 3649179186203773579, guid: 16906527d2f86ac4083742b94c6e3818,
         type: 3}

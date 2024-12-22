@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3649179186203773579}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.0000000037252894, z: 0.70710677, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.74700016, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.023, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -672,7 +672,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 0.6, y: 1, z: 1}
+    m_Scale: {x: 0.1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -4898,52 +4898,52 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0307
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.09550009
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.06549998
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7046547
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7046547
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.05883713
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.05883713
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -13.698
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 4.152
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
@@ -4953,14 +4953,16 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_Name
-      value: LongSword
+      value: Fist
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5754084199372789682, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
+    - {fileID: -7511558181221131132, guid: a095f798aba8f2946b3a23de742b2fb8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a095f798aba8f2946b3a23de742b2fb8,
@@ -4970,7 +4972,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
-      insertIndex: 1
+      insertIndex: -1
       addedObject: {fileID: 618815233110515994}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a095f798aba8f2946b3a23de742b2fb8,
         type: 3}
@@ -5003,19 +5005,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   capsuleColliders:
   - {fileID: 1259378818332639156}
-  trailParticle: {fileID: 0}
-  <Combos>k__BackingField:
-  - {fileID: 11400000, guid: d08752b192726424c84ffaff07eb3ab1, type: 2}
-  - {fileID: 11400000, guid: 00d269358e037cb45b41ba880a256c9b, type: 2}
-  - {fileID: 11400000, guid: d66b5ba2179f1674cadf22d7d4d81b93, type: 2}
-  - {fileID: 11400000, guid: 046e4e3432103fc45a6c198aaf95c3a9, type: 2}
-  - {fileID: 11400000, guid: 7fbb47c60cae2014f98ef5ea9907ae61, type: 2}
-  - {fileID: 11400000, guid: e1a98987da9049e45a48d1c9cc1d34d3, type: 2}
-  - {fileID: 11400000, guid: 47cfa06376be08142b82cf04604712cb, type: 2}
-  - {fileID: 11400000, guid: 2544063d1ad4634409b17d12c1501932, type: 2}
-  - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
-  - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}
-  - {fileID: 11400000, guid: 806622eae2be3db40b86d3a5c53da0c7, type: 2}
+  trailParticle: {fileID: 3679242968149718916}
+  <Combos>k__BackingField: []
 --- !u!136 &1259378818332639156
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5036,6 +5027,6 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.25
-  m_Height: 1.663404
+  m_Height: 0.25
   m_Direction: 1
-  m_Center: {x: 0, y: 0.6578853, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
