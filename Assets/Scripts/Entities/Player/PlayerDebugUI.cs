@@ -31,9 +31,9 @@ public class PlayerDebugUI : MonoBehaviour
         chainingSystem = player.GetComponent<ChainingSystem>();
         momentumSystem = player.GetComponent<MomentumSystem>();
 
-        player.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
+        player.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
         
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.AddListener(Weapon_OnWeaponStartSwing);
+        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void Start()
@@ -43,9 +43,9 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
+        player.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
 
-        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.RemoveListener(Weapon_OnWeaponStartSwing);
+        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
 
     }
 

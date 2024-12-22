@@ -60,14 +60,14 @@ public class Leaper : Enemy
 
         SetStartState(LeaperWanderState);
 
-        OnGrounded.AddListener(Leaper_OnGrounded);
+        OnGrounded += Leaper_OnGrounded;
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
 
-        OnGrounded.RemoveListener(Leaper_OnGrounded);
+        OnGrounded -= Leaper_OnGrounded;
     }
 
     private protected override void OnStart()

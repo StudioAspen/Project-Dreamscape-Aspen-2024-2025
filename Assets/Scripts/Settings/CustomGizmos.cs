@@ -76,4 +76,49 @@ public static class CustomGizmos
         // Draw the wire circle using Handles
         Handles.DrawWireArc(center, Vector3.up, Vector3.right, 360f, radius);
     }
+
+    /// <summary>
+    /// Instantiates a temporary sphere GameObject with the specified center, radius, expire duration, and color.
+    /// The sphere is created as a primitive sphere with a Collider set as a trigger.
+    /// The sphere's material is set to be transparent using the Universal Render Pipeline/Unlit shader.
+    /// The sphere is destroyed after the specified expire duration.
+    /// </summary>
+    /// <param name="center">The center position of the sphere.</param>
+    /// <param name="radius">The radius of the sphere.</param>
+    /// <param name="expireDuration">The duration in seconds before the sphere is destroyed.</param>
+    /// <param name="color">The color of the sphere.</param>
+    public static void InstantiateTemporarySphere(Vector3 center, float radius, float expireDuration, UnityEngine.Color color)
+    {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = center;
+        sphere.GetComponent<Collider>().isTrigger = true;
+        sphere.transform.localScale = radius * Vector3.one;
+        SetTransparent(sphere.GetComponent<Renderer>().material);
+        sphere.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        sphere.GetComponent<Renderer>().material.color = color;
+        GameObject.Destroy(sphere, expireDuration);
+
+        void SetTransparent(Material targetMaterial)
+        {
+            if (targetMaterial == null) return;
+
+            targetMaterial.shader = Shader.Find("Universal Render Pipeline/Unlit");
+
+            // Change Surface Type to Transparent
+            targetMaterial.SetFloat("_Surface", 1); // 1 = Transparent, 0 = Opaque
+
+            // Enable required shader keywords
+            targetMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            targetMaterial.DisableKeyword("_SURFACE_TYPE_OPAQUE");
+
+            // Set rendering mode for transparency
+            targetMaterial.SetOverrideTag("RenderType", "Transparent");
+            targetMaterial.SetInt("_ZWrite", 0); // Disable ZWrite for transparency
+            targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+
+            // Apply the changes to the material
+            targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+        }
+    }
 }

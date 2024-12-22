@@ -19,12 +19,12 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void Awake()
     {
-        entity.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
+        entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
 
     private void OnDestroy()
     {
-        entity.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
     }
 
     private void OnEnable()

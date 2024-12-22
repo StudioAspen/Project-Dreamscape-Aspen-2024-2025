@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using DG.Tweening;
 using System.Linq;
+using System;
 
 public class Weapon : MonoBehaviour
 {
@@ -23,14 +24,14 @@ public class Weapon : MonoBehaviour
     private Ray currentFrameCollisionRay;
     private Ray previousFrameCollisionRay;
     private int currentHitFrame;
-    [HideInInspector] public UnityEvent<Entity> OnWeaponStartSwing = new UnityEvent<Entity>();
-    [HideInInspector] public UnityEvent<Entity> OnWeaponEndSwing = new UnityEvent<Entity>();
-    [HideInInspector] public UnityEvent<Entity, Entity, Vector3, int> OnWeaponHit = new UnityEvent<Entity, Entity, Vector3, int>();
+
+    public Action<Entity> OnWeaponStartSwing = delegate { }; // parameter is the entity that started the swing
+    public Action<Entity> OnWeaponEndSwing = delegate { }; // parameter is the entity that ended the swing
+    public Action<Entity, Entity, Vector3, int> OnWeaponHit = delegate { }; // parameters: attacker, victim, hit point, damage
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
     private float percentDamage;
-
     private float impactFramesTimeScale;
     private float impactFramesDuration;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
@@ -142,17 +143,6 @@ public class Weapon : MonoBehaviour
         victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
     }
 
-    private void CreateTempHitVisual(Vector3 pos, Color color, float duration)
-    {
-        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        temp.name = "TempHitVisual";
-        temp.GetComponent<Collider>().enabled = false;
-        temp.transform.localScale = 0.1f * Vector3.one;
-        temp.transform.position = pos;
-        temp.GetComponent<Renderer>().material.color = color;
-        Destroy(temp, duration);
-    }
-
     private void StartImpactFrames(float timeScale, float duration)
     {
         if (impactFramesDuration <= 0) return;
@@ -215,6 +205,11 @@ public class Weapon : MonoBehaviour
     public void AddCombo(ComboDataSO comboData)
     {
         Combos.Add(comboData);
+    }
+
+    public void RemoveCombo(ComboDataSO comboData)
+    {
+        Combos.Remove(comboData);
     }
 
     /// <summary>

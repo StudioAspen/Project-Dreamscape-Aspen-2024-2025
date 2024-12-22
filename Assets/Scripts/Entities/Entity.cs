@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using KBCore.Refs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -73,15 +74,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Movement Events
-    [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
-    [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
+    public Action<Vector3> OnGrounded = delegate { }; // 1st arg: where you grounded
+    public Action<Vector3> OnAirborne = delegate { }; // 1st arg: where you left ground
     private bool prevIsGrounded;
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<int, Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<int, Vector3, GameObject>(); // passes the hit point and the source of the damage
-    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
-    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
+    public Action<int, Vector3, GameObject> OnEntityTakeDamage = delegate { }; // passes the hit point and the source of the damage
+    public Action<GameObject> OnEntityDeath = delegate { }; // passes the killer gameObject
+    public Action<Entity> OnKillEntity = delegate { }; // passes the victim entity
     private protected GameObject lastHitSource;
     #endregion
 
@@ -971,7 +972,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             return Vector3.zero;
         }
 
-        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * Random.onUnitSphere;
+        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * UnityEngine.Random.onUnitSphere;
 
         return collider.ClosestPointOnBounds(collider.bounds.center + randomPointOnUnitSphere);
     }
@@ -1162,10 +1163,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     public int CalculateDamage(float percent)
     {
         Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
-            (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+                (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
             );
 
-        return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
+        return UnityEngine.Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
     }
 
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.

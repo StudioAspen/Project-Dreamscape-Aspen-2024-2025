@@ -4,17 +4,19 @@ using System.Drawing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class Player : Entity
 {
     [Header("Player: References")]
-    [SerializeField, Self] private PlayerInputReader input;
+    [SerializeField, Self] private PlayerInputReader playerInputReader;
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
     [SerializeField] private float groundedAcceleration = 4f;
+    public Vector3 MoveDirection => playerInputReader.MoveDirection;
     private float movementOnSlopeSpeedModifier = 1f;
-    public Vector3 MoveDirection => input.MoveDirection;
     private float forwardAngleBasedOnCamera;
     private Quaternion targetForwardRotation = Quaternion.identity;
     private Vector3 targetForwardDirection = Vector3.forward;
@@ -27,17 +29,16 @@ public class Player : Entity
     private int currentJumpCount;
     
     #region Flags
-    [HideInInspector] public bool IsMoving => input.MoveDirection.sqrMagnitude > 0;
+    [HideInInspector] public bool IsMoving => playerInputReader.MoveDirection.sqrMagnitude > 0;
     [HideInInspector] public bool IsSprinting;
-    [HideInInspector] public bool CanAttack = true;
     private bool isJumping;
     #endregion
 
     [field : Header("Player: Dash")]
     [field: SerializeField] public float DashDuration { get; private set; } = 0.5f;
     [field : SerializeField] public float InitialDashVelocity { get; private set; } = 25f;
-    [SerializeField] private float dashDelayDuration = 0.5f;
     [field: SerializeField] public float SprintDurationAfterDash { get; private set; } = 2f;
+    [SerializeField] private float dashDelayDuration = 1f;
     [SerializeField] private GameObject dashTrailObject;
     private float dashDelayTimer = Mathf.Infinity;
     private Coroutine dashCoroutine;
@@ -72,26 +73,15 @@ public class Player : Entity
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        input.Jump.AddListener(Input_HandleJumpInput);
-        input.SprintHold.AddListener(Input_HandleSprintInput);
-        input.SprintRelease.AddListener(Input_HandleSprintReleaseInput);
-        input.Dash.AddListener(Input_HandleDashInput);
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
-
-        input.Jump.RemoveListener(Input_HandleJumpInput);
-        input.SprintHold.RemoveListener(Input_HandleSprintInput);
-        input.SprintRelease.RemoveListener(Input_HandleSprintReleaseInput);
-        input.Dash.RemoveListener(Input_HandleDashInput);
     }
 
     private protected override void OnAwake()
     {
-        //calls OnAwake from the parent class, Entity
         base.OnAwake();
     }
 
@@ -115,41 +105,47 @@ public class Player : Entity
         HandleDashTrail();
     }
 
-    private void Input_HandleJumpInput()
+    /// <summary>
+    /// Determines whether the player can perform a jump.
+    /// </summary>
+    /// <returns>True if the player can jump, false otherwise.</returns>
+    public bool CanJump()
     {
-        if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return;
-        if(CurrentState == EntityLaunchState) return;
-        if (CurrentState == PlayerSlideState) return;
-        if(CurrentState == PlayerChargeState) return;
-        if (CurrentState == PlayerAttackState) return;
-        if (CurrentState == EntityStaggeredState) return;
+        if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return false;
+        if (CurrentState == EntityLaunchState) return false;
+        if (CurrentState == PlayerSlideState) return false;
+        if (CurrentState == PlayerChargeState) return false;
+        if (CurrentState == PlayerAttackState) return false;
+        if (CurrentState == EntityStaggeredState) return false;
 
-        ChangeState(PlayerJumpState);
+        return true;
     }
 
-    private void Input_HandleSprintInput()
+    /// <summary>
+    /// Determines whether the player can perform a dash.
+    /// </summary>
+    /// <returns>True if the player can dash, false otherwise.</returns>
+    public bool CanDash()
     {
-        if (CurrentState == PlayerChargeState) return;
-        if (CurrentState == PlayerDashState) return;
+        if (dashDelayTimer < dashDelayDuration) return false;
+        if (CurrentState == PlayerChargeState) return false;
+        if (CurrentState == PlayerDashState) return false;
+        if (CurrentState == EntityStaggeredState) return false;
+        if (CurrentState == EntityLaunchState) return false;
 
-        IsSprinting = true;
+        return true;
     }
 
-    private void Input_HandleSprintReleaseInput()
+    /// <summary>
+    /// Determines whether the player can sprint.
+    /// </summary>
+    /// <returns>True if the player can sprint, false otherwise.</returns>
+    public bool CanSprint()
     {
-        IsSprinting = false;
-    }
+        if (CurrentState == PlayerChargeState) return false;
+        if (CurrentState == PlayerDashState) return false;
 
-    private void Input_HandleDashInput()
-    {
-        if (dashDelayTimer < dashDelayDuration) return;
-        if (CurrentState == PlayerChargeState) return;
-        if (CurrentState == PlayerDashState) return;
-        if (CurrentState == EntityStaggeredState) return;
-        if (CurrentState == EntityLaunchState) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.DASH);
-        ChangeState(PlayerDashState);
+        return true;
     }
 
     /// <summary>
@@ -317,7 +313,7 @@ public class Player : Entity
     /// </summary>
     public void ApplyRotationToNextMovement()
     {
-        forwardAngleBasedOnCamera = Mathf.Atan2(input.MoveDirection.x, input.MoveDirection.z) * Mathf.Rad2Deg + Camera.main.transform.rotation.eulerAngles.y;
+        forwardAngleBasedOnCamera = Mathf.Atan2(playerInputReader.MoveDirection.x, playerInputReader.MoveDirection.z) * Mathf.Rad2Deg + Camera.main.transform.rotation.eulerAngles.y;
         targetForwardRotation = Quaternion.Euler(0, forwardAngleBasedOnCamera, 0);
         targetForwardDirection = targetForwardRotation * Vector3.forward;
     }

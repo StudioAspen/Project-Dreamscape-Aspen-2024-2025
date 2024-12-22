@@ -13,8 +13,6 @@ public class LeaperWanderState : EnemyBaseState
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-    private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
-
     public LeaperWanderState(Leaper enemy) : base(enemy)
     {
         leaper = enemy;
@@ -28,8 +26,6 @@ public class LeaperWanderState : EnemyBaseState
 
         wanderTimeElapsed = 0;
         randomWanderIntervalDuration = Random.Range(leaper.WanderIntervalDurationRange.x, leaper.WanderIntervalDurationRange.y);
-
-        entitiesHitByCurrentLeap.Clear();
     }
 
     public override void OnExit()
@@ -59,8 +55,6 @@ public class LeaperWanderState : EnemyBaseState
             wanderTimeElapsed = 0f;
             randomWanderIntervalDuration = Random.Range(leaper.WanderIntervalDurationRange.x, leaper.WanderIntervalDurationRange.y);
 
-            entitiesHitByCurrentLeap.Clear();
-
             currentWanderDestination = leaper.GetRandomWanderPoint(leaper.WanderRadiusRange);
 
             leaper.Hop(currentWanderDestination, leaper.WanderHopHeight);
@@ -75,8 +69,6 @@ public class LeaperWanderState : EnemyBaseState
             leaper.LookAt(currentWanderDestination);
 
             leaper.ApplyHorizontalVelocity();
-
-            leaper.CheckCollisions(leaper.RegularContactDamagePercent, ref entitiesHitByCurrentLeap);
         }
     }
 }

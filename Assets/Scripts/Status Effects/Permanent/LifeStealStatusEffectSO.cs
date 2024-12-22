@@ -29,14 +29,14 @@ public class LifeStealStatusEffectSO : StatusEffectSO
             return;
         }
 
-        ownerWeapon.OnWeaponHit.AddListener(Weapon_OnWeaponHit);
+        ownerWeapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        ownerWeapon.OnWeaponHit.RemoveListener(Weapon_OnWeaponHit);
+        ownerWeapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
     public override bool OnStack(StatusEffectSO newStatusEffect)
