@@ -14,6 +14,11 @@ public class Weapon : MonoBehaviour
     private Entity holderEntity;
     private LayerMask hitLayerMask; // Assigned in awake
 
+    #region Scale
+    public float OriginalScale { get; private set; } = 1f;
+    public void SetOriginalScale(float newScale) => OriginalScale = newScale;
+    #endregion
+
     #region Between-Frame Collisions
     private bool isCheckingCollisions = false;
     private List<Transform> colliderStartTransforms = new List<Transform>();
@@ -78,6 +83,8 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
+        OriginalScale = transform.localScale.x;
+
         trailParticle.Stop();
     }
 
@@ -128,7 +135,7 @@ public class Weapon : MonoBehaviour
                     Vector3 currPoint = currentFrameCollisionRays[i].origin + s / (float)segments * currentFrameCollisionRays[i].direction;
                     Vector3 prevPoint = previousFrameCollisionRays[i].origin + s / (float)segments * previousFrameCollisionRays[i].direction;
 
-                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius);
+                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.localScale.x);
 
                     // Debugging
                     /*Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
