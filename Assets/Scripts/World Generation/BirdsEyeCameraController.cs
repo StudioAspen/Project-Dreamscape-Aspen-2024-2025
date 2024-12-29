@@ -58,7 +58,6 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         HandlePlaceLandInput();
 
-
         HandleGhostLand();
     }
 

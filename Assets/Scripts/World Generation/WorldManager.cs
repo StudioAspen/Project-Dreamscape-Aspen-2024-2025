@@ -13,22 +13,31 @@ public class WorldManager : MonoBehaviour
     [SerializeField, Scene] private GameManager gameManager;
     [SerializeField, Self] private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
 
+    /* Pseudo Grid System Explanation:
+     The grid system starts with a land piece placed at position (0, 0). 
+     New lands are placed by calling the SpawnLand function, which multiplies the given (x, y) position by the scale of 
+     the land prefab to determine the world position. This ensures that lands are placed at the correct distances from 
+     each other based on their size.
+     Lands can only be placed adjacent to preexisting lands. The system tracks the borders of existing lands, which 
+     represent the valid positions where new land can be placed. Initially, with just one land, there are 4 possible 
+     borders (up, down, left, and right). After a new land is placed, the system updates the borders to reflect the 
+     newly available positions for further land placement.
+    */
     [field: Header("Pseudo Grid")]
-    public List<LandManager> SpawnedLands { get; private set; } = new List<LandManager>(); // a list of all currently spawned lands
-    private List<LandBorder> bordersList = new List<LandBorder>();
+    public Dictionary<Vector2Int, LandManager> SpawnedLands { get; private set; } = new Dictionary<Vector2Int, LandManager>(); // a list of all currently spawned lands
+    public Dictionary<Vector2Int, List<LandBorder>> Borders { get; private set; } = new Dictionary<Vector2Int, List<LandBorder>>(); // a list of all currently available borders
+    private float landScale;
     private int activeLandCount;
 
     [Header("Land Position Selection")]
     [SerializeField] private LandManager landToSpawnPrefab;
     [SerializeField] private Transform ghostLandTransform;
-    [SerializeField] private Material redTransparentMaterial;
-    [SerializeField] private Material greenTransparentMaterial;
 
     [field: Header("Biome Selection")]
     private Biome currentBiomeSelection = Biome.DREAM;
 
     [field: Header("Event Selection")]
-    private WorldEvent currentEventSelection = WorldEvent.EVENT1;
+    private WorldEvent currentEventSelection = (WorldEvent)1;
 
     [field: Header("Progression")]
     public int EmpowerTokens { get; private set; }
@@ -46,13 +55,15 @@ public class WorldManager : MonoBehaviour
 
     void Start()
     {
-        SpawnedLands.Add(GetComponentInChildren<LandManager>());
+        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
 
         BuildNavMesh();
 
         activeLandCount = 1;
 
         DisableGhostLand();
+
+        landScale = landToSpawnPrefab.transform.localScale.x;
     }
 
     void Update()
@@ -61,74 +72,103 @@ public class WorldManager : MonoBehaviour
     }
 
     #region Grid Functions
-    public LandManager GetLand(int x, int y)
+    /// <summary>
+    /// Retrieves the LandManager object based on the given grid position.
+    /// Returns null if no land exists at the specified position.
+    /// </summary>
+    /// <param name="gridPosition">The grid position of the land.</param>
+    /// <returns>The LandManager object at the specified grid position.</returns>
+    public LandManager GetLandByGridPosition(Vector2Int gridPosition)
     {
-        foreach (LandManager land in new List<LandManager>(SpawnedLands))
+        if (!SpawnedLands.ContainsKey(gridPosition))
         {
-            if (land.GridPosition.x == x && land.GridPosition.y == y) return land;
+            Debug.LogWarning($"No land at {gridPosition.x}, {gridPosition.y}");
+            return null;
         }
 
-        return null;
+        return SpawnedLands[gridPosition];
     }
 
+    /// <summary>
+    /// Retrieves the grid position based on the given world position.
+    /// </summary>
+    /// <param name="worldPos">The world position.</param>
+    /// <returns>The grid position.</returns>
     public Vector2Int GetGridPosition(Vector3 worldPos)
     {
-        float landScale = landToSpawnPrefab.transform.localScale.x;
-
         Vector3 floatGridPosition = worldPos / landScale;
 
         return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
     }
 
-    public Vector3 GetLandPosition(Vector2Int gridPosition, float height)
+    /// <summary>
+    /// Calculates the new world position for a new land based on the given grid position and height.
+    /// </summary>
+    /// <param name="gridPosition">The grid position of the land.</param>
+    /// <param name="height">The height of the land.</param>
+    /// <returns>The new position for the land.</returns>
+    public Vector3 CalculateNewLandWorldPosition(Vector2Int gridPosition, float height)
     {
-        float landScale = landToSpawnPrefab.transform.localScale.x;
-
         return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
     }
     #endregion
 
+    /// <summary>
+    /// Checks if a new land can spawn at the given grid position.
+    /// </summary>
+    /// <param name="gridPos">The grid position to check.</param>
+    /// <returns>True if a new land can spawn at the given grid position, false otherwise.</returns>
     private bool CanNewLandSpawnAt(Vector2Int gridPos)
     {
-        bool isPositionValid = false;
-        for (int i = 0; i < bordersList.Count; i++)
-        {
-            if (bordersList[i].WorldBorderPosition == gridPos)
-            {
-                isPositionValid = true;
-                break;
-            }
-        }
-
-        return isPositionValid;
+        return Borders.ContainsKey(gridPos);
     }
 
-    private void SpawnLand(int x, int y)
+    /// <summary>
+    /// Checks if there is a land at the given grid position.
+    /// </summary>
+    /// <param name="gridPos">The grid position to check.</param>
+    /// <returns>True if there is a land at the given grid position, false otherwise.</returns>
+    private bool IsLandAt(Vector2Int gridPos)
+    {
+        return SpawnedLands.ContainsKey(gridPos);
+    }
+
+    /// <summary>
+    /// Spawns a new land at the given grid position.
+    /// </summary>
+    /// <param name="gridPosition">The grid position of the land.</param>
+    private void SpawnLand(Vector2Int gridPosition)
     {
         float landScale = landToSpawnPrefab.transform.localScale.x;
 
-        LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * x, -5f, landScale * y) , Quaternion.identity, transform);
-        spawnedLand.Init(x, y);
+        LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * gridPosition.x, -5f, landScale * gridPosition.y), Quaternion.identity, transform);
+        spawnedLand.Init(gridPosition.x, gridPosition.y);
 
-        SpawnedLands.Add(spawnedLand);
+        SpawnedLands.Add(gridPosition, spawnedLand);
     }
 
+    /// <summary>
+    /// Tries to spawn a new land at the position of the ghost land.
+    /// </summary>
     public void TrySpawnLandAtGhost()
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
         if (!CanNewLandSpawnAt(spawnPosition))
         {
-            Debug.Log("Can't spawn new land at this ghost position");
+            Debug.LogWarning("Can't spawn new land at this ghost position");
             return;
         }
 
         DisableGhostLand();
-        SpawnLand(spawnPosition.x, spawnPosition.y);
+        SpawnLand(spawnPosition);
 
         RestockTokens(SpawnedLands.Count);
         gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
     }
 
+    /// <summary>
+    /// Continues to the event selection phase, resetting the land level differences and changing the game state.
+    /// </summary>
     public void ContinueToEventSelection()
     {
         ResetLandLevelDifferences();
@@ -136,27 +176,47 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.EVENT_SELECTION);
     }
 
+    /// <summary>
+    /// Rebuilds the navigation mesh for enemy pathfinding to recognize any new lands.
+    /// </summary>
     public void BuildNavMesh()
     {
         navMeshSurface.BuildNavMesh();
     }
 
-    public void AddBorder(LandBorder border)
+    /// <summary>
+    /// Adds a new border to the list of available borders.
+    /// Destroys the border if a border already exists at the specified position.
+    /// </summary>
+    /// <param name="newBorder">The new border to add.</param>
+    public void AddBorder(LandBorder newBorder)
     {
-        bordersList.Add(border);
+        if (Borders.ContainsKey(newBorder.WorldBorderPosition))
+        {
+            Borders[newBorder.WorldBorderPosition].Add(newBorder);
+            return;
+        }
+
+        Borders.Add(newBorder.WorldBorderPosition, new List<LandBorder>() { newBorder });
     }
 
+    /// <summary>
+    /// Removes the connected borders for all spawned lands.
+    /// Used to cleanup.
+    /// </summary>
     public void RemoveConnectedBorders()
     {
-        foreach (LandManager land in new List<LandManager>(SpawnedLands))
+        Debug.Log("Cleaning up connected borders");
+        foreach (Vector2Int landPosition in SpawnedLands.Keys)
         {
-            foreach (LandBorder border in new List<LandBorder>(bordersList))
+            // If there are borders at the land position, destroy them
+            if (Borders.ContainsKey(landPosition))
             {
-                if (land.GridPosition == border.WorldBorderPosition)
+                foreach (LandBorder border in Borders[landPosition])
                 {
                     Destroy(border.gameObject);
-                    bordersList.Remove(border);
                 }
+                Borders.Remove(landPosition);
             }
         }
     }
@@ -164,7 +224,7 @@ public class WorldManager : MonoBehaviour
     public void PrepareForNextWave()
     {
         activeLandCount = SpawnedLands.Count;
-        foreach (LandManager land in SpawnedLands)
+        foreach (LandManager land in SpawnedLands.Values)
         {
             land.EnemySpawner.WaveReset();
         }
@@ -210,16 +270,22 @@ public class WorldManager : MonoBehaviour
     {
         Vector2Int gridPosition = GetGridPosition(worldPos);
 
-        ghostLandTransform.position = GetLandPosition(gridPosition, ghostLandTransform.position.y);
+        ghostLandTransform.position = CalculateNewLandWorldPosition(gridPosition, ghostLandTransform.position.y);
+        Renderer ghostLandRenderer = ghostLandTransform.GetComponent<Renderer>();
 
-        if(gameManager.CurrentState == GameState.LAND_PLACEMENT)
+        Material greenMaterial = CustomGizmos.GetTransparentMaterial();
+        greenMaterial.color = new Color(0, 1, 0, 0.5f);
+        Material redMaterial = CustomGizmos.GetTransparentMaterial();
+        redMaterial.color = new Color(1, 0, 0, 0.5f);
+
+        if (gameManager.CurrentState == GameState.LAND_PLACEMENT)
         {
-            ghostLandTransform.GetComponent<MeshRenderer>().material = CanNewLandSpawnAt(gridPosition) ? greenTransparentMaterial : redTransparentMaterial;
+            ghostLandRenderer.material = CanNewLandSpawnAt(gridPosition) ? greenMaterial : redMaterial;
         }
 
         if(gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
         {
-            ghostLandTransform.GetComponent<MeshRenderer>().material = GetLand(gridPosition.x, gridPosition.y) != null ? greenTransparentMaterial : redTransparentMaterial;
+            ghostLandRenderer.material = IsLandAt(gridPosition) ? greenMaterial : redMaterial;
         }
     }
     #endregion
@@ -227,7 +293,7 @@ public class WorldManager : MonoBehaviour
     #region Land Level Texts
     public void EnableLandLevelTexts()
     {
-        foreach(LandManager land in SpawnedLands)
+        foreach(LandManager land in SpawnedLands.Values)
         {
             land.EnableLevelText();
         }
@@ -235,7 +301,7 @@ public class WorldManager : MonoBehaviour
 
     public void DisableLandLevelTexts()
     {
-        foreach (LandManager land in SpawnedLands)
+        foreach (LandManager land in SpawnedLands.Values)
         {
             land.DisableLevelText();
         }
@@ -253,17 +319,17 @@ public class WorldManager : MonoBehaviour
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
 
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+        LandManager hoveredLand = GetLandByGridPosition(spawnPosition);
 
         if (hoveredLand == null)
         {
-            Debug.Log("Can't empower at this land");
+            Debug.LogWarning("Can't empower at this land");
             return;
         }
 
         if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
         {
-            Debug.Log("Not enough empower tokens");
+            Debug.LogWarning("Not enough empower tokens");
             return;
         }
 
@@ -281,17 +347,17 @@ public class WorldManager : MonoBehaviour
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
 
-        LandManager hoveredLand = GetLand(spawnPosition.x, spawnPosition.y);
+        LandManager hoveredLand = GetLandByGridPosition(spawnPosition);
 
         if (hoveredLand == null)
         {
-            Debug.Log("Can't weaken at this land");
+            Debug.LogWarning("Can't weaken at this land");
             return;
         }
 
         if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
         {
-            Debug.Log("Not enough weaken tokens");
+            Debug.LogWarning("Not enough weaken tokens");
             return;
         }
 
@@ -312,7 +378,7 @@ public class WorldManager : MonoBehaviour
 
     private void ResetLandLevelDifferences()
     {
-        foreach(LandManager land in SpawnedLands)
+        foreach(LandManager land in SpawnedLands.Values)
         {
             land.ResetLevelDifference();
         }
@@ -320,7 +386,7 @@ public class WorldManager : MonoBehaviour
 
     public void ResetProgressionChanges()
     {
-        foreach (LandManager land in SpawnedLands)
+        foreach (LandManager land in SpawnedLands.Values)
         {
             if (land.LevelDifference > 0) EmpowerTokens += Mathf.Abs(land.LevelDifference);
             if (land.LevelDifference < 0) WeakenTokens += Mathf.Abs(land.LevelDifference);
@@ -337,12 +403,4 @@ public enum Biome
     FIRE,
     FOOD,
     BIOME3
-}
-
-public enum WorldEvent
-{
-    EVENT1,
-    EVENT2,
-    EVENT3,
-    EVENT4
 }
