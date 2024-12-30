@@ -2,9 +2,9 @@ using System.Drawing;
 using UnityEditor;
 using UnityEngine;
 
-public static class CustomGizmos
+public static class CustomDebug
 {
-    private static int SEGMENTS = 16;
+    private static int GIZMOS_SEGMENTS = 16;
 
     /// <summary>
     /// Draws a wireframe cone shape.
@@ -24,11 +24,11 @@ public static class CustomGizmos
         Gizmos.DrawLine(center, tip);
 
         // Draw the base circle at maxDistance along the direction vector
-        float angleStep = 360f / SEGMENTS;
+        float angleStep = 360f / GIZMOS_SEGMENTS;
         Vector3 lastPoint = tip + Vector3.up * radius;  // Start from a point on the circle
 
         // Loop to draw the circle around the base of the cone
-        for (int i = 1; i <= SEGMENTS; i++)
+        for (int i = 1; i <= GIZMOS_SEGMENTS; i++)
         {
             float angle = angleStep * i;
             // Generate a point on the circle in the XZ plane at maxDistance
@@ -87,7 +87,7 @@ public static class CustomGizmos
     /// <param name="radius">The radius of the sphere.</param>
     /// <param name="expireDuration">The duration in seconds before the sphere is destroyed.</param>
     /// <param name="color">The color of the sphere.</param>
-    public static void InstantiateTemporarySphere(Vector3 center, float radius, float expireDuration, UnityEngine.Color color)
+    public static GameObject InstantiateTemporarySphere(Vector3 center, float radius, float expireDuration, UnityEngine.Color color)
     {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         GameObject.Destroy(sphere.GetComponent<Collider>());
@@ -100,6 +100,8 @@ public static class CustomGizmos
         sphereRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         sphereRenderer.material.color = color;
         GameObject.Destroy(sphere, expireDuration);
+
+        return sphere;
     }
 
     /// <summary>

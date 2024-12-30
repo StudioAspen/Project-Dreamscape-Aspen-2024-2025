@@ -92,8 +92,8 @@ public class Leaper : Enemy
         base.OnOnDrawGizmos();
 
         Gizmos.color = Color.red;
-        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+        CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
     }
 
     public override void TryAssignTarget()

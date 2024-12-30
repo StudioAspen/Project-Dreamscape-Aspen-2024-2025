@@ -16,7 +16,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [Header("Entity: References")]
     [SerializeField, Self] private protected CharacterController controller;
     [SerializeField, Self] private protected Animator animator;
-    [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
+    [field: SerializeField, Anywhere] public GlobalPhysicsConfigSO PhysicsSettings { get; private set; }
     [SerializeField, Anywhere] private protected Transform model;
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion
@@ -601,6 +601,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Sets the maximum health of the entity and optionally heals it to full health.
+    /// </summary>
+    /// <param name="newMaxHealth">The new maximum health value.</param>
+    /// <param name="willHealToFull">Whether the entity will be healed to full health.</param>
+    public void SetMaxHealth(int newMaxHealth, bool willHealToFull)
+    {
+        MaxHealth = newMaxHealth;
+
+        if (willHealToFull) CurrentHealth = MaxHealth;
+    }
+
+    /// <summary>
     /// Entity becomes staggered on hit and cannot take damage if it is in the death state.
     /// Takes damage and updates the entity's health while checking to see if the entity's health reaches below zero.
     /// Attempts to spawn hit numbers at the hit point and invokes the OnEntityTakeDamage event.
@@ -688,9 +700,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Kills the entity by dealing maximum damage to itself.
     /// Doesn't work if the entity has max health set to 0.
     /// </summary>
-    public void Kill()
+    /// /// <param name="sourceObject">The source object that killed the entity.</param>
+    public void Kill(GameObject sourceObject)
     {
-        TakeDamage(int.MaxValue, transform.position, gameObject);
+        TakeDamage(int.MaxValue, transform.position, sourceObject);
     }
 
     /// <summary>
@@ -851,8 +864,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
+    /// <param name="willIncludeDying">Whether to include dying entities.</param>
     /// <returns>A list of nearby entities.</returns>
-    public List<Entity> GetNearbyHostileEntities(float radius)
+    public List<Entity> GetNearbyHostileEntities(float radius, bool willIncludeDying = true)
     {
         List<Entity> targets = new List<Entity>();
 
@@ -865,6 +879,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             Entity potentialTarget = hit.GetComponent<Entity>();
             if (potentialTarget == null) continue;
             if (potentialTarget.Team == Team) continue;
+            if(!willIncludeDying && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
             targets.Add(potentialTarget);
         }
 
@@ -878,8 +893,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <typeparam name="T">The type of entities to retrieve.</typeparam>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
+    /// <param name="willIncludeDying">Whether to include dying entities.</param>
     /// <returns>A list of nearby entities of the specified type.</returns>
-    public List<T> GetNearbyHostileEntitiesByType<T>(float radius) where T : Entity
+    public List<T> GetNearbyHostileEntitiesByType<T>(float radius, bool willIncludeDying = true) where T : Entity
     {
         List<T> targets = new List<T>();
 
@@ -893,6 +909,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if (potentialTarget == null) continue;
             if (potentialTarget.GetType() != typeof(T)) continue;
             if (potentialTarget.Team == Team) continue;
+            if (!willIncludeDying && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
 
             T potentialTargetT = potentialTarget as T;
 

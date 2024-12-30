@@ -102,7 +102,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
             enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
         }
 
-        CustomGizmos.InstantiateTemporarySphere(explosionPosition, currentCombustRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
+        CustomDebug.InstantiateTemporarySphere(explosionPosition, currentCombustRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 
     /// <summary>

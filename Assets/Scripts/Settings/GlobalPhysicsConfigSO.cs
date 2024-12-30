@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu]
-public class GlobalPhysicsSettings : ScriptableObject
+[CreateAssetMenu(fileName = "Global Physics Config", menuName = "Configs/Global Physics Config")]
+public class GlobalPhysicsConfigSO : ScriptableObject
 {
     [field: SerializeField] public float Gravity { get; private set; } = -20f;
     [field: SerializeField] public float GroundedYVelocity { get; private set; } = -5f;

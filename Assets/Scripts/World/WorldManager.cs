@@ -1,6 +1,7 @@
 using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -34,9 +35,6 @@ public class WorldManager : MonoBehaviour
 
     [field: Header("Biome Selection")]
     private Biome currentBiomeSelection = Biome.DREAM;
-
-    [field: Header("Event Selection")]
-    private WorldEvent currentEventSelection = (WorldEvent)1;
 
     [field: Header("Progression")]
     public int EmpowerTokens { get; private set; }
@@ -87,6 +85,41 @@ public class WorldManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Tries to retrieve the LandManager object based on the given grid position.
+    /// Returns true and assigns the LandManager object to the 'land' parameter if a land exists at the specified position.
+    /// Returns false and assigns null to the 'land' parameter if no land exists at the specified position.
+    /// </summary>
+    /// <param name="gridPosition">The grid position of the land.</param>
+    /// <param name="land">The LandManager object at the specified grid position.</param>
+    /// <returns>True if a land exists at the specified position, false otherwise.</returns>
+    public bool TryGetLandByGridPosition(Vector2Int gridPosition, out LandManager land)
+    {
+        if (!SpawnedLands.ContainsKey(gridPosition))
+        {
+            land = null;
+            return false;
+        }
+
+        land = SpawnedLands[gridPosition];
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to retrieve the LandManager object based on the given world position.
+    /// Returns true and assigns the LandManager object to the 'land' parameter if a land exists at the specified position.
+    /// Returns false and assigns null to the 'land' parameter if no land exists at the specified position.
+    /// </summary>
+    /// <param name="worldPosition">The world position.</param>
+    /// <param name="land">The LandManager object at the specified grid position.</param>
+    /// <returns>True if a land exists at the specified position, false otherwise.</returns>
+    public bool TryGetLandByWorldPosition(Vector3 worldPosition, out LandManager land)
+    {
+        Vector2Int gridPosition = GetGridPosition(worldPosition);
+
+        return TryGetLandByGridPosition(gridPosition, out land);
+    }
+
+    /// <summary>
     /// Retrieves the grid position based on the given world position.
     /// </summary>
     /// <param name="worldPos">The world position.</param>
@@ -107,6 +140,16 @@ public class WorldManager : MonoBehaviour
     public Vector3 CalculateNewLandWorldPosition(Vector2Int gridPosition, float height)
     {
         return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
+    }
+
+    /// <summary>
+    /// Retrieves a random LandManager object from the list of spawned lands.
+    /// </summary>
+    /// <returns>A random LandManager object.</returns>
+    public LandManager GetRandomLand()
+    {
+        int randomIndex = Random.Range(0, SpawnedLands.Count);
+        return SpawnedLands.Values.ElementAt(randomIndex);
     }
     #endregion
 
@@ -152,7 +195,7 @@ public class WorldManager : MonoBehaviour
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
         if (!CanNewLandSpawnAt(spawnPosition))
         {
-            Debug.LogWarning("Can't spawn new land at this ghost position");
+            //Debug.LogWarning("Can't spawn new land at this ghost position");
             return;
         }
 
@@ -203,7 +246,7 @@ public class WorldManager : MonoBehaviour
     /// </summary>
     public void RemoveConnectedBorders()
     {
-        Debug.Log("Cleaning up connected borders");
+        //Debug.Log("Cleaning up connected borders");
         foreach (Vector2Int landPosition in SpawnedLands.Keys)
         {
             // If there are borders at the land position, destroy them
@@ -225,13 +268,6 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
-    public void AssignNextEvent(WorldEvent worldEvent)
-    {
-        currentEventSelection = worldEvent;
-
-        gameManager.ChangeState(GameState.PLAYING);
-    }
-
     #region Ghost Land Functions
     public void EnableGhostLand()
     {
@@ -250,9 +286,9 @@ public class WorldManager : MonoBehaviour
         ghostLandTransform.position = CalculateNewLandWorldPosition(gridPosition, ghostLandTransform.position.y);
         Renderer ghostLandRenderer = ghostLandTransform.GetComponent<Renderer>();
 
-        Material greenMaterial = CustomGizmos.GetTransparentMaterial();
+        Material greenMaterial = CustomDebug.GetTransparentMaterial();
         greenMaterial.color = new Color(0, 1, 0, 0.5f);
-        Material redMaterial = CustomGizmos.GetTransparentMaterial();
+        Material redMaterial = CustomDebug.GetTransparentMaterial();
         redMaterial.color = new Color(1, 0, 0, 0.5f);
 
         if (gameManager.CurrentState == GameState.LAND_PLACEMENT)
@@ -292,6 +328,9 @@ public class WorldManager : MonoBehaviour
         WeakenTokens = Mathf.FloorToInt((landCount - 1) / 2f);
     }
 
+    /// <summary>
+    /// Tries to empower the land at the position of the ghost land.
+    /// </summary>
     public void TryEmpowerLandAtGhost()
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
@@ -300,13 +339,13 @@ public class WorldManager : MonoBehaviour
 
         if (hoveredLand == null)
         {
-            Debug.LogWarning("Can't empower at this land");
+            //Debug.LogWarning("Can't empower at this land");
             return;
         }
 
         if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
         {
-            Debug.LogWarning("Not enough empower tokens");
+            //Debug.LogWarning("Not enough empower tokens");
             return;
         }
 
@@ -320,6 +359,9 @@ public class WorldManager : MonoBehaviour
         EmpowerTokens--;
     }
 
+    /// <summary>
+    /// Tries to weaken the land at the position of the ghost land.
+    /// </summary>
     public void TryWeakenLandAtGhost()
     {
         Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
@@ -328,13 +370,13 @@ public class WorldManager : MonoBehaviour
 
         if (hoveredLand == null)
         {
-            Debug.LogWarning("Can't weaken at this land");
+            //Debug.LogWarning("Can't weaken at this land");
             return;
         }
 
         if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
         {
-            Debug.LogWarning("Not enough weaken tokens");
+            //Debug.LogWarning("Not enough weaken tokens");
             return;
         }
 
@@ -348,20 +390,31 @@ public class WorldManager : MonoBehaviour
         WeakenTokens--;
     }
 
+    /// <summary>
+    /// Checks if all tokens have been used.
+    /// </summary>
+    /// <returns>True if all tokens have been used, false otherwise.</returns>
     public bool CanProceedFromEmpowerment()
     {
         return EmpowerTokens + WeakenTokens <= 0;
     }
 
+    /// <summary>
+    /// Resets the level differences of all spawned lands.
+    /// </summary>
     private void ResetLandLevelDifferences()
     {
-        foreach(LandManager land in SpawnedLands.Values)
+        foreach (LandManager land in SpawnedLands.Values)
         {
             land.ResetLevelDifference();
         }
     }
 
-    public void ResetProgressionChanges()
+    /// <summary>
+    /// Refunds the progression changes made to the lands.
+    /// The level difference of each land stores the changes made to the land levels during the progression phase.
+    /// </summary>
+    public void RefundProgressionChanges()
     {
         foreach (LandManager land in SpawnedLands.Values)
         {

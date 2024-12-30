@@ -262,7 +262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
+  eventManager: {fileID: 0}
   button: {fileID: 1266542606979752841}
   image: {fileID: 311318805860598419}
   nameText: {fileID: 835693946093421944}
@@ -401,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
+  eventManager: {fileID: 0}
   button: {fileID: 6937437763176085916}
   image: {fileID: 8413102870449317212}
   nameText: {fileID: 821114136270967485}
@@ -751,6 +751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  eventManager: {fileID: 0}
   panel: {fileID: 3802838703981505543}
   eventCards:
   - {fileID: 2270875566873309830}
@@ -1190,7 +1191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0902d9ec035333c488ddf04118605e11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
+  eventManager: {fileID: 0}
   button: {fileID: 5363392455344654244}
   image: {fileID: 7529292055151190381}
   nameText: {fileID: 178209670855067563}

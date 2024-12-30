@@ -111,7 +111,7 @@ public class Enemy : Entity
         if(CustomCollisionRadius <= 0) return;
 
         Gizmos.color = Color.white;
-        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+        CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
     }
 
     public override void Die()
@@ -269,7 +269,7 @@ public class Enemy : Entity
     private protected void TryAssignTargetWithCone(float detectionDistance, float detectionConeHalfAngle)
     {
         List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance);
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance, false);
         List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, detectionConeHalfAngle);
 
         if (largeRadiusTargets.Count == 0) // if no targets in large radius that includes cone

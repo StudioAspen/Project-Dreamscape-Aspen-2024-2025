@@ -118,9 +118,9 @@ public class Charger : Enemy
         base.OnOnDrawGizmos();
 
         Gizmos.color = Color.red;
-        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomGizmos.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
-        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+        CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomDebug.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
     }
 
     public override void TryAssignTarget()

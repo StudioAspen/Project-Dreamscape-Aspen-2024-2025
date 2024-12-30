@@ -512,7 +512,6 @@ MonoBehaviour:
   - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
   - {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376, type: 3}
   - {fileID: -397280236229411759, guid: 89d66779686439e469b5b81a13e3d1ff, type: 3}
-  enemyPooler: {fileID: 0}
   enemySpawnPoints:
   - {fileID: 8661195311268004729}
   - {fileID: 262600604663446260}
@@ -523,7 +522,6 @@ MonoBehaviour:
   baseCurrency: 2
   growthFactor: 1
   polynomialDegree: 1
-  CanSpawn: 0
 --- !u!114 &8171416551064500414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1013,10 +1011,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3904052754136344162}
     m_Modifications:
+    - target: {fileID: 1554300974137249409, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_Name
       value: FogBarrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971698935250803754, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1207,10 +1215,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1686792245053314101}
     m_Modifications:
+    - target: {fileID: 1554300974137249409, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_Name
       value: FogBarrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971698935250803754, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1406,10 +1424,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5453025064748644444}
     m_Modifications:
+    - target: {fileID: 1554300974137249409, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_Name
       value: FogBarrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971698935250803754, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1600,10 +1628,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 462447320193338778}
     m_Modifications:
+    - target: {fileID: 1554300974137249409, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_Name
       value: FogBarrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 5839079660606942496, guid: 3295228de6079d446840c9d27811512e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971698935250803754, guid: 3295228de6079d446840c9d27811512e,
         type: 3}

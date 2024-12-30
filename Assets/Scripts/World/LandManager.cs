@@ -10,6 +10,7 @@ public class LandManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private WorldManager worldManager;
+    [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private LandBorder[] borders;

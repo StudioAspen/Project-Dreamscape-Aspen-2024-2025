@@ -1,4 +1,5 @@
 using KBCore.Refs;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,8 +23,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int polynomialDegree;
     private float maxShopCurrency;
     private float currentShopCurrency;
+    private bool isUsingCurrency;
+    public Action OnSpawnerDepleted = delegate { }; // Triggers when the spawner has no more currency and all enemies are defeated
 
-    [HideInInspector] public bool CanSpawn = false;
+
     private List<Enemy> enemiesSpawned = new List<Enemy>();
 
     private void OnValidate()
@@ -44,17 +47,14 @@ public class EnemySpawner : MonoBehaviour
     /// <returns>An IEnumerator for the coroutine.</returns>
     public IEnumerator SpawnWithCurrencyCoroutine()
     {
+        isUsingCurrency = true;
+        RefillCurrency();
+
         while (currentShopCurrency > 0)
         {
-            if (!CanSpawn)
-            {
-                yield return null;
-                continue;
-            }
+            yield return new WaitForSeconds(spawnInterval);
 
             SpawnRandomEnemy(true);
-
-            yield return new WaitForSeconds(spawnInterval);
         }
     }
 
@@ -70,12 +70,6 @@ public class EnemySpawner : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            if (!CanSpawn)
-            {
-                yield return null;
-                continue;
-            }
-
             elapsedTime += Time.deltaTime;
             spawnTimer += Time.deltaTime;
 
@@ -84,6 +78,8 @@ public class EnemySpawner : MonoBehaviour
                 SpawnRandomEnemy(false);
                 spawnTimer = 0f;
             }
+
+            yield return null;
         }
     }
 
@@ -93,8 +89,8 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="willUseCurrency">Flag indicating whether currency should be used for spawning.</param>
     private void SpawnRandomEnemy(bool willUseCurrency)
     {
-        float randomValue = Random.Range(0f, 1f);
-        int spawnLocation = Random.Range(1, 5);
+        float randomValue = UnityEngine.Random.Range(0f, 1f);
+        int spawnLocation = UnityEngine.Random.Range(1, 5);
         float cumalativeWeight = 0f;
 
         for (int i = 0; i < enemyPrefabs.Count; i++)
@@ -115,8 +111,6 @@ public class EnemySpawner : MonoBehaviour
                 if (willUseCurrency)
                 {
                     currentShopCurrency -= enemyPrefabs[i].Cost;
-
-                    if (currentShopCurrency <= 0) CanSpawn = false;
                 }
 
                 break;
@@ -127,7 +121,7 @@ public class EnemySpawner : MonoBehaviour
     /// <summary>
     /// Refills the current shop currency by calculating the shop currency based on the base currency, growth factor, and polynomial degree.
     /// </summary>
-    public void RefillCurrency()
+    private void RefillCurrency()
     {
         currentShopCurrency = CalculateShopCurrency();
     }
@@ -138,7 +132,7 @@ public class EnemySpawner : MonoBehaviour
     /// <returns>The position of the random spawn point.</returns>
     private Transform GetRandomEnemySpawnPointTransform()
     {
-        int randomIndex = Random.Range(0, enemySpawnPoints.Count);
+        int randomIndex = UnityEngine.Random.Range(0, enemySpawnPoints.Count);
         return enemySpawnPoints[randomIndex];
     }
 
@@ -179,6 +173,28 @@ public class EnemySpawner : MonoBehaviour
     public void RemoveEnemy(Enemy enemy)
     {
         enemiesSpawned.Remove(enemy);
+
+        if (isUsingCurrency)
+        {
+            if (IsFullyCleared())
+            {
+                isUsingCurrency = false;
+                OnSpawnerDepleted?.Invoke();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Kills all spawned enemies.
+    /// </summary>
+    public void KillAll()
+    {
+        foreach (Enemy enemy in new List<Enemy>(enemiesSpawned))
+        {
+            enemy.Kill(null);
+        }
+
+        isUsingCurrency = false;
     }
 
     /// <summary>
@@ -186,5 +202,5 @@ public class EnemySpawner : MonoBehaviour
     /// Use this method only when the enemy spawner is using currency and has a finite number of enemies to spawn.
     /// </summary>
     /// <returns>True if the enemy spawner is fully cleared, false otherwise.</returns>
-    public bool IsFullyCleared() => currentShopCurrency <= 0 && enemiesSpawned.Count == 0;
+    private bool IsFullyCleared() => currentShopCurrency <= 0 && enemiesSpawned.Count == 0;
 }

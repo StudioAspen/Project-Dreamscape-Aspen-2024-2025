@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class EventSelectUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField, Scene] private GameManager gameManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Self] private Image panel;
     [SerializeField] private List<EventCardUI> eventCards;
 
@@ -57,13 +59,13 @@ public class EventSelectUI : MonoBehaviour
 
     private void AssignRandomEventsToCards()
     {
-        List<WorldEvent> potentialEvents = System.Enum.GetValues(typeof(WorldEvent)).Cast<WorldEvent>().ToList();
+        List<Type> potentialEvents = new List<Type>(eventManager.Events.Keys);
 
         foreach (EventCardUI card in eventCards)
         {
-            int randomIndex = Random.Range(0, potentialEvents.Count);
+            int randomIndex = UnityEngine.Random.Range(0, potentialEvents.Count);
 
-            WorldEvent randomEvent = potentialEvents[randomIndex];
+            Type randomEvent = potentialEvents[randomIndex];
 
             card.AssignCardEvent(randomEvent);
 

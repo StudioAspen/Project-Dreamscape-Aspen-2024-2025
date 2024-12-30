@@ -1,4 +1,5 @@
 ﻿using KBCore.Refs;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,12 +7,12 @@ using UnityEngine.UI;
 public class EventCardUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private EventManager eventManager;
     [SerializeField, Self] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
 
-    public WorldEvent CurrentEvent { get; private set; }
+    public Type CurrentEventType { get; private set; }
 
     private void OnValidate()
     {
@@ -20,8 +21,6 @@ public class EventCardUI : MonoBehaviour
 
     private void Awake()
     {
-        worldManager = FindObjectOfType<WorldManager>();
-
         button.onClick.AddListener(OnClickCard);
     }
 
@@ -45,15 +44,15 @@ public class EventCardUI : MonoBehaviour
         button.interactable = false;
     }
 
-    public void AssignCardEvent(WorldEvent worldEvent)
+    public void AssignCardEvent(Type eventType)
     {
-        CurrentEvent = worldEvent;
+        CurrentEventType = eventType;
 
-        nameText.text = $"{CurrentEvent.ToString()}";
+        nameText.text = $"{CurrentEventType.ToString()}";
     }
 
     private void OnClickCard()
     {
-        worldManager.AssignNextEvent(CurrentEvent);
+        eventManager.ChangeEvent(CurrentEventType);
     }
 }

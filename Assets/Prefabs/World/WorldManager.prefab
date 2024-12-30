@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8938620608541455539}
   - component: {fileID: 7451146893933980580}
+  - component: {fileID: 2152970851481245927}
   - component: {fileID: 8002973263680581614}
   m_Layer: 0
   m_Name: WorldManager
@@ -53,6 +54,21 @@ MonoBehaviour:
   landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
   ghostLandTransform: {fileID: 4562900200964922340}
+--- !u!114 &2152970851481245927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3004667545289962807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1787edcdf68341a4185d1cfacc9e04cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
+  worldManager: {fileID: 7451146893933980580}
+  eventsConfigSO: {fileID: 11400000, guid: 8606f1af2ffb340419d9cadb7c06971b, type: 2}
 --- !u!114 &8002973263680581614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,13 +252,13 @@ PrefabInstance:
         type: 3}
       propertyPath: enemyPrefabs.Array.data[1]
       value: 
-      objectReference: {fileID: -397280236229411759, guid: 89d66779686439e469b5b81a13e3d1ff,
+      objectReference: {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376,
         type: 3}
     - target: {fileID: 3642624367869852063, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}
       propertyPath: enemyPrefabs.Array.data[2]
       value: 
-      objectReference: {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376,
+      objectReference: {fileID: -397280236229411759, guid: 89d66779686439e469b5b81a13e3d1ff,
         type: 3}
     - target: {fileID: 3999374681703134211, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}

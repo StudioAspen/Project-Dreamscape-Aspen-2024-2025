@@ -150,7 +150,7 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            worldManager.ResetProgressionChanges();
+            worldManager.RefundProgressionChanges();
         }
     }
 
