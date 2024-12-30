@@ -47,6 +47,11 @@ public class Enemy : Entity
     }
     #endregion
 
+    /// <summary>
+    /// Initializes the enemy with the specified enemy spawner.
+    /// Used to delete the enemy from the spawner's list when it dies.
+    /// </summary>
+    /// <param name="enemySpawner">The enemy spawner.</param>
     public void Init(EnemySpawner enemySpawner)
     {
         spawner = enemySpawner;
@@ -113,7 +118,7 @@ public class Enemy : Entity
     {
         base.Die();
 
-        if (spawner != null) spawner.RemoveEnemyFromList(this);
+        if (spawner != null) spawner.RemoveEnemy(this);
     }
 
     /// <summary>
