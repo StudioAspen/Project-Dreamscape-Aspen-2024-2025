@@ -54,12 +54,7 @@ public class FollowerChaseState : EnemyChaseState
     {
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f);
-
-            foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
-            {
-                if (f.CurrentState == f.EntityDeathState) playerNearbyFollowers.Remove(f);
-            }
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f, false);
 
             playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
 

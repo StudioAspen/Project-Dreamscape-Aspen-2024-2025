@@ -137,7 +137,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
         }
 
         //insert explosion vfx here:
-        CustomGizmos.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
+        CustomDebug.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
         if (pool == null)
         {

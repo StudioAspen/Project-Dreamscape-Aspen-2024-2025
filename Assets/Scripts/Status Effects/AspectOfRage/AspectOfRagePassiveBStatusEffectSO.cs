@@ -182,6 +182,6 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
             enemy.TakeDamage(explosionDamage, hitPoint, attacker.gameObject); // deal damage to enemy entities
         }
 
-        CustomGizmos.InstantiateTemporarySphere(hitPoint, radius, 0.25f, new Color(1f, 0, 0, 0.2f));
+        CustomDebug.InstantiateTemporarySphere(hitPoint, radius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 }

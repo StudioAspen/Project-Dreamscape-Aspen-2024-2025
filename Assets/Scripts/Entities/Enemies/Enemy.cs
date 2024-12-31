@@ -47,6 +47,11 @@ public class Enemy : Entity
     }
     #endregion
 
+    /// <summary>
+    /// Initializes the enemy with the specified enemy spawner.
+    /// Used to delete the enemy from the spawner's list when it dies.
+    /// </summary>
+    /// <param name="enemySpawner">The enemy spawner.</param>
     public void Init(EnemySpawner enemySpawner)
     {
         spawner = enemySpawner;
@@ -106,14 +111,14 @@ public class Enemy : Entity
         if(CustomCollisionRadius <= 0) return;
 
         Gizmos.color = Color.white;
-        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+        CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
     }
 
     public override void Die()
     {
         base.Die();
 
-        if (spawner != null) spawner.RemoveEnemyFromList(this);
+        if (spawner != null) spawner.RemoveEnemy(this);
     }
 
     /// <summary>
@@ -240,6 +245,30 @@ public class Enemy : Entity
     }
 
     /// <summary>
+    /// Generates a random wander point within a specified radius range about a center position.
+    /// Returns itself it cannot find a valid point after a certain number of iterations.
+    /// Iteration count is set to 16 by default.
+    /// </summary>
+    /// <param name="center">The center position for generating the wander point.</param>
+    /// <param name="wanderRadiusRange">The range of the wander radius.</param>
+    /// <param name="iterationTryCount">The number of iterations to try finding a valid point.</param>
+    /// <returns>The randomly generated wander point.</returns>
+    public Vector3 GetRandomWanderPoint(Vector3 center, Vector2 wanderRadiusRange, int iterationTryCount = 16)
+    {
+        for (int i = 0; i < iterationTryCount; i++)
+        {
+            float randomRadius = Random.Range(wanderRadiusRange.x, wanderRadiusRange.y);
+            Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
+            randomPointOnUnitCircle.y = 0;
+            Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + center;
+
+            if (IsValidPointOnNavMesh(randomPoint, 100f, out Vector3 validPoint)) return validPoint;
+        }
+
+        return transform.position;
+    }
+
+    /// <summary>
     /// Tries to assign a target to the enemy by getting nearby targets and selecting the first one.
     /// If no targets are found, sets the target to null.
     /// </summary>
@@ -264,7 +293,7 @@ public class Enemy : Entity
     private protected void TryAssignTargetWithCone(float detectionDistance, float detectionConeHalfAngle)
     {
         List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance);
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance, false);
         List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, detectionConeHalfAngle);
 
         if (largeRadiusTargets.Count == 0) // if no targets in large radius that includes cone
