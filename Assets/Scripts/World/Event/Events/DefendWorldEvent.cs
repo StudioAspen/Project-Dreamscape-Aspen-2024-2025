@@ -6,27 +6,17 @@ using UnityEngine;
 
 // A stationary object will placed at the center of the land for 1 minute, Every 30 seconds it will go to a neighboring land.
 // All lands will spawn enemies, if the object survives, trigger EOW
-public class DefendWorldEvent : BaseState
+public class DefendWorldEvent : WorldEvent
 {
-    private EventManager eventManager;
-    private WorldManager worldManager;
-    private EventsConfigSO eventsConfigSO;
-
     private TMP_Text UIText;
 
-    private List<Coroutine> enemySpawningCoroutines = new List<Coroutine>();
     private DefendEventEntity defendEventEntity;
 
     float remainingTime;
 
-    public DefendWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO)
-    {
-        this.eventManager = eventManager;
-        this.worldManager = worldManager;
-        this.eventsConfigSO = eventsConfigSO;
-    }
+    public DefendWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
 
-    public override void OnEnter()
+    public override void OnStarted()
     {
         UIText = GameObject.Instantiate(eventsConfigSO.DefendEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
 
@@ -45,13 +35,9 @@ public class DefendWorldEvent : BaseState
         remainingTime = eventsConfigSO.DefendEventDuration;
     }
 
-    public override void OnExit()
+    public override void OnCleared()
     {
-        foreach (Coroutine coroutine in enemySpawningCoroutines)
-        {
-            if (coroutine != null) eventManager.StopCoroutine(coroutine);
-        }
-        enemySpawningCoroutines.Clear();
+        StopAndClearEnemySpawningCoroutines();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -66,7 +52,9 @@ public class DefendWorldEvent : BaseState
 
     public override void Update()
     {
-        if(defendEventEntity != null) remainingTime -= Time.deltaTime;   
+        if(defendEventEntity == null) return;
+
+        remainingTime -= Time.deltaTime;   
 
         UIText.text = $"{Mathf.Round(remainingTime)}s";
 

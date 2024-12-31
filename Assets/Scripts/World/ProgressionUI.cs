@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ProgressionUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private ProgressionManager progressionManager;
     [SerializeField] private TMP_Text empowerTokensText;
     [SerializeField] private TMP_Text weakenTokensText;
     [SerializeField] private TMP_Text continueText;
@@ -20,15 +20,15 @@ public class ProgressionUI : MonoBehaviour
     {
         HandleTokensTexts();
 
-        continueText.gameObject.SetActive(worldManager.EmpowerTokens + worldManager.WeakenTokens <= 0);
+        continueText.gameObject.SetActive(progressionManager.EmpowerTokens + progressionManager.WeakenTokens <= 0);
     }
 
     private void HandleTokensTexts()
     {
-        empowerTokensText.text = $"M1 - Empower: {worldManager.EmpowerTokens}";
-        weakenTokensText.text = $"M2 - Weaken: {worldManager.WeakenTokens}";
+        empowerTokensText.text = $"M1 - Empower: {progressionManager.EmpowerTokens}";
+        weakenTokensText.text = $"M2 - Weaken: {progressionManager.WeakenTokens}";
 
-        empowerTokensText.color = worldManager.EmpowerTokens > 0 ? Color.green : Color.red;
-        weakenTokensText.color = worldManager.WeakenTokens > 0 ? Color.green : Color.red;
+        empowerTokensText.color = progressionManager.EmpowerTokens > 0 ? Color.green : Color.red;
+        weakenTokensText.color = progressionManager.WeakenTokens > 0 ? Color.green : Color.red;
     }
 }

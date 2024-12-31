@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,10 +37,6 @@ public class WorldManager : MonoBehaviour
     [field: Header("Biome Selection")]
     private Biome currentBiomeSelection = Biome.DREAM;
 
-    [field: Header("Progression")]
-    public int EmpowerTokens { get; private set; }
-    public int WeakenTokens { get; private set; }
-
     private void OnValidate()
     {
         this.ValidateRefs();
@@ -47,23 +44,16 @@ public class WorldManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
     }
 
     void Start()
     {
-        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
-
         BuildNavMesh();
 
         DisableGhostLand();
 
         landScale = landToSpawnPrefab.transform.localScale.x;
-    }
-
-    void Update()
-    {
-        
     }
 
     #region Grid Functions
@@ -202,18 +192,7 @@ public class WorldManager : MonoBehaviour
         DisableGhostLand();
         SpawnLand(spawnPosition);
 
-        RestockTokens(SpawnedLands.Count);
         gameManager.ChangeState(GameState.LAND_EMPOWERMENT);
-    }
-
-    /// <summary>
-    /// Continues to the event selection phase, resetting the land level differences and changing the game state.
-    /// </summary>
-    public void ContinueToEventSelection()
-    {
-        ResetLandLevelDifferences();
-
-        gameManager.ChangeState(GameState.EVENT_SELECTION);
     }
 
     /// <summary>
@@ -261,6 +240,10 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Assigns the given biome to be spawned next and changes the game state to LAND_PLACEMENT.
+    /// </summary>
+    /// <param name="biome">The biome to assign.</param>
     public void AssignBiomeToSpawnNext(Biome biome)
     {
         currentBiomeSelection = biome;
@@ -279,6 +262,11 @@ public class WorldManager : MonoBehaviour
         ghostLandTransform.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Sets the position of the ghost land based on the given world position.
+    /// Updates the material of the ghost land renderer based on the current game state.
+    /// </summary>
+    /// <param name="worldPos">The world position.</param>
     public void SetGhostLandPosition(Vector3 worldPos)
     {
         Vector2Int gridPosition = GetGridPosition(worldPos);
@@ -296,10 +284,19 @@ public class WorldManager : MonoBehaviour
             ghostLandRenderer.material = CanNewLandSpawnAt(gridPosition) ? greenMaterial : redMaterial;
         }
 
-        if(gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
+        if (gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
         {
             ghostLandRenderer.material = IsLandAt(gridPosition) ? greenMaterial : redMaterial;
         }
+    }
+
+    /// <summary>
+    /// Retrieves the world position of the ghost land.
+    /// </summary>
+    /// <returns>The world position of the ghost land.</returns>
+    public Vector3 GetGhostLandPosition()
+    {
+        return ghostLandTransform.position;
     }
     #endregion
 
@@ -317,111 +314,6 @@ public class WorldManager : MonoBehaviour
         foreach (LandManager land in SpawnedLands.Values)
         {
             land.DisableLevelText();
-        }
-    }
-    #endregion
-
-    #region Progression Functions
-    private void RestockTokens(int landCount)
-    {
-        EmpowerTokens = Mathf.CeilToInt((landCount - 1) / 2f);
-        WeakenTokens = Mathf.FloorToInt((landCount - 1) / 2f);
-    }
-
-    /// <summary>
-    /// Tries to empower the land at the position of the ghost land.
-    /// </summary>
-    public void TryEmpowerLandAtGhost()
-    {
-        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-
-        LandManager hoveredLand = GetLandByGridPosition(spawnPosition);
-
-        if (hoveredLand == null)
-        {
-            //Debug.LogWarning("Can't empower at this land");
-            return;
-        }
-
-        if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
-        {
-            //Debug.LogWarning("Not enough empower tokens");
-            return;
-        }
-
-        if (hoveredLand.LevelDifference < 0) // if already been weakened
-        {
-            WeakenTokens++;
-            EmpowerTokens++;
-        }
-
-        hoveredLand.AddLevel(1);
-        EmpowerTokens--;
-    }
-
-    /// <summary>
-    /// Tries to weaken the land at the position of the ghost land.
-    /// </summary>
-    public void TryWeakenLandAtGhost()
-    {
-        Vector2Int spawnPosition = GetGridPosition(ghostLandTransform.position);
-
-        LandManager hoveredLand = GetLandByGridPosition(spawnPosition);
-
-        if (hoveredLand == null)
-        {
-            //Debug.LogWarning("Can't weaken at this land");
-            return;
-        }
-
-        if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
-        {
-            //Debug.LogWarning("Not enough weaken tokens");
-            return;
-        }
-
-        if (hoveredLand.LevelDifference > 0) // if already been empowered
-        {
-            EmpowerTokens++;
-            WeakenTokens++;
-        }
-
-        hoveredLand.AddLevel(-1);
-        WeakenTokens--;
-    }
-
-    /// <summary>
-    /// Checks if all tokens have been used.
-    /// </summary>
-    /// <returns>True if all tokens have been used, false otherwise.</returns>
-    public bool CanProceedFromEmpowerment()
-    {
-        return EmpowerTokens + WeakenTokens <= 0;
-    }
-
-    /// <summary>
-    /// Resets the level differences of all spawned lands.
-    /// </summary>
-    private void ResetLandLevelDifferences()
-    {
-        foreach (LandManager land in SpawnedLands.Values)
-        {
-            land.ResetLevelDifference();
-        }
-    }
-
-    /// <summary>
-    /// Refunds the progression changes made to the lands.
-    /// The level difference of each land stores the changes made to the land levels during the progression phase.
-    /// </summary>
-    public void RefundProgressionChanges()
-    {
-        foreach (LandManager land in SpawnedLands.Values)
-        {
-            if (land.LevelDifference > 0) EmpowerTokens += Mathf.Abs(land.LevelDifference);
-            if (land.LevelDifference < 0) WeakenTokens += Mathf.Abs(land.LevelDifference);
-
-            land.UndoLevelChanges();
         }
     }
     #endregion

@@ -13,7 +13,7 @@ public class LandManager : MonoBehaviour
     [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
     [SerializeField, Self] private NavMeshSurface navMeshSurface;
     [SerializeField] private TMP_Text levelText;
-    [SerializeField] private LandBorder[] borders;
+    [SerializeField] private List<LandBorder> borders;
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }

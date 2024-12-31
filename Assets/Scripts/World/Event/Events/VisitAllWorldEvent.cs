@@ -5,25 +5,15 @@ using UnityEngine;
 
 // All lands will light up. When the player steps on a land it will go away. All lands will spawn enemies.
 // Once all the lands have been touched by the player, trigger EOW
-public class VisitAllWorldEvent : BaseState
+public class VisitAllWorldEvent : WorldEvent
 {
-    private EventManager eventManager;
-    private WorldManager worldManager;
-    private EventsConfigSO eventsConfigSO;
-
     private List<Player> players = new List<Player>();
 
-    private List<Coroutine> enemySpawningCoroutines = new List<Coroutine>();
     private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
 
-    public VisitAllWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO)
-    {
-        this.eventManager = eventManager;
-        this.worldManager = worldManager;
-        this.eventsConfigSO = eventsConfigSO;
-    }
+    public VisitAllWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
 
-    public override void OnEnter()
+    public override void OnStarted()
     {
         players = GameObject.FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
         if(players == null)
@@ -47,13 +37,9 @@ public class VisitAllWorldEvent : BaseState
         }
     }
 
-    public override void OnExit()
+    public override void OnCleared()
     {
-        foreach (Coroutine coroutine in enemySpawningCoroutines)
-        {
-            if (coroutine != null) eventManager.StopCoroutine(coroutine);
-        }
-        enemySpawningCoroutines.Clear();
+        StopAndClearEnemySpawningCoroutines();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {

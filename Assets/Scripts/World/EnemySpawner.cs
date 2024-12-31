@@ -26,7 +26,6 @@ public class EnemySpawner : MonoBehaviour
     private bool isUsingCurrency;
     public Action OnSpawnerDepleted = delegate { }; // Triggers when the spawner has no more currency and all enemies are defeated
 
-
     private List<Enemy> enemiesSpawned = new List<Enemy>();
 
     private void OnValidate()

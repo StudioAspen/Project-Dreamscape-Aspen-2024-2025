@@ -10,6 +10,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     [Header("References")]
     [SerializeField, Scene] private GameManager gameManager;
     [SerializeField, Scene] private WorldManager worldManager;
+    [SerializeField, Scene] private ProgressionManager progressionManager;
     [SerializeField] private GameObject landPlacementUIObject;
     [SerializeField] private GameObject landEmpowermentUIObject;
 
@@ -119,7 +120,7 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            worldManager.TryEmpowerLandAtGhost();
+            progressionManager.TryEmpowerLandAtGhost();
         }
     }
 
@@ -129,18 +130,18 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            worldManager.TryWeakenLandAtGhost();
+            progressionManager.TryWeakenLandAtGhost();
         }
     }
 
     private void HandleContinueInput()
     {
         if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
-        if (!worldManager.CanProceedFromEmpowerment()) return;
+        if (!progressionManager.CanProceedFromEmpowerment()) return;
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            worldManager.ContinueToEventSelection();
+            progressionManager.ContinueToEventSelection();
         }
     }
 
@@ -150,7 +151,7 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            worldManager.RefundProgressionChanges();
+            progressionManager.RefundProgressionChanges();
         }
     }
 

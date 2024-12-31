@@ -5,26 +5,16 @@ using UnityEngine;
 
 
 // A 3x3 of lands are highlighted on the map. Enemies will only spawn from those lands, once they are all defeated trigger EOW
-public class ZonesWorldEvent : BaseState
+public class ZonesWorldEvent : WorldEvent
 {
-    private EventManager eventManager;
-    private WorldManager worldManager;
-    private EventsConfigSO eventsConfigSO;
-
     private List<LandManager> affectedLands = new List<LandManager>();
-    private List<Coroutine> enemySpawningCoroutines = new List<Coroutine>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
 
-    public ZonesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO)
-    {
-        this.eventManager = eventManager;
-        this.worldManager = worldManager;
-        this.eventsConfigSO = eventsConfigSO;
-    }
+    public ZonesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
 
-    public override void OnEnter()
+    public override void OnStarted()
     {
         activeLands = 0;
 
@@ -47,13 +37,9 @@ public class ZonesWorldEvent : BaseState
         }
     }
 
-    public override void OnExit()
+    public override void OnCleared()
     {
-        foreach (Coroutine coroutine in enemySpawningCoroutines)
-        {
-            if(coroutine != null) eventManager.StopCoroutine(coroutine);
-        }
-        enemySpawningCoroutines.Clear();
+        StopAndClearEnemySpawningCoroutines();
 
         foreach (LandManager land in affectedLands)
         {
@@ -86,7 +72,7 @@ public class ZonesWorldEvent : BaseState
         LandManager centerLand = worldManager.GetRandomLand();
         resultingLands.Add(centerLand);
 
-        debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(centerLand.transform.position + 15f * Vector3.up, 3f, Mathf.Infinity, Color.red));
+        debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(centerLand.transform.position + 10f * Vector3.up, 3f, Mathf.Infinity, Color.red));
 
         List<Vector2Int> offsets = new List<Vector2Int>() {
             new Vector2Int(1, 0),  // Right
@@ -106,7 +92,7 @@ public class ZonesWorldEvent : BaseState
             {
                 resultingLands.Add(neighborLand);
 
-                debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(neighborLand.transform.position + 15f * Vector3.up, 3f, Mathf.Infinity, new Color(1, 0, 0, 0.25f)));
+                debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(neighborLand.transform.position + 10f * Vector3.up, 3f, Mathf.Infinity, new Color(1, 0, 0, 0.25f)));
             }
         }
 

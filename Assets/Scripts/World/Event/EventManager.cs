@@ -15,11 +15,11 @@ public class EventManager : MonoBehaviour
     [Header("Events Config")]
     [SerializeField] private EventsConfigSO eventsConfigSO;
 
-    #region Event State Machine
-    public BaseState CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
-    public BaseState DefaultEvent { get; private set; }
+    #region Event Machine
+    public WorldEvent CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
+    public WorldEvent DefaultEvent { get; private set; }
 
-    public Dictionary<Type, BaseState> Events { get; private set; } = new Dictionary<Type, BaseState>();
+    public Dictionary<Type, WorldEvent> Events { get; private set; } = new Dictionary<Type, WorldEvent>();
 
     /// <summary>
     /// Initializes the states for the EventManager state machine.
@@ -29,7 +29,7 @@ public class EventManager : MonoBehaviour
         AddEvent(new SurvivalWorldEvent(this, worldManager, eventsConfigSO));
         AddEvent(new ZonesWorldEvent(this, worldManager, eventsConfigSO));
         AddEvent(new PrioritiesWorldEvent(this, worldManager, eventsConfigSO));
-        //AddEvent(new EscortWorldEvent(this, worldManager, eventsConfigSO));
+        AddEvent(new EscortWorldEvent(this, worldManager, eventsConfigSO));
         AddEvent(new VisitAllWorldEvent(this, worldManager, eventsConfigSO));
         AddEvent(new DefendWorldEvent(this, worldManager, eventsConfigSO));
     }
@@ -37,17 +37,17 @@ public class EventManager : MonoBehaviour
     /// <summary>
     /// Adds a state to the dictionary. Prevents duplicate types.
     /// </summary>
-    /// <param name="newState">The state to add.</param>
-    private void AddEvent(BaseState newState)
+    /// <param name="newEvent">The state to add.</param>
+    private void AddEvent(WorldEvent newEvent)
     {
-        Type stateType = newState.GetType();
+        Type stateType = newEvent.GetType();
         if (Events.ContainsKey(stateType))
         {
             Debug.LogWarning($"State of type {stateType.Name} is already added. Skipping duplicate.");
             return;
         }
 
-        Events[stateType] = newState;
+        Events[stateType] = newEvent;
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public class EventManager : MonoBehaviour
     /// </summary>
     /// <param name="eventType">The type of the state.</param>
     /// <returns>The state of the specified type.</returns>
-    public BaseState GetEvent(Type eventType)
+    public WorldEvent GetEvent(Type eventType)
     {
         if (!Events.ContainsKey(eventType))
         {
@@ -73,7 +73,7 @@ public class EventManager : MonoBehaviour
     private void SetStartEvent(Type eventType)
     {
         CurrentEvent = GetEvent(eventType);
-        CurrentEvent.OnEnter();
+        CurrentEvent.OnStarted();
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class EventManager : MonoBehaviour
     public void ChangeEvent(Type eventType)
     {
         CurrentEvent = GetEvent(eventType);
-        CurrentEvent.OnEnter();
+        CurrentEvent.OnStarted();
 
         gameManager.ChangeState(GameState.PLAYING);
     }
@@ -103,7 +103,7 @@ public class EventManager : MonoBehaviour
     /// Returns a random event from the available states.
     /// </summary>
     /// <returns>A random event state.</returns>
-    public BaseState GetRandomEvent()
+    public WorldEvent GetRandomEvent()
     {
         int randomIndex = UnityEngine.Random.Range(0, Events.Count);
         return Events.Values.ToArray()[randomIndex];
@@ -144,7 +144,7 @@ public class EventManager : MonoBehaviour
     /// </summary>
     public void ClearEvent()
     {
-        CurrentEvent?.OnExit();
+        CurrentEvent?.OnCleared();
 
         gameManager.ChangeState(GameState.BIOME_SELECTION);
     }

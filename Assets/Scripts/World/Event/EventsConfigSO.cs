@@ -22,4 +22,10 @@ public class EventsConfigSO : ScriptableObject
     [field: SerializeField] public int DefendEventMaxHealth { get; private set; } = 200;
     [field: SerializeField] public DefendEventEntity DefendEventEntityPrefab { get; private set; }
     [field: SerializeField] public TMP_Text DefendEventUIPrefab { get; private set; }
+
+    [field: Header("Escort Event")]
+    [field: SerializeField] public float EscortEventDuration { get; private set; } = 60f;
+    [field: SerializeField] public int EscortEventMaxHealth { get; private set; } = 200;
+    [field: SerializeField] public EscortEventEntity EscortEventEntityPrefab { get; private set; }
+    [field: SerializeField] public TMP_Text EscortEventUIPrefab { get; private set; }
 }
