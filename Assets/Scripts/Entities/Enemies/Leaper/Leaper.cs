@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using System.Runtime.InteropServices;
 
 public class Leaper : Enemy
 {
@@ -91,9 +90,11 @@ public class Leaper : Enemy
     {
         base.OnOnDrawGizmos();
 
+#if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+#endif
     }
 
     public override void TryAssignTarget()

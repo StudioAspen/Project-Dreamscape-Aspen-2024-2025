@@ -2,14 +2,8 @@ using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
@@ -110,8 +104,10 @@ public class Enemy : Entity
 
         if(CustomCollisionRadius <= 0) return;
 
+#if UNITY_EDITOR
         Gizmos.color = Color.white;
         CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+#endif
     }
 
     public override void Die()

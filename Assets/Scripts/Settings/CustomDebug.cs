@@ -1,9 +1,13 @@
 using System.Drawing;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public static class CustomDebug
 {
+#if UNITY_EDITOR
     private static int GIZMOS_SEGMENTS = 16;
 
     /// <summary>
@@ -76,6 +80,7 @@ public static class CustomDebug
         // Draw the wire circle using Handles
         Handles.DrawWireArc(center, Vector3.up, Vector3.right, 360f, radius);
     }
+#endif
 
     /// <summary>
     /// Instantiates a temporary sphere GameObject with the specified center, radius, expire duration, and color.
