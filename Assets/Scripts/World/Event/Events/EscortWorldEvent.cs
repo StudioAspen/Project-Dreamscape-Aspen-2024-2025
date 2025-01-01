@@ -42,8 +42,11 @@ public class EscortWorldEvent : WorldEvent
             land.EnemySpawner.KillAll();
         }
 
-        escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
-        GameObject.Destroy(escortEventEntity.gameObject);
+        if(escortEventEntity != null)
+        {
+            escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
+            GameObject.Destroy(escortEventEntity.gameObject);
+        }
 
         GameObject.Destroy(UIText.gameObject);
     }
@@ -79,6 +82,8 @@ public class EscortWorldEvent : WorldEvent
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
     {
+        escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
+        
         StopAndClearEnemySpawningCoroutines();
 
         Debug.Log("Escort Event Entity has died. You failed.");

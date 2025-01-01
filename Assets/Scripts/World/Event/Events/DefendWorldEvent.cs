@@ -43,9 +43,12 @@ public class DefendWorldEvent : WorldEvent
         {
             land.EnemySpawner.KillAll();
         }
-
-        defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
-        GameObject.Destroy(defendEventEntity.gameObject);
+        
+        if(defendEventEntity != null)
+        {
+            defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
+            GameObject.Destroy(defendEventEntity.gameObject);
+        }
 
         GameObject.Destroy(UIText.gameObject);
     }
@@ -68,6 +71,8 @@ public class DefendWorldEvent : WorldEvent
 
     private void DefendEventEntity_OnEntityDeath(GameObject killerObject)
     {
+        defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
+
         Debug.Log("Defend Event Entity has died. You failed.");
     }
 }

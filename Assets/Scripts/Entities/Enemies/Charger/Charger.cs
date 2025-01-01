@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Charger : Enemy
@@ -117,10 +116,12 @@ public class Charger : Enemy
     {
         base.OnOnDrawGizmos();
 
+#if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
         CustomDebug.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+#endif
     }
 
     public override void TryAssignTarget()

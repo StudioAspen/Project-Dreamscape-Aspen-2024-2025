@@ -3,12 +3,8 @@ using KBCore.Refs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
@@ -210,6 +206,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         lastHitSource = null;
 
         CurrentHealth = MaxHealth;
+
+        controller.excludeLayers = 0;
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -468,7 +466,26 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private void SlideOffOtherEntities()
     {
-        if (GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
+        if(CurrentState == EntityDeathState) return;
+
+        float distanceToCheckBelow = 0.25f;
+
+        int validHitEntitiesBelow = 0;
+
+        // Filter out dead entities
+        foreach(RaycastHit hit in GetHitsBelowEntity(LayerMask.GetMask("Entity"), distanceToCheckBelow))
+        {
+            if(hit.collider.TryGetComponent(out Entity hitEntity))
+            {
+                if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
+
+                validHitEntitiesBelow++;
+
+                Debug.Log(hitEntity.gameObject);
+            }
+        }
+
+        if (validHitEntitiesBelow > 0)
         {
             ForceUpdateHorizontalVelocity(transform.forward, 3f);
             ApplyHorizontalVelocity();
@@ -554,6 +571,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
+        controller.excludeLayers = LayerMask.GetMask("Entity");
+
         ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();
