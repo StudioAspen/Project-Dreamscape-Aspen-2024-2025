@@ -6,12 +6,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
-using KBCore.Refs;
 using UnityEngine.InputSystem.LowLevel;
-
 
 public class MinimapController : MonoBehaviour
 {
+    private GameManager gameManager;
+
     [SerializeField] private RectTransform minimapRectTransform; // Raw Image Render Texture
     private Vector2 normalSize;
     private Vector2 normalPosition;
@@ -30,14 +30,11 @@ public class MinimapController : MonoBehaviour
     private RawImage image;
     private Transform border;
     [SerializeField] private Canvas minimap_canvas;
-    [SerializeField, Scene] GameManager gameManager;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         // Cache Components

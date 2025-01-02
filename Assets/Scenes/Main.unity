@@ -302,30 +302,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 738700261}
     m_Modifications:
-    - target: {fileID: 1179165310853205795, guid: fc8480327f8c8834f97fe270ef82a988,
-        type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 661545480}
-    - target: {fileID: 1610851087378465758, guid: fc8480327f8c8834f97fe270ef82a988,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
-    - target: {fileID: 2270875566873309830, guid: fc8480327f8c8834f97fe270ef82a988,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
     - target: {fileID: 4575158561041908543, guid: fc8480327f8c8834f97fe270ef82a988,
         type: 3}
       propertyPath: m_Name
       value: EventSelectionUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 4575158561041908543, guid: fc8480327f8c8834f97fe270ef82a988,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4735225833320688023, guid: fc8480327f8c8834f97fe270ef82a988,
         type: 3}
@@ -427,11 +407,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6734280713961329806, guid: fc8480327f8c8834f97fe270ef82a988,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -619,36 +594,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3701641942295256723, guid: 29c40066b5360f04bbd8a6a98d22b071,
-        type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 661545480}
-    - target: {fileID: 3777459550008560590, guid: 29c40066b5360f04bbd8a6a98d22b071,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
-    - target: {fileID: 5678971654946283878, guid: 29c40066b5360f04bbd8a6a98d22b071,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
     - target: {fileID: 6720848867947313540, guid: 29c40066b5360f04bbd8a6a98d22b071,
         type: 3}
       propertyPath: m_Name
       value: BiomeSelectionUI
       objectReference: {fileID: 0}
-    - target: {fileID: 6720848867947313540, guid: 29c40066b5360f04bbd8a6a98d22b071,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7520708644547924003, guid: 29c40066b5360f04bbd8a6a98d22b071,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,11 +16,11 @@ public class Follower : Enemy
     [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
 
     [field: Header("Follower: Attack Settings")]
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
+    public Weapon Weapon { get; protected set; }
 
     #region States
     public FollowerAttackState FollowerAttackState { get; private set; }
@@ -46,6 +45,8 @@ public class Follower : Enemy
     private protected override void OnAwake()
     {
         base.OnAwake();
+
+        Weapon = GetComponentInChildren<Weapon>();
     }
 
     private protected override void OnOnEnable()

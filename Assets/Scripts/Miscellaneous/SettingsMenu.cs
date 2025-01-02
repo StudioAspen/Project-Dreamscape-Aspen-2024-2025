@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.UI;
-using KBCore.Refs;
 
 public class SettingsMenu : MonoBehaviour
 {
+    private GameManager gameManager;
+
     private GameObject settingsCanvas;
     private GameObject pauseCanvas;
     private InputAction cameraLook;
-    [SerializeField, Scene] GameManager gameManager;
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField] Toggle fullscreenToggle;
-    [SerializeField] Toggle vsyncToggle;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    [SerializeField] private Toggle fullscreenToggle;
+    [SerializeField] private Toggle vsyncToggle;
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         pauseCanvas = transform.Find("PauseUI")?.gameObject;
         settingsCanvas = transform.Find("SettingsUI")?.gameObject;
         cameraLook = playerInput.actions.FindActionMap("Gameplay").FindAction("CameraLook");

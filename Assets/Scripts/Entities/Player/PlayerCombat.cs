@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,10 +9,9 @@ using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private Player player;
-    [SerializeField, Self] private PlayerInputReader playerInputReader;
-    [SerializeField, Self] private Animator animator;
+    private Player player;
+    private PlayerInputReader playerInputReader;
+    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -30,9 +28,11 @@ public class PlayerCombat : MonoBehaviour
     public Action<int> OnChargeStart = delegate { }; // parameter is which attack is charging
     public Action<int, float> OnChargeRelease = delegate { }; // parameter is which attack is released and the charge time
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        player = GetComponent<Player>();
+        playerInputReader = GetComponent<PlayerInputReader>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()

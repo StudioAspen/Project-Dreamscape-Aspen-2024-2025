@@ -1,5 +1,4 @@
 using DG.Tweening.Core.Easing;
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +10,8 @@ using UnityEngine.Events;
 
 public class WorldManager : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
+    private GameManager gameManager;
+    private NavMeshSurface navMeshSurface; // nav mesh surface for pathfinding
 
     /* Pseudo Grid System Explanation:
      The grid system starts with a land piece placed at position (0, 0). 
@@ -37,13 +35,11 @@ public class WorldManager : MonoBehaviour
     [field: Header("Biome Selection")]
     private Biome currentBiomeSelection = Biome.DREAM;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        navMeshSurface = GetComponent<NavMeshSurface>();
+
         SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
     }
 

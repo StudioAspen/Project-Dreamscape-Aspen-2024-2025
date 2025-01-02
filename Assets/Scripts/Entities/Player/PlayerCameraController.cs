@@ -1,5 +1,4 @@
 using Cinemachine;
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,19 +6,18 @@ using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private CinemachineVirtualCamera vCam;
-    [SerializeField, Self] private CinemachineInputProvider inputProvider;
-    [SerializeField, Scene] private Player player;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    private GameManager gameManager;
+    private CinemachineVirtualCamera vCam;
+    private CinemachineInputProvider inputProvider;
+    private Player player;
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        vCam = GetComponent<CinemachineVirtualCamera>();
+        inputProvider = GetComponent<CinemachineInputProvider>();
+        player = FindObjectOfType<Player>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 

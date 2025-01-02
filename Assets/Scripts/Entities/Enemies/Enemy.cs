@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,8 @@ public class Enemy : Entity
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }
     [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
     [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (controller.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (controller.height / 2 - CustomCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (characterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (characterController.height / 2 - CustomCollisionRadius) * Vector3.up;
 
     #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }

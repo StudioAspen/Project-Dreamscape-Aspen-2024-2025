@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,8 +5,7 @@ using UnityEngine;
 
 public class MomentumSystem : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private Player player;
+    private Player player;
 
     [Header("Settings")]
     [SerializeField] private float baseTimeBetween = 5f;
@@ -18,9 +16,9 @@ public class MomentumSystem : MonoBehaviour
     private int momentum;
     public int Momentum => momentum;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        player = GetComponent<Player>();
     }
 
     void Start()

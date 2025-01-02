@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using KBCore.Refs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +8,13 @@ using UnityEngine.Pool;
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    [Header("Entity: References")]
-    [SerializeField, Self] private protected CharacterController controller;
-    [SerializeField, Self] private protected Animator animator;
-    [field: SerializeField, Anywhere] public GlobalPhysicsConfigSO PhysicsSettings { get; private set; }
-    [SerializeField, Anywhere] private protected Transform model;
+    private protected CharacterController characterController;
+    private protected Animator animator;
+
+    [field: Header("Entity: References")]
+    [field: SerializeField] public GlobalPhysicsConfigSO PhysicsSettings { get; private set; }
+    [SerializeField] private protected Transform model;
+
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion
 
@@ -161,13 +162,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
     #endregion
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
         //using inheritance
@@ -207,7 +206,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CurrentHealth = MaxHealth;
 
-        controller.excludeLayers = 0;
+        characterController.excludeLayers = 0;
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -321,7 +320,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        controller.Move(desiredAnimationMovement);
+        characterController.Move(desiredAnimationMovement);
     }
 
     private void OnDrawGizmos()
@@ -387,7 +386,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity is grounded, false otherwise.</returns>
     private protected bool GetIsGrounded()
     {
-        return Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, LayerMask.GetMask("Ground"));
+        return Physics.CheckSphere(transform.position + 9f * characterController.radius / 10f * Vector3.up, characterController.radius, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
@@ -398,7 +397,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
     public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
     {
-        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), controller.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), characterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
         List<RaycastHit> result = new List<RaycastHit>();
 
         if (hits == null) return result;
@@ -458,7 +457,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyGravity()
     {
-        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
+        characterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
     }
 
     /// <summary>
@@ -480,8 +479,6 @@ public class Entity : MonoBehaviour, IPoolableObject
                 if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
 
                 validHitEntitiesBelow++;
-
-                Debug.Log(hitEntity.gameObject);
             }
         }
 
@@ -524,7 +521,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyHorizontalVelocity()
     {
-        controller.Move(GetHorizontalVelocity() * LocalDeltaTime);
+        characterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
     }
 
     /// <summary>
@@ -571,7 +568,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        controller.excludeLayers = LayerMask.GetMask("Entity");
+        characterController.excludeLayers = LayerMask.GetMask("Entity");
 
         ChangeState(EntityDeathState);
 

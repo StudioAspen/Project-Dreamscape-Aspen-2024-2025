@@ -1,5 +1,4 @@
-﻿using KBCore.Refs;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
@@ -7,22 +6,20 @@ using System;
 
 public class EventSelectUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Scene] private EventManager eventManager;
-    [SerializeField, Self] private Image panel;
-    [SerializeField] private List<EventCardUI> eventCards;
+    private GameManager gameManager;
+    private EventManager eventManager;
+    private Image panel;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    [Header("References")]
+    [SerializeField] private List<EventCardUI> eventCards;
 
     private void Awake()
     {
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        gameManager = FindObjectOfType<GameManager>();
+        eventManager = FindObjectOfType<EventManager>();
+        panel = GetComponent<Image>();
 
-        Disable();
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
@@ -32,9 +29,9 @@ public class EventSelectUI : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        Disable();
         if (newState != GameState.EVENT_SELECTION)
         {
+            Disable();
             return;
         }
 
@@ -52,9 +49,9 @@ public class EventSelectUI : MonoBehaviour
 
     public void Disable()
     {
-        gameObject.SetActive(false);
-
         DisableCards();
+
+        gameObject.SetActive(false);
     }
 
     private void AssignRandomEventsToCards()

@@ -3,23 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using KBCore.Refs;
 
 public class PauseMenu : MonoBehaviour
 {
+    private GameManager gameManager;
+
     private GameObject pauseUI;
     private InputAction cameraLook;
     private GameObject settingsUI;
     [SerializeField] private PlayerInput playerInput;
-    [SerializeField, Scene] GameManager gameManager;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         pauseUI = transform.Find("PauseUI")?.gameObject;
@@ -35,6 +32,7 @@ public class PauseMenu : MonoBehaviour
             Debug.Log("Pause Menu Canvas not Found");
         }
     }
+
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
@@ -50,7 +48,6 @@ public class PauseMenu : MonoBehaviour
         pauseUI.SetActive(false);
         //Debug.Log("Pause Menu Closed");
     }
-
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {

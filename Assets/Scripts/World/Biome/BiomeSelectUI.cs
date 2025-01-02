@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +8,18 @@ using UnityEngine.UI;
 
 public class BiomeSelectUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private Image panel;
-    [SerializeField] private List<BiomeCardUI> biomeCards;
+    private GameManager gameManager;
+    private Image panel;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    [Header("References")]
+    [SerializeField] private List<BiomeCardUI> biomeCards;
 
     private void Awake()
     {
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        gameManager = FindObjectOfType<GameManager>();
+        panel = GetComponent<Image>();
 
-        Disable();
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
@@ -53,9 +49,9 @@ public class BiomeSelectUI : MonoBehaviour
 
     public void Disable()
     {
-        gameObject.SetActive(false);
-
         DisableCards();
+
+        gameObject.SetActive(false);
     }
 
     private void AssignRandomBiomesToCards()

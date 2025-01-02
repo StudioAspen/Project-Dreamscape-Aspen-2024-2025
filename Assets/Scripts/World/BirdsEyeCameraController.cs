@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,10 +6,11 @@ using UnityEngine.EventSystems;
 
 public class BirdsEyeCameraController : MonoBehaviour
 {
+    private GameManager gameManager;
+    private WorldManager worldManager;
+    private ProgressionManager progressionManager;
+
     [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Scene] private WorldManager worldManager;
-    [SerializeField, Scene] private ProgressionManager progressionManager;
     [SerializeField] private GameObject landPlacementUIObject;
     [SerializeField] private GameObject landEmpowermentUIObject;
 
@@ -22,19 +22,13 @@ public class BirdsEyeCameraController : MonoBehaviour
     [SerializeField] private float maxZoom = 100f;
     private float currentMoveSpeed;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        worldManager = FindObjectOfType<WorldManager>();
+        progressionManager = FindObjectOfType<ProgressionManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
-        Disable();
-
-        landPlacementUIObject.SetActive(false);
-        landEmpowermentUIObject.SetActive(false);
     }
 
     private void OnDestroy()

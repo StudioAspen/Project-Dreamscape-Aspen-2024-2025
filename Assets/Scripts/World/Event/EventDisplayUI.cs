@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,21 +5,17 @@ using UnityEngine;
 
 public class EventDisplayUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Scene] private EventManager eventManager;
-    [SerializeField, Child] private TMP_Text titleText;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    private GameManager gameManager;
+    private EventManager eventManager;
+    private TMP_Text titleText;
 
     private void Awake()
     {
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        gameManager = FindObjectOfType<GameManager>();
+        eventManager = FindObjectOfType<EventManager>();
+        titleText = GetComponentInChildren<TMP_Text>();
 
-        Disable();
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
@@ -28,11 +23,18 @@ public class EventDisplayUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
+    private void Update()
+    {
+        if (eventManager.CurrentEvent == null) return;
+
+        titleText.text = eventManager.CurrentEvent.GetType().Name;
+    }
+
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        Disable();
         if (newState != GameState.PLAYING)
         {
+            Disable();
             return;
         }
 
@@ -42,8 +44,6 @@ public class EventDisplayUI : MonoBehaviour
     public void Enable()
     {
         gameObject.SetActive(true);
-
-        titleText.text = eventManager.CurrentEvent.GetType().Name;
     }
 
     public void Disable()

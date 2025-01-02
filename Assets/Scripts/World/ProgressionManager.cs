@@ -1,21 +1,18 @@
-﻿using KBCore.Refs;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
 {
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private WorldManager worldManager;
+    private GameManager gameManager;
+    private WorldManager worldManager;
 
     public int EmpowerTokens { get; private set; }
     public int WeakenTokens { get; private set; }
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        worldManager = GetComponent<WorldManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
