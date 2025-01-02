@@ -1,19 +1,19 @@
-﻿using KBCore.Refs;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ProgressionUI : MonoBehaviour
 {
+    private ProgressionManager progressionManager;
+
     [Header("References")]
-    [SerializeField, Scene] private ProgressionManager progressionManager;
     [SerializeField] private TMP_Text empowerTokensText;
     [SerializeField] private TMP_Text weakenTokensText;
     [SerializeField] private TMP_Text continueText;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        progressionManager = FindObjectOfType<ProgressionManager>();
     }
 
     private void Update()

@@ -1,16 +1,13 @@
-using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using DG.Tweening;
 using System.Linq;
 using System;
 
 public class Weapon : MonoBehaviour
 {
-    [Header("Weapon: References")]
-    [SerializeField, Self] private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
-    [SerializeField, Child] private ParticleSystem trailParticle;
+    private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
+    private ParticleSystem trailParticle;
     private Entity holderEntity;
     private LayerMask hitLayerMask; // Assigned in awake
 
@@ -41,13 +38,10 @@ public class Weapon : MonoBehaviour
     private float impactFramesDuration;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        capsuleColliders = GetComponents<CapsuleCollider>().ToList();
+        trailParticle = GetComponentInChildren<ParticleSystem>();
         holderEntity = GetComponentInParent<Entity>();
 
         hitLayerMask = LayerMask.GetMask("Damageable Entity");
@@ -85,7 +79,7 @@ public class Weapon : MonoBehaviour
     {
         OriginalScale = transform.localScale.x;
 
-        trailParticle.Stop();
+        DisableTriggers();
     }
 
     private void Update()
@@ -266,7 +260,7 @@ public class Weapon : MonoBehaviour
     {
         isCheckingCollisions = true;
 
-        trailParticle.Play();
+        trailParticle?.Play();
 
         foreach (CapsuleCollider collider in capsuleColliders)
         {
@@ -276,13 +270,13 @@ public class Weapon : MonoBehaviour
 
     /// <summary>
     /// Disables all the colliders attached to the weapon.
-    /// /// Sets the isCheckingCollisions flag to false.
+    /// Sets the isCheckingCollisions flag to false.
     /// </summary>
     public void DisableTriggers()
     {
         isCheckingCollisions = false;
 
-        trailParticle.Stop();
+        trailParticle?.Stop();
 
         foreach (CapsuleCollider collider in capsuleColliders)
         {

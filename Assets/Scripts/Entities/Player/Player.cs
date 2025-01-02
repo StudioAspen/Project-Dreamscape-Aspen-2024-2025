@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections.Generic;
 using System.Drawing;
 using TMPro;
@@ -9,8 +8,7 @@ using UnityEngine.Windows;
 
 public class Player : Entity
 {
-    [Header("Player: References")]
-    [SerializeField, Self] private PlayerInputReader playerInputReader;
+    private PlayerInputReader playerInputReader;
 
     [field: Header("Player: Grounded Movement")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
@@ -83,6 +81,8 @@ public class Player : Entity
     private protected override void OnAwake()
     {
         base.OnAwake();
+
+        playerInputReader = GetComponent<PlayerInputReader>();
     }
 
     private protected override void OnStart()
@@ -263,7 +263,7 @@ public class Player : Entity
             return;
         }
 
-        Physics.Raycast(transform.position, Vector3.down, out hitBelow, controller.height / 2, PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(transform.position, Vector3.down, out hitBelow, characterController.height / 2, PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
 
         if (hitBelow.collider == null)
         {
@@ -294,7 +294,7 @@ public class Player : Entity
         if (hitBelow.collider == null) return false;
         if (CurrentState == PlayerAttackState) return false;
 
-        return hitBelowSlopeAngle > controller.slopeLimit;
+        return hitBelowSlopeAngle > characterController.slopeLimit;
     }
 
     /// <summary>
@@ -304,7 +304,7 @@ public class Player : Entity
     public void ApplySlide(Vector3 slideDirection)
     {
         velocity.y = PhysicsSettings.GroundedYVelocity;
-        controller.Move(slideDirection * -velocity.y * LocalDeltaTime);
+        characterController.Move(slideDirection * -velocity.y * LocalDeltaTime);
     }
 
     /// <summary>
@@ -356,9 +356,9 @@ public class Player : Entity
     /// <returns>The slope speed modifier.</returns>
     private float GetAndSetSlopeSpeedModifierOnAngle(float groundAngle)
     {
-        float slopeSpeedModifier = 1f - (0.15f) * groundAngle / controller.slopeLimit;
+        float slopeSpeedModifier = 1f - (0.15f) * groundAngle / characterController.slopeLimit;
 
-        if (groundAngle > controller.slopeLimit) slopeSpeedModifier = 0.85f;
+        if (groundAngle > characterController.slopeLimit) slopeSpeedModifier = 0.85f;
 
         movementOnSlopeSpeedModifier = slopeSpeedModifier;
 

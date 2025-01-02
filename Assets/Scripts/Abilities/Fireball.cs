@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +5,7 @@ using UnityEngine.Pool;
 
 public class Fireball : MonoBehaviour, IPoolableObject
 {
-    [Header("References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
+    private Rigidbody rigidBody;
 
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
@@ -32,9 +30,9 @@ public class Fireball : MonoBehaviour, IPoolableObject
             fireball.Fire(transform.forward, gameObject, Team, 100f);
      * */
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()

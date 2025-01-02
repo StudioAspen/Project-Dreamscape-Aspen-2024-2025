@@ -51,8 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7894c5e290feeb840a15d05698e254c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 8702003990657789017}
-  animator: {fileID: 5860220226555299953}
   <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
   model: {fileID: 4150967214179094889}
@@ -82,7 +80,6 @@ MonoBehaviour:
   <ChangeDirectionReciprocal>k__BackingField: 10
   <CircleRadius>k__BackingField: 5
   <MaxCircleRadius>k__BackingField: 8
-  <Weapon>k__BackingField: {fileID: 3945500814101211304}
   <AttackRange>k__BackingField: 1
   <AttackPercentDamage>k__BackingField: 100
   <AttackReadyDuration>k__BackingField: 0.25
@@ -1315,18 +1312,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16906527d2f86ac4083742b94c6e3818, type: 3}
---- !u!114 &3945500814101211304 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 618815233110515994, guid: 16906527d2f86ac4083742b94c6e3818,
-    type: 3}
-  m_PrefabInstance: {fileID: 4492135273343437234}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6783d80e507fcc4fb394fa75f758f87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &4610919475782352422 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 119912662750246804, guid: 16906527d2f86ac4083742b94c6e3818,

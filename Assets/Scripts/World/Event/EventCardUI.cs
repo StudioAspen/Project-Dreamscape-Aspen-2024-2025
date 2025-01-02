@@ -1,37 +1,30 @@
-﻿using KBCore.Refs;
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EventCardUI : MonoBehaviour
 {
+    private EventManager eventManager;
+    private Button button;
+
     [Header("References")]
-    [SerializeField, Scene] private EventManager eventManager;
-    [SerializeField, Self] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
 
     public Type CurrentEventType { get; private set; }
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        eventManager = FindObjectOfType<EventManager>();
+        button = GetComponent<Button>();
+
         button.onClick.AddListener(OnClickCard);
     }
 
     private void OnDestroy()
     {
         button.onClick.RemoveListener(OnClickCard);
-    }
-
-    private void Start()
-    {
-        
     }
 
     public void EnableButton()

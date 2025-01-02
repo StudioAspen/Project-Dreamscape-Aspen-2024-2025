@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,13 +6,14 @@ using UnityEngine.Events;
 
 public class EnemySpawner : MonoBehaviour
 {
+    private LandManager landManager;
+    private WorldManager worldManager;
+    private ObjectPooler enemyPooler;
+
     [Header("References")]
-    [SerializeField, Scene] private WorldManager worldManager;
-    [SerializeField, Self] private LandManager landManager;
     [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
     [SerializeField] private List<Transform> enemySpawnPoints;
     private List<float> enemyNormalizedWeights = new List<float>();
-    private ObjectPooler enemyPooler;
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewFactor = 2.2f;
@@ -28,13 +28,11 @@ public class EnemySpawner : MonoBehaviour
 
     private List<Enemy> enemiesSpawned = new List<Enemy>();
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        landManager = GetComponent<LandManager>();
+        worldManager = FindObjectOfType<WorldManager>();
+
         enemyPooler = worldManager.GetComponentInChildren<ObjectPooler>();
 
         CalculateNormalizedWeights();

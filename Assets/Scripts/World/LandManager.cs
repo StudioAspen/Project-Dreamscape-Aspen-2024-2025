@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,10 +7,11 @@ using UnityEngine;
 
 public class LandManager : MonoBehaviour
 {
+    private WorldManager worldManager;
+    public EnemySpawner EnemySpawner { get; private set; }
+    private NavMeshSurface navMeshSurface;
+
     [Header("References")]
-    [SerializeField, Scene] private WorldManager worldManager;
-    [field: SerializeField, Self] public EnemySpawner EnemySpawner { get; private set; }
-    [SerializeField, Self] private NavMeshSurface navMeshSurface;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private List<LandBorder> borders;
 
@@ -22,11 +22,6 @@ public class LandManager : MonoBehaviour
     [field: Header("Progression Tracking")]
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     /// <summary>
     /// Initializes the LandManager with the given grid position.
     /// </summary>
@@ -34,6 +29,13 @@ public class LandManager : MonoBehaviour
     public void Init(Vector2Int gridPosition)
     {
         GridPosition = gridPosition;
+    }
+
+    private void Awake()
+    {
+        worldManager = FindObjectOfType<WorldManager>();
+        EnemySpawner = GetComponent<EnemySpawner>();
+        navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
     void Start()

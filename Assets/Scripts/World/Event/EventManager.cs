@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using KBCore.Refs;
 using UnityEngine;
 using Unity.VisualScripting;
 using System;
@@ -8,9 +7,8 @@ using System.Linq;
 
 public class EventManager : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private WorldManager worldManager;
+    private GameManager gameManager;
+    private WorldManager worldManager;
 
     [Header("Events Config")]
     [SerializeField] private EventsConfigSO eventsConfigSO;
@@ -110,13 +108,11 @@ public class EventManager : MonoBehaviour
     }
     #endregion
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        worldManager = GetComponent<WorldManager>();
+
         InitializeEvents();
     }
 

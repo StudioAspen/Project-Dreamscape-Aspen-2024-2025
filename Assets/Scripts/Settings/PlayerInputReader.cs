@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,10 +5,9 @@ using UnityEngine.Windows;
 
 public class PlayerInputReader : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private PlayerInput playerInput;
-    [SerializeField, Self] private Player player;
-    [SerializeField, Self] private PlayerCombat playerCombat;
+    private PlayerInput playerInput;
+    private Player player;
+    private PlayerCombat playerCombat;
 
     public Action<ComboAction> OnComboAction = delegate { };
 
@@ -20,9 +18,11 @@ public class PlayerInputReader : MonoBehaviour
     private float attack1HoldTimer = 0f;
     private float attack2HoldTimer = 0f;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        playerInput = GetComponent<PlayerInput>();
+        player = GetComponent<Player>();
+        playerCombat = GetComponent<PlayerCombat>();
     }
 
     private void OnEnable()
