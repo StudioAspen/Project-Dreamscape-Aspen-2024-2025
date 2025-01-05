@@ -3,30 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 // A 3x3 of lands are highlighted on the map. Enemies will only spawn from those lands, once they are all defeated trigger EOW
-public class ZonesWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Zones World Event", menuName = "World Event/Zones")]
+public class ZonesWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int ZonesEventDummyVariable { get; private set; }
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
 
-    public ZonesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
-
     public override void OnStarted()
     {
         activeLands = 0;
 
+        // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
         affectedLands = GetRandom3x3Land();
         foreach(LandManager land in affectedLands)
         {
             if (land.Level <= 0) continue;
 
-            EnemySpawner enemySpawner = land.EnemySpawner;
-            enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
+            StartEnemySpawnerWithCurrency(land);
 
-            enemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
+            // Track when the enemy spawner is depleted to decrement the activeLands counter
+            land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
             activeLands++;
         }
@@ -39,12 +41,13 @@ public class ZonesWorldEvent : WorldEvent
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in affectedLands)
         {
             land.EnemySpawner.KillAll();
 
+            // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
         }
         affectedLands.Clear();
@@ -54,11 +57,6 @@ public class ZonesWorldEvent : WorldEvent
             GameObject.Destroy(sphere);
         }
         debugSpheres.Clear();
-    }
-
-    public override void Update()
-    {
-
     }
 
     /// <summary>

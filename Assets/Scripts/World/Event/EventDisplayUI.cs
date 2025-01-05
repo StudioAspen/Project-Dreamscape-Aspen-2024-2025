@@ -27,7 +27,7 @@ public class EventDisplayUI : MonoBehaviour
     {
         if (eventManager.CurrentEvent == null) return;
 
-        titleText.text = eventManager.CurrentEvent.GetType().Name;
+        titleText.text = $"{eventManager.CurrentEvent.EventName} Event";
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)

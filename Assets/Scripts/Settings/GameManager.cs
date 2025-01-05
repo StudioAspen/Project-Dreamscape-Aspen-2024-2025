@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ForceChangeState(GameState.PLAYING);
+        ForceChangeState(GameState.EVENT_SELECTION);
     }
 
     private void Update()

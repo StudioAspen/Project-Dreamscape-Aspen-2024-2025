@@ -37,11 +37,18 @@ public class EventCardUI : MonoBehaviour
         button.interactable = false;
     }
 
+    /// <summary>
+    /// Assigns the given event type to the card and updates the card visuals.
+    /// </summary>
+    /// <param name="eventType">The type of the event to assign.</param>
     public void AssignCardEvent(Type eventType)
     {
         CurrentEventType = eventType;
 
-        nameText.text = $"{CurrentEventType.ToString()}";
+        WorldEventSO worldEvent = eventManager.GetEvent(CurrentEventType);
+
+        nameText.text = $"{worldEvent.EventName}";
+        image.sprite = worldEvent.Sprite;
     }
 
     private void OnClickCard()

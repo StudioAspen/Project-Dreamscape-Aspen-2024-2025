@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
@@ -54,6 +55,11 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
+
+        if (Input.GetKey(KeyCode.V))
+        {
+            Weapon.transform.localScale += Vector3.one * player.LocalDeltaTime;
+        }
     }
 
     /// <summary>
@@ -304,3 +310,41 @@ public class PlayerCombat : MonoBehaviour
     }
 }
 
+public class Example : MonoBehaviour
+{
+    private class GM
+    {
+        public bool isGameOver;
+        public bool simonsTurn;
+    }
+
+    private GM gm;
+
+    private Transform center;
+    private Transform simon;
+    private Transform player;
+
+
+    void Update()
+    {
+        HandleCameraPosition();
+    }
+
+    private void HandleCameraPosition()
+    {
+        if (gm.isGameOver)
+        {
+            transform.position = center.position;
+            return;
+        }
+
+        if (gm.simonsTurn)
+        {
+            transform.position = simon.position;
+        }
+        else
+        {
+            transform.position = player.position;
+        }
+    }
+}

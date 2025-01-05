@@ -5,28 +5,31 @@ using UnityEngine;
 
 // 3 Lands of the highest Level are selected.
 // All lands will spawn enemies, once the enemies spawned from the specific lands chosen are defeated trigger EOW
-public class PrioritiesWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Priorities World Event", menuName = "World Event/Priorities")]
+public class PrioritiesWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int PrioritiesEventDummyVariable { get; private set; }
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
 
-    public PrioritiesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO){}
-
     public override void OnStarted()
     {
         activeLands = 0;
 
+        // Get the top 3 lands based on their level and start the enemy spawners on them if they have positive levels
         affectedLands = GetTop3Lands();
         foreach (LandManager land in affectedLands)
         {
             if (land.Level <= 0) continue;
 
-            EnemySpawner enemySpawner = land.EnemySpawner;
-            enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
+            StartEnemySpawnerWithCurrency(land);
 
-            enemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
+            // Track when the enemy spawner is depleted to decrement the activeLands counter
+            land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
             activeLands++;
         }
@@ -39,12 +42,13 @@ public class PrioritiesWorldEvent : WorldEvent
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in affectedLands)
         {
             land.EnemySpawner.KillAll();
 
+            // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
         }
         affectedLands.Clear();
@@ -54,11 +58,6 @@ public class PrioritiesWorldEvent : WorldEvent
             GameObject.Destroy(sphere);
         }
         debugSpheres.Clear();
-    }
-
-    public override void Update()
-    {
-
     }
 
     /// <summary>
