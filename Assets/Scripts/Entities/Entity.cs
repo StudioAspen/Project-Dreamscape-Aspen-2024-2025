@@ -94,12 +94,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
-    public EntityBaseState CurrentState { get; private set; }
-    public EntityBaseState DefaultState { get; private set; }
-    public EntityEmptyState EntityEmptyState { get; protected set; }
-    public EntityStaggeredState EntityStaggeredState { get; protected set; }
-    public EntityDeathState EntityDeathState { get; protected set; }
-    public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: Header("Entity: States")]
+    public EntityBaseStateSO CurrentState { get; private set; }
+    public EntityBaseStateSO DefaultState { get; private set; }
+
+    public EntityEmptyStateSO EntityEmptyState { get; protected set; }
+    public EntityStaggeredStateSO EntityStaggeredState { get; protected set; }
+    public EntityDeathStateSO EntityDeathState { get; protected set; }
+    public EntityLaunchStateSO EntityLaunchState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -109,17 +111,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = new EntityEmptyState(this);
-        EntityDeathState = new EntityDeathState(this);
-        EntityLaunchState = new EntityLaunchState(this);
-        EntityStaggeredState = new EntityStaggeredState(this);
+        EntityEmptyState = EntityEmptyState.CreateRuntimeInstance<EntityEmptyStateSO>(this);
+        EntityDeathState = EntityEmptyState.CreateRuntimeInstance<EntityDeathStateSO>(this);
+        EntityLaunchState = EntityEmptyState.CreateRuntimeInstance<EntityLaunchStateSO>(this);
+        EntityStaggeredState = EntityEmptyState.CreateRuntimeInstance<EntityStaggeredStateSO>(this);
     }
 
     /// <summary>
     /// Sets the start state of the entity.
     /// </summary>
     /// <param name="state">The start state to set.</param>
-    private protected void SetStartState(EntityBaseState state)
+    private protected void SetStartState(EntityBaseStateSO state)
     {
         CurrentState = state;
         CurrentState.OnEnter();
@@ -129,35 +131,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the default state of the entity.
     /// </summary>
     /// <param name="state">The default state to set.</param>
-    private protected void SetDefaultState(EntityBaseState state)
+    private protected void SetDefaultState(EntityBaseStateSO state)
     {
         DefaultState = state;
     }
 
     /// <summary>
-    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
+    /// Change the state machine state to the specified new state.
+    /// Force changing is used to change the state even when the current state is the same and is set to false by default.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
-    public void ChangeState(EntityBaseState state)
+    /// <param name="willForceChange">Whether to change the state even when the current state is the same.</param>
+    public void ChangeState(EntityBaseStateSO state, bool willForceChange = false)
     {
         if (CurrentState == EntityDeathState) return;
-        if (CurrentState == state) return;
+        if (!willForceChange && CurrentState == state) return;
 
         CurrentState.OnExit();
         CurrentState = state;
-        CurrentState.OnEnter();
-    }
-
-    /// <summary>
-    /// Forces a change of state to the specified new state even when in that same state.
-    /// </summary>
-    /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(EntityBaseState newState)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        CurrentState.OnExit();
-        CurrentState = newState;
         CurrentState.OnEnter();
     }
     #endregion
@@ -678,7 +669,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityLaunchState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        ChangeState(EntityStaggeredState, true);
     }
 
     /// <summary>
@@ -1068,7 +1059,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (CurrentState == EntityDeathState) return;
 
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
-        ForceChangeState(EntityLaunchState);
+        ChangeState(EntityLaunchState, true);
     }
     
     #region Tinting Functions

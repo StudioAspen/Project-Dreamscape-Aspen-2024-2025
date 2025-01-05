@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 
-public class EntityDeathState : EntityBaseState
+public class EntityDeathStateSO : EntityBaseStateSO
 {
-    private Entity entity;
-
-    public EntityDeathState(Entity entity)
+    public EntityDeathStateSO(Entity entity)
     {
         this.entity = entity;
     }

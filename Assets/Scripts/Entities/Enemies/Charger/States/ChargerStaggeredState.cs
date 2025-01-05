@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ChargerStaggeredState : EntityStaggeredState
+public class ChargerStaggeredState : EntityStaggeredStateSO
 {
     private Charger charger;
 

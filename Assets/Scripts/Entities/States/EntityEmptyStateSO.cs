@@ -1,8 +1,6 @@
-﻿public class EntityEmptyState : EntityBaseState
+﻿public class EntityEmptyStateSO : EntityBaseStateSO
 {
-    private Entity entity;
-
-    public EntityEmptyState(Entity entity)
+    public EntityEmptyStateSO(Entity entity)
     {
         this.entity = entity;
     }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerBaseState : EntityBaseState
+public class PlayerBaseState : EntityBaseStateSO
 {
     private protected Player player;
 

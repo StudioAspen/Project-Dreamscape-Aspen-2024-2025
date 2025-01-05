@@ -149,8 +149,8 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.EntityStaggeredState) return;
 
         player.PlayerAttackState.SetCombo(combo);
-        player.ForceChangeState(player.PlayerAttackState);
-    }
+        player.ChangeState(player.PlayerAttackState, true);
+    }   
 
     /// <summary>
     /// Generates the combo lists based on the valid combos and the current inputs.

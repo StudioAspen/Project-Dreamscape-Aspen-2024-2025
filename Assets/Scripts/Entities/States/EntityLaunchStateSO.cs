@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-public class EntityLaunchState : EntityBaseState
+public class EntityLaunchStateSO : EntityBaseStateSO
 {
-    private Entity entity;
-
     private protected float timer;
     private protected float stunDuration;
 
@@ -12,7 +10,7 @@ public class EntityLaunchState : EntityBaseState
 
     private protected bool touchedGround;
 
-    public EntityLaunchState(Entity entity)
+    public EntityLaunchStateSO(Entity entity)
     {
         this.entity = entity;
     }

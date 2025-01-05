@@ -140,7 +140,7 @@ public class Charger : Enemy
         {
             if(dmg >= staggerDamageThreshold)
             {
-                ForceChangeState(EntityStaggeredState);
+                ChangeState(EntityStaggeredState, true);
             }
             else
             {
@@ -151,7 +151,7 @@ public class Charger : Enemy
         {
             if(CanBeStaggered())
             {
-                ForceChangeState(EntityStaggeredState);
+                ChangeState(EntityStaggeredState, true);
             }
         }
 

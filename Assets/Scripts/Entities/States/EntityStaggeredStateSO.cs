@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class EntityStaggeredState : EntityBaseState
+public class EntityStaggeredStateSO : EntityBaseStateSO
 {
-    private Entity entity;
-
     private protected float timer = 0f;
 
-    public EntityStaggeredState(Entity entity)
+    public EntityStaggeredStateSO(Entity entity)
     {
         this.entity = entity;
     }

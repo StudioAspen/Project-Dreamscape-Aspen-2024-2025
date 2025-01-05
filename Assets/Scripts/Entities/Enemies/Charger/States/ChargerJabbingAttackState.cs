@@ -81,7 +81,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
             return;
         }
 
-        charger.ForceChangeState(charger.ChargerJabbingAttackState);
+        charger.ChangeState(charger.ChargerJabbingAttackState, true);
     }
 
     public override void FixedUpdate()

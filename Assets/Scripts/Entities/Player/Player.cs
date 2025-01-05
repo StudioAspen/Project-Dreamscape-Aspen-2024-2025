@@ -391,7 +391,7 @@ public class Player : Entity
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityLaunchState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        ChangeState(EntityStaggeredState, true);
     }
 
     /// <summary>
