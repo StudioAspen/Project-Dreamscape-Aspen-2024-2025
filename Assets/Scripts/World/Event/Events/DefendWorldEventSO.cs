@@ -7,32 +7,37 @@ using UnityEngine;
 
 // A stationary object will placed at the center of the land for 1 minute, Every 30 seconds it will go to a neighboring land.
 // All lands will spawn enemies, if the object survives, trigger EOW
-public class DefendWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Defend World Event", menuName = "World Event/Defend")]
+public class DefendWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float DefendEventDuration { get; private set; } = 60f;
+    [field: SerializeField] public int DefendEventMaxHealth { get; private set; } = 200;
+    [field: SerializeField] public DefendEventEntity DefendEventEntityPrefab { get; private set; }
+    [field: SerializeField] public TMP_Text DefendEventUIPrefab { get; private set; }
+
     private TMP_Text UIText;
 
     private DefendEventEntity defendEventEntity;
 
     float remainingTime;
 
-    public DefendWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
-
     public override void OnStarted()
     {
-        UIText = GameObject.Instantiate(eventsConfigSO.DefendEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
+        UIText = GameObject.Instantiate(DefendEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
         
         // All lands will spawn enemies
         StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
 
         // Select a random land and spawn the defend event entity in the center of the land
         LandManager randomLand = worldManager.GetRandomLand();
-        defendEventEntity = GameObject.Instantiate(eventsConfigSO.DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        defendEventEntity.SetMaxHealth(eventsConfigSO.DefendEventMaxHealth, true);
+        defendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
+        defendEventEntity.SetMaxHealth(DefendEventMaxHealth, true);
 
         // Listen for when the defend event entity dies
         defendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 
-        remainingTime = eventsConfigSO.DefendEventDuration;
+        remainingTime = DefendEventDuration;
     }
 
     public override void OnCleared()

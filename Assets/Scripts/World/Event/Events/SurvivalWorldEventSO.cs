@@ -5,22 +5,25 @@ using TMPro;
 using UnityEngine;
 
 // All lands spawn enemies for a certain amount of time, if the player survives that amount of time trigger EOW
-public class SurvivalWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Survival World Event", menuName = "World Event/Survival")]
+public class SurvivalWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float SurvivalEventDuration { get; private set; } = 120f;
+    [field: SerializeField] public TMP_Text SurvivalEventUIPrefab { get; private set; }
+
     private TMP_Text UIText;
 
     private float remainingTime;
 
-    public SurvivalWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
-
     public override void OnStarted()
     {
-        UIText = GameObject.Instantiate(eventsConfigSO.SurvivalEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
+        UIText = GameObject.Instantiate(SurvivalEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
 
         // Spawn enemies on all lands for the duration of the event
-        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), eventsConfigSO.SurvivalEventDuration);
+        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), SurvivalEventDuration);
 
-        remainingTime = eventsConfigSO.SurvivalEventDuration;
+        remainingTime = SurvivalEventDuration;
     }
 
     public override void OnCleared()

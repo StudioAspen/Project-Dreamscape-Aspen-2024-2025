@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldEvent
+public class WorldEventSO : ScriptableObject
 {
     /// <summary>
     /// The event manager that manages the event.
@@ -13,10 +13,6 @@ public class WorldEvent
     /// The world manager that manages the lands and grid. Use this to access information about lands.
     /// </summary>
     private protected WorldManager worldManager;
-    /// <summary>
-    /// The events config scriptable object that contains the default configs for events.
-    /// </summary>
-    private protected EventsConfigSO eventsConfigSO;
 
     /// <summary>
     /// The list of enemy spawning coroutines that are currently running.
@@ -24,11 +20,21 @@ public class WorldEvent
     /// </summary>
     private protected List<Coroutine> enemySpawningCoroutines = new List<Coroutine>();
 
-    public WorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO)
+    [field: Header("Display")]
+    [field: SerializeField] public string EventName { get; private set; } = "Event";
+    [field: SerializeField] public Sprite Sprite { get; private set; }
+    [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
+
+    /// <summary>
+    /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
+    /// </summary>
+    /// <param name="eventManager">The event manager that manages the event.</param>
+    /// <param name="worldManager">The world manager that manages the lands and grid.</param>
+    /// <param name="eventsConfigSO">The events config scriptable object that contains the default configs for events.</param>
+    public void Init(EventManager eventManager, WorldManager worldManager)
     {
         this.eventManager = eventManager;
         this.worldManager = worldManager;
-        this.eventsConfigSO = eventsConfigSO;
     }
 
     /// <summary>

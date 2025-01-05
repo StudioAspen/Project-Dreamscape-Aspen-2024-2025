@@ -5,13 +5,15 @@ using UnityEngine;
 
 // All lands will light up. When the player steps on a land it will go away. All lands will spawn enemies.
 // Once all the lands have been touched by the player, trigger EOW
-public class VisitAllWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Visit All World Event", menuName = "World Event/Visit All")]
+public class VisitAllWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int VisitAllEventDummyVariable { get; private set; }
+
     private List<Player> players = new List<Player>();
 
     private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
-
-    public VisitAllWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
 
     public override void OnStarted()
     {

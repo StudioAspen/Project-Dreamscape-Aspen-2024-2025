@@ -5,14 +5,16 @@ using UnityEngine;
 
 // 3 Lands of the highest Level are selected.
 // All lands will spawn enemies, once the enemies spawned from the specific lands chosen are defeated trigger EOW
-public class PrioritiesWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Priorities World Event", menuName = "World Event/Priorities")]
+public class PrioritiesWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int PrioritiesEventDummyVariable { get; private set; }
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-
-    public PrioritiesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO){}
 
     public override void OnStarted()
     {

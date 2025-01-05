@@ -50,8 +50,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  navMeshSurface: {fileID: 8002973263680581614}
   landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
   ghostLandTransform: {fileID: 4562900200964922340}
@@ -67,8 +65,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca374d8738a92604c851e6668d6a3f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  worldManager: {fileID: 7451146893933980580}
 --- !u!114 &2152970851481245927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,9 +77,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1787edcdf68341a4185d1cfacc9e04cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  worldManager: {fileID: 7451146893933980580}
-  eventsConfigSO: {fileID: 11400000, guid: 8606f1af2ffb340419d9cadb7c06971b, type: 2}
+  events:
+  - {fileID: 11400000, guid: 93436812a1c05fc4a954369da981b118, type: 2}
+  - {fileID: 11400000, guid: d443efcebe2df9b44b3067a5cc54674d, type: 2}
+  - {fileID: 11400000, guid: a8e95b779c0c9b24480329f27eb31f34, type: 2}
+  - {fileID: 11400000, guid: 0a4a48632613bed4a9e594369bccc617, type: 2}
+  - {fileID: 11400000, guid: 8aa6201b5363ae847b9b301a27ec7bb9, type: 2}
+  - {fileID: 11400000, guid: 173c12488ac257e4192d85d727b223f1, type: 2}
 --- !u!114 &8002973263680581614
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,14 +4,16 @@ using System.Linq;
 using UnityEngine;
 
 // A 3x3 of lands are highlighted on the map. Enemies will only spawn from those lands, once they are all defeated trigger EOW
-public class ZonesWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Zones World Event", menuName = "World Event/Zones")]
+public class ZonesWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int ZonesEventDummyVariable { get; private set; }
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-
-    public ZonesWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
 
     public override void OnStarted()
     {

@@ -10,33 +10,31 @@ public class EventManager : MonoBehaviour
     private GameManager gameManager;
     private WorldManager worldManager;
 
-    [Header("Events Config")]
-    [SerializeField] private EventsConfigSO eventsConfigSO;
-
     #region Event Machine
-    public WorldEvent CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
-    public WorldEvent DefaultEvent { get; private set; }
+    [SerializeField] private List<WorldEventSO> events = new List<WorldEventSO>();
 
-    public Dictionary<Type, WorldEvent> Events { get; private set; } = new Dictionary<Type, WorldEvent>();
+    public WorldEventSO CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
+    public WorldEventSO DefaultEvent { get; private set; }
+
+    public Dictionary<Type, WorldEventSO> Events { get; private set; } = new Dictionary<Type, WorldEventSO>();
 
     /// <summary>
     /// Initializes the states for the EventManager state machine.
     /// </summary>
     private void InitializeEvents()
     {
-        AddEvent(new SurvivalWorldEvent(this, worldManager, eventsConfigSO));
-        AddEvent(new ZonesWorldEvent(this, worldManager, eventsConfigSO));
-        AddEvent(new PrioritiesWorldEvent(this, worldManager, eventsConfigSO));
-        AddEvent(new EscortWorldEvent(this, worldManager, eventsConfigSO));
-        AddEvent(new VisitAllWorldEvent(this, worldManager, eventsConfigSO));
-        AddEvent(new DefendWorldEvent(this, worldManager, eventsConfigSO));
+        foreach(WorldEventSO worldEvent in events)
+        {
+            worldEvent.Init(this, worldManager);
+            AddEvent(worldEvent);
+        }
     }
 
     /// <summary>
     /// Adds a state to the dictionary. Prevents duplicate types.
     /// </summary>
     /// <param name="newEvent">The state to add.</param>
-    private void AddEvent(WorldEvent newEvent)
+    private void AddEvent(WorldEventSO newEvent)
     {
         Type stateType = newEvent.GetType();
         if (Events.ContainsKey(stateType))
@@ -53,7 +51,7 @@ public class EventManager : MonoBehaviour
     /// </summary>
     /// <param name="eventType">The type of the state.</param>
     /// <returns>The state of the specified type.</returns>
-    public WorldEvent GetEvent(Type eventType)
+    public WorldEventSO GetEvent(Type eventType)
     {
         if (!Events.ContainsKey(eventType))
         {
@@ -101,7 +99,7 @@ public class EventManager : MonoBehaviour
     /// Returns a random event from the available states.
     /// </summary>
     /// <returns>A random event state.</returns>
-    public WorldEvent GetRandomEvent()
+    public WorldEventSO GetRandomEvent()
     {
         int randomIndex = UnityEngine.Random.Range(0, Events.Count);
         return Events.Values.ToArray()[randomIndex];
@@ -118,7 +116,7 @@ public class EventManager : MonoBehaviour
 
     private void Start()
     {
-        SetDefaultEvent(typeof(SurvivalWorldEvent));
+        SetDefaultEvent(typeof(SurvivalWorldEventSO));
     }
 
     private void Update()

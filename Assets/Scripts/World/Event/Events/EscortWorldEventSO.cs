@@ -5,8 +5,15 @@ using UnityEngine;
 
 // An NPC will run around the map for X minutes.
 // Only land the NPC stands on spawn enemies,if they survive trigger EOW
-public class EscortWorldEvent : WorldEvent
+[CreateAssetMenu(fileName = "Escort World Event", menuName = "World Event/Escort")]
+public class EscortWorldEventSO : WorldEventSO
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float EscortEventDuration { get; private set; } = 120f;
+    [field: SerializeField] public int EscortEventMaxHealth { get; private set; } = 200;
+    [field: SerializeField] public EscortEventEntity EscortEventEntityPrefab { get; private set; }
+    [field: SerializeField] public TMP_Text EscortEventUIPrefab { get; private set; }
+
     private TMP_Text UIText;
 
     private EscortEventEntity escortEventEntity;
@@ -14,17 +21,15 @@ public class EscortWorldEvent : WorldEvent
 
     float remainingTime;
 
-    public EscortWorldEvent(EventManager eventManager, WorldManager worldManager, EventsConfigSO eventsConfigSO) : base(eventManager, worldManager, eventsConfigSO) { }
-
     public override void OnStarted()
     {
-        UIText = GameObject.Instantiate(eventsConfigSO.EscortEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
+        UIText = GameObject.Instantiate(EscortEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
 
         LandManager randomLand = worldManager.GetRandomLand();
 
         // Spawn the escort entity on the random land
-        escortEventEntity = GameObject.Instantiate(eventsConfigSO.EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        escortEventEntity.SetMaxHealth(eventsConfigSO.EscortEventMaxHealth, true);
+        escortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
+        escortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
         // The land the escort entity spawns on will spawn enemies
@@ -33,7 +38,7 @@ public class EscortWorldEvent : WorldEvent
         // Listen for the escort entity's death
         escortEventEntity.OnEntityDeath += EscortEventEntity_OnEntityDeath;
 
-        remainingTime = eventsConfigSO.EscortEventDuration;
+        remainingTime = EscortEventDuration;
     }
 
     public override void OnCleared()
