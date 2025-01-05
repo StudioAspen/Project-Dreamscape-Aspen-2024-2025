@@ -22,12 +22,15 @@ public class EscortWorldEvent : WorldEvent
 
         LandManager randomLand = worldManager.GetRandomLand();
 
+        // Spawn the escort entity on the random land
         escortEventEntity = GameObject.Instantiate(eventsConfigSO.EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
         escortEventEntity.SetMaxHealth(eventsConfigSO.EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(randomLand.EnemySpawner.SpawnWithCurrencyCoroutine()));
+        // The land the escort entity spawns on will spawn enemies
+        StartEnemySpawnerWithCurrency(randomLand);
 
+        // Listen for the escort entity's death
         escortEventEntity.OnEntityDeath += EscortEventEntity_OnEntityDeath;
 
         remainingTime = eventsConfigSO.EscortEventDuration;
@@ -35,13 +38,14 @@ public class EscortWorldEvent : WorldEvent
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
             land.EnemySpawner.KillAll();
         }
 
+        // Remove the escort entity and cleanup the listener
         if(escortEventEntity != null)
         {
             escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
@@ -75,16 +79,16 @@ public class EscortWorldEvent : WorldEvent
     /// <param name="newLand">The new land the escort entity has moved to.</param>
     private void OnEscortEntityChangeLand(LandManager newLand)
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(newLand.EnemySpawner.SpawnWithCurrencyCoroutine()));
+        StartEnemySpawnerWithCurrency(newLand);
     }
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
     {
         escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         Debug.Log("Escort Event Entity has died. You failed.");
     }

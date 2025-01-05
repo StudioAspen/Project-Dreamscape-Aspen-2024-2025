@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -19,17 +20,16 @@ public class DefendWorldEvent : WorldEvent
     public override void OnStarted()
     {
         UIText = GameObject.Instantiate(eventsConfigSO.DefendEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
+        
+        // All lands will spawn enemies
+        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
 
-        foreach (LandManager land in worldManager.SpawnedLands.Values)
-        {
-            EnemySpawner enemySpawner = land.EnemySpawner;
-            enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
-        }
-
+        // Select a random land and spawn the defend event entity in the center of the land
         LandManager randomLand = worldManager.GetRandomLand();
         defendEventEntity = GameObject.Instantiate(eventsConfigSO.DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
         defendEventEntity.SetMaxHealth(eventsConfigSO.DefendEventMaxHealth, true);
 
+        // Listen for when the defend event entity dies
         defendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 
         remainingTime = eventsConfigSO.DefendEventDuration;
@@ -37,13 +37,14 @@ public class DefendWorldEvent : WorldEvent
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
             land.EnemySpawner.KillAll();
         }
         
+        // Remove the defend event entity and cleanup the listener
         if(defendEventEntity != null)
         {
             defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;

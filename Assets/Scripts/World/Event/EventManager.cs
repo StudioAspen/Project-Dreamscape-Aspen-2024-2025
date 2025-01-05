@@ -119,7 +119,6 @@ public class EventManager : MonoBehaviour
     private void Start()
     {
         SetDefaultEvent(typeof(SurvivalWorldEvent));
-        SetStartEvent(GetRandomEvent().GetType());
     }
 
     private void Update()

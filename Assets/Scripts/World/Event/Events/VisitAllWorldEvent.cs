@@ -15,6 +15,7 @@ public class VisitAllWorldEvent : WorldEvent
 
     public override void OnStarted()
     {
+        // Find all players and if there are none, clear the event
         players = GameObject.FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
         if(players == null)
         {
@@ -27,10 +28,10 @@ public class VisitAllWorldEvent : WorldEvent
             return;
         }
 
+        // Start enemy spawners and create visit indicators on all lands
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
-            EnemySpawner enemySpawner = land.EnemySpawner;
-            enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
+            StartEnemySpawnerWithCurrency(land);
 
             visitIndicatorsDictionary.Add(land.GridPosition,
                 CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
@@ -39,13 +40,14 @@ public class VisitAllWorldEvent : WorldEvent
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
             land.EnemySpawner.KillAll();
         }
 
+        // Cleanup all visit indicators
         foreach (GameObject sphere in visitIndicatorsDictionary.Values)
         {
             GameObject.Destroy(sphere);
@@ -61,6 +63,7 @@ public class VisitAllWorldEvent : WorldEvent
             return;
         }
 
+        // Check if any player is on a land and remove the visit indicator
         for (int i = 0; i < players.Count; i++)
         {
             Vector2Int playerGridPosition = worldManager.GetGridPosition(players[i].transform.position);

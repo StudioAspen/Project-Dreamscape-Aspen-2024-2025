@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -16,18 +17,15 @@ public class SurvivalWorldEvent : WorldEvent
     {
         UIText = GameObject.Instantiate(eventsConfigSO.SurvivalEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
 
-        foreach(LandManager land in worldManager.SpawnedLands.Values)
-        {
-            EnemySpawner enemySpawner = land.EnemySpawner;
-            enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(eventsConfigSO.SurvivalEventDuration)));
-        }
+        // Spawn enemies on all lands for the duration of the event
+        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), eventsConfigSO.SurvivalEventDuration);
 
         remainingTime = eventsConfigSO.SurvivalEventDuration;
     }
 
     public override void OnCleared()
     {
-        StopAndClearEnemySpawningCoroutines();
+        StopEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {

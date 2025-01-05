@@ -47,9 +47,59 @@ public class WorldEvent
     public virtual void Update() { }
 
     /// <summary>
-    /// Stops and clears all enemy spawning coroutines.
+    /// Spawns enemies with currency on the specified land.
+    /// Populates the enemySpawningCoroutines list with the coroutine from the land's enemy spawner.
     /// </summary>
-    public void StopAndClearEnemySpawningCoroutines()
+    /// <param name="land">The land to spawn enemies on.</param>
+    public void StartEnemySpawnerWithCurrency(LandManager land)
+    {
+        EnemySpawner enemySpawner = land.EnemySpawner;
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
+    }
+
+    /// <summary>
+    /// Spawns enemies with a specified duration on the specified land.
+    /// Populates the enemySpawningCoroutines list with the coroutine from the land's enemy spawner.
+    /// </summary>
+    /// <param name="land">The land to spawn enemies on.</param>
+    /// <param name="duration">The duration of how long the enemies will spawn for.</param>
+    public void StartEnemySpawnerWithDuration(LandManager land, float duration)
+    {
+        EnemySpawner enemySpawner = land.EnemySpawner;
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(duration)));
+    }
+
+    /// <summary>
+    /// Spawns enemies with currency on the specified lands.
+    /// Populates the enemySpawningCoroutines list with the coroutines from each land's enemy spawner.
+    /// </summary>
+    /// <param name="lands">The list of lands to spawn enemies on.</param>
+    public void StartEnemySpawnersWithCurrency(List<LandManager> lands)
+    {
+        foreach (LandManager land in lands)
+        {
+            StartEnemySpawnerWithCurrency(land);
+        }
+    }
+
+    /// <summary>
+    /// Spawns enemies with a specified duration on the specified lands.
+    /// Populates the enemySpawningCoroutines list with the coroutines from each land's enemy spawner.
+    /// </summary>
+    /// /// <param name="lands">The list of lands to spawn enemies on.</param>
+    /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
+    public void StartEnemySpawnersWithDuration(List<LandManager> lands, float duration)
+    {
+        foreach (LandManager land in lands)
+        {
+            StartEnemySpawnerWithDuration(land, duration);
+        }
+    }
+
+    /// <summary>
+    /// Stops and clears all enemy spawning coroutines, stopping all enemy spawning on all lands.
+    /// </summary>
+    public void StopEnemySpawners()
     {
         foreach (Coroutine coroutine in enemySpawningCoroutines)
         {

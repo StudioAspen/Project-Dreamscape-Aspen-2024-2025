@@ -24,7 +24,10 @@ public class EnemySpawner : MonoBehaviour
     private float maxShopCurrency;
     private float currentShopCurrency;
     private bool isUsingCurrency;
-    public Action OnSpawnerDepleted = delegate { }; // Triggers when the spawner has no more currency and all enemies are defeated
+    /// <summary>
+    /// Triggers when the spawner has no more currency and all enemies are defeated.
+    /// </summary>
+    public Action OnSpawnerDepleted = delegate { };
 
     private List<Enemy> enemiesSpawned = new List<Enemy>();
 
@@ -182,7 +185,7 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Kills all spawned enemies.
+    /// Kills all spawned enemies
     /// </summary>
     public void KillAll()
     {
