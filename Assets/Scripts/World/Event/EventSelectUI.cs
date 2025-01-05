@@ -56,7 +56,7 @@ public class EventSelectUI : MonoBehaviour
 
     private void AssignRandomEventsToCards()
     {
-        List<Type> potentialEvents = new List<Type>(eventManager.Events.Keys);
+        List<Type> potentialEvents = new List<Type>(eventManager.EventsDictionary.Keys);
 
         foreach (EventCardUI card in eventCards)
         {

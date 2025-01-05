@@ -12,11 +12,11 @@ public class EventManager : MonoBehaviour
 
     #region Event Machine
     [SerializeField] private List<WorldEventSO> events = new List<WorldEventSO>();
+    public Dictionary<Type, WorldEventSO> EventsDictionary { get; private set; } = new Dictionary<Type, WorldEventSO>();
 
     public WorldEventSO CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
     public WorldEventSO DefaultEvent { get; private set; }
 
-    public Dictionary<Type, WorldEventSO> Events { get; private set; } = new Dictionary<Type, WorldEventSO>();
 
     /// <summary>
     /// Initializes the states for the EventManager state machine.
@@ -37,13 +37,13 @@ public class EventManager : MonoBehaviour
     private void AddEvent(WorldEventSO newEvent)
     {
         Type stateType = newEvent.GetType();
-        if (Events.ContainsKey(stateType))
+        if (EventsDictionary.ContainsKey(stateType))
         {
             Debug.LogWarning($"State of type {stateType.Name} is already added. Skipping duplicate.");
             return;
         }
 
-        Events[stateType] = newEvent;
+        EventsDictionary[stateType] = newEvent;
     }
 
     /// <summary>
@@ -53,13 +53,23 @@ public class EventManager : MonoBehaviour
     /// <returns>The state of the specified type.</returns>
     public WorldEventSO GetEvent(Type eventType)
     {
-        if (!Events.ContainsKey(eventType))
+        if (!EventsDictionary.ContainsKey(eventType))
         {
             Debug.LogError($"State of type {eventType.Name} not found in the state machine.");
             return null;
         }
 
-        return Events[eventType];
+        return EventsDictionary[eventType];
+    }
+
+    /// <summary>
+    /// Gets the state of the specified type from the state machine.
+    /// Casts the state to the specified type.
+    /// </summary>
+    /// <returns>The state of the specified type.</returns>
+    public T GetEvent<T>() where T : WorldEventSO
+    {
+        return GetEvent(typeof(T)) as T;
     }
 
     /// <summary>
@@ -73,12 +83,28 @@ public class EventManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the start state of the EventManager state machine to the specified type.
+    /// </summary>
+    private void SetStartEvent<T>() where T : WorldEventSO
+    {
+        SetStartEvent(typeof(T));
+    }
+
+    /// <summary>
     /// Sets the default state of the EventManager state machine to the specified type.
     /// </summary>
     /// <param name="eventType">The type of the state.</param>
     private void SetDefaultEvent(Type eventType)
     {
         DefaultEvent = GetEvent(eventType);
+    }
+
+    /// <summary>
+    /// Sets the default state of the EventManager state machine to the specified type.
+    /// </summary>
+    private void SetDefaultEvent<T>() where T : WorldEventSO
+    {
+        SetDefaultEvent(typeof(T));
     }
 
     /// <summary>
@@ -101,8 +127,8 @@ public class EventManager : MonoBehaviour
     /// <returns>A random event state.</returns>
     public WorldEventSO GetRandomEvent()
     {
-        int randomIndex = UnityEngine.Random.Range(0, Events.Count);
-        return Events.Values.ToArray()[randomIndex];
+        int randomIndex = UnityEngine.Random.Range(0, EventsDictionary.Count);
+        return EventsDictionary.Values.ToArray()[randomIndex];
     }
     #endregion
 
@@ -116,7 +142,7 @@ public class EventManager : MonoBehaviour
 
     private void Start()
     {
-        SetDefaultEvent(typeof(SurvivalWorldEventSO));
+        SetDefaultEvent<SurvivalWorldEventSO>();
     }
 
     private void Update()
