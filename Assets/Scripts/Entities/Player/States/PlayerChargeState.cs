@@ -9,9 +9,9 @@ public class PlayerChargeState : PlayerBaseState
     public float Timer { get; private set; }
     private float duration;
 
-    public PlayerChargeState(Player player) : base(player)
+    private protected override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 

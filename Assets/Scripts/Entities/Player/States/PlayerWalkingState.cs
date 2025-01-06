@@ -2,11 +2,6 @@
 
 public class PlayerWalkingState : PlayerBaseState
 {
-    public PlayerWalkingState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("FlatMovement");

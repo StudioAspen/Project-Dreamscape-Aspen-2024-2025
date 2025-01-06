@@ -13,7 +13,7 @@ public class EscortEventEntity : Enemy
     {
         base.InitializeStates();
 
-        EscortEventEntityWanderState = new EscortEventEntityWanderState(this);
+        EscortEventEntityWanderState = EntityBaseStateSO.CreateRuntimeInstance<EscortEventEntityWanderState>(this);
     }
     #endregion
 

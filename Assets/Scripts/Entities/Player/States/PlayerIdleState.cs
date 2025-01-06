@@ -2,11 +2,6 @@
 
 public class PlayerIdleState : PlayerBaseState
 {
-    public PlayerIdleState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("FlatMovement");

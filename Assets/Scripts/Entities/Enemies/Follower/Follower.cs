@@ -33,12 +33,12 @@ public class Follower : Enemy
     {
         base.InitializeStates();
 
-        EnemyChaseState = new FollowerChaseState(this);
-        FollowerWanderState = new FollowerWanderState(this);
-        FollowerCircleState = new FollowerCircleState(this);
-        FollowerAttackState = new FollowerAttackState(this);
-        FollowerReadyAttackState = new FollowerReadyAttackState(this);
-        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<FollowerChaseState>(this);
+        FollowerWanderState = EntityBaseStateSO.CreateRuntimeInstance<FollowerWanderState>(this);
+        FollowerCircleState = EntityBaseStateSO.CreateRuntimeInstance<FollowerCircleState>(this);
+        FollowerAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackState>(this);
+        FollowerReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerReadyAttackState>(this);
+        FollowerAttackRecoverState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackRecoverState>(this);
     }
     #endregion
 

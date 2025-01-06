@@ -55,14 +55,14 @@ public class Charger : Enemy
     {
         base.InitializeStates();
 
-        ChargerWanderState = new ChargerWanderState(this);
-        ChargerTargetDetectedState = new ChargerTargetDetectedState(this);
-        ChargerChargeState = new ChargerChargeState(this);
-        ChargerDazedState = new ChargerDazedState(this);
-        ChargerWindDownState = new ChargerWindDownState(this);
-        EntityStaggeredState = new ChargerStaggeredState(this);
-        ChargerJabbingAttackState = new ChargerJabbingAttackState(this);
-        ChargerJabRecoverState = new ChargerJabRecoverState(this);
+        ChargerWanderState = EntityBaseStateSO.CreateRuntimeInstance<ChargerWanderState>(this);
+        ChargerTargetDetectedState = EntityBaseStateSO.CreateRuntimeInstance<ChargerTargetDetectedState>(this);
+        ChargerChargeState = EntityBaseStateSO.CreateRuntimeInstance<ChargerChargeState>(this);
+        ChargerDazedState = EntityBaseStateSO.CreateRuntimeInstance<ChargerDazedState>(this);
+        ChargerWindDownState = EntityBaseStateSO.CreateRuntimeInstance<ChargerWindDownState>(this);
+        ChargerJabbingAttackState = EntityBaseStateSO.CreateRuntimeInstance<ChargerJabbingAttackState>(this);
+        ChargerJabRecoverState = EntityBaseStateSO.CreateRuntimeInstance<ChargerJabRecoverState>(this);
+        EntityStaggeredState = EntityBaseStateSO.CreateRuntimeInstance<ChargerStaggeredState>(this);
     }
     #endregion
 

@@ -3,12 +3,6 @@
 public class PlayerSlideState : PlayerBaseState
 {
     private Vector3 slideDirection;
-
-    public PlayerSlideState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public void SetSlideDirection(Vector3 dir)
     {
         slideDirection = dir;

@@ -35,8 +35,8 @@ public class Enemy : Entity
     {
         base.InitializeStates();
 
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
+        EnemyIdleState = EntityBaseStateSO.CreateRuntimeInstance<EnemyIdleState>(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<EnemyChaseState>(this);
     }
     #endregion
 

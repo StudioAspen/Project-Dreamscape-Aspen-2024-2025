@@ -8,11 +8,6 @@ public class PlayerDashState : PlayerBaseState
     private float currDashSpeed;
     private float maxSpeed;
 
-    public PlayerDashState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.ResetDashDelay();

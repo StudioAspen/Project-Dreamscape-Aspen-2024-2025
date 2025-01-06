@@ -6,11 +6,6 @@ public class PlayerSprintingState : PlayerBaseState
     private float duration;
     private float timer;
 
-    public PlayerSprintingState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public void SetSprintDuration(float d)
     {
         timer = 0f;

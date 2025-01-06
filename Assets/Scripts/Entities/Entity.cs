@@ -111,10 +111,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = EntityEmptyState.CreateRuntimeInstance<EntityEmptyStateSO>(this);
-        EntityDeathState = EntityEmptyState.CreateRuntimeInstance<EntityDeathStateSO>(this);
-        EntityLaunchState = EntityEmptyState.CreateRuntimeInstance<EntityLaunchStateSO>(this);
-        EntityStaggeredState = EntityEmptyState.CreateRuntimeInstance<EntityStaggeredStateSO>(this);
+        EntityEmptyState = EntityBaseStateSO.CreateRuntimeInstance<EntityEmptyStateSO>(this);
+        EntityDeathState = EntityBaseStateSO.CreateRuntimeInstance<EntityDeathStateSO>(this);
+        EntityLaunchState = EntityBaseStateSO.CreateRuntimeInstance<EntityLaunchStateSO>(this);
+        EntityStaggeredState = EntityBaseStateSO.CreateRuntimeInstance<EntityStaggeredStateSO>(this);
     }
 
     /// <summary>

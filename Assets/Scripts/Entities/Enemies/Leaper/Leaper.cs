@@ -40,10 +40,10 @@ public class Leaper : Enemy
     {
         base.InitializeStates();
 
-        LeaperWanderState = new LeaperWanderState(this);
-        EnemyChaseState = new LeaperChaseState(this);
-        LeaperReadyAttackState = new LeaperReadyAttackState(this);
-        LeaperAttackState = new LeaperAttackState(this);
+        LeaperWanderState = EntityBaseStateSO.CreateRuntimeInstance<LeaperWanderState>(this);
+        LeaperReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperReadyAttackState>(this);
+        LeaperAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperAttackState>(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<LeaperChaseState>(this);
         LeaperChaseState = EnemyChaseState as LeaperChaseState;
     }
     #endregion

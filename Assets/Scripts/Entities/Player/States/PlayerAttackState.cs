@@ -16,9 +16,9 @@ public class PlayerAttackState : PlayerBaseState
     private float duration;
     private float timer;
 
-    public PlayerAttackState(Player player) : base(player)
+    private protected override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 

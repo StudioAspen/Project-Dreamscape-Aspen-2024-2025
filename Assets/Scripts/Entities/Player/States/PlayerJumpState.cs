@@ -2,11 +2,6 @@
 
 public class PlayerJumpState : PlayerBaseState
 {
-    public PlayerJumpState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("JumpingUp");

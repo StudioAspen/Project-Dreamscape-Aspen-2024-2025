@@ -56,15 +56,15 @@ public class Player : Entity
     {
         base.InitializeStates();
 
-        PlayerIdleState = new PlayerIdleState(this);
-        PlayerWalkingState = new PlayerWalkingState(this);
-        PlayerSprintingState = new PlayerSprintingState(this);
-        PlayerJumpState = new PlayerJumpState(this);
-        PlayerFallState = new PlayerFallState(this);
-        PlayerDashState = new PlayerDashState(this);
-        PlayerSlideState = new PlayerSlideState(this);
-        PlayerAttackState = new PlayerAttackState(this);
-        PlayerChargeState = new PlayerChargeState(this);
+        PlayerIdleState = EntityBaseStateSO.CreateRuntimeInstance<PlayerIdleState>(this);
+        PlayerWalkingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerWalkingState>(this);
+        PlayerSprintingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSprintingState>(this);
+        PlayerJumpState = EntityBaseStateSO.CreateRuntimeInstance<PlayerJumpState>(this);
+        PlayerFallState = EntityBaseStateSO.CreateRuntimeInstance<PlayerFallState>(this);
+        PlayerDashState = EntityBaseStateSO.CreateRuntimeInstance<PlayerDashState>(this);
+        PlayerSlideState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSlideState>(this);
+        PlayerAttackState = EntityBaseStateSO.CreateRuntimeInstance<PlayerAttackState>(this);
+        PlayerChargeState = EntityBaseStateSO.CreateRuntimeInstance<PlayerChargeState>(this);
     }
     #endregion
 

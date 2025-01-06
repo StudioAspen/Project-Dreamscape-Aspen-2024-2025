@@ -9,15 +9,31 @@ public class EntityBaseStateSO : ScriptableObject
     private protected Entity entity;
 
     /// <summary>
+    /// Clones and creates a runtime instance of the specified type with the given entity.
+    /// This is so that each entity has its own instance of the state.
+    /// </summary>
+    /// <typeparam name="T">The type of the runtime instance.</typeparam>
+    /// <param name="originalState">The original state to clone the runtime instance with.</param>
+    /// <param name="entity">The entity to initialize the runtime instance with.</param>
+    /// <returns>The created runtime instance.</returns>
+    public static T CreateRuntimeInstance<T>(EntityBaseStateSO originalState, Entity entity) where T : EntityBaseStateSO
+    {
+        EntityBaseStateSO runtimeInstance = Instantiate(originalState);
+        runtimeInstance.Init(entity);
+        return runtimeInstance as T;
+    }
+
+    /// <summary>
     /// Creates a runtime instance of the specified type with the given entity.
+    /// Any config variables will be default values.
     /// This is so that each entity has its own instance of the state.
     /// </summary>
     /// <typeparam name="T">The type of the runtime instance.</typeparam>
     /// <param name="entity">The entity to initialize the runtime instance with.</param>
     /// <returns>The created runtime instance.</returns>
-    public T CreateRuntimeInstance<T>(Entity entity) where T : EntityBaseStateSO
+    public static T CreateRuntimeInstance<T>(Entity entity) where T : EntityBaseStateSO
     {
-        EntityBaseStateSO runtimeInstance = Instantiate(this);
+        EntityBaseStateSO runtimeInstance = ScriptableObject.CreateInstance<T>();
         runtimeInstance.Init(entity);
         return runtimeInstance as T;
     }
