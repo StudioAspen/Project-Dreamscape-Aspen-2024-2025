@@ -71,6 +71,19 @@ public class WorldManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Retrieves the LandManager object based on the given world position.
+    /// Returns null if no land exists at the specified position.
+    /// </summary>
+    /// <param name="worldPosition">The world position of the land.</param>
+    /// <returns>The LandManager object at the specified grid position.</returns>
+    public LandManager GetLandByWorldPosition(Vector3 worldPosition)
+    {
+        Vector2Int gridPosition = GetGridPosition(worldPosition);
+
+        return GetLandByGridPosition(gridPosition);
+    }
+
+    /// <summary>
     /// Tries to retrieve the LandManager object based on the given grid position.
     /// Returns true and assigns the LandManager object to the 'land' parameter if a land exists at the specified position.
     /// Returns false and assigns null to the 'land' parameter if no land exists at the specified position.

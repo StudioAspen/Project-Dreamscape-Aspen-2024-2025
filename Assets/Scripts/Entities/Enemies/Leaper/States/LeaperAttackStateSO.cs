@@ -6,6 +6,7 @@ public class LeaperAttackStateSO : LeaperBaseStateSO
 {
     private Entity rememberedTarget;
     private Vector3 hopDestination;
+    private Vector3 hopDirection;
 
     private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
 
@@ -28,6 +29,8 @@ public class LeaperAttackStateSO : LeaperBaseStateSO
         Vector3 predictedMovement = rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed * leaper.AttackHopDuration * rememberedTarget.transform.forward;
         hopDestination = rememberedTarget.GetColliderCenterPosition() + predictedMovement;
 
+        hopDirection = (hopDestination - leaper.transform.position).normalized;
+
         // 0 hop height, because duration overrides that
         leaper.Hop(hopDestination, 0f, leaper.AttackHopDuration);
 
@@ -49,7 +52,7 @@ public class LeaperAttackStateSO : LeaperBaseStateSO
             return;
         }
 
-        leaper.LookAt(hopDestination);
+        leaper.LookAt(leaper.transform.position + hopDirection);
 
         if (!leaper.IsGrounded)
         {
