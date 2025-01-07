@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +8,9 @@ using UnityEngine.UI;
 
 public class AspectsTreeUI : MonoBehaviour
 {
+    private GameManager gameManager;
+
     [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager; 
     [SerializeField] private AspectsManager aspectsManager;
     [SerializeField] private AspectButtonUI aspectButtonUIPrefab;
     [SerializeField] private TMP_Text titleText;
@@ -23,13 +23,10 @@ public class AspectsTreeUI : MonoBehaviour
 
     private List<AspectButtonUI> aspectButtonUIs = new List<AspectButtonUI>();
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
@@ -47,11 +44,6 @@ public class AspectsTreeUI : MonoBehaviour
         }
 
         Enable();
-    }
-
-    private void Start()
-    {
-        Disable();
     }
 
     private void OnEnable()

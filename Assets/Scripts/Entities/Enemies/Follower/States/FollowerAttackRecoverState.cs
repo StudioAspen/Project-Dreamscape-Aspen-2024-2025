@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class FollowerAttackRecoverState : EnemyBaseState
+﻿public class FollowerAttackRecoverState : EnemyBaseState
 {
     private Follower follower;
 

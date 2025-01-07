@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,10 +8,10 @@ using UnityEngine.UI;
 public class HealthBarUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField, Self] private RectTransform rectTransform;
-    [SerializeField, Child] private TMP_Text healthText;
     [SerializeField] private RectTransform healthFill;
     [SerializeField] private RectTransform healthDifferenceFill;
+    private RectTransform rectTransform;
+    private TMP_Text healthText;
 
     [Header("Settings")]
     [SerializeField] private float healthDifferenceFillDelay = 0.5f;
@@ -20,9 +19,10 @@ public class HealthBarUI : MonoBehaviour
 
     private float value;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        rectTransform = GetComponent<RectTransform>();
+        healthText = GetComponentInChildren<TMP_Text>();
     }
 
     private void Start()

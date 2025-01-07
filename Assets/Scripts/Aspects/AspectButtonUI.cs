@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,10 +6,9 @@ using UnityEngine.UI;
 
 public class AspectButtonUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private Button button;
-    [SerializeField, Child] private TMP_Text text;
+    private GameManager gameManager;
+    private Button button;
+    private TMP_Text text;
 
     private AspectsTreeUI aspectsTreeUI;
     private AspectsManager aspectsManager;
@@ -31,13 +29,12 @@ public class AspectButtonUI : MonoBehaviour
         ChangeButton(treeUI, aspectsManager, aspectNode);
     }
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+        button = GetComponent<Button>();
+        text = GetComponentInChildren<TMP_Text>();
+
         button.onClick.AddListener(OnClickButton);
     }
 

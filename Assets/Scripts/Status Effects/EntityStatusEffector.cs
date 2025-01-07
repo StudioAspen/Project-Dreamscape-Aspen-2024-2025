@@ -1,7 +1,7 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EntityStatusEffector : MonoBehaviour
@@ -31,22 +31,23 @@ public class EntityStatusEffector : MonoBehaviour
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override or apply.</param>
     /// <param name="source">The source GameObject that applies the status effect.</param>
-    public void ApplyStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    public StatusEffectSO ApplyStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
         if (newStatusEffect.Stackable)
         {
             if (!CurrentStatusEffects.ContainsKey(newStatusEffect.GetType()))
             {
-                ApplyNotStackedStatusEffect(newStatusEffect, source);
-                return;
+                return ApplyNotStackedStatusEffect(newStatusEffect, source);
             }
 
             StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-            currentStatusEffect.Override(newStatusEffect); // extend and override
+            currentStatusEffect.OnStack(newStatusEffect); // extend and override
+
+            return currentStatusEffect;
         }
         else
         {
-            ApplyNotStackedStatusEffect(newStatusEffect, source);
+            return ApplyNotStackedStatusEffect(newStatusEffect, source);
         }
     }
 
@@ -56,7 +57,7 @@ public class EntityStatusEffector : MonoBehaviour
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to apply.</param>
     /// <param name="source">The source GameObject that applies the status effect.</param>
-    private void ApplyNotStackedStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    private StatusEffectSO ApplyNotStackedStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
         RemoveStatusEffect(newStatusEffect.GetType(), true);
 
@@ -64,6 +65,8 @@ public class EntityStatusEffector : MonoBehaviour
         newStatusEffectRuntimeCopy.Init(this, source);
 
         CurrentStatusEffects.Add(newStatusEffect.GetType(), newStatusEffectRuntimeCopy);
+
+        return newStatusEffectRuntimeCopy;
     }
 
     /// <summary>
@@ -85,12 +88,53 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
+    /// Tries to apply a status effect to the target GameObject.
+    /// If the target has an EntityStatusEffector component, the status effect will be applied.
+    /// </summary>
+    public static void TryApplyStatusEffect(GameObject target, StatusEffectSO statusEffect, GameObject source)
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return;
+
+        statusEffector.ApplyStatusEffect(statusEffect, source);
+    }
+
+    /// <summary>
+    /// Tries to get the status effect of the specified type from the target object.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public static T TryGetStatusEffect<T>(GameObject target) where T : StatusEffectSO
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return null;
+
+        return statusEffector.TryGetStatusEffect<T>();
+    }
+
+    /// <summary>
+    /// Tries to get the status effect of the specified type from the entity.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public T TryGetStatusEffect<T>() where T : StatusEffectSO
+    {
+        if (CurrentStatusEffects.ContainsKey(typeof(T)))
+        {
+            return CurrentStatusEffects[typeof(T)] as T;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Cancels and removes all current status effects from the entity when it is disabled.
     /// </summary>
     private void OnDisable()
     {
-        foreach (StatusEffectSO statusEffect in CurrentStatusEffects.Values)
+        for(int i = 0; i < CurrentStatusEffects.Count; i++)
         {
+            StatusEffectSO statusEffect = CurrentStatusEffects.Values.ElementAt(i);
             statusEffect.Cancel();
             Destroy(statusEffect);
         }

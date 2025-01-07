@@ -45,7 +45,7 @@ public class EntityLaunchState : EntityBaseState
     {
         entity.ApplyGravity();
 
-        entity.GroundedMove();
+        entity.ApplyHorizontalVelocity();
 
         timer += entity.LocalDeltaTime;
 
@@ -74,7 +74,7 @@ public class EntityLaunchState : EntityBaseState
     {
         if(hit.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
 
-        Vector3 bounceVelocity = Vector3.Reflect(entity.GetGroundedVelocity(), hit.normal);
+        Vector3 bounceVelocity = Vector3.Reflect(entity.GetHorizontalVelocity(), hit.normal);
         bounceVelocity.y = entity.Velocity.y;
 
         entity.SetVelocity(bounceVelocity);

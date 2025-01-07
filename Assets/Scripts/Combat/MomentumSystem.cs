@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,8 +5,7 @@ using UnityEngine;
 
 public class MomentumSystem : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private Player player;
+    private Player player;
 
     [Header("Settings")]
     [SerializeField] private float baseTimeBetween = 5f;
@@ -18,9 +16,9 @@ public class MomentumSystem : MonoBehaviour
     private int momentum;
     public int Momentum => momentum;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        player = GetComponent<Player>();
     }
 
     void Start()
@@ -30,14 +28,14 @@ public class MomentumSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        player.OnEntityTakeDamage.AddListener(Player_OnEntityTakeDamage);
-        player.OnKillEntity.AddListener(Player_OnKillEntity);
+        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
+        player.OnKillEntity += Player_OnKillEntity;
     }
 
     private void OnDisable()
     {
-        player.OnEntityTakeDamage.RemoveListener(Player_OnEntityTakeDamage);
-        player.OnKillEntity.RemoveListener(Player_OnKillEntity);
+        player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
+        player.OnKillEntity -= Player_OnKillEntity;
     }
 
     void Update()

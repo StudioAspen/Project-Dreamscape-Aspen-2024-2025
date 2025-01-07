@@ -41,8 +41,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
             charger.LeftFistWeapon.SetPercentDamage(charger.JabPercentDamage);
         }
-
-        charger.SetRotationSpeed(charger.JabRotationSpeed);
     }
 
     public override void OnExit()
@@ -60,8 +58,6 @@ public class ChargerJabbingAttackState : EnemyBaseState
         }
 
         charger.DisableWeaponTriggers();
-
-        charger.ResetRotationSpeed();
     }
 
     public override void Update()
@@ -74,7 +70,7 @@ public class ChargerJabbingAttackState : EnemyBaseState
             return;
         }
 
-        charger.LookAt(rememberedTarget.transform.position);
+        charger.LookAt(rememberedTarget.transform.position, charger.JabRotationSpeed);
 
         // blocks update until attack animation is done
         if (charger.IsAttackAnimationPlaying) return;

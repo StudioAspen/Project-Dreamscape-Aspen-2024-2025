@@ -1,21 +1,20 @@
 ﻿using DG.Tweening;
-using KBCore.Refs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.Pool;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    [Header("Entity: References")]
-    [SerializeField, Self] private protected CharacterController controller;
-    [SerializeField, Self] private protected Animator animator;
-    [field: SerializeField, Anywhere] public GlobalPhysicsSettings PhysicsSettings { get; private set; }
-    [SerializeField, Anywhere] private protected Transform model;
+    private protected CharacterController characterController;
+    private protected Animator animator;
+
+    [field: Header("Entity: References")]
+    [field: SerializeField] public GlobalPhysicsConfigSO PhysicsSettings { get; private set; }
+    [SerializeField] private protected Transform model;
+
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion
 
@@ -72,15 +71,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Movement Events
-    [HideInInspector] public UnityEvent<Vector3> OnGrounded = new UnityEvent<Vector3>(); // 1st arg: where you grounded
-    [HideInInspector] public UnityEvent<Vector3> OnAirborne = new UnityEvent<Vector3>(); // 1st arg: where you left ground
+    public Action<Vector3> OnGrounded = delegate { }; // 1st arg: where you grounded
+    public Action<Vector3> OnAirborne = delegate { }; // 1st arg: where you left ground
     private bool prevIsGrounded;
     #endregion
 
     #region Combat Events
-    [HideInInspector] public UnityEvent<int, Vector3, GameObject> OnEntityTakeDamage = new UnityEvent<int, Vector3, GameObject>(); // passes the hit point and the source of the damage
-    [HideInInspector] public UnityEvent<GameObject> OnEntityDeath = new UnityEvent<GameObject>(); // passes the killer gameObject
-    [HideInInspector] public UnityEvent<Entity> OnKillEntity = new UnityEvent<Entity>(); // passes the victim entity
+    public Action<int, Vector3, GameObject> OnEntityTakeDamage = delegate { }; // passes the hit point and the source of the damage
+    public Action<GameObject> OnEntityDeath = delegate { }; // passes the killer gameObject
+    public Action<Entity> OnKillEntity = delegate { }; // passes the victim entity
     private protected GameObject lastHitSource;
     #endregion
 
@@ -163,13 +162,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
     #endregion
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
         //using inheritance
@@ -208,6 +205,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         lastHitSource = null;
 
         CurrentHealth = MaxHealth;
+
+        characterController.excludeLayers = 0;
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -286,7 +285,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState?.FixedUpdate();
 
         CheckGrounded();
-        HandleYVelocity();
+        HandleVerticalVelocity();
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -321,7 +320,21 @@ public class Entity : MonoBehaviour, IPoolableObject
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        controller.Move(desiredAnimationMovement);
+        characterController.Move(desiredAnimationMovement);
+    }
+
+    private void OnDrawGizmos()
+    {
+        OnOnDrawGizmos();
+    }
+
+    /// <summary>
+    /// Handles the drawing of Gizmos in the scene view.
+    /// Override this function if you want to add custom gizmo drawing logic.
+    /// </summary>
+    private protected virtual void OnOnDrawGizmos()
+    {
+
     }
 
     /// <summary>
@@ -373,7 +386,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity is grounded, false otherwise.</returns>
     private protected bool GetIsGrounded()
     {
-        return Physics.CheckSphere(transform.position + 9f * controller.radius / 10f * Vector3.up, controller.radius, LayerMask.GetMask("Ground"));
+        return Physics.CheckSphere(transform.position + 9f * characterController.radius / 10f * Vector3.up, characterController.radius, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
@@ -384,7 +397,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
     public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
     {
-        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), controller.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), characterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
         List<RaycastHit> result = new List<RaycastHit>();
 
         if (hits == null) return result;
@@ -430,7 +443,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Handles the vertical velocity of the entity.
     /// </summary>
-    private protected virtual void HandleYVelocity()
+    private protected virtual void HandleVerticalVelocity()
     {
         if (!IsGrounded)
         {
@@ -444,7 +457,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyGravity()
     {
-        controller.Move(LocalDeltaTime * velocity.y * Vector3.up);
+        characterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
     }
 
     /// <summary>
@@ -452,10 +465,27 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private void SlideOffOtherEntities()
     {
-        if (GetHitsBelowEntity(LayerMask.GetMask("Entity"), 1f).Count > 0)
+        if(CurrentState == EntityDeathState) return;
+
+        float distanceToCheckBelow = 0.25f;
+
+        int validHitEntitiesBelow = 0;
+
+        // Filter out dead entities
+        foreach(RaycastHit hit in GetHitsBelowEntity(LayerMask.GetMask("Entity"), distanceToCheckBelow))
         {
-            ForceUpdateGroundedVelocity(transform.forward, 3f);
-            GroundedMove();
+            if(hit.collider.TryGetComponent(out Entity hitEntity))
+            {
+                if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
+
+                validHitEntitiesBelow++;
+            }
+        }
+
+        if (validHitEntitiesBelow > 0)
+        {
+            ForceUpdateHorizontalVelocity(transform.forward, 3f);
+            ApplyHorizontalVelocity();
         }
     }
 
@@ -468,10 +498,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Gets the grounded velocity of the entity.
+    /// Gets the horizontal velocity of the entity.
     /// </summary>
     /// <returns>The grounded velocity.</returns>
-    public Vector3 GetGroundedVelocity()
+    public Vector3 GetHorizontalVelocity()
     {
         return new Vector3(velocity.x, 0f, velocity.z);
     }
@@ -486,32 +516,32 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Moves the entity while it is grounded.
-    /// Override this function if you want to add custom grounded movement logic.
+    /// Moves the entity in its horizontal velocity direction.
+    /// Override this function if you want to add custom horizontal movement logic.
     /// </summary>
-    public virtual void GroundedMove()
+    public virtual void ApplyHorizontalVelocity()
     {
-        controller.Move(GetGroundedVelocity() * LocalDeltaTime);
+        characterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
     }
 
     /// <summary>
-    /// Updates the grounded velocity of the entity based on the given direction.
+    /// Updates the horizontal velocity of the entity based on the given direction.
     /// </summary>
     /// <param name="direction">The direction of movement.</param>
-    public void UpdateGroundedVelocity(Vector3 direction)
+    public void UpdateHorizontalVelocity(Vector3 direction)
     {
-        Vector3 groundedVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
+        Vector3 horizontalVelocity = MovementSpeed * new Vector3(direction.x, 0f, direction.z).normalized;
 
-        velocity.x = groundedVelocity.x;
-        velocity.z = groundedVelocity.z;
+        velocity.x = horizontalVelocity.x;
+        velocity.z = horizontalVelocity.z;
     }
 
     /// <summary>
-    /// Forces an update to the grounded velocity of the entity, ignoring the current speed modifier.
+    /// Forces an update to the horizontal velocity of the entity, ignoring the current speed modifier.
     /// </summary>
     /// <param name="direction">The direction of the velocity.</param>
     /// <param name="speed">The speed of the velocity.</param>
-    public void ForceUpdateGroundedVelocity(Vector3 direction, float speed)
+    public void ForceUpdateHorizontalVelocity(Vector3 direction, float speed)
     {
         Vector3 groundedVelocity = speed * new Vector3(direction.x, 0f, direction.z).normalized;
 
@@ -538,6 +568,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
+        characterController.excludeLayers = LayerMask.GetMask("Entity");
+
         ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();
@@ -582,6 +614,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void HandleHealth()
     {
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+    }
+
+    /// <summary>
+    /// Sets the maximum health of the entity and optionally heals it to full health.
+    /// </summary>
+    /// <param name="newMaxHealth">The new maximum health value.</param>
+    /// <param name="willHealToFull">Whether the entity will be healed to full health.</param>
+    public void SetMaxHealth(int newMaxHealth, bool willHealToFull)
+    {
+        MaxHealth = newMaxHealth;
+
+        if (willHealToFull) CurrentHealth = MaxHealth;
     }
 
     /// <summary>
@@ -672,9 +716,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Kills the entity by dealing maximum damage to itself.
     /// Doesn't work if the entity has max health set to 0.
     /// </summary>
-    public void Kill()
+    /// /// <param name="sourceObject">The source object that killed the entity.</param>
+    public void Kill(GameObject sourceObject)
     {
-        TakeDamage(int.MaxValue, transform.position, gameObject);
+        TakeDamage(int.MaxValue, transform.position, sourceObject);
     }
 
     /// <summary>
@@ -735,13 +780,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Rotates the entity to face the specified target position with a speed of rotationSpeed.
+    /// Rotates the entity to face the specified target position with a the default rotationSpeed.
     /// Must be called in Update to work.
     /// Returns the target rotation of the entity.
-    /// Override this function if you want custom LookAt behavior.
     /// </summary>
     /// <param name="target">The position to look at.</param>
-    public virtual Quaternion LookAt(Vector3 target)
+    public Quaternion LookAt(Vector3 target)
     {
         Vector3 dir = target - transform.position;
 
@@ -749,6 +793,26 @@ public class Entity : MonoBehaviour, IPoolableObject
         Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
 
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * LocalDeltaTime);
+
+        return targetRotation;
+    }
+
+    /// <summary>
+    /// Rotates the entity to face the specified target with a given speed.
+    /// Must be called in Update to work.
+    /// Returns the target rotation of the entity.
+    /// </summary>
+    /// <param name="target">The target position to look at.</param>
+    /// <param name="speed">The rotation speed.</param>
+    /// <returns>The target rotation.</returns>
+    public Quaternion LookAt(Vector3 target, float speed)
+    {
+        Vector3 dir = target - transform.position;
+
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, speed * LocalDeltaTime);
 
         return targetRotation;
     }
@@ -771,6 +835,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     public float Distance(Entity entity)
     {
         return Vector3.Distance(entity.transform.position, transform.position);
+    }
+
+    /// <summary>
+    /// Checks if the entity is close to a specified point within a given error margin.
+    /// Error is defaulted to 0.05f.
+    /// </summary>
+    /// <param name="point">The point to check against.</param>
+    /// <param name="error">The maximum allowed distance from the point.</param>
+    /// <returns>True if the entity is close to the point within the error margin, false otherwise.</returns>
+    public bool CloseToPoint(Vector3 point, float error = 0.05f)
+    {
+        return Distance(point) < error;
     }
 
     /// <summary>
@@ -804,8 +880,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// The list is sorted from closest to farthest.
     /// </summary>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
+    /// <param name="willIncludeDying">Whether to include dying entities.</param>
     /// <returns>A list of nearby entities.</returns>
-    public List<Entity> GetNearbyHostileEntities(float radius)
+    public List<Entity> GetNearbyHostileEntities(float radius, bool willIncludeDying = true)
     {
         List<Entity> targets = new List<Entity>();
 
@@ -818,6 +895,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             Entity potentialTarget = hit.GetComponent<Entity>();
             if (potentialTarget == null) continue;
             if (potentialTarget.Team == Team) continue;
+            if(!willIncludeDying && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
             targets.Add(potentialTarget);
         }
 
@@ -831,8 +909,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <typeparam name="T">The type of entities to retrieve.</typeparam>
     /// <param name="radius">The radius within which to search for nearby entities.</param>
+    /// <param name="willIncludeDying">Whether to include dying entities.</param>
     /// <returns>A list of nearby entities of the specified type.</returns>
-    public List<T> GetNearbyHostileEntitiesByType<T>(float radius) where T : Entity
+    public List<T> GetNearbyHostileEntitiesByType<T>(float radius, bool willIncludeDying = true) where T : Entity
     {
         List<T> targets = new List<T>();
 
@@ -846,6 +925,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if (potentialTarget == null) continue;
             if (potentialTarget.GetType() != typeof(T)) continue;
             if (potentialTarget.Team == Team) continue;
+            if (!willIncludeDying && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
 
             T potentialTargetT = potentialTarget as T;
 
@@ -925,7 +1005,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             return Vector3.zero;
         }
 
-        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * Random.onUnitSphere;
+        Vector3 randomPointOnUnitSphere = collider.bounds.extents.magnitude * UnityEngine.Random.onUnitSphere;
 
         return collider.ClosestPointOnBounds(collider.bounds.center + randomPointOnUnitSphere);
     }
@@ -1116,19 +1196,21 @@ public class Entity : MonoBehaviour, IPoolableObject
     public int CalculateDamage(float percent)
     {
         Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
-            (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+                (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
             );
 
-        return Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
+        return UnityEngine.Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
     }
-    
+
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
     /// List is sorted from closest to farthest entity from the hit position.
+    /// By default, the list will include dead entities.
     /// </summary>
     /// <param name="hitPosition">The center position of the AOE.</param>
     /// <param name="radius">The radius of the AOE.</param>
+    /// <param name="willGetDyingEntities">Whether to get dead entities.</param>
     /// <returns>A list of entities within the AOE, ordered by their distance from the hit position.</returns>
-    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius)
+    public static List<Entity> GetEntitiesThroughAOE(Vector3 hitPosition, float radius, bool willGetDyingEntities = true)
     {
         List<Entity> entities = new List<Entity>();
 
@@ -1140,10 +1222,70 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             Entity potentialTarget = hit.GetComponent<Entity>();
             if (potentialTarget == null) continue;
+            if(!willGetDyingEntities && potentialTarget.CurrentState == potentialTarget.EntityDeathState) continue;
 
             entities.Add(potentialTarget);
         }
 
         return entities.OrderBy(target => Vector3.SqrMagnitude(hitPosition - target.transform.position)).ToList();
+    }
+
+    /// <summary>
+    /// Checks if the given collider belongs to the entity or its child colliders.
+    /// </summary>
+    /// <param name="hit">The collider to check.</param>
+    /// <returns>True if the collider belongs to the Charger or its child colliders, false otherwise.</returns>
+    public bool IsOwnCollider(Collider hit)
+    {
+        Entity selfEntity = hit.GetComponentInParent<Entity>();
+
+        if (selfEntity == null) return false;
+        if (selfEntity == this) return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if the enemy hit a wall.
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <returns>True if the entity hit a wall, false otherwise.</returns>
+    public bool DidHitWall(Collider hit)
+    {
+        return hit.gameObject.layer == LayerMask.NameToLayer("Ground");
+    }
+
+    /// <summary>
+    /// Checks if entity hit a friendly entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The friendly entity that was hit.</param>
+    /// <returns>True if the entity hit a friendly entity, false otherwise.</returns>
+    public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) entity = hit.GetComponent<Entity>();
+        if (entity.Team != Team) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if entity hit an enemy entity.
+    /// Hit must come from Damageable Colliders layer;
+    /// </summary>
+    /// <param name="hit">The collider that was hit.</param>
+    /// <param name="entity">The enemy entity that was hit.</param>
+    /// <returns>True if the entity hit an enemy entity, false otherwise.</returns>
+    public bool DidHitEnemyEntity(Collider hit, out Entity entity)
+    {
+        entity = hit.GetComponentInParent<Entity>();
+
+        if (entity == null) return false;
+        if (entity.Team == Team) return false;
+
+        return true;
     }
 }

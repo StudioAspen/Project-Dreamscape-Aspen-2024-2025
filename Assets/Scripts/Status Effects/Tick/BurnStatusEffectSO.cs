@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,9 +39,9 @@ public class BurnStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
 
         DamagePerTick = (newStatusEffect as BurnStatusEffectSO).DamagePerTick;
         HasExtraTickOnApply = (newStatusEffect as BurnStatusEffectSO).HasExtraTickOnApply;

@@ -1,5 +1,4 @@
 ﻿using DG.Tweening.Core.Easing;
-using KBCore.Refs;
 using System;
 using UnityEngine;
 
@@ -30,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ForceChangeState(GameState.PLAYING);
+        ForceChangeState(GameState.EVENT_SELECTION);
     }
 
     private void Update()

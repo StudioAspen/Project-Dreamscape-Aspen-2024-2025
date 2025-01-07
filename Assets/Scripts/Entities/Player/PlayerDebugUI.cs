@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,12 +6,11 @@ using UnityEngine;
 
 public class PlayerDebugUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Parent] private Player player;
+    private Player player;
     private PlayerCombat playerCombat;
     private ChainingSystem chainingSystem;
     private MomentumSystem momentumSystem;
-    [SerializeField, Child] private HealthBarUI healthBarUI;
+    private HealthBarUI healthBarUI;
 
     [SerializeField] private TMP_Text stateText;
     [SerializeField] private TMP_Text inputsText;
@@ -20,20 +18,17 @@ public class PlayerDebugUI : MonoBehaviour
     [SerializeField] private TMP_Text chainText;
     [SerializeField] private TMP_Text momentumText;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
     private void Awake()
     {
+        player = GetComponentInParent<Player>();
         playerCombat = player.GetComponent<PlayerCombat>();
         chainingSystem = player.GetComponent<ChainingSystem>();
         momentumSystem = player.GetComponent<MomentumSystem>();
+        healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-        player.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
+        player.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
         
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.AddListener(Weapon_OnWeaponStartSwing);
+        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void Start()
@@ -43,9 +38,9 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
+        player.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
 
-        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.RemoveListener(Weapon_OnWeaponStartSwing);
+        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
 
     }
 

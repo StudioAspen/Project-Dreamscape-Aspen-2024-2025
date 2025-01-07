@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class Ticker : MonoBehaviour
     [SerializeField] private float tickDuration = 0.2f;
     private float tickTimer;
 
-    [HideInInspector] public UnityEvent OnTick = new UnityEvent();
+    public Action OnTick = delegate { };
 
     private void Awake()
     {

@@ -1,19 +1,18 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private PlayerInputReader input;
-    [SerializeField, Self] private Player player;
-    [SerializeField, Self] private Animator animator;
+    private Player player;
+    private PlayerInputReader playerInputReader;
+    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -23,97 +22,85 @@ public class PlayerCombat : MonoBehaviour
 
     [field: Header("Combo")]
     [SerializeField] private float comboResetDelay = 1f;
-    public List<PlayerActions> CurrentInputsList { get; private set; } = new List<PlayerActions>();
+    public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
-    private void OnValidate()
+    public Action<int> OnChargeStart = delegate { }; // parameter is which attack is charging
+    public Action<int, float> OnChargeRelease = delegate { }; // parameter is which attack is released and the charge time
+
+    private void Awake()
     {
-        this.ValidateRefs();
+        player = GetComponent<Player>();
+        playerInputReader = GetComponent<PlayerInputReader>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
     {
-        input.Attack1.AddListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.AddListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.AddListener(Input_HandleAttackChargingInput);
-        input.Attack2.AddListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.AddListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.AddListener(Input_HandleAttackChargingInput);
+        playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
-        input.OnPlayerActionInput.AddListener(Input_HandleOnPlayerActionInput);
-
-        player.OnGrounded.AddListener(Player_OnGrounded);
-        player.OnAirborne.AddListener(Player_OnAirborne);
+        player.OnGrounded += Player_OnGrounded;
+        player.OnAirborne += Player_OnAirborne;
     }
 
     private void OnDisable()
     {
-        input.Attack1.RemoveListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.RemoveListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.RemoveListener(Input_HandleAttackChargingInput);
-        input.Attack2.RemoveListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.RemoveListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.RemoveListener(Input_HandleAttackChargingInput);
+        playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
-        input.OnPlayerActionInput.RemoveListener(Input_HandleOnPlayerActionInput);
-
-        player.OnGrounded.RemoveListener(Player_OnGrounded);
-        player.OnAirborne.RemoveListener(Player_OnAirborne);
+        player.OnGrounded -= Player_OnGrounded;
+        player.OnAirborne -= Player_OnAirborne;
     }
 
     private void Update()
     {
         HandleWeaponTriggers();
+
+        if (Input.GetKey(KeyCode.V))
+        {
+            Weapon.transform.localScale += Vector3.one * player.LocalDeltaTime;
+        }
     }
 
-    private void Input_HandleAttack1Input()
+    /// <summary>
+    /// Checks if the player can perform a basic attack.
+    /// </summary>
+    /// <returns>True if the player can basic attack, false otherwise.</returns>
+    public bool CanBasicAttack()
     {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return false;
 
-        input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK1);
+        return true;
     }
 
-    private void Input_HandleAttack1ChargedInput()
+    /// <summary>
+    /// Checks if the player can perform a charged attack.
+    /// </summary>
+    /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
+    public bool CanChargedAttack()
     {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return false;
 
-        input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK1);
+        return true;
     }
 
-    private void Input_HandleAttackChargingInput()
+    /// <summary>
+    /// Checks if the player can charge.
+    /// </summary>
+    /// <returns>True if the player can charge, false otherwise.</returns>
+    public bool CanCharge()
     {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.PlayerDashState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
+        if(EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.PlayerAttackState) return false;
+        if (player.CurrentState == player.PlayerDashState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
 
-        player.ChangeState(player.PlayerChargeState);
-    }
-
-    private void Input_HandleAttack2Input()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK2);
-    }
-
-    private void Input_HandleAttack2ChargedInput()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK2);
+        return true;
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
@@ -126,7 +113,7 @@ public class PlayerCombat : MonoBehaviour
         ResetCombos();
     }
 
-    private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
+    private void PlayerInputReader_OnComboAction(ComboAction incomingAction)
     {
         CurrentInputsList.Add(incomingAction);
 
@@ -238,12 +225,12 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     /// <param name="action">The player action to check.</param>
     /// <returns>True if the action is an attack action, false otherwise.</returns>
-    private bool IsAttackAction(PlayerActions action)
+    private bool IsAttackAction(ComboAction action)
     {
-        return action == PlayerActions.ATTACK1
-            || action == PlayerActions.ATTACK2
-            || action == PlayerActions.CHARGED_ATTACK1
-            || action == PlayerActions.CHARGED_ATTACK2;
+        return action == ComboAction.ATTACK1
+            || action == ComboAction.ATTACK2
+            || action == ComboAction.CHARGED_ATTACK1
+            || action == ComboAction.CHARGED_ATTACK2;
     }
 
     /// <summary>
@@ -323,3 +310,41 @@ public class PlayerCombat : MonoBehaviour
     }
 }
 
+public class Example : MonoBehaviour
+{
+    private class GM
+    {
+        public bool isGameOver;
+        public bool simonsTurn;
+    }
+
+    private GM gm;
+
+    private Transform center;
+    private Transform simon;
+    private Transform player;
+
+
+    void Update()
+    {
+        HandleCameraPosition();
+    }
+
+    private void HandleCameraPosition()
+    {
+        if (gm.isGameOver)
+        {
+            transform.position = center.position;
+            return;
+        }
+
+        if (gm.simonsTurn)
+        {
+            transform.position = simon.position;
+        }
+        else
+        {
+            transform.position = player.position;
+        }
+    }
+}

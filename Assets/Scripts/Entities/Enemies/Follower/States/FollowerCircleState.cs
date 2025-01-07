@@ -24,7 +24,7 @@ public class FollowerCircleState : EnemyBaseState
 
         follower.SetSpeedModifier(0.5f);
 
-        Ticker.Instance.OnTick.AddListener(Ticker_OnTick);
+        Ticker.Instance.OnTick += Ticker_OnTick;
 
         changeDirTimer = 0f;
 
@@ -33,7 +33,7 @@ public class FollowerCircleState : EnemyBaseState
 
     public override void OnExit()
     {
-        Ticker.Instance.OnTick.RemoveListener(Ticker_OnTick);
+        Ticker.Instance.OnTick -= Ticker_OnTick;
     }
 
     private void Ticker_OnTick()
@@ -63,7 +63,7 @@ public class FollowerCircleState : EnemyBaseState
 
         if (follower.Target == null)
         {
-            follower.ChangeState(follower.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 
@@ -80,11 +80,11 @@ public class FollowerCircleState : EnemyBaseState
         if(changeDirTimer > follower.ChangeDirectionInterval)
         {
             changeDirTimer = 0f;
-            follower.SetDestination(CalculateCircleDestination(), false);
+            follower.SetDestination(CalculateCircleDestination());
             cwCircle = Random.Range(0, follower.ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
         }
 
-        follower.MoveTowardsDestination();
+        follower.MoveTowardsDestination(false);
         follower.LookAt(follower.Target.transform.position);
     }
 
@@ -99,12 +99,7 @@ public class FollowerCircleState : EnemyBaseState
 
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f);
-
-            foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
-            {
-                if (f.CurrentState == f.EntityDeathState) playerNearbyFollowers.Remove(f);
-            }
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f, false);
 
             playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
 

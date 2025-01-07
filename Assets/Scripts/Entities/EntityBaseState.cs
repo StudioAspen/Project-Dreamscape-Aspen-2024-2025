@@ -1,22 +1,13 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-public class EntityBaseState
+public class EntityBaseState : BaseState
 {
-    /// <summary>
-    /// Called once when entering the state.
-    /// </summary>
-    public virtual void OnEnter() { }
+    public override void OnEnter() { }
 
-    /// <summary>
-    /// Called once when exiting the state.
-    /// </summary>
-    public virtual void OnExit() { }
+    public override void OnExit() { }
 
-    /// <summary>
-    /// Called every frame to update the state.
-    /// </summary>
-    public virtual void Update() { }
+    public override void Update() { }
 
     /// <summary>
     /// Called every fixed frame rate to update the state.

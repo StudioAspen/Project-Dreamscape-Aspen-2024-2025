@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class VolumeManager : MonoBehaviour
 {
-
     [SerializeField] private Slider volumeSlider;
 
     private void Awake()
@@ -20,7 +19,6 @@ public class VolumeManager : MonoBehaviour
             PlayerPrefs.SetFloat("audioVolume", volumeSlider.value);
         }
     }
-
 
     public void ChangeVolume()
     {

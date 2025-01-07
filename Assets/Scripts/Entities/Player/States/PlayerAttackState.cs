@@ -11,6 +11,8 @@ public class PlayerAttackState : PlayerBaseState
 
     public ComboDataSO ComboData { get; private set; }
 
+    private float extraPercentDamage = 100f;
+
     private float duration;
     private float timer;
 
@@ -30,13 +32,22 @@ public class PlayerAttackState : PlayerBaseState
         ComboData = comboData;
     }
 
+    /// <summary>
+    /// Sets the extra percent damage for this swing.
+    /// </summary>
+    /// <param name="extraPercentDamage">The extra percent damage to set.</param>
+    public void SetBonusPercentDamage(float extraPercentDamage)
+    {
+        this.extraPercentDamage = extraPercentDamage;
+    }
+
     public override void OnEnter()
     {
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
 
         playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
 
-        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
+        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage * extraPercentDamage/100f); // set the damage percent for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
         playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
@@ -53,7 +64,7 @@ public class PlayerAttackState : PlayerBaseState
 
         if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
-        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit); // listen for weapon hits
+        playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
     }
 
     public override void OnExit()
@@ -66,9 +77,11 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
 
-        player.InstantlySetGroundedSpeed(0f); // stops the player from moving
+        player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
-        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit); // remove the onhit listener
+        extraPercentDamage = 100f; // reset the extra damage percentage
+
+        playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
     }
 
     public override void Update()
@@ -87,9 +100,9 @@ public class PlayerAttackState : PlayerBaseState
         if (player.IsGrounded && player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); 
 
         player.RotateToTargetRotation();
-        player.AccelerateToSpeed(0f);
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.AccelerateToHorizontalSpeed(0f);
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
     }
 
     public override void FixedUpdate()
