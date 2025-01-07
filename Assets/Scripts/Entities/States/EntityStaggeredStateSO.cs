@@ -5,11 +5,6 @@ public class EntityStaggeredStateSO : EntityBaseStateSO
 {
     private protected float timer = 0f;
 
-    public EntityStaggeredStateSO(Entity entity)
-    {
-        this.entity = entity;
-    }
-
     public override void OnEnter()
     {
         entity.TransitionToAnimation("Hit");

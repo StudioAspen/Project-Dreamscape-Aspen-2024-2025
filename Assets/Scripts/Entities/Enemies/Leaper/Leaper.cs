@@ -31,20 +31,20 @@ public class Leaper : Enemy
     [field: SerializeField] public float ReadyAttackStartDelay { get; private set; } = 0.75f;
 
     #region States
-    public LeaperWanderState LeaperWanderState { get; private set; }
-    public LeaperChaseState LeaperChaseState { get; private set; }
-    public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
-    public LeaperAttackState LeaperAttackState { get; private set; }
+    public LeaperWanderStateSO LeaperWanderState { get; private set; }
+    public LeaperChaseStateSO LeaperChaseState { get; private set; }
+    public LeaperReadyAttackStateSO LeaperReadyAttackState { get; private set; }
+    public LeaperAttackStateSO LeaperAttackState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        LeaperWanderState = EntityBaseStateSO.CreateRuntimeInstance<LeaperWanderState>(this);
-        LeaperReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperReadyAttackState>(this);
-        LeaperAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperAttackState>(this);
-        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<LeaperChaseState>(this);
-        LeaperChaseState = EnemyChaseState as LeaperChaseState;
+        LeaperWanderState = EntityBaseStateSO.CreateRuntimeInstance<LeaperWanderStateSO>(this);
+        LeaperReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperReadyAttackStateSO>(this);
+        LeaperAttackState = EntityBaseStateSO.CreateRuntimeInstance<LeaperAttackStateSO>(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<LeaperChaseStateSO>(this);
+        LeaperChaseState = EnemyChaseState as LeaperChaseStateSO;
     }
     #endregion
 

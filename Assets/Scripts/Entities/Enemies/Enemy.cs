@@ -28,15 +28,15 @@ public class Enemy : Entity
     [HideInInspector] public bool IsAttackAnimationPlaying;
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; protected set; }
-    public EnemyChaseState EnemyChaseState { get; protected set; }
+    public EnemyIdleStateSO EnemyIdleState { get; protected set; }
+    public EnemyChaseStateSO EnemyChaseState { get; protected set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyIdleState = EntityBaseStateSO.CreateRuntimeInstance<EnemyIdleState>(this);
-        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<EnemyChaseState>(this);
+        EnemyIdleState = EntityBaseStateSO.CreateRuntimeInstance<EnemyIdleStateSO>(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<EnemyChaseStateSO>(this);
     }
     #endregion
 

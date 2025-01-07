@@ -23,22 +23,22 @@ public class Follower : Enemy
     public Weapon Weapon { get; protected set; }
 
     #region States
-    public FollowerAttackState FollowerAttackState { get; private set; }
-    public FollowerWanderState FollowerWanderState { get; private set; }
-    public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
-    public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
-    public FollowerCircleState FollowerCircleState { get; private set; }
+    public FollowerAttackStateSO FollowerAttackState { get; private set; }
+    public FollowerWanderStateSO FollowerWanderState { get; private set; }
+    public FollowerReadyAttackStateSO FollowerReadyAttackState { get; private set; }
+    public FollowerAttackRecoverStateSO FollowerAttackRecoverState { get; private set; }
+    public FollowerCircleStateSO FollowerCircleState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<FollowerChaseState>(this);
-        FollowerWanderState = EntityBaseStateSO.CreateRuntimeInstance<FollowerWanderState>(this);
-        FollowerCircleState = EntityBaseStateSO.CreateRuntimeInstance<FollowerCircleState>(this);
-        FollowerAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackState>(this);
-        FollowerReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerReadyAttackState>(this);
-        FollowerAttackRecoverState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackRecoverState>(this);
+        EnemyChaseState = EntityBaseStateSO.CreateRuntimeInstance<FollowerChaseStateSO>(this);
+        FollowerWanderState = EntityBaseStateSO.CreateRuntimeInstance<FollowerWanderStateSO>(this);
+        FollowerCircleState = EntityBaseStateSO.CreateRuntimeInstance<FollowerCircleStateSO>(this);
+        FollowerAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackStateSO>(this);
+        FollowerReadyAttackState = EntityBaseStateSO.CreateRuntimeInstance<FollowerReadyAttackStateSO>(this);
+        FollowerAttackRecoverState = EntityBaseStateSO.CreateRuntimeInstance<FollowerAttackRecoverStateSO>(this);
     }
     #endregion
 

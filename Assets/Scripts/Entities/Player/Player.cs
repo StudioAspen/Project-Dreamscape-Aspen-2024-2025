@@ -42,29 +42,29 @@ public class Player : Entity
     private Coroutine dashCoroutine;
 
     #region States 
-    public PlayerIdleState PlayerIdleState { get; private set; }
-    public PlayerWalkingState PlayerWalkingState { get; private set; }
-    public PlayerSprintingState PlayerSprintingState { get; private set; }
-    public PlayerJumpState PlayerJumpState { get; private set; }
-    public PlayerFallState PlayerFallState { get; private set; }
-    public PlayerDashState PlayerDashState { get; private set; }
-    public PlayerSlideState PlayerSlideState { get; private set; }
-    public PlayerAttackState PlayerAttackState { get; private set; }
-    public PlayerChargeState PlayerChargeState { get; private set; }
+    public PlayerIdleStateSO PlayerIdleState { get; private set; }
+    public PlayerWalkingStateSO PlayerWalkingState { get; private set; }
+    public PlayerSprintingStateSO PlayerSprintingState { get; private set; }
+    public PlayerJumpStateSO PlayerJumpState { get; private set; }
+    public PlayerFallStateSO PlayerFallState { get; private set; }
+    public PlayerDashStateSO PlayerDashState { get; private set; }
+    public PlayerSlideStateSO PlayerSlideState { get; private set; }
+    public PlayerAttackStateSO PlayerAttackState { get; private set; }
+    public PlayerChargeStateSO PlayerChargeState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        PlayerIdleState = EntityBaseStateSO.CreateRuntimeInstance<PlayerIdleState>(this);
-        PlayerWalkingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerWalkingState>(this);
-        PlayerSprintingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSprintingState>(this);
-        PlayerJumpState = EntityBaseStateSO.CreateRuntimeInstance<PlayerJumpState>(this);
-        PlayerFallState = EntityBaseStateSO.CreateRuntimeInstance<PlayerFallState>(this);
-        PlayerDashState = EntityBaseStateSO.CreateRuntimeInstance<PlayerDashState>(this);
-        PlayerSlideState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSlideState>(this);
-        PlayerAttackState = EntityBaseStateSO.CreateRuntimeInstance<PlayerAttackState>(this);
-        PlayerChargeState = EntityBaseStateSO.CreateRuntimeInstance<PlayerChargeState>(this);
+        PlayerIdleState = EntityBaseStateSO.CreateRuntimeInstance<PlayerIdleStateSO>(this);
+        PlayerWalkingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerWalkingStateSO>(this);
+        PlayerSprintingState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSprintingStateSO>(this);
+        PlayerJumpState = EntityBaseStateSO.CreateRuntimeInstance<PlayerJumpStateSO>(this);
+        PlayerFallState = EntityBaseStateSO.CreateRuntimeInstance<PlayerFallStateSO>(this);
+        PlayerDashState = EntityBaseStateSO.CreateRuntimeInstance<PlayerDashStateSO>(this);
+        PlayerSlideState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSlideStateSO>(this);
+        PlayerAttackState = EntityBaseStateSO.CreateRuntimeInstance<PlayerAttackStateSO>(this);
+        PlayerChargeState = EntityBaseStateSO.CreateRuntimeInstance<PlayerChargeStateSO>(this);
     }
     #endregion
 

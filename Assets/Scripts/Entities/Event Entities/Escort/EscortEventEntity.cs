@@ -7,13 +7,13 @@ public class EscortEventEntity : Enemy
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(7f, 10f);
 
     #region States
-    public EscortEventEntityWanderState EscortEventEntityWanderState { get; private set; }
+    public EscortEventEntityWanderStateSO EscortEventEntityWanderState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EscortEventEntityWanderState = EntityBaseStateSO.CreateRuntimeInstance<EscortEventEntityWanderState>(this);
+        EscortEventEntityWanderState = EntityBaseStateSO.CreateRuntimeInstance<EscortEventEntityWanderStateSO>(this);
     }
     #endregion
 
