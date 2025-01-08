@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerWalkingStateSO : PlayerBaseStateSO
+public class PlayerWalkStateSO : PlayerBaseStateSO
 {
     public override void OnEnter()
     {
@@ -28,9 +28,9 @@ public class PlayerWalkingStateSO : PlayerBaseStateSO
             player.ChangeState(player.PlayerIdleState);
         }
 
-        if (player.IsSprinting)
+        if (player.PlayerSprintState.IsSprinting)
         {
-            player.ChangeState(player.PlayerSprintingState);
+            player.ChangeState(player.PlayerSprintState);
         }
     }
 

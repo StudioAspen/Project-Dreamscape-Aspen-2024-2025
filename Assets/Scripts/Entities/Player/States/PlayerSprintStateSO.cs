@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 
-public class PlayerSprintingStateSO : PlayerBaseStateSO
+public class PlayerSprintStateSO : PlayerBaseStateSO
 {
+    [HideInInspector] public bool IsSprinting;
+
     private bool isSprintDependentOnTimer = false;
     private float duration;
     private float timer;
 
-    public void SetSprintDuration(float d)
+    /// <summary>
+    /// Sets the duration of the sprint, after which the player will stop sprinting.
+    /// </summary>
+    /// <param name="sprintDuration">The duration of the sprint.</param>
+    public void SetSprintDuration(float sprintDuration)
     {
         timer = 0f;
-        duration = d;
+        duration = sprintDuration;
         isSprintDependentOnTimer = true;
     }
 
@@ -23,7 +29,7 @@ public class PlayerSprintingStateSO : PlayerBaseStateSO
     public override void OnExit()
     {
         isSprintDependentOnTimer = false;
-        player.IsSprinting = false;
+        IsSprinting = false;
     }
 
     public override void Update()
@@ -41,7 +47,7 @@ public class PlayerSprintingStateSO : PlayerBaseStateSO
             return;
         }
 
-        if (player.IsSprinting) isSprintDependentOnTimer = false;
+        if (player.PlayerSprintState.IsSprinting) isSprintDependentOnTimer = false;
 
         if (isSprintDependentOnTimer)
         {
@@ -49,21 +55,27 @@ public class PlayerSprintingStateSO : PlayerBaseStateSO
 
             if (timer > duration)
             {
-                player.ChangeState(player.PlayerWalkingState);
+                player.ChangeState(player.PlayerWalkState);
             }
 
             return;
         }
 
-        if (!player.IsSprinting)
+        if (!player.PlayerSprintState.IsSprinting)
         {
-            player.ChangeState(player.PlayerWalkingState);
+            player.ChangeState(player.PlayerWalkState);
         }
     }
 
-    public override void FixedUpdate()
+    /// <summary>
+    /// Determines whether the player can sprint.
+    /// </summary>
+    /// <returns>True if the player can sprint, false otherwise.</returns>
+    public bool CanSprint()
     {
-        
-        
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.PlayerDashState) return false;
+
+        return true;
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.Pool;
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    private protected CharacterController characterController;
+    public CharacterController CharacterController { get; protected set; }
     private protected Animator animator;
 
     [field: Header("Entity: References")]
@@ -155,7 +155,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        CharacterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
         //We have to make custom OnAwake and OnStart functions
@@ -197,7 +197,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CurrentHealth = MaxHealth;
 
-        characterController.excludeLayers = 0;
+        CharacterController.excludeLayers = 0;
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -311,7 +311,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        characterController.Move(desiredAnimationMovement);
+        CharacterController.Move(desiredAnimationMovement);
     }
 
     private void OnDrawGizmos()
@@ -377,7 +377,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity is grounded, false otherwise.</returns>
     private protected bool GetIsGrounded()
     {
-        return Physics.CheckSphere(transform.position + 9f * characterController.radius / 10f * Vector3.up, characterController.radius, LayerMask.GetMask("Ground"));
+        return Physics.CheckSphere(transform.position + 9f * CharacterController.radius / 10f * Vector3.up, CharacterController.radius, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
@@ -388,7 +388,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
     public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
     {
-        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), characterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), CharacterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
         List<RaycastHit> result = new List<RaycastHit>();
 
         if (hits == null) return result;
@@ -448,7 +448,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyGravity()
     {
-        characterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+        CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+    }
+
+    /// <summary>
+    /// Allows the entity to change from grounded to airborne state by setting the inAirTimer to a small value greater than 0.
+    /// Doesn't work if the entity is already airborne.
+    /// </summary>
+    public void AllowChangeFromGroundedToAirborne()
+    {
+        // If the entity is not grounded, then it is already airborne
+        if (!IsGrounded) return;
+
+        inAirTimer = 0.01f;
     }
 
     /// <summary>
@@ -512,7 +524,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyHorizontalVelocity()
     {
-        characterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
+        CharacterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
     }
 
     /// <summary>
@@ -559,7 +571,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        characterController.excludeLayers = LayerMask.GetMask("Entity");
+        CharacterController.excludeLayers = LayerMask.GetMask("Entity");
 
         ChangeState(EntityDeathState);
 

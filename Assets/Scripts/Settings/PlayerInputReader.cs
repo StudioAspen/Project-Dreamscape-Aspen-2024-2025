@@ -70,14 +70,14 @@ public class PlayerInputReader : MonoBehaviour
 
     private void PlayerInput_OnJumpPerformed(InputAction.CallbackContext context)
     {
-        if (!player.CanJump()) return;
+        if (!player.PlayerJumpState.CanJump()) return;
 
         player.ChangeState(player.PlayerJumpState);
     }
 
     private void PlayerInput_OnDashPerformed(InputAction.CallbackContext context)
     {
-        if(!player.CanDash()) return;
+        if(!player.PlayerDashState.CanDash()) return;
 
         OnComboAction?.Invoke(ComboAction.DASH);
         player.ChangeState(player.PlayerDashState);
@@ -85,14 +85,14 @@ public class PlayerInputReader : MonoBehaviour
 
     private void PlayerInput_OnSprintStarted(InputAction.CallbackContext context)
     {
-        if(!player.CanSprint()) return;
+        if(!player.PlayerSprintState.CanSprint()) return;
 
-        player.IsSprinting = true;
+        player.PlayerSprintState.IsSprinting = true;
     }
 
     private void PlayerInput_OnSprintCanceled(InputAction.CallbackContext context)
     {
-        player.IsSprinting = false;
+        player.PlayerSprintState.IsSprinting = false;
     }
 
     private void HandleAttackHoldInputs()
