@@ -34,6 +34,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3887220890871195537}
   - {fileID: 41544952237181766}
   - {fileID: 4150967214179094889}
   - {fileID: 2996173690986891309}
@@ -51,8 +52,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838c1900f811cba449eedf1336fa32f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 8702003990657789017}
-  animator: {fileID: 5860220226555299953}
   <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
   model: {fileID: 4150967214179094889}
@@ -68,22 +67,6 @@ MonoBehaviour:
   <BaseDamageRange>k__BackingField: {x: 5, y: 10}
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
-  <StaggerDuration>k__BackingField: 0.5
-  OnGrounded:
-    m_PersistentCalls:
-      m_Calls: []
-  OnAirborne:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEntityTakeDamage:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEntityDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  OnKillEntity:
-    m_PersistentCalls:
-      m_Calls: []
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 1
   <CustomCollisionRadius>k__BackingField: 0.4
@@ -278,6 +261,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &8624504155816202664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3887220890871195537}
+  m_Layer: 0
+  m_Name: States
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3887220890871195537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8624504155816202664}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3490398193883977143}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4472509618577045122
 PrefabInstance:
   m_ObjectHideFlags: 0

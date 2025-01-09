@@ -10,19 +10,14 @@ public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
-    [Header("Player: References")]
-    [SerializeField] private GameObject dashTrailObject;
-
     [field: Header("Player: Grounded Movement")]
-    [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
     /// <summary>
     /// Gets the maximum speed of the player, taking into account the sprint speed modifier.
     /// </summary>
     /// <returns>The maximum speed of the player.</returns>
-
-    public float MaxSpeed => SprintSpeedModifier * baseSpeed;
+    public float MaxSpeed => PlayerSprintState.SprintSpeedModifier * baseSpeed;
     private float forwardAngleBasedOnCamera;
     private Quaternion targetForwardRotation = Quaternion.identity;
     private Vector3 targetForwardDirection = Vector3.forward;
@@ -30,30 +25,29 @@ public class Player : Entity
 
     #region States 
     [field: Header("Player: States")]
-    [field: SerializeField] public PlayerDashStateSO PlayerDashState { get; private set; }
-    [field: SerializeField] public PlayerJumpStateSO PlayerJumpState { get; private set; }
-    public PlayerIdleStateSO PlayerIdleState { get; private set; }
-    public PlayerWalkStateSO PlayerWalkState { get; private set; }
-    public PlayerSprintStateSO PlayerSprintState { get; private set; }
-    public PlayerFallStateSO PlayerFallState { get; private set; }
-    public PlayerSlideStateSO PlayerSlideState { get; private set; }
-    public PlayerAttackStateSO PlayerAttackState { get; private set; }
-    public PlayerChargeStateSO PlayerChargeState { get; private set; }
+    public PlayerIdleState PlayerIdleState { get; private set; }
+    public PlayerWalkState PlayerWalkState { get; private set; }
+    public PlayerSprintState PlayerSprintState { get; private set; }
+    public PlayerDashState PlayerDashState { get; private set; }
+    public PlayerJumpState PlayerJumpState { get; private set; }
+    public PlayerFallState PlayerFallState { get; private set; }
+    public PlayerSlideState PlayerSlideState { get; private set; }
+    public PlayerAttackState PlayerAttackState { get; private set; }
+    public PlayerChargeState PlayerChargeState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        PlayerDashState = EntityBaseStateSO.CreateRuntimeInstance<PlayerDashStateSO>(PlayerDashState, this);
-        PlayerJumpState = EntityBaseStateSO.CreateRuntimeInstance<PlayerJumpStateSO>(PlayerJumpState, this);
-
-        PlayerIdleState = EntityBaseStateSO.CreateRuntimeInstance<PlayerIdleStateSO>(this);
-        PlayerWalkState = EntityBaseStateSO.CreateRuntimeInstance<PlayerWalkStateSO>(this);
-        PlayerSprintState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSprintStateSO>(this);
-        PlayerFallState = EntityBaseStateSO.CreateRuntimeInstance<PlayerFallStateSO>(this);
-        PlayerSlideState = EntityBaseStateSO.CreateRuntimeInstance<PlayerSlideStateSO>(this);
-        PlayerAttackState = EntityBaseStateSO.CreateRuntimeInstance<PlayerAttackStateSO>(this);
-        PlayerChargeState = EntityBaseStateSO.CreateRuntimeInstance<PlayerChargeStateSO>(this);
+        PlayerIdleState = EntityBaseState.InitializeOrCreate<PlayerIdleState>(this);
+        PlayerWalkState = EntityBaseState.InitializeOrCreate<PlayerWalkState>(this);
+        PlayerSprintState = EntityBaseState.InitializeOrCreate<PlayerSprintState>(this);
+        PlayerDashState = EntityBaseState.InitializeOrCreate<PlayerDashState>(this);
+        PlayerJumpState = EntityBaseState.InitializeOrCreate<PlayerJumpState>(this);
+        PlayerFallState = EntityBaseState.InitializeOrCreate<PlayerFallState>(this);
+        PlayerSlideState = EntityBaseState.InitializeOrCreate<PlayerSlideState>(this);
+        PlayerAttackState = EntityBaseState.InitializeOrCreate<PlayerAttackState>(this);
+        PlayerChargeState = EntityBaseState.InitializeOrCreate<PlayerChargeState>(this);
     }
     #endregion
 
@@ -91,7 +85,7 @@ public class Player : Entity
         PlayerSlideState.CheckSlopeSliding();
 
         PlayerDashState.HandleDashCooldown();
-        HandleDashTrail();
+        PlayerDashState.HandleDashTrail();
     }
 
     /// <summary>
@@ -204,16 +198,6 @@ public class Player : Entity
     private protected override void EvaluateMovementSpeed()
     {
         MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
-    }
-
-    /// <summary>
-    /// Handles the dash trail effect based on the player's speed.
-    /// </summary>
-    private void HandleDashTrail()
-    {
-        float maxSpeed = SprintSpeedModifier * baseSpeed;
-
-        dashTrailObject.SetActive(GetHorizontalVelocity().magnitude > maxSpeed);
     }
 
     private protected override void TryChangeStaggeredState()

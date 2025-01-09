@@ -43,26 +43,26 @@ public class Charger : Enemy
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     #region States
-    public ChargerWanderStateSO ChargerWanderState { get; private set; }
-    public ChargerTargetDetectedStateSO ChargerTargetDetectedState { get; private set; }
-    public ChargerChargeStateSO ChargerChargeState { get; private set; }
-    public ChargerWindDownStateSO ChargerWindDownState { get; private set; }
-    public ChargerDazedStateSO ChargerDazedState { get; private set; }
-    public ChargerJabbingAttackStateSO ChargerJabbingAttackState { get; private set; }
-    public ChargerJabRecoverStateSO ChargerJabRecoverState { get; private set; }
+    public ChargerWanderState ChargerWanderState { get; private set; }
+    public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
+    public ChargerChargeState ChargerChargeState { get; private set; }
+    public ChargerWindDownState ChargerWindDownState { get; private set; }
+    public ChargerDazedState ChargerDazedState { get; private set; }
+    public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
+    public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        ChargerWanderState = EntityBaseStateSO.CreateRuntimeInstance<ChargerWanderStateSO>(this);
-        ChargerTargetDetectedState = EntityBaseStateSO.CreateRuntimeInstance<ChargerTargetDetectedStateSO>(this);
-        ChargerChargeState = EntityBaseStateSO.CreateRuntimeInstance<ChargerChargeStateSO>(this);
-        ChargerDazedState = EntityBaseStateSO.CreateRuntimeInstance<ChargerDazedStateSO>(this);
-        ChargerWindDownState = EntityBaseStateSO.CreateRuntimeInstance<ChargerWindDownStateSO>(this);
-        ChargerJabbingAttackState = EntityBaseStateSO.CreateRuntimeInstance<ChargerJabbingAttackStateSO>(this);
-        ChargerJabRecoverState = EntityBaseStateSO.CreateRuntimeInstance<ChargerJabRecoverStateSO>(this);
-        EntityStaggeredState = EntityBaseStateSO.CreateRuntimeInstance<ChargerStaggeredStateSO>(this);
+        ChargerWanderState = EntityBaseState.InitializeOrCreate<ChargerWanderState>(this);
+        ChargerTargetDetectedState = EntityBaseState.InitializeOrCreate<ChargerTargetDetectedState>(this);
+        ChargerChargeState = EntityBaseState.InitializeOrCreate<ChargerChargeState>(this);
+        ChargerDazedState = EntityBaseState.InitializeOrCreate<ChargerDazedState>(this);
+        ChargerWindDownState = EntityBaseState.InitializeOrCreate<ChargerWindDownState>(this);
+        ChargerJabbingAttackState = EntityBaseState.InitializeOrCreate<ChargerJabbingAttackState>(this);
+        ChargerJabRecoverState = EntityBaseState.InitializeOrCreate<ChargerJabRecoverState>(this);
+        EntityStaggeredState = EntityBaseState.InitializeOrCreate<ChargerStaggeredState>(this);
     }
     #endregion
 

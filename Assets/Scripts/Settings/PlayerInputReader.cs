@@ -7,7 +7,6 @@ public class PlayerInputReader : MonoBehaviour
 {
     private PlayerInput playerInput;
     private Player player;
-    private PlayerCombat playerCombat;
 
     public Action<ComboAction> OnComboAction = delegate { };
 
@@ -22,7 +21,6 @@ public class PlayerInputReader : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         player = GetComponent<Player>();
-        playerCombat = GetComponent<PlayerCombat>();
     }
 
     private void OnEnable()
@@ -133,21 +131,21 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Performed()
     {
-        if (!playerCombat.CanBasicAttack()) return;
+        if (!player.PlayerAttackState.CanBasicAttack()) return;
 
         OnComboAction?.Invoke(ComboAction.ATTACK1);
     }
 
     private void OnAttack2Performed()
     {
-        if (!playerCombat.CanBasicAttack()) return;
+        if (!player.PlayerAttackState.CanBasicAttack()) return;
 
         OnComboAction?.Invoke(ComboAction.ATTACK2);
     }
 
     private void OnAttack1ChargedPerformed()
     {
-        if (!playerCombat.CanChargedAttack()) return;
+        if (!player.PlayerChargeState.CanChargedAttack()) return;
 
         player.ChangeState(player.DefaultState);
         OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK1);
@@ -155,7 +153,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2ChargedPerformed()
     {
-        if (!playerCombat.CanChargedAttack()) return;
+        if (!player.PlayerChargeState.CanChargedAttack()) return;
 
         player.ChangeState(player.DefaultState);
         OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK2);
@@ -163,7 +161,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Charging()
     {
-        if (!playerCombat.CanCharge()) return;
+        if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(1);
         player.ChangeState(player.PlayerChargeState);
@@ -171,7 +169,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2Charging()
     {
-        if (!playerCombat.CanCharge()) return;
+        if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(2);
         player.ChangeState(player.PlayerChargeState);

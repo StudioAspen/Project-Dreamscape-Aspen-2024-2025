@@ -65,11 +65,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [HideInInspector] public bool UseRootMotion;
     #endregion
 
-    #region Stagger Variables
-    [field: Header("Entity: Stagger")]
-    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
-    #endregion
-
     #region Movement Events
     public Action<Vector3> OnGrounded = delegate { }; // 1st arg: where you grounded
     public Action<Vector3> OnAirborne = delegate { }; // 1st arg: where you left ground
@@ -95,13 +90,13 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region States
     [field: Header("Entity: States")]
-    public EntityBaseStateSO CurrentState { get; private set; }
-    public EntityBaseStateSO DefaultState { get; private set; }
+    public EntityBaseState CurrentState { get; private set; }
+    public EntityBaseState DefaultState { get; private set; }
 
-    public EntityEmptyStateSO EntityEmptyState { get; protected set; }
-    public EntityStaggeredStateSO EntityStaggeredState { get; protected set; }
-    public EntityDeathStateSO EntityDeathState { get; protected set; }
-    public EntityLaunchStateSO EntityLaunchState { get; protected set; }
+    public EntityEmptyState EntityEmptyState { get; protected set; }
+    public EntityStaggeredState EntityStaggeredState { get; protected set; }
+    public EntityDeathState EntityDeathState { get; protected set; }
+    public EntityLaunchState EntityLaunchState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -111,17 +106,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = EntityBaseStateSO.CreateRuntimeInstance<EntityEmptyStateSO>(this);
-        EntityDeathState = EntityBaseStateSO.CreateRuntimeInstance<EntityDeathStateSO>(this);
-        EntityLaunchState = EntityBaseStateSO.CreateRuntimeInstance<EntityLaunchStateSO>(this);
-        EntityStaggeredState = EntityBaseStateSO.CreateRuntimeInstance<EntityStaggeredStateSO>(this);
+        EntityEmptyState = EntityBaseState.InitializeOrCreate<EntityEmptyState>(this);
+        EntityDeathState = EntityBaseState.InitializeOrCreate<EntityDeathState>(this);
+        EntityLaunchState = EntityBaseState.InitializeOrCreate<EntityLaunchState>(this);
+        EntityStaggeredState = EntityBaseState.InitializeOrCreate<EntityStaggeredState>(this);
     }
 
     /// <summary>
     /// Sets the start state of the entity.
     /// </summary>
     /// <param name="state">The start state to set.</param>
-    private protected void SetStartState(EntityBaseStateSO state)
+    private protected void SetStartState(EntityBaseState state)
     {
         CurrentState = state;
         CurrentState.OnEnter();
@@ -131,7 +126,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Sets the default state of the entity.
     /// </summary>
     /// <param name="state">The default state to set.</param>
-    private protected void SetDefaultState(EntityBaseStateSO state)
+    private protected void SetDefaultState(EntityBaseState state)
     {
         DefaultState = state;
     }
@@ -142,7 +137,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <param name="state">The new state to change to.</param>
     /// <param name="willForceChange">Whether to change the state even when the current state is the same.</param>
-    public void ChangeState(EntityBaseStateSO state, bool willForceChange = false)
+    public void ChangeState(EntityBaseState state, bool willForceChange = false)
     {
         if (CurrentState == EntityDeathState) return;
         if (!willForceChange && CurrentState == state) return;
@@ -152,6 +147,11 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState.OnEnter();
     }
     #endregion
+
+    private void OnValidate()
+    {
+        CharacterController = GetComponent<CharacterController>();
+    }
 
     private void Awake()
     {
@@ -250,13 +250,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         //if CurrentState isn't null, run it's Update function
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
-        CurrentState?.Update();
+        CurrentState?.OnUpdate();
 
         HandleAnimations();
         EvaluateMovementSpeed();
 
         HandleGrounded();
         HandleAirborne();
+        HandleVerticalVelocity();
 
         SlideOffOtherEntities();
     }
@@ -273,15 +274,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnFixedUpdate()
     {
-        CurrentState?.FixedUpdate();
-
         CheckGrounded();
-        HandleVerticalVelocity();
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        CurrentState?.OnControllerColliderHit(hit);
+        CurrentState?.OnOnControllerColliderHit(hit);
     }
 
     /// <summary>
@@ -291,7 +289,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="collision">The collision data.</param>
     private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
-        CurrentState?.OnControllerColliderHit(hit);
+        CurrentState?.OnOnControllerColliderHit(hit);
     }
 
     private void OnAnimatorMove()
