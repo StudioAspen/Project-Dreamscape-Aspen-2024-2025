@@ -8,28 +8,6 @@ public class Leaper : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
-    [field: Header("Leaper: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public float WanderHopHeight { get; private set; } = 2f;
-
-    [field: Header("Leaper: Chase Settings")]
-    [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
-    [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
-    [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 2f;
-
-    [field: Header("Leaper: Attack Settings")]
-    [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
-    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
-    [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
-    [field: SerializeField] public float AttackHopDuration { get; private set; } = .75f;
-
-    [field: Header("Leaper: Ready Attack (Hop) Settings")]
-    [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;
-    [field: SerializeField] public float ReadyAttackHopDistance { get; private set; } = 3f;
-    [field: SerializeField] public float ReadyAttackHopHeight { get; private set; } = .75f;
-    [field: SerializeField] public float ReadyAttackStartDelay { get; private set; } = 0.75f;
-
     #region States
     public LeaperWanderState LeaperWanderState { get; private set; }
     public LeaperChaseState LeaperChaseState { get; private set; }
@@ -40,10 +18,10 @@ public class Leaper : Enemy
     {
         base.InitializeStates();
 
-        LeaperWanderState = new LeaperWanderState(this);
-        EnemyChaseState = new LeaperChaseState(this);
-        LeaperReadyAttackState = new LeaperReadyAttackState(this);
-        LeaperAttackState = new LeaperAttackState(this);
+        LeaperWanderState = EntityBaseState.InitializeOrCreate<LeaperWanderState>(this);
+        LeaperReadyAttackState = EntityBaseState.InitializeOrCreate<LeaperReadyAttackState>(this);
+        LeaperAttackState = EntityBaseState.InitializeOrCreate<LeaperAttackState>(this);
+        EnemyChaseState = EntityBaseState.InitializeOrCreate<LeaperChaseState>(this);
         LeaperChaseState = EnemyChaseState as LeaperChaseState;
     }
     #endregion
@@ -107,10 +85,11 @@ public class Leaper : Enemy
     /// Checks for collisions with enemy entities and applies damage if a collision occurs.
     /// Pass in a reference to a list of hit entities to prevent multiple hits on the same entity.
     /// </summary>
+    /// <param name="damagePercent">The percentage damage to apply.</param>
     /// <param name="hitEntities">A reference to the list of hit entities.</param>
     public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
     {
-        List<Collider> hits = GetCustomCollisionHits(LeapAttackLayerMask);
+        List<Collider> hits = GetCustomCollisionHits(LeaperAttackState.LeapAttackLayerMask);
 
         foreach (Collider hit in hits)
         {

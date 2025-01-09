@@ -11,43 +11,26 @@ public class Player : Entity
     private PlayerInputReader playerInputReader;
 
     [field: Header("Player: Grounded Movement")]
-    [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
-    private float movementOnSlopeSpeedModifier = 1f;
+    /// <summary>
+    /// Gets the maximum speed of the player, taking into account the sprint speed modifier.
+    /// </summary>
+    /// <returns>The maximum speed of the player.</returns>
+    public float MaxSpeed => PlayerSprintState.SprintSpeedModifier * baseSpeed;
     private float forwardAngleBasedOnCamera;
     private Quaternion targetForwardRotation = Quaternion.identity;
     private Vector3 targetForwardDirection = Vector3.forward;
-    private RaycastHit hitBelow;
-    private float hitBelowSlopeAngle;
-
-    [Header("Player: Gravity")]
-    [SerializeField] private float jumpHeight = 2f;
-    [SerializeField] private int maxJumpCount = 1;
-    private int currentJumpCount;
-    
-    #region Flags
     [HideInInspector] public bool IsMoving => playerInputReader.MoveDirection.sqrMagnitude > 0;
-    [HideInInspector] public bool IsSprinting;
-    private bool isJumping;
-    #endregion
-
-    [field : Header("Player: Dash")]
-    [field: SerializeField] public float DashDuration { get; private set; } = 0.5f;
-    [field : SerializeField] public float InitialDashVelocity { get; private set; } = 25f;
-    [field: SerializeField] public float SprintDurationAfterDash { get; private set; } = 2f;
-    [SerializeField] private float dashDelayDuration = 1f;
-    [SerializeField] private GameObject dashTrailObject;
-    private float dashDelayTimer = Mathf.Infinity;
-    private Coroutine dashCoroutine;
 
     #region States 
+    [field: Header("Player: States")]
     public PlayerIdleState PlayerIdleState { get; private set; }
-    public PlayerWalkingState PlayerWalkingState { get; private set; }
-    public PlayerSprintingState PlayerSprintingState { get; private set; }
+    public PlayerWalkState PlayerWalkState { get; private set; }
+    public PlayerSprintState PlayerSprintState { get; private set; }
+    public PlayerDashState PlayerDashState { get; private set; }
     public PlayerJumpState PlayerJumpState { get; private set; }
     public PlayerFallState PlayerFallState { get; private set; }
-    public PlayerDashState PlayerDashState { get; private set; }
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
@@ -56,15 +39,15 @@ public class Player : Entity
     {
         base.InitializeStates();
 
-        PlayerIdleState = new PlayerIdleState(this);
-        PlayerWalkingState = new PlayerWalkingState(this);
-        PlayerSprintingState = new PlayerSprintingState(this);
-        PlayerJumpState = new PlayerJumpState(this);
-        PlayerFallState = new PlayerFallState(this);
-        PlayerDashState = new PlayerDashState(this);
-        PlayerSlideState = new PlayerSlideState(this);
-        PlayerAttackState = new PlayerAttackState(this);
-        PlayerChargeState = new PlayerChargeState(this);
+        PlayerIdleState = EntityBaseState.InitializeOrCreate<PlayerIdleState>(this);
+        PlayerWalkState = EntityBaseState.InitializeOrCreate<PlayerWalkState>(this);
+        PlayerSprintState = EntityBaseState.InitializeOrCreate<PlayerSprintState>(this);
+        PlayerDashState = EntityBaseState.InitializeOrCreate<PlayerDashState>(this);
+        PlayerJumpState = EntityBaseState.InitializeOrCreate<PlayerJumpState>(this);
+        PlayerFallState = EntityBaseState.InitializeOrCreate<PlayerFallState>(this);
+        PlayerSlideState = EntityBaseState.InitializeOrCreate<PlayerSlideState>(this);
+        PlayerAttackState = EntityBaseState.InitializeOrCreate<PlayerAttackState>(this);
+        PlayerChargeState = EntityBaseState.InitializeOrCreate<PlayerChargeState>(this);
     }
     #endregion
 
@@ -99,53 +82,10 @@ public class Player : Entity
     {
         base.OnUpdate();
 
-        CheckSlopeSliding();
+        PlayerSlideState.CheckSlopeSliding();
 
-        HandleDashDelay();
-        HandleDashTrail();
-    }
-
-    /// <summary>
-    /// Determines whether the player can perform a jump.
-    /// </summary>
-    /// <returns>True if the player can jump, false otherwise.</returns>
-    public bool CanJump()
-    {
-        if (!IsGrounded && (currentJumpCount >= maxJumpCount || maxJumpCount == 1)) return false;
-        if (CurrentState == EntityLaunchState) return false;
-        if (CurrentState == PlayerSlideState) return false;
-        if (CurrentState == PlayerChargeState) return false;
-        if (CurrentState == PlayerAttackState) return false;
-        if (CurrentState == EntityStaggeredState) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Determines whether the player can perform a dash.
-    /// </summary>
-    /// <returns>True if the player can dash, false otherwise.</returns>
-    public bool CanDash()
-    {
-        if (dashDelayTimer < dashDelayDuration) return false;
-        if (CurrentState == PlayerChargeState) return false;
-        if (CurrentState == PlayerDashState) return false;
-        if (CurrentState == EntityStaggeredState) return false;
-        if (CurrentState == EntityLaunchState) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Determines whether the player can sprint.
-    /// </summary>
-    /// <returns>True if the player can sprint, false otherwise.</returns>
-    public bool CanSprint()
-    {
-        if (CurrentState == PlayerChargeState) return false;
-        if (CurrentState == PlayerDashState) return false;
-
-        return true;
+        PlayerDashState.HandleDashCooldown();
+        PlayerDashState.HandleDashTrail();
     }
 
     /// <summary>
@@ -182,11 +122,11 @@ public class Player : Entity
         {
             if (CurrentState != PlayerSlideState)
             {
-                currentJumpCount = 0;
+                PlayerJumpState.ResetJumpCount();
             }
             inAirTimer = 0f;
             fallVelocityApplied = false;
-            isJumping = false;
+            PlayerJumpState.IsJumping = false;
             velocity.y = PhysicsSettings.GroundedYVelocity;
         }
     }
@@ -195,7 +135,7 @@ public class Player : Entity
     {
         if (!IsGrounded)
         {
-            if (!isJumping && !fallVelocityApplied) // falling without jumping
+            if (!PlayerJumpState.IsJumping && !fallVelocityApplied) // falling without jumping
             {
                 fallVelocityApplied = true;
                 velocity.y = PhysicsSettings.FallingStartingYVelocity;
@@ -234,80 +174,6 @@ public class Player : Entity
     }
 
     /// <summary>
-    /// Handles the delay for the dash ability.
-    /// Counts up the timer.
-    /// </summary>
-    private void HandleDashDelay()
-    {
-        dashDelayTimer += LocalDeltaTime;
-    }
-
-    /// <summary>
-    /// Resets the dash delay timer.
-    /// </summary>
-    public void ResetDashDelay()
-    {
-        dashDelayTimer = 0f;
-    }
-
-    /// <summary>
-    /// Calculates the slope angle and checks if the player can slide on the slope.
-    /// </summary>
-    private void CheckSlopeSliding()
-    {
-        GetAndSetSlopeSpeedModifierOnAngle(hitBelowSlopeAngle);
-
-        if (!IsGrounded)
-        {
-            hitBelowSlopeAngle = 0f;
-            return;
-        }
-
-        Physics.Raycast(transform.position, Vector3.down, out hitBelow, characterController.height / 2, PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
-
-        if (hitBelow.collider == null)
-        {
-            hitBelowSlopeAngle = 0f;
-            return;
-        }
-
-        Vector3 normal = hitBelow.normal;
-
-        hitBelowSlopeAngle = Vector3.Angle(normal, Vector3.up);
-
-        if (CanSlide())
-        {
-            Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, normal);
-
-            PlayerSlideState.SetSlideDirection(slideDirection);
-            ChangeState(PlayerSlideState);
-        }
-    }
-
-    /// <summary>
-    /// Determines whether the player can slide on the current slope.
-    /// </summary>
-    /// <returns>True if the player can slide, false otherwise.</returns>
-    public bool CanSlide()
-    {
-        if (!IsGrounded) return false;
-        if (hitBelow.collider == null) return false;
-        if (CurrentState == PlayerAttackState) return false;
-
-        return hitBelowSlopeAngle > characterController.slopeLimit;
-    }
-
-    /// <summary>
-    /// Applies the given slide direction to the player's movement.
-    /// </summary>
-    /// <param name="slideDirection">The direction of the slide.</param>
-    public void ApplySlide(Vector3 slideDirection)
-    {
-        velocity.y = PhysicsSettings.GroundedYVelocity;
-        characterController.Move(slideDirection * -velocity.y * LocalDeltaTime);
-    }
-
-    /// <summary>
     /// Applies the calculated rotation based off the player's movement and camera to the next movement.
     /// Doesn't actually rotate the player until you call RotateToTargetRotation().
     /// </summary>
@@ -331,57 +197,7 @@ public class Player : Entity
 
     private protected override void EvaluateMovementSpeed()
     {
-        MovementSpeed = movementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
-    }
-
-    /// <summary>
-    /// Makes the player jump by setting the necessary variables and applying the jump force.
-    /// </summary>
-    public void Jump()
-    {
-        IsGrounded = false;
-
-        isJumping = true;
-
-        velocity.y = Mathf.Sqrt(jumpHeight * -2f * PhysicsSettings.Gravity);
-        inAirTimer = 0.01f;
-
-        currentJumpCount++;
-    }
-
-    /// <summary>
-    /// Gets and sets the slope speed modifier based on the ground angle.
-    /// </summary>
-    /// <param name="groundAngle">The angle of the ground.</param>
-    /// <returns>The slope speed modifier.</returns>
-    private float GetAndSetSlopeSpeedModifierOnAngle(float groundAngle)
-    {
-        float slopeSpeedModifier = 1f - (0.15f) * groundAngle / characterController.slopeLimit;
-
-        if (groundAngle > characterController.slopeLimit) slopeSpeedModifier = 0.85f;
-
-        movementOnSlopeSpeedModifier = slopeSpeedModifier;
-
-        return slopeSpeedModifier;
-    }
-
-    /// <summary>
-    /// Gets the maximum speed of the player, taking into account the sprint speed modifier.
-    /// </summary>
-    /// <returns>The maximum speed of the player.</returns>
-    public float GetMaxSpeed()
-    {
-        return SprintSpeedModifier * baseSpeed;
-    }
-
-    /// <summary>
-    /// Handles the dash trail effect based on the player's speed.
-    /// </summary>
-    private void HandleDashTrail()
-    {
-        float maxSpeed = SprintSpeedModifier * baseSpeed;
-
-        dashTrailObject.SetActive(GetHorizontalVelocity().magnitude > maxSpeed);
+        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
     }
 
     private protected override void TryChangeStaggeredState()
@@ -391,7 +207,7 @@ public class Player : Entity
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityLaunchState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        ChangeState(EntityStaggeredState, true);
     }
 
     /// <summary>
@@ -404,10 +220,10 @@ public class Player : Entity
         // Calculate the resulting change in velocity from the impulse
         Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
+        AllowChangeFromGroundedToAirborne();
+
         IsGrounded = false;
-        isJumping = true;
-        inAirTimer = 0.01f;
-        currentJumpCount++;
+        PlayerJumpState.IsJumping = true;
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;

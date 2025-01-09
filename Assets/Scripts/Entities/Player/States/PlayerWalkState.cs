@@ -1,12 +1,7 @@
 ﻿using UnityEngine;
 
-public class PlayerWalkingState : PlayerBaseState
+public class PlayerWalkState : PlayerBaseState
 {
-    public PlayerWalkingState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("FlatMovement");
@@ -19,7 +14,7 @@ public class PlayerWalkingState : PlayerBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
@@ -33,14 +28,9 @@ public class PlayerWalkingState : PlayerBaseState
             player.ChangeState(player.PlayerIdleState);
         }
 
-        if (player.IsSprinting)
+        if (player.PlayerSprintState.IsSprinting)
         {
-            player.ChangeState(player.PlayerSprintingState);
+            player.ChangeState(player.PlayerSprintState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

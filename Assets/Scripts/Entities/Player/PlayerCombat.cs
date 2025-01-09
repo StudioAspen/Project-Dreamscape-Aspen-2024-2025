@@ -62,47 +62,6 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Checks if the player can perform a basic attack.
-    /// </summary>
-    /// <returns>True if the player can basic attack, false otherwise.</returns>
-    public bool CanBasicAttack()
-    {
-        if (player.CurrentState == player.PlayerChargeState) return false;
-        if (player.CurrentState == player.EntityLaunchState) return false;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Checks if the player can perform a charged attack.
-    /// </summary>
-    /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
-    public bool CanChargedAttack()
-    {
-        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
-        if (player.CurrentState == player.EntityLaunchState) return false;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return false;
-
-        return true;
-    }
-
-    /// <summary>
-    /// Checks if the player can charge.
-    /// </summary>
-    /// <returns>True if the player can charge, false otherwise.</returns>
-    public bool CanCharge()
-    {
-        if(EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
-        if (player.CurrentState == player.PlayerChargeState) return false;
-        if (player.CurrentState == player.PlayerAttackState) return false;
-        if (player.CurrentState == player.PlayerDashState) return false;
-        if (player.CurrentState == player.EntityLaunchState) return false;
-
-        return true;
-    }
-
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
         ResetCombos();
@@ -149,8 +108,8 @@ public class PlayerCombat : MonoBehaviour
         if (player.CurrentState == player.EntityStaggeredState) return;
 
         player.PlayerAttackState.SetCombo(combo);
-        player.ForceChangeState(player.PlayerAttackState);
-    }
+        player.ChangeState(player.PlayerAttackState, true);
+    }   
 
     /// <summary>
     /// Generates the combo lists based on the valid combos and the current inputs.

@@ -2,11 +2,6 @@
 
 public class PlayerIdleState : PlayerBaseState
 {
-    public PlayerIdleState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("FlatMovement");
@@ -19,27 +14,22 @@ public class PlayerIdleState : PlayerBaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
         player.AccelerateToHorizontalSpeed(0f);
         player.ApplyHorizontalVelocity();
 
-        if (player.MoveDirection != Vector3.zero && player.IsSprinting)
+        if (player.MoveDirection != Vector3.zero && player.PlayerSprintState.IsSprinting)
         {
-            player.ChangeState(player.PlayerSprintingState);
+            player.ChangeState(player.PlayerSprintState);
             return;
         }
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.ChangeState(player.PlayerWalkingState);
+            player.ChangeState(player.PlayerWalkState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

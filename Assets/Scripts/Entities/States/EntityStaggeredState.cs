@@ -3,14 +3,10 @@ using UnityEngine;
 
 public class EntityStaggeredState : EntityBaseState
 {
-    private Entity entity;
+    [field: Header("Config")]
+    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
 
     private protected float timer = 0f;
-
-    public EntityStaggeredState(Entity entity)
-    {
-        this.entity = entity;
-    }
 
     public override void OnEnter()
     {
@@ -26,21 +22,16 @@ public class EntityStaggeredState : EntityBaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         entity.ApplyGravity();
 
         timer += entity.LocalDeltaTime;
 
-        if (timer > entity.StaggerDuration)
+        if (timer > StaggerDuration)
         {
             entity.ChangeState(entity.DefaultState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

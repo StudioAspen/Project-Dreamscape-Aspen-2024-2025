@@ -1,17 +1,15 @@
 ﻿using UnityEngine;
 
-public class FollowerWanderState : EnemyBaseState
+public class FollowerWanderState : FollowerBaseState
 {
-    private Follower follower;
+    [field: Header("Config")]
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-    public FollowerWanderState(Follower enemy) : base(enemy)
-    {
-        follower = enemy;
-    }
     public override void OnEnter()
     {
         enemy.TransitionToAnimation("FlatMovement");
@@ -19,7 +17,7 @@ public class FollowerWanderState : EnemyBaseState
         follower.SetSpeedModifier(1f);
 
         wanderTimeElapsed = Mathf.Infinity;
-        randomWanderIntervalDuration = Random.Range(follower.WanderIntervalDurationRange.x, follower.WanderIntervalDurationRange.y);
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 
     public override void OnExit()
@@ -27,7 +25,7 @@ public class FollowerWanderState : EnemyBaseState
         follower.CancelPath();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         follower.ApplyGravity();
 
@@ -36,9 +34,9 @@ public class FollowerWanderState : EnemyBaseState
         if (wanderTimeElapsed > randomWanderIntervalDuration)
         {
             wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(follower.WanderIntervalDurationRange.x, follower.WanderIntervalDurationRange.y);
+            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
 
-            currentWanderDestination = follower.GetRandomWanderPoint(follower.WanderRadiusRange);
+            currentWanderDestination = follower.GetRandomWanderPoint(WanderRadiusRange);
             follower.SetDestination(currentWanderDestination);
         }
 
@@ -50,10 +48,5 @@ public class FollowerWanderState : EnemyBaseState
             follower.ChangeState(follower.EnemyChaseState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

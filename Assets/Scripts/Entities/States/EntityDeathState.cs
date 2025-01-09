@@ -2,13 +2,6 @@
 
 public class EntityDeathState : EntityBaseState
 {
-    private Entity entity;
-
-    public EntityDeathState(Entity entity)
-    {
-        this.entity = entity;
-    }
-
     public override void OnEnter()
     {
         entity.TransitionToAnimation("Death");
@@ -23,13 +16,8 @@ public class EntityDeathState : EntityBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         entity.ApplyGravity();
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

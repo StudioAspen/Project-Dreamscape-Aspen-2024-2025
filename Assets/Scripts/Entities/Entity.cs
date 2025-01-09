@@ -8,7 +8,7 @@ using UnityEngine.Pool;
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
-    private protected CharacterController characterController;
+    public CharacterController CharacterController { get; protected set; }
     private protected Animator animator;
 
     [field: Header("Entity: References")]
@@ -65,11 +65,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [HideInInspector] public bool UseRootMotion;
     #endregion
 
-    #region Stagger Variables
-    [field: Header("Entity: Stagger")]
-    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
-    #endregion
-
     #region Movement Events
     public Action<Vector3> OnGrounded = delegate { }; // 1st arg: where you grounded
     public Action<Vector3> OnAirborne = delegate { }; // 1st arg: where you left ground
@@ -94,8 +89,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
+    [field: Header("Entity: States")]
     public EntityBaseState CurrentState { get; private set; }
     public EntityBaseState DefaultState { get; private set; }
+
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
@@ -109,10 +106,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = new EntityEmptyState(this);
-        EntityDeathState = new EntityDeathState(this);
-        EntityLaunchState = new EntityLaunchState(this);
-        EntityStaggeredState = new EntityStaggeredState(this);
+        EntityEmptyState = EntityBaseState.InitializeOrCreate<EntityEmptyState>(this);
+        EntityDeathState = EntityBaseState.InitializeOrCreate<EntityDeathState>(this);
+        EntityLaunchState = EntityBaseState.InitializeOrCreate<EntityLaunchState>(this);
+        EntityStaggeredState = EntityBaseState.InitializeOrCreate<EntityStaggeredState>(this);
     }
 
     /// <summary>
@@ -135,36 +132,34 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Change the state machine state to the specified new state if the current state is not the same as the new state.
+    /// Change the state machine state to the specified new state.
+    /// Force changing is used to change the state even when the current state is the same and is set to false by default.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
-    public void ChangeState(EntityBaseState state)
+    /// <param name="willForceChange">Whether to change the state even when the current state is the same.</param>
+    public void ChangeState(EntityBaseState state, bool willForceChange = false)
     {
         if (CurrentState == EntityDeathState) return;
-        if (CurrentState == state) return;
+        if (!willForceChange && CurrentState == state) return;
 
         CurrentState.OnExit();
         CurrentState = state;
         CurrentState.OnEnter();
     }
-
-    /// <summary>
-    /// Forces a change of state to the specified new state even when in that same state.
-    /// </summary>
-    /// <param name="newState">The new state to change to.</param>
-    public void ForceChangeState(EntityBaseState newState)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        CurrentState.OnExit();
-        CurrentState = newState;
-        CurrentState.OnEnter();
-    }
     #endregion
+
+    private void OnValidate()
+    {
+        // For the gizmos to stop throwing errors before pressing play
+
+        InitializeStates();
+
+        CharacterController = GetComponent<CharacterController>(); 
+    }
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        CharacterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
         //We have to make custom OnAwake and OnStart functions
@@ -206,7 +201,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CurrentHealth = MaxHealth;
 
-        characterController.excludeLayers = 0;
+        CharacterController.excludeLayers = 0;
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -259,13 +254,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         //if CurrentState isn't null, run it's Update function
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
-        CurrentState?.Update();
+        CurrentState?.OnUpdate();
 
         HandleAnimations();
         EvaluateMovementSpeed();
 
         HandleGrounded();
         HandleAirborne();
+        HandleVerticalVelocity();
 
         SlideOffOtherEntities();
     }
@@ -282,15 +278,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnFixedUpdate()
     {
-        CurrentState?.FixedUpdate();
-
         CheckGrounded();
-        HandleVerticalVelocity();
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        CurrentState?.OnControllerColliderHit(hit);
+        CurrentState?.OnOnControllerColliderHit(hit);
     }
 
     /// <summary>
@@ -300,7 +293,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="collision">The collision data.</param>
     private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
-        CurrentState?.OnControllerColliderHit(hit);
+        CurrentState?.OnOnControllerColliderHit(hit);
     }
 
     private void OnAnimatorMove()
@@ -320,7 +313,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
-        characterController.Move(desiredAnimationMovement);
+        CharacterController.Move(desiredAnimationMovement);
     }
 
     private void OnDrawGizmos()
@@ -386,7 +379,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity is grounded, false otherwise.</returns>
     private protected bool GetIsGrounded()
     {
-        return Physics.CheckSphere(transform.position + 9f * characterController.radius / 10f * Vector3.up, characterController.radius, LayerMask.GetMask("Ground"));
+        return Physics.CheckSphere(transform.position + 9f * CharacterController.radius / 10f * Vector3.up, CharacterController.radius, LayerMask.GetMask("Ground"));
     }
 
     /// <summary>
@@ -397,7 +390,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>A list of RaycastHit objects representing the hits below the entity.</returns>
     public List<RaycastHit> GetHitsBelowEntity(LayerMask mask, float distance)
     {
-        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), characterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
+        RaycastHit[] hits = Physics.SphereCastAll(GetColliderCenterPosition(), CharacterController.radius, Vector3.down, distance + Vector3.Distance(GetColliderCenterPosition(), transform.position), mask);
         List<RaycastHit> result = new List<RaycastHit>();
 
         if (hits == null) return result;
@@ -457,7 +450,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyGravity()
     {
-        characterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+        CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+    }
+
+    /// <summary>
+    /// Allows the entity to change from grounded to airborne state by setting the inAirTimer to a small value greater than 0.
+    /// Doesn't work if the entity is already airborne.
+    /// </summary>
+    public void AllowChangeFromGroundedToAirborne()
+    {
+        // If the entity is not grounded, then it is already airborne
+        if (!IsGrounded) return;
+
+        inAirTimer = 0.01f;
     }
 
     /// <summary>
@@ -521,7 +526,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     public virtual void ApplyHorizontalVelocity()
     {
-        characterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
+        CharacterController.Move(GetHorizontalVelocity() * LocalDeltaTime);
     }
 
     /// <summary>
@@ -568,7 +573,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        characterController.excludeLayers = LayerMask.GetMask("Entity");
+        CharacterController.excludeLayers = LayerMask.GetMask("Entity");
 
         ChangeState(EntityDeathState);
 
@@ -678,7 +683,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityLaunchState) return;
 
-        ForceChangeState(EntityStaggeredState);
+        ChangeState(EntityStaggeredState, true);
     }
 
     /// <summary>
@@ -1068,7 +1073,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (CurrentState == EntityDeathState) return;
 
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
-        ForceChangeState(EntityLaunchState);
+        ChangeState(EntityLaunchState, true);
     }
     
     #region Tinting Functions

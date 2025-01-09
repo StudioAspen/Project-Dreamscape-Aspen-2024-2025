@@ -16,9 +16,9 @@ public class PlayerAttackState : PlayerBaseState
     private float duration;
     private float timer;
 
-    public PlayerAttackState(Player player) : base(player)
+    private protected override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 
@@ -84,7 +84,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
@@ -103,11 +103,6 @@ public class PlayerAttackState : PlayerBaseState
         player.AccelerateToHorizontalSpeed(0f);
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 
     /// <summary>
@@ -160,6 +155,19 @@ public class PlayerAttackState : PlayerBaseState
         else player.ResetYVelocity();
 
         player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+    }
+
+    /// <summary>
+    /// Checks if the player can perform a basic attack.
+    /// </summary>
+    /// <returns>True if the player can basic attack, false otherwise.</returns>
+    public bool CanBasicAttack()
+    {
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
+
+        return true;
     }
 }
 

@@ -4,9 +4,11 @@ public class ChargerStaggeredState : EntityStaggeredState
 {
     private Charger charger;
 
-    public ChargerStaggeredState(Charger enemy) : base(enemy)
+    private protected override void Init(Entity entity)
     {
-        charger = enemy;
+        base.Init(entity);
+
+        charger = entity as Charger;
     }
 
     public override void OnEnter()
@@ -25,21 +27,16 @@ public class ChargerStaggeredState : EntityStaggeredState
         charger.UseRootMotion = false;
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.StaggerDuration)
+        if (timer > StaggerDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

@@ -9,9 +9,10 @@ public class PlayerChargeState : PlayerBaseState
     public float Timer { get; private set; }
     private float duration;
 
-    public PlayerChargeState(Player player) : base(player)
+    private protected override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
+
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 
@@ -47,7 +48,7 @@ public class PlayerChargeState : PlayerBaseState
         Timer = 0f;
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         Timer += player.LocalDeltaTime;
 
@@ -70,8 +71,32 @@ public class PlayerChargeState : PlayerBaseState
         player.ApplyHorizontalVelocity();
     }
 
-    public override void FixedUpdate()
-    {
 
+    /// <summary>
+    /// Checks if the player can perform a charged attack.
+    /// </summary>
+    /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
+    public bool CanChargedAttack()
+    {
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if the player can charge.
+    /// </summary>
+    /// <returns>True if the player can charge, false otherwise.</returns>
+    public bool CanCharge()
+    {
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.PlayerAttackState) return false;
+        if (player.CurrentState == player.PlayerDashState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+
+        return true;
     }
 }

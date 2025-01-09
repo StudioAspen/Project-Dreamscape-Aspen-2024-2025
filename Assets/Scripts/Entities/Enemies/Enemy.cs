@@ -13,8 +13,8 @@ public class Enemy : Entity
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }
     [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
     [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (characterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (characterController.height / 2 - CustomCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (CharacterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (CharacterController.height / 2 - CustomCollisionRadius) * Vector3.up;
 
     #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }
@@ -35,8 +35,8 @@ public class Enemy : Entity
     {
         base.InitializeStates();
 
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
+        EnemyIdleState = EntityBaseState.InitializeOrCreate<EnemyIdleState>(this);
+        EnemyChaseState = EntityBaseState.InitializeOrCreate<EnemyChaseState>(this);
     }
     #endregion
 

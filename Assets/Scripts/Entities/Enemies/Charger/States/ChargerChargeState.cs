@@ -2,23 +2,23 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.EventSystems.EventTrigger;
 
-public class ChargerChargeState : EnemyBaseState
+public class ChargerChargeState : ChargerBaseState
 {
-    private Charger charger;
+    [field: Header("Charger: Charge Settings")]
+    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
+    [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
+    [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
+    [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
+    [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
+    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
 
     private Entity rememberedTarget;
 
     private float timer;
-
-    public ChargerChargeState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
@@ -29,7 +29,7 @@ public class ChargerChargeState : EnemyBaseState
     {
         charger.TransitionToAnimation("FlatMovement");
         
-        charger.SetSpeedModifier(charger.ChargeSpeedModifier);
+        charger.SetSpeedModifier(ChargeSpeedModifier);
 
         timer = 0f;
     }
@@ -39,9 +39,11 @@ public class ChargerChargeState : EnemyBaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
+
+        CheckCollisions();
 
         if (rememberedTarget == null)
         {
@@ -50,23 +52,16 @@ public class ChargerChargeState : EnemyBaseState
         }
 
         timer += charger.LocalDeltaTime;
-        if(timer > charger.ChargeDuration)
+        if(timer > ChargeDuration)
         {
             charger.ChangeState(charger.ChargerWindDownState);
             return;
         }
 
-        CheckCollisions();
-
         charger.UpdateHorizontalVelocity(charger.transform.forward);
         charger.ApplyHorizontalVelocity();
 
-        charger.LookAt(rememberedTarget.transform.position, charger.ChargeRotationSpeed);
-    }
-
-    public override void FixedUpdate()
-    {
-
+        charger.LookAt(rememberedTarget.transform.position, ChargeRotationSpeed);
     }
 
     /// <summary>
@@ -74,7 +69,7 @@ public class ChargerChargeState : EnemyBaseState
     /// </summary>
     private void CheckCollisions()
     {
-        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargeLayerMask);
+        List<Collider> orderedHits = charger.GetCustomCollisionHits(ChargeLayerMask);
 
         foreach (Collider hit in orderedHits)
         {
@@ -91,7 +86,7 @@ public class ChargerChargeState : EnemyBaseState
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
                 Vector3 launchDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
-                friendlyEntity.TryChangeToLaunchState(launchDirection, charger.ChargeOnImpactLaunchForce, charger.ChargeStunDuration);
+                friendlyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
             }
 
             if (charger.DidHitEnemyEntity(hit, out Entity enemyEntity))
@@ -99,9 +94,9 @@ public class ChargerChargeState : EnemyBaseState
                 CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
 
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
-                enemyEntity.TryChangeToLaunchState(launchDirection, charger.ChargeOnImpactLaunchForce, charger.ChargeStunDuration);
+                enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
-                enemyEntity.TakeDamage(charger.CalculateDamage(charger.ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject, false);
+                enemyEntity.TakeDamage(charger.CalculateDamage(ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), gameObject, false);
 
                 charger.ChangeState(charger.ChargerWindDownState);
                 return;

@@ -2,16 +2,12 @@
 using System.Linq;
 using UnityEngine;
 
-public class ChargerJabRecoverState : EnemyBaseState
+public class ChargerJabRecoverState : ChargerBaseState
 {
-    private Charger charger;
+    [field: Header("Config")]
+    [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
 
     private float timer;
-
-    public ChargerJabRecoverState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
 
     public override void OnEnter()
     {
@@ -25,23 +21,18 @@ public class ChargerJabRecoverState : EnemyBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.JabRecoverDuration)
+        if (timer > JabRecoverDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
 
         charger.TransitionToAnimation("RightJab");
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

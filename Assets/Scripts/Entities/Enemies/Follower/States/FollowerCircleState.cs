@@ -2,9 +2,14 @@
 using System.Linq;
 using UnityEngine;
 
-public class FollowerCircleState : EnemyBaseState
+public class FollowerCircleState : FollowerBaseState
 {
-    private Follower follower;
+    [field: Header("Config")]
+    [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
+    [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
+    [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
+    [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
+    [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
 
     private bool cwCircle;
 
@@ -12,11 +17,6 @@ public class FollowerCircleState : EnemyBaseState
 
     private float canChaseTimer;
     private float canChaseCooldown = 3f;
-
-    public FollowerCircleState(Follower enemy) : base(enemy)
-    {
-        follower = enemy;
-    }
 
     public override void OnEnter()
     {
@@ -40,13 +40,13 @@ public class FollowerCircleState : EnemyBaseState
     {
         if (follower.Target == null) return;
 
-        if(follower.Distance(follower.Target) > follower.MaxCircleRadius)
+        if(follower.Distance(follower.Target) > MaxCircleRadius)
         {
             follower.ChangeState(follower.EnemyChaseState);
             return;
         }
 
-        if (follower.Distance(follower.Target) < follower.AttackRange)
+        if (follower.Distance(follower.Target) < follower.FollowerAttackState.AttackRange)
         {
             Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
             follower.FollowerAttackState.SetAttackDirection(attackDir);
@@ -57,7 +57,7 @@ public class FollowerCircleState : EnemyBaseState
         TryToChasePlayer();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         follower.ApplyGravity();
 
@@ -77,20 +77,15 @@ public class FollowerCircleState : EnemyBaseState
 
         changeDirTimer += follower.LocalDeltaTime;
 
-        if(changeDirTimer > follower.ChangeDirectionInterval)
+        if(changeDirTimer > ChangeDirectionInterval)
         {
             changeDirTimer = 0f;
             follower.SetDestination(CalculateCircleDestination());
-            cwCircle = Random.Range(0, follower.ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
+            cwCircle = Random.Range(0, ChangeDirectionReciprocal) == 0 ? !cwCircle : cwCircle;
         }
 
         follower.MoveTowardsDestination(false);
         follower.LookAt(follower.Target.transform.position);
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 
     private void TryToChasePlayer()
@@ -99,9 +94,9 @@ public class FollowerCircleState : EnemyBaseState
 
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f, false);
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(CircleRadius + 1f, false);
 
-            playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
+            playerNearbyFollowers = playerNearbyFollowers.Take(CircleFollowerCountThreshold).ToList();
 
             if (!playerNearbyFollowers.Contains(follower)) return;
 
@@ -121,6 +116,6 @@ public class FollowerCircleState : EnemyBaseState
     {
         int dirMultiplier = cwCircle ? -1 : 1;
 
-        return CalculateCircumferenceOffset(follower.Target.transform.position, follower.transform.position, follower.CircleRadius, dirMultiplier * 10f);
+        return CalculateCircumferenceOffset(follower.Target.transform.position, follower.transform.position, CircleRadius, dirMultiplier * 10f);
     }
 }

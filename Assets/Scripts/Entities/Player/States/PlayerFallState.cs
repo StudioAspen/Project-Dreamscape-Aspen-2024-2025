@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class PlayerFallState : PlayerBaseState
 {
-    public PlayerFallState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("Falling", 0.25f);
@@ -18,7 +13,7 @@ public class PlayerFallState : PlayerBaseState
        
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
@@ -42,10 +37,5 @@ public class PlayerFallState : PlayerBaseState
             player.ChangeState(player.PlayerIdleState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

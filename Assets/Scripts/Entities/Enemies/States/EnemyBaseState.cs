@@ -4,8 +4,10 @@ public class EnemyBaseState : EntityBaseState
 {
     private protected Enemy enemy;
 
-    public EnemyBaseState(Enemy enemy)
+    private protected override void Init(Entity entity)
     {
-        this.enemy = enemy;
+        base.Init(entity);
+
+        enemy = entity as Enemy;
     }
 }
