@@ -2,7 +2,19 @@
 
 public class FollowerAttackState : FollowerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+    public Weapon Weapon { get; protected set; }
+
     private Vector3 attackDirection;
+
+    private protected override void Init(Entity entity)
+    {
+        base.Init(entity);
+
+        Weapon = entity.GetComponentInChildren<Weapon>();
+    }
 
     public void SetAttackDirection(Vector3 direction)
     {
@@ -15,10 +27,10 @@ public class FollowerAttackState : FollowerBaseState
 
         follower.SetSpeedModifier(0f);
 
-        follower.Weapon.OnWeaponStartSwing?.Invoke(follower);
-        follower.Weapon.ClearEnemiesHitList();
+        Weapon.OnWeaponStartSwing?.Invoke(follower);
+        Weapon.ClearEnemiesHitList();
 
-        follower.Weapon.SetPercentDamage(follower.AttackPercentDamage);
+        Weapon.SetPercentDamage(AttackPercentDamage);
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;
@@ -26,7 +38,7 @@ public class FollowerAttackState : FollowerBaseState
 
     public override void OnExit()
     {
-        follower.Weapon.OnWeaponEndSwing?.Invoke(follower);
+        Weapon.OnWeaponEndSwing?.Invoke(follower);
         follower.IsAttackAnimationPlaying = false;
         follower.UseRootMotion = false;
         follower.DisableWeaponTriggers();

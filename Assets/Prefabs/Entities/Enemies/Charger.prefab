@@ -73,32 +73,10 @@ MonoBehaviour:
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0.25}
   IsAttackAnimationPlaying: 0
-  staggerDamageThreshold: 40
-  superArmorDamageReduction: 0.5
-  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
-  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
   <DetectionDistance>k__BackingField: 15
   <DetectionConeHalfAngle>k__BackingField: 20
-  <TargetDetectedDuration>k__BackingField: 2
-  <NearbyAttackRadiusThreshold>k__BackingField: 5
-  <ChargeContactPercentDamage>k__BackingField: 200
-  <ChargeSpeedModifier>k__BackingField: 5
-  <ChargeDuration>k__BackingField: 10
-  <ChargeRotationSpeed>k__BackingField: 15
-  <ChargeOnImpactLaunchForce>k__BackingField: 15
-  <ChargeStunDuration>k__BackingField: 4
-  <ChargeLayerMask>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 320
-  <WindDownDuration>k__BackingField: 3.5
-  <JabCount>k__BackingField: 10
-  <JabPercentDamage>k__BackingField: 100
-  <JabStandStillRadius>k__BackingField: 1
-  <JabRotationSpeed>k__BackingField: 25
-  <LeftFistWeapon>k__BackingField: {fileID: 3805667188454913111}
-  <RightFistWeapon>k__BackingField: {fileID: 3945500814101211304}
-  <JabRecoverDuration>k__BackingField: 1.5
-  <DazedDuration>k__BackingField: 3
+  staggerDamageThreshold: 40
+  superArmorDamageReduction: 0.5
 --- !u!114 &2008562887667020325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,7 +172,19 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2616225644448459613}
+  - component: {fileID: 1221515200510691542}
   - component: {fileID: 132333854486014401}
+  - component: {fileID: 2049997208008304846}
+  - component: {fileID: 7258130541560255653}
+  - component: {fileID: 4403142510481932240}
+  - component: {fileID: 3942247478655197703}
+  - component: {fileID: 1467893506870079325}
+  - component: {fileID: 4039189756544675882}
+  - component: {fileID: 1937571490912239701}
+  - component: {fileID: 7189052006584710534}
+  - component: {fileID: 1789191761310836436}
+  - component: {fileID: 668474093479949991}
+  - component: {fileID: -783633647601650080}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -217,6 +207,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3490398193883977143}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1221515200510691542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1a3f5a30c5a9f74f9465c7dcd24b33d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ChargeContactPercentDamage>k__BackingField: 200
+  <ChargeSpeedModifier>k__BackingField: 5
+  <ChargeDuration>k__BackingField: 20
+  <ChargeRotationSpeed>k__BackingField: 5
+  <ChargeOnImpactLaunchForce>k__BackingField: 10
+  <ChargeStunDuration>k__BackingField: 4
+  <ChargeLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 320
 --- !u!114 &132333854486014401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +241,151 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <StaggerDuration>k__BackingField: 4
+--- !u!114 &2049997208008304846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42c90311906a48a19178d6f6dbd1be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DazedDuration>k__BackingField: 5
+--- !u!114 &7258130541560255653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5255bc3db65cae4e881cca7fb8ceeb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <JabRecoverDuration>k__BackingField: 2
+--- !u!114 &4403142510481932240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca621b8e84861244a82e853aa23e19f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <JabCount>k__BackingField: 5
+  <JabPercentDamage>k__BackingField: 100
+  <JabStandStillRadius>k__BackingField: 1.5
+  <JabRotationSpeed>k__BackingField: 25
+  <LeftFistWeapon>k__BackingField: {fileID: 3805667188454913111}
+  <RightFistWeapon>k__BackingField: {fileID: 3945500814101211304}
+--- !u!114 &3942247478655197703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df9ba2ceb05d4ac4f931c3f00c4760c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TargetDetectedDuration>k__BackingField: 2
+  <NearbyAttackRadiusThreshold>k__BackingField: 6
+--- !u!114 &1467893506870079325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a85621b15cea54124a9571b1edd13bbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+--- !u!114 &4039189756544675882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9db9f7fcbb49dd45b50c6fdc439d2cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <WindDownDuration>k__BackingField: 2
+--- !u!114 &1937571490912239701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3145b99617f304b4f8c84fc4a1b016b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7189052006584710534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ab8b562d0b97c458d049d446813257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1789191761310836436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c4bf7446765d94c9ffe2ba1ee9e8d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &668474093479949991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0977490ff88f61458f1950642066628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-783633647601650080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fadaa5c96e7a53498c7387cafb8a8a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6512184381983205014
 GameObject:
   m_ObjectHideFlags: 0

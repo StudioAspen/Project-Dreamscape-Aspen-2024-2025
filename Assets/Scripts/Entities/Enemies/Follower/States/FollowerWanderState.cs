@@ -2,6 +2,10 @@
 
 public class FollowerWanderState : FollowerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
+
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
@@ -13,7 +17,7 @@ public class FollowerWanderState : FollowerBaseState
         follower.SetSpeedModifier(1f);
 
         wanderTimeElapsed = Mathf.Infinity;
-        randomWanderIntervalDuration = Random.Range(follower.WanderIntervalDurationRange.x, follower.WanderIntervalDurationRange.y);
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 
     public override void OnExit()
@@ -30,9 +34,9 @@ public class FollowerWanderState : FollowerBaseState
         if (wanderTimeElapsed > randomWanderIntervalDuration)
         {
             wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(follower.WanderIntervalDurationRange.x, follower.WanderIntervalDurationRange.y);
+            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
 
-            currentWanderDestination = follower.GetRandomWanderPoint(follower.WanderRadiusRange);
+            currentWanderDestination = follower.GetRandomWanderPoint(WanderRadiusRange);
             follower.SetDestination(currentWanderDestination);
         }
 

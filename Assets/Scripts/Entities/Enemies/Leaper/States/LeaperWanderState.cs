@@ -7,6 +7,11 @@ using System.Collections.Generic;
 
 public class LeaperWanderState : LeaperBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public float WanderHopHeight { get; private set; } = 2f;
+
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
@@ -18,7 +23,7 @@ public class LeaperWanderState : LeaperBaseState
         leaper.SetSpeedModifier(0f);
 
         wanderTimeElapsed = 0;
-        randomWanderIntervalDuration = Random.Range(leaper.WanderIntervalDurationRange.x, leaper.WanderIntervalDurationRange.y);
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 
     public override void OnExit()
@@ -46,11 +51,11 @@ public class LeaperWanderState : LeaperBaseState
         if (wanderTimeElapsed > randomWanderIntervalDuration)
         {
             wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(leaper.WanderIntervalDurationRange.x, leaper.WanderIntervalDurationRange.y);
+            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
 
-            currentWanderDestination = leaper.GetRandomWanderPoint(leaper.WanderRadiusRange);
+            currentWanderDestination = leaper.GetRandomWanderPoint(WanderRadiusRange);
 
-            leaper.Hop(currentWanderDestination, leaper.WanderHopHeight);
+            leaper.Hop(currentWanderDestination, WanderHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
         }

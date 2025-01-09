@@ -3,6 +3,12 @@ using System.Collections;
 
 public class LeaperReadyAttackState : LeaperBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;
+    [field: SerializeField] public float ReadyAttackHopDistance { get; private set; } = 1.5f;
+    [field: SerializeField] public float ReadyAttackHopHeight { get; private set; } = .75f;
+    [field: SerializeField] public float ReadyAttackStartDelay { get; private set; } = 0.75f;
+
     private Entity rememberedTarget;
 
     private int currentHopCount;
@@ -25,7 +31,7 @@ public class LeaperReadyAttackState : LeaperBaseState
 
         leaper.SetSpeedModifier(0);
 
-        currentHopCount = leaper.ReadyAttackHopCount;
+        currentHopCount = ReadyAttackHopCount;
 
         attackStartDelayTimer = 0f;
     }
@@ -55,13 +61,13 @@ public class LeaperReadyAttackState : LeaperBaseState
         {
             if(currentHopCount <= 0)
             {
-                if(attackStartDelayTimer > leaper.ReadyAttackStartDelay) TransitionToNextState();
+                if(attackStartDelayTimer > ReadyAttackStartDelay) TransitionToNextState();
                 return;
             }
 
-            Vector3 currentHopDestination = -leaper.ReadyAttackHopDistance * directionToTarget + leaper.transform.position;
+            Vector3 currentHopDestination = -ReadyAttackHopDistance * directionToTarget + leaper.transform.position;
 
-            leaper.Hop(currentHopDestination, leaper.ReadyAttackHopHeight);
+            leaper.Hop(currentHopDestination, ReadyAttackHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
 

@@ -1,5 +1,10 @@
-﻿public class FollowerAttackRecoverState : FollowerBaseState
+﻿using UnityEngine;
+
+public class FollowerAttackRecoverState : FollowerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
+
     private float recoverTimer;
 
     public override void OnEnter()
@@ -20,7 +25,7 @@
 
         recoverTimer += follower.LocalDeltaTime;
 
-        if (recoverTimer > follower.AttackRecoverDuration)
+        if (recoverTimer > AttackRecoverDuration)
         {
             follower.ChangeState(follower.DefaultState);
             return;

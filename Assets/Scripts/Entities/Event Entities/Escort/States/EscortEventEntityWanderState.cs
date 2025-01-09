@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class EscortEventEntityWanderState : EntityBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(7f, 10f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(7f, 10f);
+
+
     private EscortEventEntity escortEventEntity;
     private WorldManager worldManager;
 
@@ -27,7 +32,7 @@ public class EscortEventEntityWanderState : EntityBaseState
         escortEventEntity.SetSpeedModifier(1f);
 
         wanderTimeElapsed = Mathf.Infinity;
-        randomWanderIntervalDuration = Random.Range(escortEventEntity.WanderIntervalDurationRange.x, escortEventEntity.WanderIntervalDurationRange.y);
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 
     public override void OnExit()
@@ -44,9 +49,9 @@ public class EscortEventEntityWanderState : EntityBaseState
         if (wanderTimeElapsed > randomWanderIntervalDuration || escortEventEntity.CloseToPoint(currentWanderDestination))
         {
             wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(escortEventEntity.WanderIntervalDurationRange.x, escortEventEntity.WanderIntervalDurationRange.y);
+            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
 
-            currentWanderDestination = escortEventEntity.GetRandomWanderPoint(GetRandomAdjacentLand().transform.position, escortEventEntity.WanderRadiusRange);
+            currentWanderDestination = escortEventEntity.GetRandomWanderPoint(GetRandomAdjacentLand().transform.position, WanderRadiusRange);
             escortEventEntity.SetDestination(currentWanderDestination);
         }
 

@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class LeaperChaseState : EnemyChaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
+    [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
+    [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 2f;
+
     private Leaper leaper; // Reference to the specific Leaper enemy using this state
 
     private Entity rememberedTarget;
@@ -54,7 +59,7 @@ public class LeaperChaseState : EnemyChaseState
                 return;
             }
 
-            if (leaper.Distance(rememberedTarget) < leaper.StartReadyAttackDistance)
+            if (leaper.Distance(rememberedTarget) < StartReadyAttackDistance)
             {
                 leaper.LeaperReadyAttackState.AssignCurrentRememberedTarget(rememberedTarget);
                 leaper.ChangeState(leaper.LeaperReadyAttackState);
@@ -63,7 +68,7 @@ public class LeaperChaseState : EnemyChaseState
 
             currentHopDestination = GetCurrentHopDestination();
 
-            leaper.Hop(currentHopDestination, leaper.ChaseHopHeight);
+            leaper.Hop(currentHopDestination, ChaseHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
         }
@@ -89,8 +94,8 @@ public class LeaperChaseState : EnemyChaseState
         Vector3 currentDestination = path[1];
 
         Vector3 direction = (currentDestination - leaper.transform.position).normalized;
-        Vector3 currentHopDestination = leaper.ChaseHopDistance * direction + leaper.transform.position;
+        Vector3 currentHopDestination = ChaseHopDistance * direction + leaper.transform.position;
 
-        return leaper.IsValidPointOnNavMesh(currentHopDestination, leaper.ChaseHopHeight, out Vector3 validDestination) ? validDestination : leaper.transform.position;
+        return leaper.IsValidPointOnNavMesh(currentHopDestination, ChaseHopHeight, out Vector3 validDestination) ? validDestination : leaper.transform.position;
     }
 }

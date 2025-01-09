@@ -150,7 +150,11 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void OnValidate()
     {
-        CharacterController = GetComponent<CharacterController>();
+        // For the gizmos to stop throwing errors before pressing play
+
+        InitializeStates();
+
+        CharacterController = GetComponent<CharacterController>(); 
     }
 
     private void Awake()

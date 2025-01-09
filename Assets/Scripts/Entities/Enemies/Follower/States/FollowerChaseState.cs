@@ -33,7 +33,7 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
-        if(follower.Distance(follower.Target) < follower.AttackRange)
+        if(follower.Distance(follower.Target) < follower.FollowerAttackState.AttackRange)
         {
             Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
             follower.FollowerAttackState.SetAttackDirection(attackDir);
@@ -41,7 +41,7 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
-        if(follower.Distance(follower.Target) < follower.CircleRadius)
+        if(follower.Distance(follower.Target) < follower.FollowerCircleState.CircleRadius)
         {
             CheckCanCircle();
         }
@@ -51,9 +51,9 @@ public class FollowerChaseState : EnemyChaseState
     {
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f, false);
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.FollowerCircleState.CircleRadius + 1f, false);
 
-            playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
+            playerNearbyFollowers = playerNearbyFollowers.Take(follower.FollowerCircleState.CircleFollowerCountThreshold).ToList();
 
             if (playerNearbyFollowers.Contains(follower)) return;
 

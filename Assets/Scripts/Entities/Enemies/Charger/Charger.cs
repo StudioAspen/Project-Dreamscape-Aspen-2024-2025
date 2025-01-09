@@ -3,44 +3,13 @@ using UnityEngine;
 
 public class Charger : Enemy
 {
+    [field: Header("Charger: Cone Detection Settings")]
+    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
+    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
+
     [Header("Charger: Armor Settings")]
     [SerializeField] private int staggerDamageThreshold = 40;
     [SerializeField] private float superArmorDamageReduction = 0.5f; // takes (100 - superArmorDamageReduction)% of damage when hit
-
-    [field: Header("Charger: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
-
-    [field: Header("Charger: Player Detected Settings")]
-    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
-    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
-    [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
-    [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
-
-    [field: Header("Charger: Charge Settings")]
-    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
-    [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
-    [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
-    [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
-    [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
-    [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
-    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
-
-    [field: Header("Charger: Wind Down Settings")]
-    [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
-
-    [field: Header("Charger: Jabbing Attack Settings")]
-    [field: SerializeField] public int JabCount { get; private set; } = 5;
-    [field: SerializeField] public float JabPercentDamage { get; private set; } = 100;
-    [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
-    [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
-    [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
-    [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
-    [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
-    public int RemainingJabs { get; private set; }
-
-    [field: Header("Charger: Dazed Settings")]
-    [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     #region States
     public ChargerWanderState ChargerWanderState { get; private set; }
@@ -119,7 +88,7 @@ public class Charger : Enemy
 #if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomDebug.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCircle(transform.position, ChargerTargetDetectedState.NearbyAttackRadiusThreshold);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
 #endif
     }
@@ -205,11 +174,6 @@ public class Charger : Enemy
             || CurrentState == ChargerJabRecoverState;
     }
 
-    public void ResetJabCount()
-    {
-        RemainingJabs = JabCount;
-    }
-
     public void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
@@ -218,21 +182,21 @@ public class Charger : Enemy
 
     public void EnableWeaponTriggers()
     {
-        if (RemainingJabs % 2 == 1)
+        if (ChargerJabbingAttackState.RemainingJabs % 2 == 1)
         {
-            RightFistWeapon.EnableTriggers();
+            ChargerJabbingAttackState.RightFistWeapon.EnableTriggers();
         }
         else
         {
-            LeftFistWeapon.EnableTriggers();
+            ChargerJabbingAttackState.LeftFistWeapon.EnableTriggers();
         }
 
-        RemainingJabs--;
+        ChargerJabbingAttackState.DecrementJabCount();
     }
 
     public void DisableWeaponTriggers()
     {
-        RightFistWeapon.DisableTriggers();
-        LeftFistWeapon.DisableTriggers();
+        ChargerJabbingAttackState.RightFistWeapon.DisableTriggers();
+        ChargerJabbingAttackState.LeftFistWeapon.DisableTriggers();
     }
 }

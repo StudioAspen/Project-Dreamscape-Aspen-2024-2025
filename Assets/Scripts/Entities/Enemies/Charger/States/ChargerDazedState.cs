@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ChargerDazedState : ChargerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
+
     private float timer;
 
     public override void OnEnter()
@@ -26,7 +29,7 @@ public class ChargerDazedState : ChargerBaseState
 
         timer += charger.LocalDeltaTime;
 
-        if(timer > charger.DazedDuration)
+        if(timer > DazedDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;

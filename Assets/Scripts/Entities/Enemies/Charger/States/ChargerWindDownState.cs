@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class ChargerWindDownState : ChargerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
+
     private float timer;
     private float halfWindDownDuration;
 
@@ -14,7 +17,7 @@ public class ChargerWindDownState : ChargerBaseState
         charger.TransitionToAnimation("FlatMovement");
 
         timer = 0f;
-        halfWindDownDuration = charger.WindDownDuration / 2f;
+        halfWindDownDuration = WindDownDuration / 2f;
     }
 
     public override void OnExit()
@@ -28,7 +31,7 @@ public class ChargerWindDownState : ChargerBaseState
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.WindDownDuration)
+        if (timer > WindDownDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
@@ -36,7 +39,7 @@ public class ChargerWindDownState : ChargerBaseState
 
         if(timer < halfWindDownDuration)
         {
-            float easedSpeedModifier = DOVirtual.EasedValue(charger.ChargeSpeedModifier, 0, timer / halfWindDownDuration, Ease.OutQuad);
+            float easedSpeedModifier = DOVirtual.EasedValue(charger.ChargerChargeState.ChargeSpeedModifier, 0, timer / halfWindDownDuration, Ease.OutQuad);
             charger.SetSpeedModifier(easedSpeedModifier);
 
             CheckCollisions();
@@ -48,7 +51,7 @@ public class ChargerWindDownState : ChargerBaseState
 
     private void CheckCollisions()
     {
-        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargeLayerMask);
+        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargerChargeState.ChargeLayerMask);
 
         foreach (Collider hit in orderedHits)
         {

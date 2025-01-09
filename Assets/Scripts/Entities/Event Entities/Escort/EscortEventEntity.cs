@@ -2,10 +2,6 @@
 
 public class EscortEventEntity : Enemy
 {
-    [field: Header("Escort Event Entity: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(7f, 10f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(7f, 10f);
-
     #region States
     public EscortEventEntityWanderState EscortEventEntityWanderState { get; private set; }
 

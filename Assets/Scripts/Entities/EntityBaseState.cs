@@ -50,7 +50,7 @@ public class EntityBaseState : MonoBehaviour
             if (baseState != null)
             {
                 // Remove the base state.
-                Debug.Log($"{entity.name}: Base state, {baseStateType.ToString()}, of {typeof(T).ToString()} exists, removing {baseStateType.ToString()}.");
+                //Debug.Log($"{entity.name}: Base state, {baseStateType.ToString()}, of {typeof(T).ToString()} exists, removing {baseStateType.ToString()}.");
 
                 GameObject.Destroy(baseState);
             }

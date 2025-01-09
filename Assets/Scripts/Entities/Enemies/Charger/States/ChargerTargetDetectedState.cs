@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class ChargerTargetDetectedState : ChargerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
+    [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
+
     private Entity rememberedTarget;
 
     private float timer;
@@ -19,7 +23,7 @@ public class ChargerTargetDetectedState : ChargerBaseState
 
         charger.SetSpeedModifier(0f);
 
-        charger.ResetJabCount();
+        charger.ChargerJabbingAttackState.ResetJabCount();
 
         timer = 0f;
     }
@@ -43,11 +47,11 @@ public class ChargerTargetDetectedState : ChargerBaseState
 
         timer += charger.LocalDeltaTime;
         
-        if(timer > charger.TargetDetectedDuration)
+        if(timer > TargetDetectedDuration)
         {
             float distanceToTarget = charger.Distance(rememberedTarget.transform.position);
 
-            if(distanceToTarget < charger.NearbyAttackRadiusThreshold)
+            if(distanceToTarget < NearbyAttackRadiusThreshold)
             {
                 charger.ChargerJabbingAttackState.AssignCurrentRememberedTarget(rememberedTarget);
                 charger.ChangeState(charger.ChargerJabbingAttackState);

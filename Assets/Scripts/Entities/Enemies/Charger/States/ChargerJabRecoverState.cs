@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ChargerJabRecoverState : ChargerBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
+
     private float timer;
 
     public override void OnEnter()
@@ -24,7 +27,7 @@ public class ChargerJabRecoverState : ChargerBaseState
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.JabRecoverDuration)
+        if (timer > JabRecoverDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
