@@ -258,11 +258,6 @@ GameObject:
   - component: {fileID: 668870923191818292}
   - component: {fileID: 3853611771221472667}
   - component: {fileID: 3973575347413705226}
-  - component: {fileID: 6126409840969723188}
-  - component: {fileID: 1081256508064925966}
-  - component: {fileID: -445317095505308428}
-  - component: {fileID: 5368842961024490159}
-  - component: {fileID: 554332885229788313}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -349,67 +344,6 @@ MonoBehaviour:
   <AttackContactDamagePercent>k__BackingField: 150
   <RegularContactDamagePercent>k__BackingField: 100
   <AttackHopDuration>k__BackingField: 0.75
---- !u!114 &6126409840969723188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624504155816202664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3145b99617f304b4f8c84fc4a1b016b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1081256508064925966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624504155816202664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6ab8b562d0b97c458d049d446813257, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-445317095505308428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624504155816202664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9c4bf7446765d94c9ffe2ba1ee9e8d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5368842961024490159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624504155816202664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26ac943737978c34eb8c5e00be487694, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <StaggerDuration>k__BackingField: 0.5
---- !u!114 &554332885229788313
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624504155816202664}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0977490ff88f61458f1950642066628, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4472509618577045122
 PrefabInstance:
   m_ObjectHideFlags: 0

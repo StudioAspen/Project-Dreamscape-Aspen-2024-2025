@@ -151,9 +151,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void OnValidate()
     {
         // For the gizmos to stop throwing errors before pressing play
-
-        InitializeStates();
-
         CharacterController = GetComponent<CharacterController>(); 
     }
 

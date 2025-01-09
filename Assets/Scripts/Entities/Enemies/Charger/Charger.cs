@@ -88,7 +88,7 @@ public class Charger : Enemy
 #if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomDebug.DrawWireCircle(transform.position, ChargerTargetDetectedState.NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCircle(transform.position, GetComponentInChildren<ChargerTargetDetectedState>().NearbyAttackRadiusThreshold);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
 #endif
     }
