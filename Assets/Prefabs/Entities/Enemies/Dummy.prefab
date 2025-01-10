@@ -51,14 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9a807e5301b9e469f1712382daaa6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 8702003990657789017}
-  animator: {fileID: 5860220226555299953}
-  <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 0
-  <Level>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1
@@ -68,7 +65,6 @@ MonoBehaviour:
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
-  <StaggerDuration>k__BackingField: 0.5
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 0
   <CustomCollisionRadius>k__BackingField: 0

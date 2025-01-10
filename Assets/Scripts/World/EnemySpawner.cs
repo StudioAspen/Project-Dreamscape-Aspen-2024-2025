@@ -45,10 +45,11 @@ public class EnemySpawner : MonoBehaviour
     /// Spawns enemies with currency coroutine.
     /// </summary>
     /// <returns>An IEnumerator for the coroutine.</returns>
-    public IEnumerator SpawnWithCurrencyCoroutine()
+    /// <param name="willRefillCurrency">Whether to refill currency.</param>
+    public IEnumerator SpawnWithCurrencyCoroutine(bool willRefillCurrency = true)
     {
         isUsingCurrency = true;
-        RefillCurrency();
+        if(willRefillCurrency) RefillCurrency();
 
         while (currentShopCurrency > 0)
         {

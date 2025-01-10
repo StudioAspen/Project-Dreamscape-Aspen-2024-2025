@@ -57,10 +57,11 @@ public class WorldEventSO : ScriptableObject
     /// Populates the enemySpawningCoroutines list with the coroutine from the land's enemy spawner.
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
-    public void StartEnemySpawnerWithCurrency(LandManager land)
+    /// <param name="willRefillCurrency">Whether to refill currency.</param>
+    public void StartEnemySpawnerWithCurrency(LandManager land, bool willRefillCurrency = true)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine()));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(willRefillCurrency)));
     }
 
     /// <summary>
@@ -80,11 +81,12 @@ public class WorldEventSO : ScriptableObject
     /// Populates the enemySpawningCoroutines list with the coroutines from each land's enemy spawner.
     /// </summary>
     /// <param name="lands">The list of lands to spawn enemies on.</param>
-    public void StartEnemySpawnersWithCurrency(List<LandManager> lands)
+    /// /// <param name="willRefillCurrency">Whether to refill currency.</param>
+    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, bool willRefillCurrency = true)
     {
         foreach (LandManager land in lands)
         {
-            StartEnemySpawnerWithCurrency(land);
+            StartEnemySpawnerWithCurrency(land, willRefillCurrency);
         }
     }
 

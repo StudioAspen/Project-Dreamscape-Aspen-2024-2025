@@ -195,7 +195,6 @@ public class Weapon : MonoBehaviour
     private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
 
         // CustomGizmos.InstantiateTemporarySphere(hitPoint, 0.1f, 1.5f, fromTrigger ? Color.green : Color.red);
 

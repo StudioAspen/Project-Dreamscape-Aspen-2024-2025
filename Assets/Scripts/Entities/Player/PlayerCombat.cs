@@ -42,6 +42,8 @@ public class PlayerCombat : MonoBehaviour
 
         player.OnGrounded += Player_OnGrounded;
         player.OnAirborne += Player_OnAirborne;
+
+        Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
     private void OnDisable()
@@ -50,6 +52,8 @@ public class PlayerCombat : MonoBehaviour
 
         player.OnGrounded -= Player_OnGrounded;
         player.OnAirborne -= Player_OnAirborne;
+
+        Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
     private void Update()
@@ -60,6 +64,11 @@ public class PlayerCombat : MonoBehaviour
         {
             Weapon.transform.localScale += Vector3.one * player.LocalDeltaTime;
         }
+    }
+
+    private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
+    {
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)

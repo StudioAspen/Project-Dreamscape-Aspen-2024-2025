@@ -15,8 +15,15 @@ MonoBehaviour:
   <EXPDatabase>k__BackingField:
     _serializedList:
     - Key: Follower
-      Value: 10
-    - Key: Charger
-      Value: 20
+      Value:
+        <Base>k__BackingField: 20
+        <Elite>k__BackingField: 40
     - Key: Leaper
-      Value: 10
+      Value:
+        <Base>k__BackingField: 30
+        <Elite>k__BackingField: 50
+    - Key: Charger
+      Value:
+        <Base>k__BackingField: 40
+        <Elite>k__BackingField: 60
+  checkForAnyErrors: 0

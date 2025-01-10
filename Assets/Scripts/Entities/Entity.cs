@@ -12,7 +12,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Animator animator;
 
     [field: Header("Entity: References")]
-    [field: SerializeField] public GlobalPhysicsConfigSO PhysicsSettings { get; private set; }
+    [field: SerializeField] public GlobalPhysicsConfigSO PhysicsConfig { get; private set; }
     [SerializeField] private protected Transform model;
 
     private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
@@ -67,8 +67,34 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Combat Events
-    public Action<int, Vector3, GameObject> OnEntityTakeDamage = delegate { }; // passes the hit point and the source of the damage
-    public Action<GameObject> OnEntityDeath = delegate { }; // passes the killer gameObject
+    /// <summary>
+    /// Action that is invoked when the entity takes damage.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int damage</c>: The amount of damage taken.</description></item>
+    /// <item><description><c>Vector3 hitPoint</c>: The point where the entity was hit.</description></item>
+    /// <item><description><c>GameObject source</c>: The source of the damage.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int, Vector3, GameObject> OnEntityTakeDamage = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity dies.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>GameObject source</c>: The killer source.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<GameObject> OnEntityDeath = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity kills another entity.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity victim</c>: The victim entity that was killed.</description></item>
+    /// </list>
+    /// </remarks>
     public Action<Entity> OnKillEntity = delegate { }; // passes the victim entity
     private protected GameObject lastHitSource;
     #endregion
@@ -409,7 +435,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             inAirTimer = 0f;
             fallVelocityApplied = false;
 
-            velocity.y = PhysicsSettings.GroundedYVelocity;
+            velocity.y = PhysicsConfig.GroundedYVelocity;
         }
     }
 
@@ -432,7 +458,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (!IsGrounded)
         {
-            velocity.y += LocalDeltaTime * PhysicsSettings.Gravity;
+            velocity.y += LocalDeltaTime * PhysicsConfig.Gravity;
         }
     }
 

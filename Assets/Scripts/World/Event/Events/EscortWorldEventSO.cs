@@ -86,7 +86,7 @@ public class EscortWorldEventSO : WorldEventSO
     {
         StopEnemySpawners();
 
-        StartEnemySpawnerWithCurrency(newLand);
+        StartEnemySpawnerWithCurrency(newLand, false);
     }
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
