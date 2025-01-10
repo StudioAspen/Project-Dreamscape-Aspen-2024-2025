@@ -23,9 +23,7 @@ public class PlayerDashState : PlayerBaseState
     {
         base.Init(entity);
 
-        // Find the dash trail particle system if it is not set
-        if(dashTrailParticle == null) dashTrailParticle = GameObject.Find("Trail").GetComponent<ParticleSystem>();
-        if (dashTrailParticle == null) Debug.LogError("Cannot find dash trail");
+        InitializeDashTrail();
     }
 
     public override void OnEnter()
@@ -75,6 +73,26 @@ public class PlayerDashState : PlayerBaseState
         }
 
         dashCooldownTimer = 0; // keeps dash cooldown timer at 0 so that once you stop dashing, the timer goes up
+    }
+
+    /// <summary>
+    /// Initializes the dash trail particle system by finding the dash trail GameObject and getting the ParticleSystem component.
+    /// If the dash trail particle system is not found, it logs an error message.
+    /// </summary>
+    private void InitializeDashTrail()
+    {
+        if(dashTrailParticle != null)
+        {
+            dashTrailParticle.Stop();
+            return;
+        }
+
+        // Find the dash trail particle system if it is not set
+        dashTrailParticle = GameObject.Find("Trail").GetComponent<ParticleSystem>();
+        if(dashTrailParticle == null)
+        {
+            Debug.LogError("Cannot find player dash trail");
+        }
     }
 
     /// <summary>

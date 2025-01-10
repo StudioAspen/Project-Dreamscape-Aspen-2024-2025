@@ -7,11 +7,11 @@ public class LevelSystem : MonoBehaviour
 
     [Header("Config")]
     [SerializeField] private EXPDatabaseConfigSO expDatabaseConfig;
-    [field: SerializeField] public int Level { get; protected set; } = 1;
     [SerializeField] private int baseMaxEXP = 10;
     [SerializeField] private int maxEXPLinearGrowth = 10;
     [SerializeField] private float maxEXPExponentialGrowth = 1.2f;
 
+    public int Level { get; private set; } = 1;
     public int CurrentEXP { get; private set; }
     public int MaxEXP { get; private set; }
 
@@ -21,7 +21,9 @@ public class LevelSystem : MonoBehaviour
     {
         entity = GetComponent<Entity>();
 
+        CurrentEXP = 0;
         MaxEXP = CalculateMaxEXP();
+        AddEXP(0);
 
         entity.OnKillEntity += Entity_OnKillEntity;
     }
@@ -33,9 +35,10 @@ public class LevelSystem : MonoBehaviour
 
     private void Entity_OnKillEntity(Entity victim)
     {
-        int expReward = expDatabaseConfig.GetEXPFromType(victim.GetType());
-        //Debug.Log($"{victim.gameObject.name} killed rewarding {expReward} EXP");
+        bool isEnemyElite = false; // TODO: Implement elite enemies
+        int expReward = expDatabaseConfig.GetEXPFromType(victim.GetType(), isEnemyElite);
 
+        Debug.Log($"{(isEnemyElite ? "Elite: " : "")}{victim.gameObject.name} was killed, rewarding {expReward} EXP");
         AddEXP(expReward);
     }
 
@@ -47,6 +50,22 @@ public class LevelSystem : MonoBehaviour
     /// <param name="amount">The amount of experience points to add.</param>
     public void AddEXP(int amount)
     {
+        if(Level < 1)
+        {
+            Debug.LogError("Cannot be less than level 1, fixing level.");
+
+            Level = 1;
+            CurrentEXP = 0;
+            MaxEXP = CalculateMaxEXP();
+            return;
+        }
+
+        if(amount < 0)
+        {
+            Debug.LogError("Cannot add negative EXP.");
+            return;
+        }
+
         CurrentEXP += amount;
 
         if (CurrentEXP >= MaxEXP)

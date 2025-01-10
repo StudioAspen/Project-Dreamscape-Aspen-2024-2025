@@ -6,9 +6,9 @@ public class LeaperAttackState : LeaperBaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
+    [field: SerializeField] public float LeapAttackHeightToDistanceRatio { get; private set; } = 0.2f;
     [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
     [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
-    [field: SerializeField] public float AttackHopDuration { get; private set; } = 1f;
 
     private Entity rememberedTarget;
     private Vector3 hopDestination;
@@ -32,13 +32,19 @@ public class LeaperAttackState : LeaperBaseState
 
         leaper.SetSpeedModifier(0f);
 
-        Vector3 predictedMovement = rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed * AttackHopDuration * rememberedTarget.transform.forward;
+        float hopHeight = leaper.Distance(rememberedTarget) * LeapAttackHeightToDistanceRatio;
+
+        // Calculate the predicted movement of the remembered target (Speed * Time * Direction)
+        Vector3 predictedMovement = 
+            rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed // speed of the target
+            * leaper.CalculateHopDuration(rememberedTarget.transform.position, hopHeight) // time it takes to get to target
+            * rememberedTarget.transform.forward; // direction of the target
+
         hopDestination = rememberedTarget.GetColliderCenterPosition() + predictedMovement;
 
         hopDirection = (hopDestination - leaper.transform.position).normalized;
 
-        // 0 hop height, because duration overrides that
-        leaper.Hop(hopDestination, 0f, AttackHopDuration);
+        leaper.Hop(hopDestination, hopHeight);
 
         entitiesHitByCurrentLeap.Clear();
     }

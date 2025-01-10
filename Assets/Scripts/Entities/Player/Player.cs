@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using TMPro;
@@ -66,6 +67,15 @@ public class Player : Entity
         base.OnAwake();
 
         playerInputReader = GetComponent<PlayerInputReader>();
+
+        OnEntityTakeDamage += Player_OnEntityTakeDamage;
+    }
+
+    private protected override void OnDeath()
+    {
+        base.OnDeath();
+
+        OnEntityTakeDamage -= Player_OnEntityTakeDamage;
     }
 
     private protected override void OnStart()
@@ -86,6 +96,11 @@ public class Player : Entity
 
         PlayerDashState.HandleDashCooldown();
         PlayerDashState.HandleDashTrail();
+    }
+
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
+    {
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
     }
 
     /// <summary>
@@ -127,7 +142,7 @@ public class Player : Entity
             inAirTimer = 0f;
             fallVelocityApplied = false;
             PlayerJumpState.IsJumping = false;
-            velocity.y = PhysicsSettings.GroundedYVelocity;
+            velocity.y = PhysicsConfig.GroundedYVelocity;
         }
     }
 
@@ -138,7 +153,7 @@ public class Player : Entity
             if (!PlayerJumpState.IsJumping && !fallVelocityApplied) // falling without jumping
             {
                 fallVelocityApplied = true;
-                velocity.y = PhysicsSettings.FallingStartingYVelocity;
+                velocity.y = PhysicsConfig.FallingStartingYVelocity;
             }
             if (CanBeForcedToFall())
             {

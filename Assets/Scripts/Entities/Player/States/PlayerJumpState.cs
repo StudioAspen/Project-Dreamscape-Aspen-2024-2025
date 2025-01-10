@@ -61,7 +61,7 @@ public class PlayerJumpState : PlayerBaseState
 
         IsJumping = true;
 
-        player.SetVelocity(new Vector3(player.Velocity.x, Mathf.Sqrt(JumpHeight * -2f * player.PhysicsSettings.Gravity), player.Velocity.z));
+        player.SetVelocity(new Vector3(player.Velocity.x, Mathf.Sqrt(JumpHeight * -2f * player.PhysicsConfig.Gravity), player.Velocity.z));
     }
 
     /// <summary>

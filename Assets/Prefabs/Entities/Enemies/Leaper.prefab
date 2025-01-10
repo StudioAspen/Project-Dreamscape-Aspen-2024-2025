@@ -52,12 +52,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838c1900f811cba449eedf1336fa32f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField: 40
-  <Level>k__BackingField: 1
   baseSpeed: 3
   rotationSpeed: 15
   mass: 1
@@ -343,7 +342,6 @@ MonoBehaviour:
     m_Bits: 64
   <AttackContactDamagePercent>k__BackingField: 150
   <RegularContactDamagePercent>k__BackingField: 100
-  <AttackHopDuration>k__BackingField: 0.75
 --- !u!1001 &4472509618577045122
 PrefabInstance:
   m_ObjectHideFlags: 0

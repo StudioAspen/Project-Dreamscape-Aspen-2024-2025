@@ -56,7 +56,7 @@ public class PlayerSlideState : PlayerBaseState
             return;
         }
 
-        Physics.Raycast(player.transform.position, Vector3.down, out hitBelow, player.CharacterController.height / 2, player.PhysicsSettings.GroundLayer, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(player.transform.position, Vector3.down, out hitBelow, player.CharacterController.height / 2, player.PhysicsConfig.GroundLayer, QueryTriggerInteraction.Ignore);
 
         if (hitBelow.collider == null)
         {
@@ -98,7 +98,7 @@ public class PlayerSlideState : PlayerBaseState
     /// <param name="slideDirection">The direction of the slide.</param>
     private void ApplySlide(Vector3 slideDirection)
     {
-        player.SetVelocity(new Vector3(player.Velocity.x, player.PhysicsSettings.GroundedYVelocity, player.Velocity.z));
+        player.SetVelocity(new Vector3(player.Velocity.x, player.PhysicsConfig.GroundedYVelocity, player.Velocity.z));
         player.CharacterController.Move(slideDirection * -player.Velocity.y * player.LocalDeltaTime);
     }
 

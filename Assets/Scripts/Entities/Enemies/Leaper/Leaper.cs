@@ -117,7 +117,7 @@ public class Leaper : Enemy
     private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         // Gravity constant (positive value, assuming downward acceleration)
-        float gravity = Mathf.Abs(Physics.gravity.y);
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
 
         // Current position of the entity
         Vector3 startPosition = transform.position;
@@ -143,9 +143,7 @@ public class Leaper : Enemy
             // Calculate initial vertical velocity required to reach hopHeight
             initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
 
-            // Total time of flight
-            float timeToApex = initialVerticalVelocity / gravity; // Time to reach the peak
-            totalFlightTime = timeToApex + Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+            totalFlightTime = CalculateHopDuration(endPosition, hopHeight);
         }
         else
         {
@@ -166,6 +164,40 @@ public class Leaper : Enemy
 
         return hopVelocity;
     }
+
+    /// <summary>
+    /// Calculates the total duration required to hop from the current position to the end position
+    /// with a specified maximum hop height.
+    /// </summary>
+    /// <param name="endPosition">The target position to reach.</param>
+    /// <param name="hopHeight">The maximum height of the hop.</param>
+    /// <returns>The total duration of the hop.</returns>
+    public float CalculateHopDuration(Vector3 endPosition, float hopHeight)
+    {
+        // Gravity constant (positive value, assuming downward acceleration)
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
+
+        // Current position of the entity
+        Vector3 startPosition = transform.position;
+
+        // Vertical displacement (difference in height)
+        float verticalDisplacement = endPosition.y - startPosition.y;
+
+        // Calculate initial vertical velocity required to reach hopHeight
+        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+
+        // Time to reach the apex of the hop
+        float timeToApex = initialVerticalVelocity / gravity;
+
+        // Time to descend from the apex to the end position
+        float timeToDescend = Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+
+        // Total flight time (ascent + descent)
+        float totalFlightTime = timeToApex + timeToDescend;
+
+        return totalFlightTime;
+    }
+
 
     /// <summary>
     /// Makes the enemy hop to a specified end position with a given hop height.
