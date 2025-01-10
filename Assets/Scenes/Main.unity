@@ -1593,8 +1593,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 50, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2561,16 +2561,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 884838979891709249, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: dashTrailObject
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3617256968821117999, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3859803993434958765, guid: 19dae7578bc56674dae55670ec5dfbf5,
+        type: 3}
+      propertyPath: expDatabaseConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 0879fdd9954b4c84fb338e947c209d00,
+        type: 2}
     - target: {fileID: 7536978621657743438, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2621,18 +2622,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8852926688546275590, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: <PlayerDashState>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: d4021b77a46cc944c9cb54eaa85ed884,
-        type: 2}
-    - target: {fileID: 8852926688546275590, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: <PlayerJumpState>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: 1cc69c6cf9c39d246abbc4eaf2c65ebc,
-        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

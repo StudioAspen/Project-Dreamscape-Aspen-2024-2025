@@ -24,11 +24,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public int MaxHealth { get; protected set; }
     #endregion
 
-    #region Level Variables
-    [field: Header("Entity: Level")]
-    [field: SerializeField] public int Level { get; protected set; }
-    #endregion
-
     #region Speed Variables
     [Header("Entity: Speed")]
     [SerializeField] private protected float baseSpeed = 3f;
@@ -597,7 +592,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Attempts to notify the entity that killed this entity by checking if the last hit source is an entity.
-    /// If this fails, then the soruce that killed this entity is not an entity and cannot be notified.
+    /// If this fails, then the source that killed this entity is not an entity and cannot be notified.
     /// Override this function if you want to add custom logic for notifying the killer.
     /// </summary>
     private protected virtual void AttemptToNotifyKiller()
