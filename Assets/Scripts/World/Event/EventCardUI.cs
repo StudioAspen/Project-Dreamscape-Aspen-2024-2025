@@ -1,16 +1,18 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EventCardUI : MonoBehaviour
+public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private EventManager eventManager;
     private Button button;
 
     [Header("References")]
-    [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text selectText;
 
     public Type CurrentEventType { get; private set; }
 
@@ -48,11 +50,21 @@ public class EventCardUI : MonoBehaviour
         WorldEventSO worldEvent = eventManager.GetEvent(CurrentEventType);
 
         nameText.text = $"{worldEvent.EventName}";
-        image.sprite = worldEvent.Sprite;
+        descriptionText.text = $"{worldEvent.Description}";
     }
 
     private void OnClickCard()
     {
         eventManager.ChangeEvent(CurrentEventType);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        selectText.text = "<b>> SELECT <<b>";
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        selectText.text = "SELECT";
     }
 }

@@ -22,7 +22,6 @@ public class WorldEventSO : ScriptableObject
 
     [field: Header("Display")]
     [field: SerializeField] public string EventName { get; private set; } = "Event";
-    [field: SerializeField] public Sprite Sprite { get; private set; }
     [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
 
     /// <summary>
