@@ -5,7 +5,8 @@ public class LevelSystem : MonoBehaviour
 {
     private Entity entity;
 
-    [field: Header("Config")]
+    [Header("Config")]
+    [SerializeField] private EXPDatabaseConfigSO expDatabaseConfig;
     [field: SerializeField] public int Level { get; protected set; } = 1;
     [SerializeField] private int baseMaxEXP = 10;
     [SerializeField] private int maxEXPLinearGrowth = 10;
@@ -30,9 +31,12 @@ public class LevelSystem : MonoBehaviour
         entity.OnKillEntity -= Entity_OnKillEntity;
     }
 
-    private void Entity_OnKillEntity(Entity entity)
+    private void Entity_OnKillEntity(Entity victim)
     {
-        AddEXP(9);
+        int expReward = expDatabaseConfig.GetEXPFromType(victim.GetType());
+        //Debug.Log($"{victim.gameObject.name} killed rewarding {expReward} EXP");
+
+        AddEXP(expReward);
     }
 
     #region EXP Handling
