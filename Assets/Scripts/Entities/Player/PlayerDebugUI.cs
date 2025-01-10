@@ -10,6 +10,7 @@ public class PlayerDebugUI : MonoBehaviour
     private PlayerCombat playerCombat;
     private ChainingSystem chainingSystem;
     private MomentumSystem momentumSystem;
+    private LevelSystem levelSystem;
     private HealthBarUI healthBarUI;
 
     [SerializeField] private TMP_Text stateText;
@@ -17,6 +18,7 @@ public class PlayerDebugUI : MonoBehaviour
     [SerializeField] private TMP_Text comboText;
     [SerializeField] private TMP_Text chainText;
     [SerializeField] private TMP_Text momentumText;
+    [SerializeField] private TMP_Text levelText;
 
     private void Awake()
     {
@@ -24,6 +26,7 @@ public class PlayerDebugUI : MonoBehaviour
         playerCombat = player.GetComponent<PlayerCombat>();
         chainingSystem = player.GetComponent<ChainingSystem>();
         momentumSystem = player.GetComponent<MomentumSystem>();
+        levelSystem = player.GetComponent<LevelSystem>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
         player.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
@@ -50,6 +53,7 @@ public class PlayerDebugUI : MonoBehaviour
         inputsText.text = playerCombat == null ? "Missing PlayerCombat component." : $"Inputs: {GetInputsListString()}";
         chainText.text = chainingSystem == null ? "Missing ChainingSystem component." : $"Chain: {chainingSystem.ChainCount}";
         momentumText.text = momentumSystem == null ? "Missing MomentumSystem component." : $"Momentum: {momentumSystem.Momentum}";
+        levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
     }
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)

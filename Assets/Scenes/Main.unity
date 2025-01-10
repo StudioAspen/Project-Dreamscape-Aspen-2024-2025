@@ -2561,11 +2561,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 884838979891709249, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: dashTrailObject
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3617256968821117999, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_Name
@@ -2621,18 +2616,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8852926688546275590, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: <PlayerDashState>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: d4021b77a46cc944c9cb54eaa85ed884,
-        type: 2}
-    - target: {fileID: 8852926688546275590, guid: 19dae7578bc56674dae55670ec5dfbf5,
-        type: 3}
-      propertyPath: <PlayerJumpState>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: 1cc69c6cf9c39d246abbc4eaf2c65ebc,
-        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -24,11 +24,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public int MaxHealth { get; protected set; }
     #endregion
 
-    #region Level Variables
-    [field: Header("Entity: Level")]
-    [field: SerializeField] public int Level { get; protected set; }
-    #endregion
-
     #region Speed Variables
     [Header("Entity: Speed")]
     [SerializeField] private protected float baseSpeed = 3f;
