@@ -61,8 +61,24 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Movement Events
-    public Action<Vector3> OnGrounded = delegate { }; // 1st arg: where you grounded
-    public Action<Vector3> OnAirborne = delegate { }; // 1st arg: where you left ground
+    /// <summary>
+    /// Action that is invoked when the entity becomes grounded.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Vector3 groundPoint</c>: Where you got grounded.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Vector3> OnGrounded = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity becomes airborne.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Vector3 groundPoint</c>: Where you left the ground.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Vector3> OnAirborne = delegate { };
     private bool prevIsGrounded;
     #endregion
 

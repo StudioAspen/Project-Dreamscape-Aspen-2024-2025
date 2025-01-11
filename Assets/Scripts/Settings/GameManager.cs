@@ -16,6 +16,7 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public GameState CurrentState { get; private set; }
+    public GameState PreviousState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
 
     #region Time Scale
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
         if(CurrentState == newState) return;
 
         //print($"GameManager: Going from {CurrentState} to {newState}");
+        PreviousState = CurrentState;
 
         switch (newState)
         {
