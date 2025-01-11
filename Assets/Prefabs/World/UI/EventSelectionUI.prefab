@@ -54,10 +54,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca8e771affcdbda4aba8f5789022b227, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  background: {fileID: 3802838703981505543}
+  titleText: {fileID: 3870145277507688939}
   eventCards:
   - {fileID: 1780766732755760070}
   - {fileID: 4907510267283178441}
   - {fileID: 5044039336969878273}
+  backgroundFadeInDuration: 0.5
+  flipDurationBetweenCards: 0.2
+  enterCardsFlipDuration: 0.25
+  cardDealDuration: 0.25
+  selectedCardCenteringDuration: 0.5
+  selectedCardViewingDuration: 0.5
+  cardSlideDownDuration: 0.5
+  nonSelectedCardsExitFlipDuration: 0.25
+  selectedCardExitFlipDuration: 0.25
 --- !u!222 &6967079744531723164
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -130,7 +141,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -167}
+  m_AnchoredPosition: {x: 0, y: -154}
   m_SizeDelta: {x: 0, y: 242.0757}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8232434114972557606

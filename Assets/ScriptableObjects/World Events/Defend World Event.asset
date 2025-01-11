@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Defend World Event
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Defend
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 56e1b2c6b2153904bb5c3890643f2b97,
-    type: 3}
-  <Description>k__BackingField: Description of the event.
+  <Description>k__BackingField: A stationary object will placed at the center of
+    the land for 1 minute, Every 30 seconds it will go to a neighboring land. All
+    lands will spawn enemies, if the object survives, trigger EOW.
   <DefendEventDuration>k__BackingField: 60
   <DefendEventMaxHealth>k__BackingField: 200
   <DefendEventEntityPrefab>k__BackingField: {fileID: -6622033700469236084, guid: 283748bb881c25f47834dfa195740453,
