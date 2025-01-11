@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Escort World Event
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Escort
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 5660b1472b84f144b944e1448ed32726,
-    type: 3}
-  <Description>k__BackingField: Description of the event.
+  <Description>k__BackingField: An NPC will run around the map for X minutes. Only
+    land the NPC stands on spawn enemies,if they survive trigger EOW.
   <EscortEventDuration>k__BackingField: 120
   <EscortEventMaxHealth>k__BackingField: 200
   <EscortEventEntityPrefab>k__BackingField: {fileID: 9089360984839628659, guid: 2695d04c7138e8b49a111d51181ec062,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,20 +14,40 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text selectText;
+    [SerializeField] private GameObject backgroundGlow;
+    [SerializeField] private GameObject frontFaceObject;
+    [SerializeField] private GameObject backFaceObject;
+
+    private bool isFrontFacing;
 
     public Type CurrentEventType { get; private set; }
+    /// <summary>
+    /// Action that is invoked when the card is clicked.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>EventCardUI card</c>: The card that was clicked.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<EventCardUI> OnCardClicked = delegate { };
+
+    private Vector3 startingPosition;
 
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
         button = GetComponent<Button>();
 
-        button.onClick.AddListener(OnClickCard);
+        button.onClick.AddListener(Button_OnClick);
+
+        startingPosition = transform.position;
+
+        ResetCard();
     }
 
     private void OnDestroy()
     {
-        button.onClick.RemoveListener(OnClickCard);
+        button.onClick.RemoveListener(Button_OnClick);
     }
 
     public void EnableButton()
@@ -37,6 +58,18 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void DisableButton()
     {
         button.interactable = false;
+    }
+
+    /// <summary>
+    /// Resets the position of the card to default state.
+    /// </summary>
+    public void ResetCard()
+    {
+        DisableSelectedIndicator();
+        InstantlyFlipCard(false);
+
+        transform.position = startingPosition;
+        transform.localScale = Vector3.one;
     }
 
     /// <summary>
@@ -53,18 +86,119 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         descriptionText.text = $"{worldEvent.Description}";
     }
 
-    private void OnClickCard()
+    private void Button_OnClick()
     {
-        eventManager.ChangeEvent(CurrentEventType);
+        OnCardClicked?.Invoke(this);
     }
 
+    #region Hovering
     public void OnPointerEnter(PointerEventData eventData)
     {
-        selectText.text = "<b>> SELECT <<b>";
+        if (!button.interactable) return;
+
+        EnableSelectedIndicator();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        selectText.text = "SELECT";
+        if (!button.interactable) return;
+
+        DisableSelectedIndicator();
     }
+
+    /// <summary>
+    /// Enables the selected indicator for the event card.
+    /// </summary>
+    private void EnableSelectedIndicator()
+    {
+        selectText.text = "<b>> SELECT <<b>";
+
+        backgroundGlow.SetActive(true);
+    }
+
+    /// <summary>
+    /// Disables the selected indicator for the event card.
+    /// </summary>
+    private void DisableSelectedIndicator()
+    {
+        selectText.text = "SELECT";
+
+        backgroundGlow.SetActive(false);
+    }
+    #endregion
+
+    #region Flipping
+    /// <summary>
+    /// Flips the card to the specified side and executes a callback when the animation is complete.
+    /// </summary>
+    /// <param name="flipDuration"></param>
+    /// <param name="isFront">True to flip the card to the front side, false to flip it to the back side.</param>
+    /// <param name="onCompleteCallback">An optional callback to execute when the flip animation is finished.</param>
+    public void FlipCard(float flipDuration, bool isFront, Action onCompleteCallback = null)
+    {
+        if (isFrontFacing == isFront)
+        {
+            // If the card is already facing the specified side, don't do anything.
+            onCompleteCallback?.Invoke();
+            return;
+        }
+
+        // Kill existing tweens
+        DOTween.Kill(gameObject);
+
+        // Create a sequence
+        Sequence flipSequence = DOTween.Sequence().SetUpdate(true).SetId(gameObject);
+
+        // Add the first half of the flip (0 to 90 degrees)
+        flipSequence.Append(transform.DOLocalRotate(new Vector3(0f, 90f, 0f), flipDuration / 2f).SetUpdate(true)
+            .OnComplete(() => {
+                // Toggle faces halfway
+                frontFaceObject.SetActive(isFront);
+                backFaceObject.SetActive(!isFront);
+            }));
+
+        // Add the second half of the flip (90 to 180 degrees or back to 0)
+        flipSequence.Append(transform.DOLocalRotate(isFront ? Vector3.zero : new Vector3(0f, 180f, 0f), flipDuration / 2f).SetUpdate(true))
+            .OnComplete(() => {
+                // Ensure the card is facing the correct side
+                InstantlyFlipCard(isFront);
+
+                // Invoke the callback after the animation finishes
+                onCompleteCallback?.Invoke();
+            });
+
+        flipSequence.Play();
+    }
+
+    /// <summary>
+    /// Instantly flips the card to the specified side.
+    /// </summary>
+    /// <param name="isFront">True to flip the card to the front side, false to flip it to the back side.</param>
+    public void InstantlyFlipCard(bool isFront)
+    {
+        frontFaceObject.SetActive(isFront);
+        backFaceObject.SetActive(!isFront);
+
+        transform.localEulerAngles = isFront ? Vector3.zero : new Vector3(0f, 180f, 0f);
+
+        isFrontFacing = isFront;
+    }
+    #endregion
+
+    #region Movement
+    /// <summary>
+    /// Moves the card from the start position to the end position over a specified duration.
+    /// </summary>
+    /// <param name="endPosition">The starting position of the card.</param>
+    /// <param name="duration">The duration of the movement.</param>
+    /// <param name="onCompleteCallback">An optional callback to execute when the movement is complete.</param>
+    public void MoveToStartingPosition(float duration, Ease ease, Action onCompleteCallback = null)
+    {
+        // Kill existing tween
+        DOTween.Kill(transform);
+
+        // Move the card to the end position (starting original position)
+        transform.DOMove(startingPosition, duration).SetUpdate(true).SetEase(ease).OnComplete(() => onCompleteCallback?.Invoke());
+    }
+    #endregion
 }
