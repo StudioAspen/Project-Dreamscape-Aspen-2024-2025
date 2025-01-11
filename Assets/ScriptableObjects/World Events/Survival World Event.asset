@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Survival World Event
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Survival
-  <Sprite>k__BackingField: {fileID: 21300000, guid: c2e7ce2838ff2e94c8ad11ca45adf66a,
-    type: 3}
-  <Description>k__BackingField: Description of the event.
+  <Description>k__BackingField: All lands spawn enemies for a certain amount of time,
+    if the player survives that amount of time trigger EOW.
   <SurvivalEventDuration>k__BackingField: 120
   <SurvivalEventUIPrefab>k__BackingField: {fileID: 4578142094218361530, guid: 7427f1bb30894524295051769597dc83,
     type: 3}
