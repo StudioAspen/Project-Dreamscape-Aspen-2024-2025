@@ -67,8 +67,13 @@ public class EventSelectUI : MonoBehaviour
         gameObject.SetActive(true);
 
         AssignRandomEventsToCards();
-        
-        titleText.color = titleTextStartingColor;
+
+        // Kill all previous tweens on the title and return it to its starting state
+        titleText.DOKill();
+        titleText.color = Color.clear;
+
+        // Fade in title
+        titleText.DOColor(titleTextStartingColor, backgroundFadeInDuration).SetUpdate(true);
 
         // Kill all previous tweens on the background and return it to its starting state
         background.DOKill();
@@ -78,7 +83,7 @@ public class EventSelectUI : MonoBehaviour
         background.DOColor(backgroundStartingColor, backgroundFadeInDuration).SetUpdate(true).SetEase(Ease.InCubic);
         
         // Play the flipping cards animation
-        PlayStartAnimation();
+        PlayStartCardsAnimation();
     }
 
     public void Disable()
@@ -96,7 +101,7 @@ public class EventSelectUI : MonoBehaviour
     /// <summary>
     /// Plays the start animation by flipping event cards one after the other and enabling the cards at the end.
     /// </summary>
-    private void PlayStartAnimation()
+    private void PlayStartCardsAnimation()
     {
         // Kill all previous tweens on the event cards and return them to their starting states
         for (int i = 0; i < eventCards.Count; i++)
