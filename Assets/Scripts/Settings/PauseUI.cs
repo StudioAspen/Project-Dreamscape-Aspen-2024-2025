@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PauseUI : MonoBehaviour
 {
     private GameManager gameManager;
+    private OptionsUI optionsUI;
 
     [Header("Pause Buttons")]
     [SerializeField] private PauseButtonUI resumeButton;
@@ -18,9 +19,15 @@ public class PauseUI : MonoBehaviour
     [SerializeField] private GameObject confirmQuitObject;
     [SerializeField] private PauseButtonUI confirmQuitButton;
 
+    [field: Header("Button Highlight Color")]
+    [field: SerializeField] public Color ButtonHighlightColor { get; private set; }
+
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+        optionsUI = GetComponentInChildren<OptionsUI>();
+
+        optionsUI.gameObject.SetActive(false);
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
@@ -30,7 +37,7 @@ public class PauseUI : MonoBehaviour
         menuButton.OnButtonClicked += MenuButton_OnButtonClicked;
         quitButton.OnButtonClicked += QuitButton_OnButtonClicked;
 
-        confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
+        //confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
     }
 
     private void OnDestroy()
@@ -43,7 +50,7 @@ public class PauseUI : MonoBehaviour
         menuButton.OnButtonClicked -= MenuButton_OnButtonClicked;
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
 
-        confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
+        //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -60,6 +67,8 @@ public class PauseUI : MonoBehaviour
     private void Enable()
     {
         gameObject.SetActive(true);
+
+        optionsUI.gameObject.SetActive(false);
     }
 
     private void Disable()
@@ -75,7 +84,7 @@ public class PauseUI : MonoBehaviour
 
     private void OptionsButton_OnButtonClicked()
     {
-        throw new NotImplementedException();
+        optionsUI.gameObject.SetActive(true);
     }
 
     private void SaveButton_OnButtonClicked()
@@ -90,7 +99,7 @@ public class PauseUI : MonoBehaviour
 
     private void QuitButton_OnButtonClicked()
     {
-
+        Debug.LogWarning("Quit not implemented yet.");
     }
 
     private void ConfirmQuitButton_OnButtonClicked()
