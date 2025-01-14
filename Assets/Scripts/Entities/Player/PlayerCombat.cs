@@ -26,8 +26,25 @@ public class PlayerCombat : MonoBehaviour
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
+    /// <summary>
+    /// Action that is invoked when the player starts charging.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int attackInputNumber</c>: The attack input that is being charged. (1 or 2)</description></item>
+    /// </list>
+    /// </remarks>
     public Action<int> OnChargeStart = delegate { }; // parameter is which attack is charging
-    public Action<int, float> OnChargeRelease = delegate { }; // parameter is which attack is released and the charge time
+    /// <summary>
+    /// Action that is invoked when the player releases the charge.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int attackInputNumber</c>: The attack input that was charged. (1 or 2)</description></item>
+    /// <item><description><c>float chargeDuration</c>: The charge duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int, float> OnChargeRelease = delegate { };
 
     private void Awake()
     {

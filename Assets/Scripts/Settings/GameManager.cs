@@ -16,6 +16,7 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public GameState CurrentState { get; private set; }
+    public GameState PreviousState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
 
     #region Time Scale
@@ -40,6 +41,12 @@ public class GameManager : MonoBehaviour
         {
             if (CurrentState == GameState.PLAYING) ChangeState(GameState.ASPECT_SELECTION);
             else if (CurrentState == GameState.ASPECT_SELECTION) ChangeState(GameState.PLAYING);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (CurrentState == GameState.PLAYING) ChangeState(GameState.PAUSED);
+            else if (CurrentState == GameState.PAUSED) ChangeState(GameState.PLAYING);
         }
     }
 
@@ -72,6 +79,7 @@ public class GameManager : MonoBehaviour
         if(CurrentState == newState) return;
 
         //print($"GameManager: Going from {CurrentState} to {newState}");
+        PreviousState = CurrentState;
 
         switch (newState)
         {
