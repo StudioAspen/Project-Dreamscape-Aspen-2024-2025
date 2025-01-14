@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,24 +6,23 @@ using UnityEngine;
 
 public class EntityDebugCanvasUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Parent] private Entity entity;
-    [SerializeField, Child] private HealthBarUI healthBarUI;
-    [SerializeField] private TMP_Text entityStateText;
+    private Entity entity;
+    private HealthBarUI healthBarUI;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    [Header("References")]
+    [SerializeField] private TMP_Text entityStateText;
 
     private void Awake()
     {
-        entity.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
+        entity = GetComponentInParent<Entity>();
+        healthBarUI = GetComponentInChildren<HealthBarUI>();
+
+        entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
 
     private void OnDestroy()
     {
-        entity.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
     }
 
     private void OnEnable()

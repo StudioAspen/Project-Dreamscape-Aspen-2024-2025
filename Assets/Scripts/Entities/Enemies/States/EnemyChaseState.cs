@@ -3,11 +3,6 @@ using UnityEngine.AI;
 
 public class EnemyChaseState : EnemyBaseState
 {
-    public EnemyChaseState(Enemy enemy) : base(enemy)
-    {
-        this.enemy = enemy;
-    }
-
     public override void OnEnter()
     {
         enemy.TransitionToAnimation("FlatMovement");
@@ -20,19 +15,17 @@ public class EnemyChaseState : EnemyBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
+        enemy.ApplyGravity();
+
         if (enemy.Target == null)
         {
             enemy.ChangeState(enemy.EnemyIdleState);
             return;
         }
 
-        enemy.SetDestination(enemy.Target.transform.position, true);
-    }
-
-    public override void FixedUpdate()
-    {
-
+        enemy.SetDestination(enemy.Target.transform.position);
+        enemy.MoveTowardsDestination();
     }
 }

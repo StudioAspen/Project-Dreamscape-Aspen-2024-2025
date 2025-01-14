@@ -5,8 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Unity.EditorCoroutines.Editor;
+using Unity.VisualScripting;
 
-namespace Dreamscapes.TileEditor
+namespace Dreamscape.TileEditor
 {
 	///-/////////////////////////////////////////////////////////////////////////
 	///
@@ -488,6 +489,7 @@ namespace Dreamscapes.TileEditor
 		{
 			selectedTileBrushPreview = (GameObject)PrefabUtility.InstantiatePrefab(selectedTileBrush);
 			selectedTileBrushPreview.transform.SetParent(tileMap.transform);
+			selectedTileBrushPreview.AddComponent<DTETileBrushPreview>();
 			selectedTileBrushPreview.SetLayerInAllChildren(2);
 		}
 
@@ -510,6 +512,7 @@ namespace Dreamscapes.TileEditor
 			Transform tile = ((GameObject)PrefabUtility.InstantiatePrefab(selectedTileBrush)).transform;
 			tile.parent = tileMap.tilesContainer;
 			tile.position = selectedTileBrushPreview.transform.position;
+			tile.AddComponent<DTETile>();
 
 			// Destroy tile hit
 			DestroyImmediate(hiddenTile);
@@ -534,16 +537,24 @@ namespace Dreamscapes.TileEditor
 			// Raycast from mouse to world
 			Ray ray = HandleUtility.GUIPointToWorldRay(evt.mousePosition);
 			bool hit = Physics.Raycast(ray, out RaycastHit hitInfo);
-
+			
 			if (hit) // if the prefab was placed on another GameObject
 			{
-				selectedTileBrushPreview.SetActive(true);
-				SetHiddenTile(hitInfo.transform.gameObject);
-
-				selectedTileBrushPreview.transform.position = hitInfo.transform.position;
+				// Get preview component in order to get root of prefab
+				DTETileBrushPreview isPreview = hitInfo.transform.GetComponentInParent<DTETileBrushPreview>();
+				if (isPreview == false)
+				{
+					selectedTileBrushPreview.SetActive(true);
+					selectedTileBrushPreview.SetLayerInAllChildren(0);
+					SetHiddenTile(hitInfo.transform.gameObject);
+					
+					// Get tile component to get root of prefab
+					selectedTileBrushPreview.transform.position = hitInfo.transform.GetComponentInParent<DTETile>().transform.position;
+				}
 			}
 			else
 			{
+				selectedTileBrushPreview.SetLayerInAllChildren(2);
 				selectedTileBrushPreview.SetActive(false);
 				SetHiddenTile(null);
 			}

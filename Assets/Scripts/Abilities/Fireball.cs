@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +5,7 @@ using UnityEngine.Pool;
 
 public class Fireball : MonoBehaviour, IPoolableObject
 {
-    [Header("References")]
-    [SerializeField, Self] private Rigidbody rigidBody;
+    private Rigidbody rigidBody;
 
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
@@ -32,9 +30,9 @@ public class Fireball : MonoBehaviour, IPoolableObject
             fireball.Fire(transform.forward, gameObject, Team, 100f);
      * */
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
@@ -137,7 +135,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
         }
 
         //insert explosion vfx here:
-        CreateTemporaryVisualizer(transform.position, aoeRadius, 0.25f);
+        CustomDebug.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
         if (pool == null)
         {
@@ -153,42 +151,6 @@ public class Fireball : MonoBehaviour, IPoolableObject
         //Visualize AOE radius in the editor
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, aoeRadius);
-    }
-
-    private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)
-    {
-        // creates a sphere of the explosion radius
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = hitPoint;
-        sphere.GetComponent<Collider>().isTrigger = true;
-        sphere.transform.localScale = radius * Vector3.one;
-        SetTransparent(sphere.GetComponent<Renderer>().material);
-        sphere.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        sphere.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 0.2f);
-        Destroy(sphere, expireDuration);
-    }
-
-    private void SetTransparent(Material targetMaterial)
-    {
-        if (targetMaterial == null) return;
-
-        targetMaterial.shader = Shader.Find("Universal Render Pipeline/Unlit");
-
-        // Change Surface Type to Transparent
-        targetMaterial.SetFloat("_Surface", 1); // 1 = Transparent, 0 = Opaque
-
-        // Enable required shader keywords
-        targetMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        targetMaterial.DisableKeyword("_SURFACE_TYPE_OPAQUE");
-
-        // Set rendering mode for transparency
-        targetMaterial.SetOverrideTag("RenderType", "Transparent");
-        targetMaterial.SetInt("_ZWrite", 0); // Disable ZWrite for transparency
-        targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-
-        // Apply the changes to the material
-        targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
     }
 
     public void SetObjectPool(ObjectPool<GameObject> objectPool)

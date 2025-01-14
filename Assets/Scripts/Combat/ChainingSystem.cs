@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,8 +5,7 @@ using UnityEngine;
 
 public class ChainingSystem : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private PlayerCombat playerCombat;
+    private PlayerCombat playerCombat;
 
     [Header("Settings")]
     [SerializeField] private float timeBetween = 1f;
@@ -15,9 +13,9 @@ public class ChainingSystem : MonoBehaviour
 
     public int ChainCount { get; private set; }
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        playerCombat = GetComponent<PlayerCombat>();
     }
 
     private void Start()
@@ -27,12 +25,12 @@ public class ChainingSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerWeapon_OnWeaponHit);
+        playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
     }
 
     private void OnDisable()
     {
-        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerWeapon_OnWeaponHit);
+        playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
     }
 
     private void Update()

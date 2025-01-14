@@ -1,16 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class EntityStaggeredState : BaseState
+public class EntityStaggeredState : EntityBaseState
 {
-    private Entity entity;
+    [field: Header("Config")]
+    [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
 
     private protected float timer = 0f;
-
-    public EntityStaggeredState(Entity entity)
-    {
-        this.entity = entity;
-    }
 
     public override void OnEnter()
     {
@@ -26,19 +22,16 @@ public class EntityStaggeredState : BaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        timer += Time.deltaTime;
+        entity.ApplyGravity();
 
-        if (timer > entity.StaggerDuration)
+        timer += entity.LocalDeltaTime;
+
+        if (timer > StaggerDuration)
         {
             entity.ChangeState(entity.DefaultState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

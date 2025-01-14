@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
-    private EntityStatusEffector entityStatusEffectorOwner;
-    private protected Entity entity;
-    private protected GameObject source;
+    private protected EntityStatusEffector entityStatusEffectorOwner; // the EntityStatusEffector that the status effect is applied to
+    private protected Entity entity; // the entity that the status effect is applied to
+    private protected GameObject source; // the source game object that applied the status effect
 
     [field: Header("Status Effect: Settings")]
     [field: SerializeField] public bool Stackable { get; protected set; } // if the status effect can stack with itself (all augments should be stackable)
@@ -68,11 +68,12 @@ public class StatusEffectSO : ScriptableObject
 
     /// <summary>
     /// Overrides the current status effect with a new status effect of the specified type.
+    /// Called once when a status effect is stackable and a new status effect of the same type is applied.
     /// Override if you want to add custom behavior when overriding the status effect.
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
     /// <returns>True if the override is successful, false otherwise.</returns>
-    public virtual bool Override(StatusEffectSO newStatusEffect)
+    public virtual bool OnStack(StatusEffectSO newStatusEffect)
     {
         if (newStatusEffect.GetType() != GetType())
         {

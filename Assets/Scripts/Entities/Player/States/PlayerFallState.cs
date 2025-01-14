@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class PlayerFallState : PlayerBaseState
 {
-    public PlayerFallState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
         player.TransitionToAnimation("Falling", 0.25f);
@@ -18,24 +13,24 @@ public class PlayerFallState : PlayerBaseState
        
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
             player.SetSpeedModifier(0.25f);
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
             
         player.RotateToTargetRotation(); 
-        player.InstantlySetGroundedSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
 
         if (player.IsGrounded)
         {
@@ -43,10 +38,4 @@ public class PlayerFallState : PlayerBaseState
             return;
         }
     }
-
-    public override void FixedUpdate()
-    {
-
-    }
-
 }

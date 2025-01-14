@@ -47,9 +47,9 @@ public class TickStatusEffectSO : StatusEffectSO
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
     /// <returns>True if the override is successful, false otherwise.</returns>
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
 
         Ticks += (newStatusEffect as TickStatusEffectSO).Ticks;
         TickDuration = (newStatusEffect as TickStatusEffectSO).TickDuration;

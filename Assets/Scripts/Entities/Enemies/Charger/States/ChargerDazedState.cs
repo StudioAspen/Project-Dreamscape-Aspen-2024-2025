@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargerDazedState : EnemyBaseState
+public class ChargerDazedState : ChargerBaseState
 {
-    private Charger charger;
+    [field: Header("Config")]
+    [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     private float timer;
-
-    public ChargerDazedState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
 
     public override void OnEnter()
     {
@@ -27,16 +23,16 @@ public class ChargerDazedState : EnemyBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        timer += Time.deltaTime;
+        charger.ApplyGravity();
 
-        if(timer > charger.DazedDuration)
+        timer += charger.LocalDeltaTime;
+
+        if(timer > DazedDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
     }
-
-    public override void FixedUpdate() { }
 }

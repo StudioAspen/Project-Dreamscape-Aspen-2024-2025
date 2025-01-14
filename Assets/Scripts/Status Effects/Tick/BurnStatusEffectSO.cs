@@ -1,5 +1,4 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,12 +7,15 @@ public class BurnStatusEffectSO : TickStatusEffectSO
 {
     [field: Header("Burn: Settings")]
     [field: SerializeField] public int DamagePerTick { get; private set; } = 1;
+    [field: SerializeField] public bool HasExtraTickOnApply { get; private set; }
 
     private protected override void OnApply()
     {
         base.OnApply();
 
         entity.TweenTintEntity(Color.red);
+
+        if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false);
     }
 
     private protected override void OnTick()
@@ -37,11 +39,12 @@ public class BurnStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    public override bool OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        if (!base.OnStack(newStatusEffect)) return false;
 
         DamagePerTick = (newStatusEffect as BurnStatusEffectSO).DamagePerTick;
+        HasExtraTickOnApply = (newStatusEffect as BurnStatusEffectSO).HasExtraTickOnApply;
 
         return true;
     }

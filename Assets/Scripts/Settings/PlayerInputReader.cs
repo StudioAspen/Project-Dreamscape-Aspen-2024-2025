@@ -1,110 +1,116 @@
-using KBCore.Refs;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
 public class PlayerInputReader : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private PlayerInput playerInput;
+    private PlayerInput playerInput;
+    private Player player;
 
-    [HideInInspector] public UnityEvent<Vector3> Move;
-    [HideInInspector] public UnityEvent Jump;
-    [HideInInspector] public UnityEvent SprintHold;
-    [HideInInspector] public UnityEvent SprintRelease;
-    [HideInInspector] public UnityEvent Dash;
-    [HideInInspector] public UnityEvent Attack1;
-    [HideInInspector] public UnityEvent Attack1Charged;
-    [HideInInspector] public UnityEvent Attack1Charging;
-    [HideInInspector] public UnityEvent Attack2;
-    [HideInInspector] public UnityEvent Attack2Charged;
-    [HideInInspector] public UnityEvent Attack2Charging;
-
-    [HideInInspector] public UnityEvent<PlayerActions> OnPlayerActionInput;
+    public Action<ComboAction> OnComboAction = delegate { };
 
     public Vector3 MoveDirection { get; private set; }
 
     [Header("Hold Thresholds")]
-    [SerializeField] private float sprintReleaseToDashThreshold = 0.25f;
     [SerializeField] private float attackReleaseThreshold = 0.25f;
-    private float sprintHoldTimer;
-    private float attack1HoldTimer;
-    private float attack2HoldTimer;
+    private float attack1HoldTimer = 0f;
+    private float attack2HoldTimer = 0f;
 
-    private void OnValidate()
+    private void Awake()
     {
-        this.ValidateRefs();
+        playerInput = GetComponent<PlayerInput>();
+        player = GetComponent<Player>();
+    }
+
+    private void OnEnable()
+    {
+        playerInput.actions["Movement"].performed += PlayerInput_OnMovementPerformed;
+        playerInput.actions["Movement"].canceled += PlayerInput_OnMovementCanceled;
+
+        playerInput.actions["Jump"].performed += PlayerInput_OnJumpPerformed;
+
+        playerInput.actions["Dash"].performed += PlayerInput_OnDashPerformed;
+
+        playerInput.actions["Sprint"].started += PlayerInput_OnSprintStarted;
+        playerInput.actions["Sprint"].canceled += PlayerInput_OnSprintCanceled;    
     }
 
     private void OnDisable()
     {
         MoveDirection = Vector3.zero;
+
+        playerInput.actions["Movement"].performed -= PlayerInput_OnMovementPerformed;
+        playerInput.actions["Movement"].canceled -= PlayerInput_OnMovementCanceled;
+
+        playerInput.actions["Jump"].performed -= PlayerInput_OnJumpPerformed;
+
+        playerInput.actions["Dash"].performed -= PlayerInput_OnDashPerformed;
+
+        playerInput.actions["Sprint"].started -= PlayerInput_OnSprintStarted;
+        playerInput.actions["Sprint"].canceled -= PlayerInput_OnSprintCanceled;
     }
 
     private void Update()
     {
-        UpdateInputs();
-        HandleHoldInputs();
-
-        InvokeInputs();
+        HandleAttackHoldInputs();
     }
 
-    private void InvokeInputs()
+    private void PlayerInput_OnMovementPerformed(InputAction.CallbackContext context)
     {
-        if(MoveDirection.sqrMagnitude > 0) Move?.Invoke(MoveDirection);
-
-        if (playerInput.actions["Jump"].WasPressedThisFrame())
-        {
-            Jump?.Invoke();
-        }
+        MoveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
     }
 
-    private void UpdateInputs()
+    private void PlayerInput_OnMovementCanceled(InputAction.CallbackContext context)
     {
-        Vector2 movementInput = playerInput.actions["Movement"].ReadValue<Vector2>();
-
-        MoveDirection = new Vector3(movementInput.x, 0, movementInput.y);
+        MoveDirection = Vector3.zero;
     }
 
-    private void HandleHoldInputs()
+    private void PlayerInput_OnJumpPerformed(InputAction.CallbackContext context)
     {
-        // Timers
-        if (playerInput.actions["Sprint"].IsPressed())
-        {
-            sprintHoldTimer += Time.unscaledDeltaTime;
-            SprintHold?.Invoke();
-        }
+        if (!player.PlayerJumpState.CanJump()) return;
+
+        player.ChangeState(player.PlayerJumpState);
+    }
+
+    private void PlayerInput_OnDashPerformed(InputAction.CallbackContext context)
+    {
+        if(!player.PlayerDashState.CanDash()) return;
+
+        OnComboAction?.Invoke(ComboAction.DASH);
+        player.ChangeState(player.PlayerDashState);
+    }
+
+    private void PlayerInput_OnSprintStarted(InputAction.CallbackContext context)
+    {
+        if(!player.PlayerSprintState.CanSprint()) return;
+
+        player.PlayerSprintState.IsSprinting = true;
+    }
+
+    private void PlayerInput_OnSprintCanceled(InputAction.CallbackContext context)
+    {
+        player.PlayerSprintState.IsSprinting = false;
+    }
+
+    private void HandleAttackHoldInputs()
+    {
         if (playerInput.actions["Attack1"].IsPressed()) attack1HoldTimer += Time.unscaledDeltaTime;
         if (playerInput.actions["Attack2"].IsPressed()) attack2HoldTimer += Time.unscaledDeltaTime;
 
         // Charging
-        if(attack1HoldTimer > attackReleaseThreshold) Attack1Charging?.Invoke();
-        if(attack2HoldTimer > attackReleaseThreshold) Attack2Charging?.Invoke();
-
-        // Releasing
-        if (playerInput.actions["Sprint"].WasReleasedThisFrame())
-        {
-            if (sprintHoldTimer < sprintReleaseToDashThreshold)
-            {
-                Dash?.Invoke();
-            }
-            SprintRelease?.Invoke();
-            sprintHoldTimer = 0f;
-        }
+        if (attack1HoldTimer > attackReleaseThreshold) OnAttack1Charging();
+        if (attack2HoldTimer > attackReleaseThreshold) OnAttack2Charging();
 
         if (playerInput.actions["Attack1"].WasReleasedThisFrame())
         {
             if (attack1HoldTimer < attackReleaseThreshold) // regular swing
             {
-                Attack1?.Invoke();
+                OnAttack1Performed();
             }
             else // charged swing
             {
-                Attack1Charged?.Invoke();
+                OnAttack1ChargedPerformed();
             }
             attack1HoldTimer = 0f;
         }
@@ -113,13 +119,59 @@ public class PlayerInputReader : MonoBehaviour
         {
             if (attack2HoldTimer < attackReleaseThreshold) // regular swing
             {
-                Attack2?.Invoke();
+                OnAttack2Performed();
             }
             else // charged swing
             {
-                Attack2Charged?.Invoke();
+                OnAttack2ChargedPerformed();
             }
             attack2HoldTimer = 0f;
         }
+    }
+
+    private void OnAttack1Performed()
+    {
+        if (!player.PlayerAttackState.CanBasicAttack()) return;
+
+        OnComboAction?.Invoke(ComboAction.ATTACK1);
+    }
+
+    private void OnAttack2Performed()
+    {
+        if (!player.PlayerAttackState.CanBasicAttack()) return;
+
+        OnComboAction?.Invoke(ComboAction.ATTACK2);
+    }
+
+    private void OnAttack1ChargedPerformed()
+    {
+        if (!player.PlayerChargeState.CanChargedAttack()) return;
+
+        player.ChangeState(player.DefaultState);
+        OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK1);
+    }
+
+    private void OnAttack2ChargedPerformed()
+    {
+        if (!player.PlayerChargeState.CanChargedAttack()) return;
+
+        player.ChangeState(player.DefaultState);
+        OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK2);
+    }
+
+    private void OnAttack1Charging()
+    {
+        if (!player.PlayerChargeState.CanCharge()) return;
+
+        player.PlayerChargeState.SetChargeAttackInput(1);
+        player.ChangeState(player.PlayerChargeState);
+    }
+
+    private void OnAttack2Charging()
+    {
+        if (!player.PlayerChargeState.CanCharge()) return;
+
+        player.PlayerChargeState.SetChargeAttackInput(2);
+        player.ChangeState(player.PlayerChargeState);
     }
 }
