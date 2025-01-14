@@ -38,7 +38,7 @@ public class LevelSystem : MonoBehaviour
         bool isEnemyElite = false; // TODO: Implement elite enemies
         int expReward = expDatabaseConfig.GetEXPFromType(victim.GetType(), isEnemyElite);
 
-        Debug.Log($"{(isEnemyElite ? "Elite: " : "")}{victim.gameObject.name} was killed, rewarding {expReward} EXP");
+        //Debug.Log($"{(isEnemyElite ? "Elite: " : "")}{victim.gameObject.name} was killed, rewarding {expReward} EXP");
         AddEXP(expReward);
     }
 

@@ -26,8 +26,35 @@ public class Weapon : MonoBehaviour
     #endregion
 
     #region Events
-    public Action<Entity> OnWeaponStartSwing = delegate { }; // parameter is the entity that started the swing
-    public Action<Entity> OnWeaponEndSwing = delegate { }; // parameter is the entity that ended the swing
+    /// <summary>
+    /// Action that is invoked when the weapon starts swinging.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity attacker</c>: The attacker entity</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity> OnWeaponStartSwing = delegate { };
+    /// <summary>
+    /// Action that is invoked when the weapon stops swinging.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity attacker</c>: The attacker entity</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity> OnWeaponEndSwing = delegate { };
+    /// <summary>
+    /// Action that is invoked when the weapon starts swinging.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity attacker</c>: The attacker entity</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that got hit</description></item>
+    /// <item><description><c>Vector3 hitPoint</c>: Where the hit was</description></item>
+    /// <item><description><c>int damage</c>: How much damage the hit did</description></item>
+    /// </list>
+    /// </remarks>
     public Action<Entity, Entity, Vector3, int> OnWeaponHit = delegate { }; // parameters: attacker, victim, hit point, damage
     #endregion
 

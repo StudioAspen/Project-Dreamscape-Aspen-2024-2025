@@ -30,6 +30,15 @@ public class EnemySpawner : MonoBehaviour
     public Action OnSpawnerDepleted = delegate { };
 
     private List<Enemy> enemiesSpawned = new List<Enemy>();
+    /// <summary>
+    /// Triggers when the spawner spawns an enemy.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Enemy spawnedEnemy</c>: The enemySpawned.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Enemy> OnEnemySpawned = delegate { };
 
     private void Awake()
     {
@@ -106,6 +115,8 @@ public class EnemySpawner : MonoBehaviour
 
                 Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(GetRandomEnemySpawnPointTransform().position);
                 spawnedEnemy.Init(this);
+
+                OnEnemySpawned?.Invoke(spawnedEnemy);
 
                 enemiesSpawned.Add(spawnedEnemy);
 

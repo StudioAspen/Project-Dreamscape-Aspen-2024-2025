@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,21 +16,26 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
+    private List<GameObject> enemyDebugSpheres = new List<GameObject>();
 
     public override void OnStarted()
     {
         activeLands = 0;
 
-        // Get the top 3 lands based on their level and start the enemy spawners on them if they have positive levels
+        // Spawn enemies on all lands
+        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
+
+        // Get the top 3 lands based on their level and track them
         affectedLands = GetTop3Lands();
         foreach (LandManager land in affectedLands)
         {
             if (land.Level <= 0) continue;
 
-            StartEnemySpawnerWithCurrency(land);
-
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
+
+            // Track when the enemy spawner spawns an enemy to add special indicators to them
+            land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
 
             activeLands++;
         }
@@ -44,12 +50,18 @@ public class PrioritiesWorldEventSO : WorldEventSO
     {
         StopEnemySpawners();
 
-        foreach (LandManager land in affectedLands)
+        foreach(LandManager land in worldManager.SpawnedLands.Values)
         {
             land.EnemySpawner.KillAll();
+        }
 
+        foreach (LandManager land in affectedLands)
+        {
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
+
+            // Unsubscribe from the OnEnemySpawned event for each of the affected lands
+            land.EnemySpawner.OnEnemySpawned -= EnemySpawner_OnEnemySpawned;
         }
         affectedLands.Clear();
 
@@ -58,6 +70,12 @@ public class PrioritiesWorldEventSO : WorldEventSO
             GameObject.Destroy(sphere);
         }
         debugSpheres.Clear();
+
+        foreach (GameObject sphere in enemyDebugSpheres)
+        {
+            GameObject.Destroy(sphere);
+        }
+        enemyDebugSpheres.Clear();
     }
 
     /// <summary>
@@ -90,5 +108,13 @@ public class PrioritiesWorldEventSO : WorldEventSO
         {
             eventManager.ClearEvent();
         }
+    }
+
+    private void EnemySpawner_OnEnemySpawned(Enemy enemySpawned)
+    {
+        GameObject enemyDebugSphere = CustomDebug.InstantiateTemporarySphere(enemySpawned.transform.position + 3f * Vector3.up, 0.5f, Mathf.Infinity, new Color(1, 0, 0, 0.25f));
+        enemyDebugSphere.transform.SetParent(enemySpawned.transform);
+
+        enemyDebugSpheres.Add(enemyDebugSphere);
     }
 }
