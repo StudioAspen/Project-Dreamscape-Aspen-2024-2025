@@ -821,6 +821,7 @@ GameObject:
   - component: {fileID: 6209910466675979633}
   - component: {fileID: 884838979891709249}
   - component: {fileID: 8108423357529683183}
+  - component: {fileID: 8086656832044896764}
   m_Layer: 16
   m_Name: States
   m_TagString: Untagged
@@ -889,6 +890,19 @@ MonoBehaviour:
   <JumpHeight>k__BackingField: 2
   <MaxJumpCount>k__BackingField: 1
   IsJumping: 0
+--- !u!114 &8086656832044896764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127634089947603198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0f242dfb9ec3a47ad00179a49e928f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <AttackNearbyRadius>k__BackingField: 5
 --- !u!1 &2183081733502869962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1545,6 +1559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackReleaseThreshold: 0.25
+  bufferDuration: 0.3
 --- !u!114 &8852926688546275590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,7 +1572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e5e643d4e063db48bc180c997910eee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PhysicsSettings>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
     type: 2}
   model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
@@ -1642,7 +1657,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expDatabaseConfig: {fileID: 11400000, guid: 0879fdd9954b4c84fb338e947c209d00, type: 2}
-  <Level>k__BackingField: 1
   baseMaxEXP: 10
   maxEXPLinearGrowth: 10
   maxEXPExponentialGrowth: 1.2
@@ -2203,7 +2217,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
 --- !u!114 &4554132427263787487
 MonoBehaviour:

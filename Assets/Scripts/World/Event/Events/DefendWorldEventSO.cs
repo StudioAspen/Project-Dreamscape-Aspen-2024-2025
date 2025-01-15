@@ -59,7 +59,7 @@ public class DefendWorldEventSO : WorldEventSO
         GameObject.Destroy(UIText.gameObject);
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         if(defendEventEntity == null) return;
 

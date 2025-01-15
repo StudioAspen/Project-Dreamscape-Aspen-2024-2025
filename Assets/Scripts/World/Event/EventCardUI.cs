@@ -19,6 +19,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject backFaceObject;
 
     private bool isFrontFacing;
+    private bool isPointerOver;
 
     public Type CurrentEventType { get; private set; }
     /// <summary>
@@ -53,6 +54,9 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void EnableButton()
     {
         button.interactable = true;
+
+        // Check if the pointer is over the card when it is enabled
+        if (isPointerOver) EnableSelectedIndicator();
     }
 
     public void DisableButton()
@@ -94,6 +98,8 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     #region Hovering
     public void OnPointerEnter(PointerEventData eventData)
     {
+        isPointerOver = true;
+
         if (!button.interactable) return;
 
         EnableSelectedIndicator();
@@ -101,6 +107,8 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isPointerOver = false;
+
         if (!button.interactable) return;
 
         DisableSelectedIndicator();
