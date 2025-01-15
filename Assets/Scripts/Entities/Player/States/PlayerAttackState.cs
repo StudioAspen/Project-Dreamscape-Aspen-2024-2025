@@ -11,7 +11,7 @@ public class PlayerAttackState : PlayerBaseState
 
     [field: Header("Config")]
     [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
-    [field: SerializeField] public float AttackNearbyInDirectionHalfAngle { get; private set; } = 30f;
+    [field: SerializeField] public float AttackNearbyInDirectionHalfAngle { get; private set; } = 25f;
 
     public ComboDataSO ComboData { get; private set; }
 
@@ -137,12 +137,6 @@ public class PlayerAttackState : PlayerBaseState
 
         List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
 
-/*        // Remove any targets that are blocked by obstacles
-        foreach (Entity entity in new List<Entity>(nearbyTargets))
-        {
-            if (player.IsBlockedFromEntity(entity)) nearbyTargets.Remove(entity);
-        }*/
-
         if (nearbyTargets.Count == 0)
         {
             // If there is no nearby target, look at the direction the player is moving
@@ -150,6 +144,13 @@ public class PlayerAttackState : PlayerBaseState
             {
                 player.ApplyRotationToNextMovement();
                 player.RotateToTargetRotation();
+                //Debug.Log("No nearby targets, looking at direction of movement");
+            }
+            else
+            {
+                // If not moving just rotate to the direction of the camera calculated on enter this state
+                player.RotateToTargetRotation();
+                //Debug.Log("No nearby targets, looking at direction of camera");
             }
         }
         else
@@ -160,15 +161,31 @@ public class PlayerAttackState : PlayerBaseState
                 player.ApplyRotationToNextMovement(); // Calculate the target rotation/forward based on the input and camera
 
                 Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.TargetForwardDirection, AttackNearbyInDirectionHalfAngle);
-                if (closestEntity != null) player.LookAt(closestEntity.transform.position);
-                else player.RotateToTargetRotation();
+                if (closestEntity != null)
+                {
+                    player.LookAt(closestEntity.transform.position);
+                    //Debug.Log("Looking at closest target in direction of movement");
+                }
+                else
+                {
+                    player.RotateToTargetRotation();
+                    //Debug.Log("No nearby targets in direction of movement, looking at direction of movement");
+                } 
             }
             else
             {
                 // If there is a nearby target and you are NOT pressing inputs, try look at the nearest target in the direction you are facing
                 Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.transform.forward, AttackNearbyInDirectionHalfAngle);
-                if (closestEntity != null) player.LookAt(closestEntity.transform.position);
-                else player.LookAt(nearbyTargets[0].transform.position);
+                if (closestEntity != null)
+                {
+                    player.LookAt(closestEntity.transform.position);
+                    //Debug.Log("Looking at closest target in direction of facing");
+                }
+                else
+                {
+                    player.LookAt(nearbyTargets[0].transform.position);
+                    //Debug.Log("No nearby targets in direction of facing, looking at closest target");
+                } 
             }
         }
     }
@@ -188,7 +205,11 @@ public class PlayerAttackState : PlayerBaseState
 
         foreach (Entity entity in new List<Entity>(entities))
         {
-            float angle = Vector2.Angle(forwardDirection, entity.transform.position - player.transform.position);
+            Vector3 flattenedForwardDirection = new Vector3(forwardDirection.x, 0f, forwardDirection.z);
+            Vector3 flattenedVectorToEntity = entity.transform.position - player.transform.position;
+            flattenedVectorToEntity.y = 0f;
+
+            float angle = Vector3.Angle(flattenedForwardDirection, flattenedVectorToEntity);
 
             if(angle < halfAngle) entitiesInPieCutout.Add(entity);
         }
