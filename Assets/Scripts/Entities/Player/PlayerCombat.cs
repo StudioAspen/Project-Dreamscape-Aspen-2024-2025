@@ -76,11 +76,6 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
-
-        if (Input.GetKey(KeyCode.V))
-        {
-            Weapon.transform.localScale += Vector3.one * player.LocalDeltaTime;
-        }
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
