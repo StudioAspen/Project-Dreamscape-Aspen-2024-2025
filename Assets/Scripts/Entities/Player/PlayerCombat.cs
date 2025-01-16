@@ -21,7 +21,8 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
-    [SerializeField] private float comboResetDelay = 1f;
+    [SerializeField] private float nonAttackComboResetDelay = 1f;
+    [SerializeField] private float attackComboResetDelay = 0.1f;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
@@ -100,7 +101,7 @@ public class PlayerCombat : MonoBehaviour
         GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
-        if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset();
+        if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
 
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
@@ -216,10 +217,13 @@ public class PlayerCombat : MonoBehaviour
     /// <summary>
     /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
     /// </summary>
-    private void StartDelayedComboListsReset()
+    /// /// <param name="delay">The delay until the combo lists are reset.</param>
+    private void StartDelayedComboListsReset(float delay)
     {
+        Debug.Log($"Resetting combos in {delay}s");
+
         DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(comboResetDelay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset");
+        DOVirtual.DelayedCall(delay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset");
     }
 
     /// <summary>
@@ -286,45 +290,6 @@ public class PlayerCombat : MonoBehaviour
 
         IsAnimationPlaying = false;
 
-        ResetCombos();
-    }
-}
-
-public class Example : MonoBehaviour
-{
-    private class GM
-    {
-        public bool isGameOver;
-        public bool simonsTurn;
-    }
-
-    private GM gm;
-
-    private Transform center;
-    private Transform simon;
-    private Transform player;
-
-
-    void Update()
-    {
-        HandleCameraPosition();
-    }
-
-    private void HandleCameraPosition()
-    {
-        if (gm.isGameOver)
-        {
-            transform.position = center.position;
-            return;
-        }
-
-        if (gm.simonsTurn)
-        {
-            transform.position = simon.position;
-        }
-        else
-        {
-            transform.position = player.position;
-        }
+        StartDelayedComboListsReset(attackComboResetDelay);
     }
 }
