@@ -19,8 +19,7 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: Event FinishAnimation has a time (0.737283) outside
-      the clip's valid range (0.000000..0.733333). It will never be fired
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -59,14 +58,14 @@ ModelImporter:
       curves: []
       events:
       - time: 0.41498005
-        functionName: EnableWeaponTriggers
+        functionName: StartHit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.56627154
-        functionName: DisableWeaponTriggers
+        functionName: EndHit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

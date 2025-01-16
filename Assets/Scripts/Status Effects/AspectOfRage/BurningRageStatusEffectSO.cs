@@ -6,6 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Aspect of Rage/Passive A/Burning Rage Stacks")]
 public class BurningRageStatusEffectSO : TickStatusEffectSO
 {
+    private EntityTinter entityTinter;
+
     [field: Header("Burning Rage Stacks: Settings")]
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
     [SerializeField] private float defaultCombustRadius = 7.5f;
@@ -23,7 +25,8 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate initial damage per tick
 
-        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks));
+        entityTinter = entity.GetComponent<EntityTinter>();
+        if (entityTinter) entityTinter.TweenTint(GetColorBasedOnStacks(currentStacks));
 
         entity.OnEntityDeath += Entity_OnEntityDeath;
     }
@@ -37,7 +40,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
     private protected override void OnExpire()
     {
-        entity.TweenUnTintEntity();
+        if (entityTinter) entityTinter.TweenUnTint();
 
         entity.OnEntityDeath -= Entity_OnEntityDeath;
 
@@ -46,7 +49,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
     public override void Cancel()
     {
-        entity.ResetTint();
+        if (entityTinter) entityTinter.ResetTint();
 
         entity.OnEntityDeath -= Entity_OnEntityDeath;
 
@@ -72,7 +75,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate again based on new stacks
 
-        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
+        if (entityTinter) entityTinter.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
 
         return true;
     }
@@ -111,9 +114,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     /// <returns>The color based on the number of stacks.</returns>
     private Color GetColorBasedOnStacks(int stacks)
     {
-
         return new Color((float)stacks / MaxStacks, 0f, 0f);
-
     }
 
     /// <summary>

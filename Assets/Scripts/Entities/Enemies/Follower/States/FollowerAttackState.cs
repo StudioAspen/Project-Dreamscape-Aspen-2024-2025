@@ -41,7 +41,7 @@ public class FollowerAttackState : FollowerBaseState
         Weapon.OnWeaponEndSwing?.Invoke(follower);
         follower.IsAttackAnimationPlaying = false;
         follower.UseRootMotion = false;
-        follower.DisableWeaponTriggers();
+        follower.EndHit();
     }
 
     public override void OnUpdate()

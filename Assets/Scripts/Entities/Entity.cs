@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,8 +13,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: References")]
     [field: SerializeField] public GlobalPhysicsConfigSO PhysicsConfig { get; private set; }
     [SerializeField] private protected Transform model;
-
-    private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
     #endregion
 
     #region Health Variables
@@ -270,8 +267,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         SetDefaultState(EntityEmptyState);
 
         IgnoreMyOwnColliders();
-
-        CacheOriginalTints();
     }
 
     private void Update()
@@ -1109,93 +1104,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
         ChangeState(EntityLaunchState, true);
     }
-    
-    #region Tinting Functions
-    /// <summary>
-    /// Caches the original tints of the renderers in the character model.
-    /// </summary>
-    private void CacheOriginalTints()
-    {
-        // Get all renderers in the character model, including any child objects
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer renderer in renderers)
-        {
-            if (renderer.TryGetComponent(out Weapon weapon)) continue;
-
-            Color[] colors = new Color[renderer.materials.Length];
-            for (int i = 0; i < renderer.materials.Length; i++)
-            {
-                if (renderer.materials[i].HasProperty("_Color"))
-                {
-                    colors[i] = renderer.materials[i].color;
-                }
-            }
-            originalColors.Add(renderer, colors);
-        }
-    }
-
-    /// <summary>
-    /// Tweens the entity's tint color to the specified new color.
-    /// </summary>
-    /// <param name="newColor">The new color to tween to.</param>
-    public void TweenTintEntity(Color newColor)
-    {
-        foreach (Renderer renderer in originalColors.Keys)
-        {
-            DOTween.Kill(renderer);
-            foreach (Material material in renderer.materials)
-            {
-                if (material.HasProperty("_Color"))
-                {
-                    material.DOColor(newColor, 0.2f);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Tweens the entity back to its original colors.
-    /// </summary>
-    public void TweenUnTintEntity()
-    {
-        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
-        {
-            Renderer renderer = entry.Key;
-            Color[] colors = entry.Value;
-
-            for (int i = 0; i < renderer.materials.Length; i++)
-            {
-                DOTween.Kill(renderer);
-                if (renderer.materials[i].HasProperty("_Color"))
-                {
-                    renderer.materials[i].DOColor(colors[i], 0.2f);
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Immediately resets the tint of the entity to its original colors.
-    /// </summary>
-    public void ResetTint()
-    {
-        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
-        {
-            Renderer renderer = entry.Key;
-            Color[] colors = entry.Value;
-
-            for (int i = 0; i < renderer.materials.Length; i++)
-            {
-                DOTween.Kill(renderer);
-                if (renderer.materials[i].HasProperty("_Color"))
-                {
-                    renderer.materials[i].color = colors[i];
-                }
-            }
-        }
-    }
-    #endregion
 
     /// <summary>
     /// Sets the status speed modifier for the entity.

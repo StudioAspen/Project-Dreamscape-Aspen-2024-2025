@@ -65,15 +65,15 @@ public class Follower : Enemy
     public void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
+        EndHit();
     }
 
-    public void EnableWeaponTriggers()
+    public void StartHit()
     {
         FollowerAttackState.Weapon.EnableTriggers();
     }
 
-    public void DisableWeaponTriggers()
+    public void EndHit()
     {
         FollowerAttackState.Weapon.DisableTriggers();
     }

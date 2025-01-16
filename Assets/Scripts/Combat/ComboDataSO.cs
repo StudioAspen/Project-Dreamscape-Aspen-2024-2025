@@ -30,6 +30,7 @@ public class ComboDataSO : ScriptableObject
     [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
     [field: SerializeField] public bool IsAirCombo { get; private set; }
     [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
+    //[field: SerializeField] public bool CanChangeDirection { get; private set; } = true;
 
     [field: Header("Hit Options")]
     [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
