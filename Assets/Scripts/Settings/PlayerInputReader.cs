@@ -9,6 +9,7 @@ public class PlayerInputReader : MonoBehaviour
 {
     private PlayerInput playerInput;
     private Player player;
+    private GameManager gameManager;
 
     public Action<ComboAction> OnComboAction = delegate { };
 
@@ -27,6 +28,12 @@ public class PlayerInputReader : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         player = GetComponent<Player>();
+
+        gameManager = FindObjectOfType<GameManager>();
+        if(gameManager == null)
+        {
+            Debug.LogWarning("No game manager found.");
+        }
     }
 
     private void OnEnable()
@@ -70,7 +77,7 @@ public class PlayerInputReader : MonoBehaviour
     /// <param name="action">The combo action to buffer.</param>
     private void BufferInput(ComboAction action)
     {
-        InputBuffer.Enqueue((action, Time.time));
+        InputBuffer.Enqueue((action, Time.unscaledTime));
     }
 
     /// <summary>
@@ -87,7 +94,7 @@ public class PlayerInputReader : MonoBehaviour
         var (action, timestamp) = InputBuffer.Peek();
 
         // Remove expired inputs
-        if (Time.time - timestamp > bufferDuration)
+        if (Time.unscaledTime - timestamp > bufferDuration)
         {
             InputBuffer.Dequeue();
             return;
@@ -202,35 +209,35 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Performed()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
 
         BufferInput(ComboAction.ATTACK1);
     }
 
     private void OnAttack2Performed()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
 
         BufferInput(ComboAction.ATTACK2);
     }
 
     private void OnAttack1ChargedPerformed()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
 
         BufferInput(ComboAction.CHARGED_ATTACK1);
     }
 
     private void OnAttack2ChargedPerformed()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
 
         BufferInput(ComboAction.CHARGED_ATTACK2);
     }
 
     private void OnAttack1Charging()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(1);
@@ -239,10 +246,21 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2Charging()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (!IsPlaying()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(2);
         player.ChangeState(player.PlayerChargeState);
+    }
+
+    /// <summary>
+    /// Determines whether the game is currently in the playing state.
+    /// </summary>
+    /// <returns>True if the game is in the playing state, false otherwise.</returns>
+    private bool IsPlaying()
+    {
+        if (gameManager == null) return true;
+
+        return gameManager.CurrentState == GameState.PLAYING;
     }
 }
