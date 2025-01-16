@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Charger Memory Ability", menuName = "Memory Abilities/Charger")]
+[CreateAssetMenu(fileName = "Charger Memory Ability", menuName = "Memory Abilities/Charger/Charge")]
 public class PlayerChargerAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
     [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 3f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
@@ -42,7 +43,8 @@ public class PlayerChargerAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Dash");
+        player.ReplaceOneShotAnimationClip(ChargeAnimationClip, "AbilityPlaceholder");
+        player.TransitionToAnimation("Ability");
 
         player.SetSpeedModifier(ChargeSpeedModifier);
 

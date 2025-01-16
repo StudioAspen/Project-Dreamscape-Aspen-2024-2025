@@ -256,4 +256,58 @@ public class Player : Entity
         // Apply the change to the current velocity
         velocity = deltaVelocity;
     }
+
+    /// <summary>
+    /// Replaces a specific clip with the provided one-shot clip.
+    /// </summary>
+    /// <param name="oneShotClip">The one-shot animation clip to play.</param>
+    /// <param name="replacementClipName">The name of the clip to replace.</param>
+    public void ReplaceOneShotAnimationClip(AnimationClip oneShotClip, string replacementClipName)
+    {
+        if (animator == null)
+        {
+            Debug.LogError("Animator is not assigned!");
+            return;
+        }
+
+        if (oneShotClip == null)
+        {
+            Debug.LogError("One-shot animation clip is null!");
+            return;
+        }
+
+        // Get the runtime animator controller
+        var runtimeAnimatorController = animator.runtimeAnimatorController;
+        if (runtimeAnimatorController == null)
+        {
+            Debug.LogError("Animator has no RuntimeAnimatorController assigned!");
+            return;
+        }
+
+        // Create an override controller from the runtime controller
+        var overrideController = new AnimatorOverrideController(runtimeAnimatorController);
+
+        // Search for the animation state with the given replacementClipName
+        AnimationClip replacementClip = null;
+        foreach (var clip in overrideController.animationClips)
+        {
+            if (clip.name == replacementClipName)
+            {
+                replacementClip = clip;
+                break;
+            }
+        }
+
+        if (replacementClip == null)
+        {
+            Debug.LogError($"No animation clip named '{replacementClipName}' found in the Animator!");
+            return;
+        }
+
+        // Override the animation clip with the one-shot clip
+        overrideController[replacementClip] = oneShotClip;
+
+        // Assign the override controller to the animator
+        animator.runtimeAnimatorController = overrideController;
+    }
 }
