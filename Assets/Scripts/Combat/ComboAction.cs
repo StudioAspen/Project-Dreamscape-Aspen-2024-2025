@@ -4,5 +4,6 @@
     CHARGED_ATTACK1,
     ATTACK2,
     CHARGED_ATTACK2,
-    DASH
+    DASH,
+    JUMP
 }

@@ -20,9 +20,9 @@ public class Player : Entity
     /// <returns>The maximum speed of the player.</returns>
     public float MaxSpeed => PlayerSprintState.SprintSpeedModifier * baseSpeed;
     private float forwardAngleBasedOnCamera;
-    private Quaternion targetForwardRotation = Quaternion.identity;
-    private Vector3 targetForwardDirection = Vector3.forward;
-    [HideInInspector] public bool IsMoving => playerInputReader.MoveDirection.sqrMagnitude > 0;
+    public Quaternion TargetForwardRotation { get; private set; } = Quaternion.identity;
+    public Vector3 TargetForwardDirection { get; private set; } = Vector3.forward;
+    [HideInInspector] public bool IsMoving => playerInputReader.MoveDirection != Vector3.zero;
 
     #region States 
     [field: Header("Player: States")]
@@ -111,7 +111,7 @@ public class Player : Entity
     {
         Vector3 horizontalVelocity = GetHorizontalVelocity();
 
-        horizontalVelocity = Vector3.Lerp(horizontalVelocity, speed * targetForwardDirection, groundedAcceleration * LocalDeltaTime);
+        horizontalVelocity = Vector3.Lerp(horizontalVelocity, speed * TargetForwardDirection, groundedAcceleration * LocalDeltaTime);
 
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
@@ -125,7 +125,7 @@ public class Player : Entity
     {
         Vector3 horizontalVelocity = GetHorizontalVelocity();
 
-        horizontalVelocity = speed * targetForwardDirection;
+        horizontalVelocity = speed * TargetForwardDirection;
 
         velocity.x = horizontalVelocity.x;
         velocity.z = horizontalVelocity.z;
@@ -185,7 +185,7 @@ public class Player : Entity
     /// </summary>
     public void RotateToTargetRotation()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetForwardRotation, rotationSpeed * LocalDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, TargetForwardRotation, rotationSpeed * LocalDeltaTime);
     }
 
     /// <summary>
@@ -195,8 +195,8 @@ public class Player : Entity
     public void ApplyRotationToNextMovement()
     {
         forwardAngleBasedOnCamera = Mathf.Atan2(playerInputReader.MoveDirection.x, playerInputReader.MoveDirection.z) * Mathf.Rad2Deg + Camera.main.transform.rotation.eulerAngles.y;
-        targetForwardRotation = Quaternion.Euler(0, forwardAngleBasedOnCamera, 0);
-        targetForwardDirection = targetForwardRotation * Vector3.forward;
+        TargetForwardRotation = Quaternion.Euler(0, forwardAngleBasedOnCamera, 0);
+        TargetForwardDirection = TargetForwardRotation * Vector3.forward;
     }
 
     /// <summary>
@@ -206,8 +206,8 @@ public class Player : Entity
     /// <param name="targetRotation">The target rotation to apply.</param>
     public void ApplyRotationToNextMovement(Quaternion targetRotation)
     {
-        targetForwardRotation = targetRotation;
-        targetForwardDirection = targetForwardRotation * Vector3.forward;
+        TargetForwardRotation = targetRotation;
+        TargetForwardDirection = TargetForwardRotation * Vector3.forward;
     }
 
     private protected override void EvaluateMovementSpeed()

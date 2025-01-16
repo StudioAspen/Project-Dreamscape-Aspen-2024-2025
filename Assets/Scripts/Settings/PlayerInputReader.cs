@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
@@ -16,6 +18,10 @@ public class PlayerInputReader : MonoBehaviour
     [SerializeField] private float attackReleaseThreshold = 0.25f;
     private float attack1HoldTimer = 0f;
     private float attack2HoldTimer = 0f;
+
+    [Header("Input Buffer")]
+    [SerializeField] private float bufferDuration = 0.3f; // Time in seconds to keep inputs in the buffer
+    public Queue<(ComboAction, float timestamp)> InputBuffer = new Queue<(ComboAction, float)>();
 
     private void Awake()
     {
@@ -54,6 +60,76 @@ public class PlayerInputReader : MonoBehaviour
     private void Update()
     {
         HandleAttackHoldInputs();
+
+        ProcessInputBuffer();
+    }
+
+    /// <summary>
+    /// Buffers the specified combo action with the current timestamp.
+    /// </summary>
+    /// <param name="action">The combo action to buffer.</param>
+    private void BufferInput(ComboAction action)
+    {
+        InputBuffer.Enqueue((action, Time.time));
+    }
+
+    /// <summary>
+    /// Processes the input buffer by checking if the oldest input is still valid and performing the corresponding action.
+    /// </summary>
+    private void ProcessInputBuffer()
+    {
+        // Dead players can't perform actions
+        if (player.CurrentState == player.EntityDeathState) return;
+
+        if (InputBuffer.Count == 0) return;
+
+        // Get the oldest input in the buffer
+        var (action, timestamp) = InputBuffer.Peek();
+
+        // Remove expired inputs
+        if (Time.time - timestamp > bufferDuration)
+        {
+            InputBuffer.Dequeue();
+            return;
+        }
+
+        // Check if the action can be performed
+        if (CanPerformBufferedAction(action))
+        {
+            if(action == ComboAction.JUMP) player.ChangeState(player.PlayerJumpState);
+            if (action == ComboAction.DASH) player.ChangeState(player.PlayerDashState);
+
+            OnComboAction?.Invoke(action);
+            InputBuffer.Dequeue();
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the specified combo action can be performed.
+    /// </summary>
+    /// <param name="action">The combo action to check.</param>
+    /// <returns>True if the combo action can be performed, false otherwise.</returns>
+    private bool CanPerformBufferedAction(ComboAction action)
+    {
+        switch (action)
+        {
+            case ComboAction.ATTACK1:
+                return player.PlayerAttackState.CanBasicAttack();
+            case ComboAction.CHARGED_ATTACK1:
+                return player.PlayerChargeState.CanChargedAttack();
+            case ComboAction.ATTACK2:
+                return player.PlayerAttackState.CanBasicAttack();
+            case ComboAction.CHARGED_ATTACK2:
+                return player.PlayerChargeState.CanChargedAttack();
+            case ComboAction.DASH:
+                return player.PlayerDashState.CanDash();
+            case ComboAction.JUMP:
+                return player.PlayerJumpState.CanJump();
+            default:
+                break;
+        }
+
+        return false;
     }
 
     private void PlayerInput_OnMovementPerformed(InputAction.CallbackContext context)
@@ -68,17 +144,12 @@ public class PlayerInputReader : MonoBehaviour
 
     private void PlayerInput_OnJumpPerformed(InputAction.CallbackContext context)
     {
-        if (!player.PlayerJumpState.CanJump()) return;
-
-        player.ChangeState(player.PlayerJumpState);
+        BufferInput(ComboAction.JUMP);
     }
 
     private void PlayerInput_OnDashPerformed(InputAction.CallbackContext context)
     {
-        if(!player.PlayerDashState.CanDash()) return;
-
-        OnComboAction?.Invoke(ComboAction.DASH);
-        player.ChangeState(player.PlayerDashState);
+        BufferInput(ComboAction.DASH);
     }
 
     private void PlayerInput_OnSprintStarted(InputAction.CallbackContext context)
@@ -131,36 +202,35 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Performed()
     {
-        if (!player.PlayerAttackState.CanBasicAttack()) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        OnComboAction?.Invoke(ComboAction.ATTACK1);
+        BufferInput(ComboAction.ATTACK1);
     }
 
     private void OnAttack2Performed()
     {
-        if (!player.PlayerAttackState.CanBasicAttack()) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        OnComboAction?.Invoke(ComboAction.ATTACK2);
+        BufferInput(ComboAction.ATTACK2);
     }
 
     private void OnAttack1ChargedPerformed()
     {
-        if (!player.PlayerChargeState.CanChargedAttack()) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        player.ChangeState(player.DefaultState);
-        OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK1);
+        BufferInput(ComboAction.CHARGED_ATTACK1);
     }
 
     private void OnAttack2ChargedPerformed()
     {
-        if (!player.PlayerChargeState.CanChargedAttack()) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
-        player.ChangeState(player.DefaultState);
-        OnComboAction?.Invoke(ComboAction.CHARGED_ATTACK2);
+        BufferInput(ComboAction.CHARGED_ATTACK2);
     }
 
     private void OnAttack1Charging()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(1);
@@ -169,6 +239,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2Charging()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(2);
