@@ -35,6 +35,7 @@ public class Player : Entity
     public PlayerSlideState PlayerSlideState { get; private set; }
     public PlayerAttackState PlayerAttackState { get; private set; }
     public PlayerChargeState PlayerChargeState { get; private set; }
+    public PlayerAbilityState PlayerAbilityState { get; private set; }
 
     private protected override void InitializeStates()
     {
@@ -49,6 +50,18 @@ public class Player : Entity
         PlayerSlideState = EntityBaseState.InitializeOrCreate<PlayerSlideState>(this);
         PlayerAttackState = EntityBaseState.InitializeOrCreate<PlayerAttackState>(this);
         PlayerChargeState = EntityBaseState.InitializeOrCreate<PlayerChargeState>(this);
+        PlayerAbilityState = EntityBaseState.InitializeOrCreate<PlayerAbilityState>(this);
+    }
+
+    public override void ChangeState(EntityBaseState state, bool willForceChange = false)
+    {
+        if (CurrentState == EntityDeathState) return;
+        if (!willForceChange && CurrentState == state) return;
+        if (CurrentState == PlayerAbilityState && !PlayerAbilityState.CanCancelAbility(state)) return;
+
+        CurrentState.OnExit();
+        CurrentState = state;
+        CurrentState.OnEnter();
     }
     #endregion
 

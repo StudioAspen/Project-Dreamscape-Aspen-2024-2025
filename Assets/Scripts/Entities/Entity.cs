@@ -124,8 +124,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region States
     [field: Header("Entity: States")]
-    public EntityBaseState CurrentState { get; private set; }
-    public EntityBaseState DefaultState { get; private set; }
+    public EntityBaseState CurrentState { get; protected set; }
+    public EntityBaseState DefaultState { get; protected set; }
 
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
@@ -168,10 +168,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Change the state machine state to the specified new state.
     /// Force changing is used to change the state even when the current state is the same and is set to false by default.
+    /// Override this function if you want to add custom state changing logic.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
     /// <param name="willForceChange">Whether to change the state even when the current state is the same.</param>
-    public void ChangeState(EntityBaseState state, bool willForceChange = false)
+    public virtual void ChangeState(EntityBaseState state, bool willForceChange = false)
     {
         if (CurrentState == EntityDeathState) return;
         if (!willForceChange && CurrentState == state) return;

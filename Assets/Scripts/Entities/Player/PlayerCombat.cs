@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Burst.Intrinsics;
+using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
@@ -77,6 +78,11 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            OnAbilityInputPressed();
+        }
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
@@ -292,5 +298,27 @@ public class PlayerCombat : MonoBehaviour
         IsAnimationPlaying = false;
 
         StartDelayedComboListsReset(attackComboResetDelay);
+    }
+
+    // FOR MEMORY
+    [SerializeField] private PlayerChargerAbilityStateSO chargerAbility;
+
+    private void OnAbilityInputPressed()
+    {
+        if(chargerAbility == null)
+        {
+            Debug.LogError("Ability is null");
+            return;
+        }
+        PlayerAbilityStateSO runtimeInstance = chargerAbility.CreateRuntimeInstance(player);
+        if (!runtimeInstance.CanUseAbility() || player.CurrentState == player.PlayerAbilityState) return;
+
+        ActivateAbility(runtimeInstance);
+    }
+
+    private void ActivateAbility(PlayerAbilityStateSO runtimeInstanceAbilityState)
+    {
+        player.PlayerAbilityState.SetAbilityState(runtimeInstanceAbilityState);
+        player.ChangeState(player.PlayerAbilityState, true);
     }
 }
