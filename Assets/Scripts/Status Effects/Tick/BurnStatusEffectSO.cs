@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burn")]
 public class BurnStatusEffectSO : TickStatusEffectSO
 {
+    EntityTinter entityTinter;
+
     [field: Header("Burn: Settings")]
     [field: SerializeField] public int DamagePerTick { get; private set; } = 1;
     [field: SerializeField] public bool HasExtraTickOnApply { get; private set; }
@@ -13,7 +15,9 @@ public class BurnStatusEffectSO : TickStatusEffectSO
     {
         base.OnApply();
 
-        entity.TweenTintEntity(Color.red);
+        entityTinter = entity.GetComponent<EntityTinter>();
+
+        if(entityTinter) entityTinter.TweenTint(Color.red);
 
         if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false);
     }
@@ -27,14 +31,14 @@ public class BurnStatusEffectSO : TickStatusEffectSO
 
     private protected override void OnExpire()
     {
-        entity.TweenUnTintEntity();
+        if (entityTinter) entityTinter.TweenUnTint();
 
         base.OnExpire();
     }
 
     public override void Cancel()
     {
-        entity.ResetTint();
+        if (entityTinter) entityTinter.ResetTint();
 
         base.Cancel();
     }
