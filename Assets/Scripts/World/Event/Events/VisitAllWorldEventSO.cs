@@ -57,7 +57,7 @@ public class VisitAllWorldEventSO : WorldEventSO
         visitIndicatorsDictionary.Clear();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         if (visitIndicatorsDictionary.Count <= 0)
         {

@@ -49,7 +49,7 @@ public class WorldEventSO : ScriptableObject
     /// <summary>
     /// Called every frame to update the event.
     /// </summary>
-    public virtual void Update() { }
+    public virtual void OnUpdate() { }
 
     /// <summary>
     /// Spawns enemies with currency on the specified land.

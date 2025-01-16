@@ -60,7 +60,7 @@ public class EscortWorldEventSO : WorldEventSO
         GameObject.Destroy(UIText.gameObject);
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         if (escortEventEntity == null) return;
 

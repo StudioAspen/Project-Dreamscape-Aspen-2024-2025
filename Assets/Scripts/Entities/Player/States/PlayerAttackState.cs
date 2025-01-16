@@ -9,6 +9,10 @@ public class PlayerAttackState : PlayerBaseState
 {
     private PlayerCombat playerCombat;
 
+    [field: Header("Config")]
+    [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
+    [field: SerializeField] public float AttackNearbyInDirectionHalfAngle { get; private set; } = 25f;
+
     public ComboDataSO ComboData { get; private set; }
 
     private float extraPercentDamage = 100f;
@@ -20,6 +24,23 @@ public class PlayerAttackState : PlayerBaseState
     {
         base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, AttackNearbyRadius);
+
+        if (player == null) return;
+        if (!player.IsMoving) return;
+
+        Gizmos.DrawLine(transform.position, transform.position + player.TargetForwardDirection * AttackNearbyRadius);
+
+        Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInDirectionHalfAngle, 0f) * player.TargetForwardDirection;
+        Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInDirectionHalfAngle, 0f) * player.TargetForwardDirection;
+
+        Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
+        Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
     }
 
     /// <summary>
@@ -96,13 +117,105 @@ public class PlayerAttackState : PlayerBaseState
 
         HandleAnimationCancellingBuffer();
 
-        // update new target rotation player if they are moving and grounded
-        if (player.IsGrounded && player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); 
+        TryLookAtClosestTarget();
 
-        player.RotateToTargetRotation();
         player.AccelerateToHorizontalSpeed(0f);
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
+    }
+
+    /// <summary>
+    /// Tries to look at the closest target for the player to attack.
+    /// If there is no nearby target, the player will look at the direction they are moving.
+    /// If there is a nearby target, the player will look at the target.
+    /// </summary>
+    private void TryLookAtClosestTarget()
+    {
+        // only update new target rotation player if they are grounded
+        if (!player.IsGrounded) return;
+
+        List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
+
+        if (nearbyTargets.Count == 0)
+        {
+            // If there is no nearby target, look at the direction the player is moving
+            if (player.IsMoving)
+            {
+                player.ApplyRotationToNextMovement();
+                player.RotateToTargetRotation();
+                //Debug.Log("No nearby targets, looking at direction of movement");
+            }
+            else
+            {
+                // If not moving just rotate to the direction of the camera calculated on enter this state
+                player.RotateToTargetRotation();
+                //Debug.Log("No nearby targets, looking at direction of camera");
+            }
+        }
+        else
+        {
+            if (player.IsMoving)
+            {
+                // If there is a nearby target and you are pressing inputs, look at the nearest target at the direction you are trying to move
+                player.ApplyRotationToNextMovement(); // Calculate the target rotation/forward based on the input and camera
+
+                Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.TargetForwardDirection, AttackNearbyInDirectionHalfAngle);
+                if (closestEntity != null)
+                {
+                    player.LookAt(closestEntity.transform.position);
+                    //Debug.Log("Looking at closest target in direction of movement");
+                }
+                else
+                {
+                    player.RotateToTargetRotation();
+                    //Debug.Log("No nearby targets in direction of movement, looking at direction of movement");
+                } 
+            }
+            else
+            {
+                // If there is a nearby target and you are NOT pressing inputs, try look at the nearest target in the direction you are facing
+                Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.transform.forward, AttackNearbyInDirectionHalfAngle);
+                if (closestEntity != null)
+                {
+                    player.LookAt(closestEntity.transform.position);
+                    //Debug.Log("Looking at closest target in direction of facing");
+                }
+                else
+                {
+                    player.LookAt(nearbyTargets[0].transform.position);
+                    //Debug.Log("No nearby targets in direction of facing, looking at closest target");
+                } 
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the closest entity from a pie cutout defined by a forward direction and a half angle.
+    /// </summary>
+    /// <param name="entities">The list of entities to search from.</param>
+    /// <param name="forwardDirection">The forward direction of the pie cutout.</param>
+    /// <param name="halfAngle">The half angle of the pie cutout.</param>
+    /// <returns>The closest entity within the pie cutout, or null if no entities are found.</returns>
+    private Entity GetClosestEntityFromPieCutout(List<Entity> entities, Vector3 forwardDirection, float halfAngle)
+    {
+        if (entities.Count == 0) return null;
+
+        List<Entity> entitiesInPieCutout = new List<Entity>();
+
+        foreach (Entity entity in new List<Entity>(entities))
+        {
+            Vector3 flattenedForwardDirection = new Vector3(forwardDirection.x, 0f, forwardDirection.z);
+            Vector3 flattenedVectorToEntity = entity.transform.position - player.transform.position;
+            flattenedVectorToEntity.y = 0f;
+
+            float angle = Vector3.Angle(flattenedForwardDirection, flattenedVectorToEntity);
+
+            if(angle < halfAngle) entitiesInPieCutout.Add(entity);
+        }
+
+        if (entitiesInPieCutout.Count == 0) return null;
+
+        return entitiesInPieCutout[0];
     }
 
     /// <summary>
