@@ -59,7 +59,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
             LeftFistWeapon.OnWeaponEndSwing?.Invoke(charger);
         }
 
-        charger.DisableWeaponTriggers();
+        charger.EndHit();
     }
 
     public override void OnUpdate()

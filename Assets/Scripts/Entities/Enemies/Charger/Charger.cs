@@ -177,10 +177,10 @@ public class Charger : Enemy
     public void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
+        EndHit();
     }
 
-    public void EnableWeaponTriggers()
+    public void StartHit()
     {
         if (ChargerJabbingAttackState.RemainingJabs % 2 == 1)
         {
@@ -194,7 +194,7 @@ public class Charger : Enemy
         ChargerJabbingAttackState.DecrementJabCount();
     }
 
-    public void DisableWeaponTriggers()
+    public void EndHit()
     {
         ChargerJabbingAttackState.RightFistWeapon.DisableTriggers();
         ChargerJabbingAttackState.LeftFistWeapon.DisableTriggers();

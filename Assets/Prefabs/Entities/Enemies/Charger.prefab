@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 8613667669225006032}
   - component: {fileID: 3915645929625153338}
+  - component: {fileID: 3904365795041977702}
   m_Layer: 16
   m_Name: Charger
   m_TagString: Untagged
@@ -162,6 +163,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &3904365795041977702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdfa5f99c0738034384fed80a4044c9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5857298160996688264
 GameObject:
   m_ObjectHideFlags: 0

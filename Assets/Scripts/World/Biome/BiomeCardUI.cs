@@ -1,8 +1,9 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BiomeCardUI : MonoBehaviour
+public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private WorldManager worldManager;
     private Button button;
@@ -40,29 +41,22 @@ public class BiomeCardUI : MonoBehaviour
     {
         CurrentBiome = biome;
 
-        nameText.text = $"{CurrentBiome.ToString()}";
-
-        switch (biome)
-        {
-            case Biome.DREAM:
-                image.color = Color.magenta;
-                break;
-            case Biome.FIRE:
-                image.color = Color.red;
-                break;
-            case Biome.FOOD:
-                image.color = new Color(1f, 192f/255f, 203f/255f, 1f);
-                break;
-            case Biome.BIOME3:
-                image.color = Color.white;
-                break;
-            default:
-                break;
-        }
+        nameText.text = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].BiomeName;
+        image.color = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].BiomeColor;
     }
 
     private void OnClickCard()
     {
         worldManager.AssignBiomeToSpawnNext(CurrentBiome);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+
     }
 }

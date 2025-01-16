@@ -33,6 +33,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private Transform ghostLandTransform;
 
     [field: Header("Biome Selection")]
+    [field: SerializeField] public BiomeDatabaseSO BiomeDatabase { get; private set; }
     private Biome currentBiomeSelection = Biome.DREAM;
 
     private void Awake()
@@ -326,12 +327,4 @@ public class WorldManager : MonoBehaviour
         }
     }
     #endregion
-}
-
-public enum Biome
-{
-    DREAM,
-    FIRE,
-    FOOD,
-    BIOME3
 }
