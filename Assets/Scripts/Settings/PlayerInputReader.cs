@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
@@ -201,26 +202,35 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Performed()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         BufferInput(ComboAction.ATTACK1);
     }
 
     private void OnAttack2Performed()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         BufferInput(ComboAction.ATTACK2);
     }
 
     private void OnAttack1ChargedPerformed()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         BufferInput(ComboAction.CHARGED_ATTACK1);
     }
 
     private void OnAttack2ChargedPerformed()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
         BufferInput(ComboAction.CHARGED_ATTACK2);
     }
 
     private void OnAttack1Charging()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(1);
@@ -229,6 +239,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2Charging()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(2);

@@ -41,7 +41,6 @@ public class PlayerAttackState : PlayerBaseState
 
         Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
         Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
-
     }
 
     /// <summary>

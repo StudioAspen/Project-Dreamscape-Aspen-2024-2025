@@ -220,10 +220,11 @@ public class PlayerCombat : MonoBehaviour
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
     private void StartDelayedComboListsReset(float delay)
     {
-        Debug.Log($"Resetting combos in {delay}s");
-
         DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(delay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset");
+        DOVirtual.DelayedCall(delay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset").OnUpdate(() => { 
+            if(player.CurrentState == player.PlayerAttackState) DOTween.Kill("DelayedComboReset");
+            if(player.CurrentState == player.PlayerChargeState) DOTween.Kill("DelayedComboReset");
+        });
     }
 
     /// <summary>
