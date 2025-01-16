@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Charger Memory Ability", menuName = "Memory Abilities/Charger/Charge")]
-public class PlayerChargerAbilityStateSO : PlayerAbilityStateSO
+public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
     [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
@@ -58,6 +58,7 @@ public class PlayerChargerAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnUpdate()
     {
+        Debug.Log("Charging");
         player.ApplyGravity();
 
         timer += player.LocalDeltaTime;

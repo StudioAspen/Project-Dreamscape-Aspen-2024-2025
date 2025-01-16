@@ -28,6 +28,12 @@ public class PlayerJumpState : PlayerBaseState
     {
         player.ApplyGravity();
 
+        if (player.Velocity.y < 0f)
+        {
+            player.ChangeState(player.PlayerFallState);
+            return;
+        }
+
         if (player.MoveDirection != Vector3.zero)
         {
             player.AccelerateToHorizontalSpeed(player.MovementSpeed);
@@ -42,12 +48,6 @@ public class PlayerJumpState : PlayerBaseState
         player.RotateToTargetRotation();
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
-
-        if (player.Velocity.y < 0f)
-        {
-            player.ChangeState(player.PlayerFallState);
-            return;
-        }
     }
 
     /// <summary>

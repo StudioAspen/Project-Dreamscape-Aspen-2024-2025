@@ -23,6 +23,26 @@ public class PlayerAbilityState : PlayerBaseState
         return AbilityState.CanCancelAbility(desiredState);
     }
 
+    /// <summary>
+    /// Changes the ability state of the player.
+    /// </summary>
+    /// <param name="abilitySO">The ability state to change to.</param>
+    /// <param name="willIgnoreCurrentAbility">Determines if the current ability should be ignored.</param>
+    public void ChangeAbilityState(PlayerAbilityStateSO abilitySO, bool willIgnoreCurrentAbility = false)
+    {
+        if (abilitySO == null)
+        {
+            Debug.LogError("Ability is null");
+            return;
+        }
+
+        if (!willIgnoreCurrentAbility && player.CurrentState == this && !abilitySO.CanUseAbility()) return;
+
+        PlayerAbilityStateSO abilityCopy = abilitySO.CreateRuntimeInstance(player);
+        SetAbilityState(abilityCopy);
+        player.ChangeState(this, true);
+    }
+
     public override void OnEnter()
     {
         AbilityState?.OnEnter();
@@ -31,7 +51,7 @@ public class PlayerAbilityState : PlayerBaseState
     public override void OnExit()
     {
         AbilityState?.OnExit();
-        AbilityState = null;
+        //AbilityState = null;
     }
 
     public override void OnUpdate()

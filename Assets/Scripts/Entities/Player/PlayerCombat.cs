@@ -3,11 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.Intrinsics;
-using UnityEditor.Playables;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -81,7 +77,7 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            OnAbilityInputPressed();
+            player.PlayerAbilityState.ChangeAbilityState(chargerAbility);
         }
     }
 
@@ -301,24 +297,5 @@ public class PlayerCombat : MonoBehaviour
     }
 
     // FOR MEMORY
-    [SerializeField] private PlayerChargerAbilityStateSO chargerAbility;
-
-    private void OnAbilityInputPressed()
-    {
-        if(chargerAbility == null)
-        {
-            Debug.LogError("Ability is null");
-            return;
-        }
-        PlayerAbilityStateSO runtimeInstance = chargerAbility.CreateRuntimeInstance(player);
-        if (!runtimeInstance.CanUseAbility() || player.CurrentState == player.PlayerAbilityState) return;
-
-        ActivateAbility(runtimeInstance);
-    }
-
-    private void ActivateAbility(PlayerAbilityStateSO runtimeInstanceAbilityState)
-    {
-        player.PlayerAbilityState.SetAbilityState(runtimeInstanceAbilityState);
-        player.ChangeState(player.PlayerAbilityState, true);
-    }
+    [SerializeField] private PlayerChargerTargetDetectedAbilityStateSO chargerAbility;
 }

@@ -17,6 +17,12 @@ public class PlayerFallState : PlayerBaseState
     {
         player.ApplyGravity();
 
+        if (player.IsGrounded)
+        {
+            player.ChangeState(player.PlayerIdleState);
+            return;
+        }
+
         if (player.MoveDirection != Vector3.zero)
         {
             player.AccelerateToHorizontalSpeed(player.MovementSpeed);
@@ -31,11 +37,5 @@ public class PlayerFallState : PlayerBaseState
         player.RotateToTargetRotation(); 
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
-
-        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }
     }
 }
