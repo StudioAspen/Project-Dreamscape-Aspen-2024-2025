@@ -72,7 +72,7 @@ public class PlayerCombat : MonoBehaviour
     }
 
     // FOR MEMORY DEBUG
-    [SerializeField] private PlayerChargerTargetDetectedAbilityStateSO chargerAbility;
+    [SerializeField] private PlayerAbilityStateSO ability;
 
     private void Update()
     {
@@ -80,7 +80,7 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            player.PlayerAbilityState.ChangeAbilityState(chargerAbility, false);
+            if(player.CurrentState != player.PlayerAbilityState) player.PlayerAbilityState.ChangeAbilityState(ability, false);
         }
     }
 

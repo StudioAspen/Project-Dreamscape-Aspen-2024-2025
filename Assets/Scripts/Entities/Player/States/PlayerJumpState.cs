@@ -65,6 +65,21 @@ public class PlayerJumpState : PlayerBaseState
     }
 
     /// <summary>
+    /// Makes the player jump by setting the necessary variables and applying the jump force.
+    /// </summary>
+    /// <param name="customJumpHeight">The custom jump height to apply.</param>
+    public void Jump(float customJumpHeight)
+    {
+        player.AllowChangeFromGroundedToAirborne();
+
+        player.IsGrounded = false;
+
+        IsJumping = true;
+
+        player.SetVelocity(new Vector3(player.Velocity.x, Mathf.Sqrt(customJumpHeight * -2f * player.PhysicsConfig.Gravity), player.Velocity.z));
+    }
+
+    /// <summary>
     /// Resets the current jump count to zero.
     /// </summary>
     public void ResetJumpCount()

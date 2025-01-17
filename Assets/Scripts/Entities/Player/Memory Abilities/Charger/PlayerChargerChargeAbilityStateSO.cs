@@ -44,8 +44,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        player.ReplaceOneShotAnimationClip(ChargeAnimationClip, "AbilityPlaceholder");
-        player.TransitionToAnimation("Ability");
+        TransitionToAbilityAnimation(ChargeAnimationClip);
 
         player.SetSpeedModifier(ChargeSpeedModifier);
 

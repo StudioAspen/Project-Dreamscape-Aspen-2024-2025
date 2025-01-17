@@ -233,7 +233,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CurrentHealth = MaxHealth;
 
-        CharacterController.excludeLayers = 0;
+        IgnoreOtherEntityCollisions(false);
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -501,6 +501,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void SlideOffOtherEntities()
     {
         if(CurrentState == EntityDeathState) return;
+        if(IsIgnoringOtherEntityCollisions()) return;
 
         float distanceToCheckBelow = 0.25f;
 
@@ -512,6 +513,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if(hit.collider.TryGetComponent(out Entity hitEntity))
             {
                 if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
+                if(hitEntity.IsIgnoringOtherEntityCollisions()) continue;
 
                 validHitEntitiesBelow++;
             }
@@ -522,6 +524,24 @@ public class Entity : MonoBehaviour, IPoolableObject
             ForceUpdateHorizontalVelocity(transform.forward, 3f);
             ApplyHorizontalVelocity();
         }
+    }
+
+    /// <summary>
+    /// Ignores or includes collisions with other entities.
+    /// </summary>
+    /// <param name="willIgnore">True to ignore collisions with other entities, false to include collisions.</param>
+    public void IgnoreOtherEntityCollisions(bool willIgnore = true)
+    {
+        CharacterController.excludeLayers = willIgnore ? LayerMask.GetMask("Entity") : 0;
+    }
+
+    /// <summary>
+    /// Determines whether the entity is currently ignoring collisions with other entities.
+    /// </summary>
+    /// <returns>Whether the entity is currently ignoring collisions with other entities</returns>
+    public bool IsIgnoringOtherEntityCollisions()
+    {
+        return CharacterController.excludeLayers == LayerMask.GetMask("Entity");
     }
 
     /// <summary>
@@ -603,8 +623,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        CharacterController.excludeLayers = LayerMask.GetMask("Entity");
-
         ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();

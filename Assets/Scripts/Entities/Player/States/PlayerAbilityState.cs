@@ -43,6 +43,11 @@ public class PlayerAbilityState : PlayerBaseState
         player.ChangeState(this, true);
     }
 
+    public void SetAbilityAnimationSpeed(float speed)
+    {
+        player.GetComponent<Animator>().SetFloat("AbilityAnimationSpeed", speed);
+    }
+
     public override void OnEnter()
     {
         AbilityState?.OnEnter();
