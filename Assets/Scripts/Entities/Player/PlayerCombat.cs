@@ -71,17 +71,14 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
-    // FOR MEMORY DEBUG
-    [SerializeField] private PlayerAbilityStateSO ability;
-
     private void Update()
     {
         HandleWeaponTriggers();
 
-        if (Input.GetKeyDown(KeyCode.F))
+/*        if (Input.GetKeyDown(KeyCode.F))
         {
             if(player.CurrentState != player.PlayerAbilityState) player.PlayerAbilityState.ChangeAbilityState(ability, false);
-        }
+        }*/
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
