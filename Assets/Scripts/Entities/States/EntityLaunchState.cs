@@ -27,11 +27,13 @@ public class EntityLaunchState : EntityBaseState
         entity.SetSpeedModifier(0);
 
         entity.Launch(direction, force);
+
+        entity.IgnoreOtherEntityCollisions();
     }
 
     public override void OnExit()
     {
-
+        entity.IgnoreOtherEntityCollisions(false);
     }
 
     public override void OnUpdate()

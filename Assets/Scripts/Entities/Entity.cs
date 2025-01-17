@@ -124,8 +124,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region States
     [field: Header("Entity: States")]
-    public EntityBaseState CurrentState { get; private set; }
-    public EntityBaseState DefaultState { get; private set; }
+    public EntityBaseState CurrentState { get; protected set; }
+    public EntityBaseState DefaultState { get; protected set; }
 
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
@@ -168,10 +168,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Change the state machine state to the specified new state.
     /// Force changing is used to change the state even when the current state is the same and is set to false by default.
+    /// Override this function if you want to add custom state changing logic.
     /// </summary>
     /// <param name="state">The new state to change to.</param>
     /// <param name="willForceChange">Whether to change the state even when the current state is the same.</param>
-    public void ChangeState(EntityBaseState state, bool willForceChange = false)
+    public virtual void ChangeState(EntityBaseState state, bool willForceChange = false)
     {
         if (CurrentState == EntityDeathState) return;
         if (!willForceChange && CurrentState == state) return;
@@ -232,7 +233,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CurrentHealth = MaxHealth;
 
-        CharacterController.excludeLayers = 0;
+        IgnoreOtherEntityCollisions(false);
 
         SetStartState(EntityEmptyState);
         SetLocalTimeScale(1f);
@@ -500,6 +501,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void SlideOffOtherEntities()
     {
         if(CurrentState == EntityDeathState) return;
+        if(IsIgnoringOtherEntityCollisions()) return;
 
         float distanceToCheckBelow = 0.25f;
 
@@ -511,6 +513,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if(hit.collider.TryGetComponent(out Entity hitEntity))
             {
                 if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
+                if(hitEntity.IsIgnoringOtherEntityCollisions()) continue;
 
                 validHitEntitiesBelow++;
             }
@@ -521,6 +524,24 @@ public class Entity : MonoBehaviour, IPoolableObject
             ForceUpdateHorizontalVelocity(transform.forward, 3f);
             ApplyHorizontalVelocity();
         }
+    }
+
+    /// <summary>
+    /// Ignores or includes collisions with other entities.
+    /// </summary>
+    /// <param name="willIgnore">True to ignore collisions with other entities, false to include collisions.</param>
+    public void IgnoreOtherEntityCollisions(bool willIgnore = true)
+    {
+        CharacterController.excludeLayers = willIgnore ? LayerMask.GetMask("Entity") : 0;
+    }
+
+    /// <summary>
+    /// Determines whether the entity is currently ignoring collisions with other entities.
+    /// </summary>
+    /// <returns>Whether the entity is currently ignoring collisions with other entities</returns>
+    public bool IsIgnoringOtherEntityCollisions()
+    {
+        return CharacterController.excludeLayers == LayerMask.GetMask("Entity");
     }
 
     /// <summary>
@@ -602,8 +623,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void OnDeath()
     {
-        CharacterController.excludeLayers = LayerMask.GetMask("Entity");
-
         ChangeState(EntityDeathState);
 
         AttemptToNotifyKiller();

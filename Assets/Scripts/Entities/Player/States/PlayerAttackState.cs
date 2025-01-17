@@ -73,6 +73,8 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
 
+        //player.ReplaceOneShotAnimationClip(ComboData.ComboClip, "AbilityPlaceholder");
+        //player.TransitionToAnimation("Ability");
         player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
         playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation

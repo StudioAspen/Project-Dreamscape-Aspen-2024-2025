@@ -39,11 +39,6 @@ public class PlayerSprintState : PlayerBaseState
     {
         player.ApplyGravity();
 
-        player.ApplyRotationToNextMovement();
-        player.RotateToTargetRotation();
-        player.AccelerateToHorizontalSpeed(player.MovementSpeed);
-        player.ApplyHorizontalVelocity();
-
         if (player.MoveDirection == Vector3.zero)
         {
             player.ChangeState(player.PlayerIdleState);
@@ -59,15 +54,20 @@ public class PlayerSprintState : PlayerBaseState
             if (timer > duration)
             {
                 player.ChangeState(player.PlayerWalkState);
+                return;
             }
+        }
 
+        if (!player.PlayerSprintState.IsSprinting && !isSprintDependentOnTimer)
+        {
+            player.ChangeState(player.PlayerWalkState);
             return;
         }
 
-        if (!player.PlayerSprintState.IsSprinting)
-        {
-            player.ChangeState(player.PlayerWalkState);
-        }
+        player.ApplyRotationToNextMovement();
+        player.RotateToTargetRotation();
+        player.AccelerateToHorizontalSpeed(player.MovementSpeed);
+        player.ApplyHorizontalVelocity();
     }
 
     /// <summary>

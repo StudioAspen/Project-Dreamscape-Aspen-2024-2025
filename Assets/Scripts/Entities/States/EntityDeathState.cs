@@ -9,6 +9,8 @@ public class EntityDeathState : EntityBaseState
         entity.SetSpeedModifier(0f);
 
         entity.SetLocalTimeScale(1f);
+
+        entity.IgnoreOtherEntityCollisions(true);
     }
 
     public override void OnExit()

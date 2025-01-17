@@ -18,19 +18,21 @@ public class PlayerWalkState : PlayerBaseState
     {
         player.ApplyGravity();
 
-        player.ApplyRotationToNextMovement();
-        player.RotateToTargetRotation();
-        player.AccelerateToHorizontalSpeed(player.MovementSpeed);
-        player.ApplyHorizontalVelocity();
-
         if (player.MoveDirection == Vector3.zero)
         {
             player.ChangeState(player.PlayerIdleState);
+            return;
         }
 
         if (player.PlayerSprintState.IsSprinting)
         {
             player.ChangeState(player.PlayerSprintState);
+            return;
         }
+
+        player.ApplyRotationToNextMovement();
+        player.RotateToTargetRotation();
+        player.AccelerateToHorizontalSpeed(player.MovementSpeed);
+        player.ApplyHorizontalVelocity();
     }
 }

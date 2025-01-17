@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0490e3eeb63f1b4ba520878081768b3, type: 3}
+  m_Name: Leaper Memory Ground Pound Ability
+  m_EditorClassIdentifier: 
+  <GroundPoundAnimationClip>k__BackingField: {fileID: 7400000, guid: 8164d5f25ce079442917b5582dfdbf2b,
+    type: 3}
+  <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+    type: 3}
+  <GroundPoundForce>k__BackingField: 13
+  <AOEPercentDamage>k__BackingField: 150
+  <AOERadius>k__BackingField: 5
+  <AOELaunchForce>k__BackingField: 10
+  <AOEStunDuration>k__BackingField: 3
+  <RecoverDuration>k__BackingField: 1

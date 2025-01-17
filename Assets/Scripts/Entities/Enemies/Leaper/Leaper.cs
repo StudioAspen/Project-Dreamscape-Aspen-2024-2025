@@ -215,6 +215,8 @@ public class Leaper : Enemy
     private void Leaper_OnGrounded(Vector3 groundedPosition)
     {
         if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStaggeredState) return;
 
         TransitionToAnimation("FlatMovement");
     }

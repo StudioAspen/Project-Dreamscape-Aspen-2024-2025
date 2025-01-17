@@ -49,6 +49,21 @@ public class PlayerDashState : PlayerBaseState
 
     public override void OnUpdate()
     {
+        if (timer > DashDuration)
+        {
+            if (!player.IsGrounded)
+            {
+                player.ChangeState(player.PlayerFallState);
+                return;
+            }
+            else
+            {
+                player.PlayerSprintState.SetSprintDuration(SprintDurationAfterDash);
+                player.ChangeState(player.PlayerSprintState);
+                return;
+            }
+        }
+
         timer += player.LocalDeltaTime;
 
         currDashSpeed = (InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / DashDuration - 1, 2))) + maxSpeed;
@@ -58,19 +73,6 @@ public class PlayerDashState : PlayerBaseState
 
         player.InstantlySetHorizontalSpeed(currDashSpeed);
         player.ApplyHorizontalVelocity();
-
-        if (timer > DashDuration)
-        {
-            if (!player.IsGrounded)
-            {
-                player.ChangeState(player.PlayerFallState);
-            }
-            else
-            {
-                player.PlayerSprintState.SetSprintDuration(SprintDurationAfterDash);
-                player.ChangeState(player.PlayerSprintState);
-            }  
-        }
 
         dashCooldownTimer = 0; // keeps dash cooldown timer at 0 so that once you stop dashing, the timer goes up
     }

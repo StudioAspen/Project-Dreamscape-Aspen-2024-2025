@@ -22,6 +22,12 @@ public class PlayerSlideState : PlayerBaseState
     {
         player.ApplyGravity();
 
+        if (!CanSlide())
+        {
+            player.ChangeState(player.DefaultState);
+            return;
+        }
+
         player.IsGrounded = true;
 
         if (player.MoveDirection != Vector3.zero)
@@ -38,7 +44,7 @@ public class PlayerSlideState : PlayerBaseState
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
 
-        if (!CanSlide()) player.ChangeState(player.DefaultState);
+        
 
         ApplySlide(slideDirection);
     }

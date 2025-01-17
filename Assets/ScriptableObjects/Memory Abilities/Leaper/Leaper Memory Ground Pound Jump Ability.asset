@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a033ec834e05b49b330e7c22b424c1, type: 3}
+  m_Name: Leaper Memory Ground Pound Jump Ability
+  m_EditorClassIdentifier: 
+  <JumpAnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
+    type: 3}
+  <MidAirAnimationClip>k__BackingField: {fileID: 7400000, guid: 79e31c86fd172bc439fb920de8bae7c5,
+    type: 3}
+  <GroundPoundState>k__BackingField: {fileID: 11400000, guid: cab0efa98c4995e4aa23d43d8b8ede1d,
+    type: 2}
+  <JumpHeight>k__BackingField: 5
+  <MidAirPauseDuration>k__BackingField: 0.5

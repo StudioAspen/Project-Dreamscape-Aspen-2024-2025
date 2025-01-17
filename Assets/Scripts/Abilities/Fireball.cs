@@ -49,6 +49,13 @@ public class Fireball : MonoBehaviour, IPoolableObject
         // logic for when the fireball gets released to the pool
     }
 
+    void OnDrawGizmos()
+    {
+        //Visualize AOE radius in the editor
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, aoeRadius);
+    }
+
     /// <summary>
     /// Fires a fireball in the specified direction.
     /// </summary>
@@ -117,7 +124,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
 
     private void Explode()
     {
-        List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(transform.position, aoeRadius);
+        List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(transform.position, aoeRadius, false);
 
         foreach (Entity entity in entitiesHit)
         {
@@ -144,13 +151,6 @@ public class Fireball : MonoBehaviour, IPoolableObject
         }
 
         pool.Release(gameObject);
-    }
-
-    void OnDrawGizmos()
-    {
-        //Visualize AOE radius in the editor
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, aoeRadius);
     }
 
     public void SetObjectPool(ObjectPool<GameObject> objectPool)
