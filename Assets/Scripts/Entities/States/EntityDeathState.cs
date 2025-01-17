@@ -11,6 +11,8 @@ public class EntityDeathState : EntityBaseState
         entity.SetLocalTimeScale(1f);
 
         entity.IgnoreOtherEntityCollisions(true);
+
+        entity.DropShards();
     }
 
     public override void OnExit()

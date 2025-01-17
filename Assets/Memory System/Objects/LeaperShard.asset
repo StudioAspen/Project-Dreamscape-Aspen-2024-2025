@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88a57f38479e2849855ce7b72ba2f1b, type: 3}
+  m_Name: LeaperShard
+  m_EditorClassIdentifier: 
+  shardName: LeaperShard
+  model: {fileID: 6087916349962658788, guid: 4c3873a8eb19c0b42bf2415e4f520c10, type: 3}
+  shardColor: {r: 0.1088916, g: 0.5188679, b: 0.0465023, a: 0}
+  abilities:
+  - abilityName: 
+    description: 
+    level: 0
+    skillAction:
+      m_PersistentCalls:
+        m_Calls: []
+  - abilityName: 
+    description: 
+    level: 0
+    skillAction:
+      m_PersistentCalls:
+        m_Calls: []
+  - abilityName: 
+    description: 
+    level: 0
+    skillAction:
+      m_PersistentCalls:
+        m_Calls: []

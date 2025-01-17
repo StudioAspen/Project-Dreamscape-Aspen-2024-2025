@@ -77,4 +77,5 @@ public class Follower : Enemy
     {
         FollowerAttackState.Weapon.DisableTriggers();
     }
+
 }

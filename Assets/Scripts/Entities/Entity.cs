@@ -1254,4 +1254,28 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         return true;
     }
+    
+    public Shard shardToDrop; // Assign the shard type to drop in the Inspector
+    public GameObject shardPrefab; // Prefab of the shard pickup object
+    public Transform dropPoint; // Optional: where the shard spawns
+    public int shardDropCount = 1; // Number of shards to drop
+    public void DropShards()
+    {
+        for (int i = 0; i < shardDropCount; i++)
+        {
+            // Use the enemy's position as the drop location
+            Vector3 dropPosition = transform.position;
+
+            // Instantiate the shard prefab at the enemy's position
+            GameObject shardObject = Instantiate(shardPrefab, dropPosition, Quaternion.identity);
+
+            // Assign the shard type to the shard pickup component
+            ShardBehavior shardPickup = shardObject.GetComponent<ShardBehavior>();
+            if (shardPickup)
+            {
+                shardPickup.shard = shardToDrop;
+            }
+        }
+    }
 }
+
