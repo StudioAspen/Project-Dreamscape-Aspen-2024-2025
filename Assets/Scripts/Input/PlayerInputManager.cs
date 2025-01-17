@@ -6,33 +6,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputManager : MonoBehaviour
 {
-    public static PlayerInputManager Instance;
-
     private GameManager gameManager;
 
     public PlayerControls PlayerControls { get; private set; }
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        PlayerControls = new PlayerControls();
 
         gameManager = FindObjectOfType<GameManager>();
     }
 
     private void OnEnable()
     {
-        if(PlayerControls == null)
-        {
-            PlayerControls = new PlayerControls();
-        }
-
         PlayerControls.Enable();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;

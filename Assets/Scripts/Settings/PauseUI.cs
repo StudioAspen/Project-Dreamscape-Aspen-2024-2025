@@ -27,7 +27,7 @@ public class PauseUI : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-        playerControls = PlayerInputManager.Instance.PlayerControls;
+        playerControls = FindObjectOfType<PlayerInputManager>().PlayerControls;
         optionsUI = GetComponentInChildren<OptionsUI>();
 
         optionsUI.gameObject.SetActive(false);
