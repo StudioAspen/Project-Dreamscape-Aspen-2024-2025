@@ -36,7 +36,7 @@ public class PlayerAbilityState : PlayerBaseState
             return;
         }
 
-        if (!willIgnoreCurrentAbility && player.CurrentState == this && !abilitySO.CanUseAbility(player)) return;
+        if (!willIgnoreCurrentAbility && !abilitySO.CanUseAbility(player)) return;
 
         PlayerAbilityStateSO abilityCopy = abilitySO.CreateRuntimeInstance(player);
         SetAbilityState(abilityCopy);

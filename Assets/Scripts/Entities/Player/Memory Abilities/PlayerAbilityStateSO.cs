@@ -48,6 +48,7 @@ public class PlayerAbilityStateSO : ScriptableObject
 
     /// <summary>
     /// Transitions the player to the specified ability animation.
+    /// Use a clipDuration of 0 to force the clip to play at its normal speed.
     /// </summary>
     /// <param name="animationClip">The animation clip to transition to.</param>
     /// <param name="clipDuration">The duration to force the clip to.</param>
