@@ -1,11 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Charger Memory Ability", menuName = "Memory Abilities/Charger/Charge")]
+[CreateAssetMenu(fileName = "Charger Memory Charge Ability", menuName = "Memory Abilities/Charger/Charge")]
 public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
     [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
+    [field: SerializeField] public PlayerChargerWindDownAbilityStateSO WindDownState { get; private set; }
     [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 3f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
@@ -15,7 +16,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
     private float timer;
 
-    public override bool CanUseAbility()
+    public override bool CanUseAbility(Player player)
     {
         bool cannotUseAbility =
             !player.IsGrounded ||
@@ -26,7 +27,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
         return !cannotUseAbility;
     }
 
-    public override bool CanCancelAbility(EntityBaseState desiredState)
+    public override bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
         bool cannotCancelAbility =
             desiredState == player.PlayerAttackState ||
@@ -58,21 +59,20 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnUpdate()
     {
-        Debug.Log("Charging");
         player.ApplyGravity();
 
         timer += player.LocalDeltaTime;
         if (timer > ChargeDuration)
         {
-            player.ChangeState(player.DefaultState);
+            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
             return;
         }
 
-        player.UpdateHorizontalVelocity(player.transform.forward);
-        player.ApplyHorizontalVelocity();
-
         player.ApplyRotationToNextMovement();
         player.LookAt(player.transform.position + player.TargetForwardDirection, ChargeRotationSpeed);
+
+        player.UpdateHorizontalVelocity(player.transform.forward);
+        player.ApplyHorizontalVelocity();
     }
 
     public override void OnOnControllerColliderHit(ControllerColliderHit hit)
@@ -86,7 +86,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
             enemyEntity.TakeDamage(player.CalculateDamage(ChargeContactPercentDamage), hit.point, player.gameObject, false);
 
-            player.ChangeState(player.DefaultState);
+            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
             return;
         }
     }

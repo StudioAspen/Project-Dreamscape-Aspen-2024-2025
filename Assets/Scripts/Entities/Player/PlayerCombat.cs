@@ -71,13 +71,16 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
+    // FOR MEMORY DEBUG
+    [SerializeField] private PlayerChargerTargetDetectedAbilityStateSO chargerAbility;
+
     private void Update()
     {
         HandleWeaponTriggers();
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            player.PlayerAbilityState.ChangeAbilityState(chargerAbility);
+            player.PlayerAbilityState.ChangeAbilityState(chargerAbility, false);
         }
     }
 
@@ -295,7 +298,4 @@ public class PlayerCombat : MonoBehaviour
 
         StartDelayedComboListsReset(attackComboResetDelay);
     }
-
-    // FOR MEMORY
-    [SerializeField] private PlayerChargerTargetDetectedAbilityStateSO chargerAbility;
 }

@@ -54,12 +54,11 @@ public class PlayerSprintState : PlayerBaseState
             if (timer > duration)
             {
                 player.ChangeState(player.PlayerWalkState);
+                return;
             }
-
-            return;
         }
 
-        if (!player.PlayerSprintState.IsSprinting)
+        if (!player.PlayerSprintState.IsSprinting && !isSprintDependentOnTimer)
         {
             player.ChangeState(player.PlayerWalkState);
             return;

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Charger Memory Ability", menuName = "Memory Abilities/Charger/Target Detected")]
+[CreateAssetMenu(fileName = "Charger Memory Target Detected Ability", menuName = "Memory Abilities/Charger/Target Detected")]
 public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
@@ -11,30 +11,14 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
     private float timer;
 
-    public override bool CanUseAbility()
+    public override bool CanUseAbility(Player player)
     {
-        bool cannotUseAbility =
-            !player.IsGrounded ||
-            player.CurrentState == player.PlayerAttackState ||
-            player.CurrentState == player.PlayerChargeState ||
-            player.CurrentState == player.PlayerDashState;
-
-        return !cannotUseAbility;
+        return ChargeState.CanUseAbility(player);
     }
 
-    public override bool CanCancelAbility(EntityBaseState desiredState)
+    public override bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
-        bool cannotCancelAbility =
-            desiredState == player.PlayerAttackState ||
-            desiredState == player.PlayerChargeState ||
-            desiredState == player.PlayerDashState ||
-            desiredState == player.PlayerJumpState ||
-            desiredState == player.PlayerFallState ||
-            desiredState == player.PlayerSlideState ||
-            desiredState == player.EntityStaggeredState ||
-            desiredState == player.EntityLaunchState;
-
-        return !cannotCancelAbility;
+        return ChargeState.CanCancelAbility(player, desiredState);
     }
 
     public override void OnEnter()
@@ -63,5 +47,8 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
             player.PlayerAbilityState.ChangeAbilityState(ChargeState, true);
             return;
         }
+
+        player.ApplyRotationToNextMovement();
+        player.RotateToTargetRotation();
     }
 }

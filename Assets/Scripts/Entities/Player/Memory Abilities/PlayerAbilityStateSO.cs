@@ -32,7 +32,7 @@ public class PlayerAbilityStateSO : ScriptableObject
     /// Determines if the player can use the ability.
     /// Override this method to restrict the ability based on custom conditions.
     /// </summary>
-    public virtual bool CanUseAbility()
+    public virtual bool CanUseAbility(Player player)
     {
         return true;
     }
@@ -41,7 +41,7 @@ public class PlayerAbilityStateSO : ScriptableObject
     /// Determines if the player can cancel the ability.
     /// Override this method to restrict the ability based on custom conditions.
     /// </summary>
-    public virtual bool CanCancelAbility(EntityBaseState desiredState)
+    public virtual bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
         return true;
     }

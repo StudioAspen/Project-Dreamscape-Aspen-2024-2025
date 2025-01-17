@@ -20,7 +20,7 @@ public class PlayerAbilityState : PlayerBaseState
             return true;
         }
 
-        return AbilityState.CanCancelAbility(desiredState);
+        return AbilityState.CanCancelAbility(player, desiredState);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class PlayerAbilityState : PlayerBaseState
             return;
         }
 
-        if (!willIgnoreCurrentAbility && player.CurrentState == this && !abilitySO.CanUseAbility()) return;
+        if (!willIgnoreCurrentAbility && player.CurrentState == this && !abilitySO.CanUseAbility(player)) return;
 
         PlayerAbilityStateSO abilityCopy = abilitySO.CreateRuntimeInstance(player);
         SetAbilityState(abilityCopy);
@@ -51,7 +51,6 @@ public class PlayerAbilityState : PlayerBaseState
     public override void OnExit()
     {
         AbilityState?.OnExit();
-        //AbilityState = null;
     }
 
     public override void OnUpdate()
