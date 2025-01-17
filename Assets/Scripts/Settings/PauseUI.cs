@@ -2,10 +2,12 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class PauseUI : MonoBehaviour
 {
     private GameManager gameManager;
+    private PlayerControls playerControls;
     private OptionsUI optionsUI;
 
     [Header("Pause Buttons")]
@@ -25,6 +27,7 @@ public class PauseUI : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+        playerControls = PlayerInputManager.Instance.PlayerControls;
         optionsUI = GetComponentInChildren<OptionsUI>();
 
         optionsUI.gameObject.SetActive(false);
@@ -38,6 +41,8 @@ public class PauseUI : MonoBehaviour
         quitButton.OnButtonClicked += QuitButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
+
+        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
     }
 
     private void OnDestroy()
@@ -51,6 +56,8 @@ public class PauseUI : MonoBehaviour
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
+
+        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -62,6 +69,13 @@ public class PauseUI : MonoBehaviour
         }
 
         Enable();
+    }
+
+    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
+    {
+/*        if (gameManager.CurrentState == GameState.PLAYING) gameManager.ChangeState(GameState.PAUSED);
+*/
+        gameManager.ChangeState(GameState.PAUSED);
     }
 
     private void Enable()

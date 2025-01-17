@@ -36,18 +36,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateState(CurrentState);
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            if (CurrentState == GameState.PLAYING) ChangeState(GameState.ASPECT_SELECTION);
-            else if (CurrentState == GameState.ASPECT_SELECTION) ChangeState(GameState.PLAYING);
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            if (CurrentState == GameState.PLAYING) ChangeState(GameState.PAUSED);
-            else if (CurrentState == GameState.PAUSED) ChangeState(GameState.PLAYING);
-        }
     }
 
     #region State Machine Functions
@@ -169,7 +157,7 @@ public class GameManager : MonoBehaviour
 
         OnGameStateChanged?.Invoke(newState);
     }
-    #endregion  
+    #endregion
 
     private void LockCursor()
     {

@@ -7,7 +7,8 @@ using UnityEngine.Windows;
 
 public class PlayerInputReader : MonoBehaviour
 {
-    private PlayerInput playerInput;
+    private PlayerControls playerControls;
+
     private Player player;
     private GameManager gameManager;
 
@@ -26,7 +27,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
+        playerControls = PlayerInputManager.Instance.PlayerControls;
         player = GetComponent<Player>();
 
         gameManager = FindObjectOfType<GameManager>();
@@ -38,30 +39,30 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnEnable()
     {
-        playerInput.actions["Movement"].performed += PlayerInput_OnMovementPerformed;
-        playerInput.actions["Movement"].canceled += PlayerInput_OnMovementCanceled;
+        playerControls.Gameplay.Movement.performed += PlayerControls_OnMovementPerformed;
+        playerControls.Gameplay.Movement.canceled += PlayerControls_OnMovementCanceled;
 
-        playerInput.actions["Jump"].performed += PlayerInput_OnJumpPerformed;
+        playerControls.Gameplay.Jump.performed += PlayerControls_OnJumpPerformed;
 
-        playerInput.actions["Dash"].performed += PlayerInput_OnDashPerformed;
+        playerControls.Gameplay.Dash.performed += PlayerControls_OnDashPerformed;
 
-        playerInput.actions["Sprint"].started += PlayerInput_OnSprintStarted;
-        playerInput.actions["Sprint"].canceled += PlayerInput_OnSprintCanceled;    
+        playerControls.Gameplay.Sprint.started += PlayerControls_OnSprintStarted;
+        playerControls.Gameplay.Sprint.canceled += PlayerControls_OnSprintCanceled;    
     }
 
     private void OnDisable()
     {
         MoveDirection = Vector3.zero;
 
-        playerInput.actions["Movement"].performed -= PlayerInput_OnMovementPerformed;
-        playerInput.actions["Movement"].canceled -= PlayerInput_OnMovementCanceled;
+        playerControls.Gameplay.Movement.performed -= PlayerControls_OnMovementPerformed;
+        playerControls.Gameplay.Movement.canceled -= PlayerControls_OnMovementCanceled;
 
-        playerInput.actions["Jump"].performed -= PlayerInput_OnJumpPerformed;
+        playerControls.Gameplay.Jump.performed -= PlayerControls_OnJumpPerformed;
 
-        playerInput.actions["Dash"].performed -= PlayerInput_OnDashPerformed;
+        playerControls.Gameplay.Dash.performed -= PlayerControls_OnDashPerformed;
 
-        playerInput.actions["Sprint"].started -= PlayerInput_OnSprintStarted;
-        playerInput.actions["Sprint"].canceled -= PlayerInput_OnSprintCanceled;
+        playerControls.Gameplay.Sprint.started -= PlayerControls_OnSprintStarted;
+        playerControls.Gameplay.Sprint.canceled -= PlayerControls_OnSprintCanceled;
     }
 
     private void Update()
@@ -139,48 +140,48 @@ public class PlayerInputReader : MonoBehaviour
         return false;
     }
 
-    private void PlayerInput_OnMovementPerformed(InputAction.CallbackContext context)
+    private void PlayerControls_OnMovementPerformed(InputAction.CallbackContext context)
     {
         MoveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
     }
 
-    private void PlayerInput_OnMovementCanceled(InputAction.CallbackContext context)
+    private void PlayerControls_OnMovementCanceled(InputAction.CallbackContext context)
     {
         MoveDirection = Vector3.zero;
     }
 
-    private void PlayerInput_OnJumpPerformed(InputAction.CallbackContext context)
+    private void PlayerControls_OnJumpPerformed(InputAction.CallbackContext context)
     {
         BufferInput(ComboAction.JUMP);
     }
 
-    private void PlayerInput_OnDashPerformed(InputAction.CallbackContext context)
+    private void PlayerControls_OnDashPerformed(InputAction.CallbackContext context)
     {
         BufferInput(ComboAction.DASH);
     }
 
-    private void PlayerInput_OnSprintStarted(InputAction.CallbackContext context)
+    private void PlayerControls_OnSprintStarted(InputAction.CallbackContext context)
     {
         if(!player.PlayerSprintState.CanSprint()) return;
 
         player.PlayerSprintState.IsSprinting = true;
     }
 
-    private void PlayerInput_OnSprintCanceled(InputAction.CallbackContext context)
+    private void PlayerControls_OnSprintCanceled(InputAction.CallbackContext context)
     {
         player.PlayerSprintState.IsSprinting = false;
     }
 
     private void HandleAttackHoldInputs()
     {
-        if (playerInput.actions["Attack1"].IsPressed()) attack1HoldTimer += Time.unscaledDeltaTime;
-        if (playerInput.actions["Attack2"].IsPressed()) attack2HoldTimer += Time.unscaledDeltaTime;
+        if (playerControls.Gameplay.Attack1.IsPressed()) attack1HoldTimer += Time.unscaledDeltaTime;
+        if (playerControls.Gameplay.Attack2.IsPressed()) attack2HoldTimer += Time.unscaledDeltaTime;
 
         // Charging
         if (attack1HoldTimer > attackReleaseThreshold) OnAttack1Charging();
         if (attack2HoldTimer > attackReleaseThreshold) OnAttack2Charging();
 
-        if (playerInput.actions["Attack1"].WasReleasedThisFrame())
+        if (playerControls.Gameplay.Attack1.WasReleasedThisFrame())
         {
             if (attack1HoldTimer < attackReleaseThreshold) // regular swing
             {
@@ -193,7 +194,7 @@ public class PlayerInputReader : MonoBehaviour
             attack1HoldTimer = 0f;
         }
 
-        if (playerInput.actions["Attack2"].WasReleasedThisFrame())
+        if (playerControls.Gameplay.Attack2.WasReleasedThisFrame())
         {
             if (attack2HoldTimer < attackReleaseThreshold) // regular swing
             {

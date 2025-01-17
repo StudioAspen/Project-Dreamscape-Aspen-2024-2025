@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 
 public class AspectsTreeUI : MonoBehaviour
 {
     private GameManager gameManager;
+    private PlayerControls playerControls;
 
     [Header("References")]
     [SerializeField] private AspectsManager aspectsManager;
@@ -26,13 +28,18 @@ public class AspectsTreeUI : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+        playerControls = PlayerInputManager.Instance.PlayerControls;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+
+        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -44,6 +51,14 @@ public class AspectsTreeUI : MonoBehaviour
         }
 
         Enable();
+    }
+
+    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
+    {
+/*        if (gameManager.CurrentState == GameState.PLAYING) ;
+        else if (gameManager.CurrentState == GameState.ASPECT_SELECTION) gameManager.ChangeState(GameState.PLAYING);
+*/
+        gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
     private void OnEnable()
