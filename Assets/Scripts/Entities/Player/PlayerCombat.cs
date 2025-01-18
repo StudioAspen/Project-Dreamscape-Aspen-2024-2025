@@ -3,10 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -77,6 +74,11 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
+
+/*        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if(player.CurrentState != player.PlayerAbilityState) player.PlayerAbilityState.ChangeAbilityState(ability, false);
+        }*/
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)

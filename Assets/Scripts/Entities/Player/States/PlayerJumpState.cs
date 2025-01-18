@@ -28,6 +28,12 @@ public class PlayerJumpState : PlayerBaseState
     {
         player.ApplyGravity();
 
+        if (player.Velocity.y < 0f)
+        {
+            player.ChangeState(player.PlayerFallState);
+            return;
+        }
+
         if (player.MoveDirection != Vector3.zero)
         {
             player.AccelerateToHorizontalSpeed(player.MovementSpeed);
@@ -42,12 +48,6 @@ public class PlayerJumpState : PlayerBaseState
         player.RotateToTargetRotation();
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
-
-        if (player.Velocity.y < 0f)
-        {
-            player.ChangeState(player.PlayerFallState);
-            return;
-        }
     }
 
     /// <summary>
@@ -62,6 +62,21 @@ public class PlayerJumpState : PlayerBaseState
         IsJumping = true;
 
         player.SetVelocity(new Vector3(player.Velocity.x, Mathf.Sqrt(JumpHeight * -2f * player.PhysicsConfig.Gravity), player.Velocity.z));
+    }
+
+    /// <summary>
+    /// Makes the player jump by setting the necessary variables and applying the jump force.
+    /// </summary>
+    /// <param name="customJumpHeight">The custom jump height to apply.</param>
+    public void Jump(float customJumpHeight)
+    {
+        player.AllowChangeFromGroundedToAirborne();
+
+        player.IsGrounded = false;
+
+        IsJumping = true;
+
+        player.SetVelocity(new Vector3(player.Velocity.x, Mathf.Sqrt(customJumpHeight * -2f * player.PhysicsConfig.Gravity), player.Velocity.z));
     }
 
     /// <summary>
