@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private EventManager eventManager;
     private Button button;
@@ -19,7 +19,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject backFaceObject;
 
     private bool isFrontFacing;
-    private bool isPointerOver;
+    private bool isSelected;
 
     public Type CurrentEventType { get; private set; }
     /// <summary>
@@ -56,7 +56,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         button.interactable = true;
 
         // Check if the pointer is over the card when it is enabled
-        if (isPointerOver) EnableSelectedIndicator();
+        if (isSelected) EnableSelectedIndicator();
     }
 
     public void DisableButton()
@@ -95,19 +95,33 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         OnCardClicked?.Invoke(this);
     }
 
-    #region Hovering
+    #region Hovering/Selecting
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isPointerOver = true;
+        if (!Cursor.visible) return;
+
+        OnSelect(eventData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (!Cursor.visible) return;
+
+        OnDeselect(eventData);
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        isSelected = true;
 
         if (!button.interactable) return;
 
         EnableSelectedIndicator();
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnDeselect(BaseEventData eventData)
     {
-        isPointerOver = false;
+        isSelected = false;
 
         if (!button.interactable) return;
 
@@ -117,7 +131,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     /// <summary>
     /// Enables the selected indicator for the event card.
     /// </summary>
-    private void EnableSelectedIndicator()
+    public void EnableSelectedIndicator()
     {
         selectText.text = "<b>> SELECT <<b>";
 
@@ -127,7 +141,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     /// <summary>
     /// Disables the selected indicator for the event card.
     /// </summary>
-    private void DisableSelectedIndicator()
+    public void DisableSelectedIndicator()
     {
         selectText.text = "SELECT";
 

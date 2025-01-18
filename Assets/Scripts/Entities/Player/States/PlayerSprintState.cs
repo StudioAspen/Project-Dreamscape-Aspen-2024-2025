@@ -32,7 +32,6 @@ public class PlayerSprintState : PlayerBaseState
     public override void OnExit()
     {
         isSprintDependentOnTimer = false;
-        IsSprinting = false;
     }
 
     public override void OnUpdate()

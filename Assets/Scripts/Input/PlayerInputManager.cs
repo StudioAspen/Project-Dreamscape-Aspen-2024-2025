@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.Utilities;
@@ -12,7 +13,13 @@ public class PlayerInputManager : MonoBehaviour
 
     public PlayerControls PlayerControls { get; private set; }
 
-    public string CurrentControlScheme { get; private set; } = "Keyboard&Mouse";
+    public enum ControlScheme
+    {
+        KEYBOARD_MOUSE,
+        GAMEPAD
+    }
+    public ControlScheme CurrentControlScheme { get; private set; } = ControlScheme.KEYBOARD_MOUSE;
+    public Action<ControlScheme> OnControlSchemeChanged = delegate { };
 
     private void Awake()
     {
@@ -44,11 +51,15 @@ public class PlayerInputManager : MonoBehaviour
         // Detect the type of input source being used
         if (device is Gamepad)
         {
-            SetControlScheme("Gamepad");
+            LockCursor();
+
+            SetControlScheme(ControlScheme.GAMEPAD);
         }
         else if (device is Keyboard || device is Mouse)
         {
-            SetControlScheme("Keyboard&Mouse");
+            if(!IsCurrentStateCursorLockedForKeyboardControl()) UnlockCursor();
+
+            SetControlScheme(ControlScheme.KEYBOARD_MOUSE);
         }
     }
 
@@ -56,7 +67,7 @@ public class PlayerInputManager : MonoBehaviour
     /// Sets the control scheme variable.
     /// </summary>
     /// <param name="newControlScheme">The new control scheme to set.</param>
-    private void SetControlScheme(string newControlScheme)
+    private void SetControlScheme(ControlScheme newControlScheme)
     {
         if (newControlScheme != CurrentControlScheme)
         {
@@ -64,6 +75,7 @@ public class PlayerInputManager : MonoBehaviour
             Debug.Log($"Control Scheme Changed to: {CurrentControlScheme}");
 
             // Add your logic for switching input UI or behavior
+            OnControlSchemeChanged?.Invoke(CurrentControlScheme);
         }
     }
 
@@ -74,6 +86,8 @@ public class PlayerInputManager : MonoBehaviour
         PlayerControls.LandEmpowerment.Disable();
         PlayerControls.UI.Disable();
 
+        LockCursor();
+
         switch (newState)
         {
             case GameState.PLAYING:
@@ -81,9 +95,11 @@ public class PlayerInputManager : MonoBehaviour
                 break;
             case GameState.PAUSED:
                 PlayerControls.UI.Enable();
+                UnlockCursor();
                 break;
             case GameState.BIOME_SELECTION:
                 PlayerControls.UI.Enable();
+                UnlockCursor();
                 break;
             case GameState.LAND_PLACEMENT:
                 PlayerControls.LandPlacement.Enable();
@@ -93,12 +109,41 @@ public class PlayerInputManager : MonoBehaviour
                 break;
             case GameState.EVENT_SELECTION:
                 PlayerControls.UI.Enable();
+                UnlockCursor();
                 break;
             case GameState.ASPECT_SELECTION:
                 PlayerControls.UI.Enable();
+                UnlockCursor();
                 break;
             default:
                 break;
         }
     }
+
+    /// <summary>
+    /// Determines if the cursor should be locked for keyboard control in the current game state.
+    /// </summary>
+    /// <returns>True if the cursor should be locked, false otherwise.</returns>
+    private bool IsCurrentStateCursorLockedForKeyboardControl()
+    {
+        return gameManager.CurrentState == GameState.PLAYING
+            || gameManager.CurrentState == GameState.LAND_PLACEMENT
+            || gameManager.CurrentState == GameState.LAND_EMPOWERMENT;
+    }
+
+    private void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void UnlockCursor()
+    {
+        if (CurrentControlScheme == ControlScheme.GAMEPAD) return;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 }
+
+

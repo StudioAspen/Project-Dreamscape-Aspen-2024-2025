@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private PauseUI pauseUI;
     private Button button;
@@ -45,11 +45,31 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        OnSelect(eventData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnDeselect(eventData);
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        EnableSelectedIndicator();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        DisableSelectedIndicator();
+    }
+
+    private void EnableSelectedIndicator()
+    {
         buttonText.text = $"> {originalText} <";
         buttonText.color = pauseUI.ButtonHighlightColor;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    private void DisableSelectedIndicator()
     {
         buttonText.text = originalText;
         buttonText.color = originalColor;

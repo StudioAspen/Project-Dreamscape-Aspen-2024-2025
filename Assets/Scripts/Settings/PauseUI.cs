@@ -3,12 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class PauseUI : MonoBehaviour
 {
-    private GameManager gameManager;
+    private PlayerInputManager playerInputManager;
     private PlayerControls playerControls;
-    private OptionsUI optionsUI;
+    private GameManager gameManager;
 
     [Header("Pause Buttons")]
     [SerializeField] private PauseButtonUI resumeButton;
@@ -26,11 +27,13 @@ public class PauseUI : MonoBehaviour
 
     private void Awake()
     {
+        playerInputManager = FindObjectOfType<PlayerInputManager>();
+        playerControls = playerInputManager.PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
-        playerControls = FindObjectOfType<PlayerInputManager>().PlayerControls;
-        optionsUI = GetComponentInChildren<OptionsUI>();
 
-        optionsUI.gameObject.SetActive(false);
+        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
+
+        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
@@ -41,12 +44,14 @@ public class PauseUI : MonoBehaviour
         quitButton.OnButtonClicked += QuitButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
-
-        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
     }
 
     private void OnDestroy()
     {
+        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+
+        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
+
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
 
         resumeButton.OnButtonClicked -= ResumeButton_OnButtonClicked;
@@ -56,8 +61,26 @@ public class PauseUI : MonoBehaviour
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
+    }
 
-        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
+    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    {
+        if (gameManager.CurrentState != GameState.PAUSED) return;
+
+        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        {
+            // Set the resume button as selected
+            EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
+    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
+    {
+        gameManager.ChangeState(GameState.PAUSED);
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -71,18 +94,11 @@ public class PauseUI : MonoBehaviour
         Enable();
     }
 
-    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
-    {
-/*        if (gameManager.CurrentState == GameState.PLAYING) gameManager.ChangeState(GameState.PAUSED);
-*/
-        gameManager.ChangeState(GameState.PAUSED);
-    }
-
     private void Enable()
     {
         gameObject.SetActive(true);
 
-        optionsUI.gameObject.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
     }
 
     private void Disable()
@@ -98,7 +114,7 @@ public class PauseUI : MonoBehaviour
 
     private void OptionsButton_OnButtonClicked()
     {
-        optionsUI.gameObject.SetActive(true);
+        Debug.LogWarning("Options not implemented yet.");
     }
 
     private void SaveButton_OnButtonClicked()
