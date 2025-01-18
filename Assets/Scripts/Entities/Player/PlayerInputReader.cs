@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -47,7 +48,9 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.Dash.performed += PlayerControls_OnDashPerformed;
 
         playerControls.Gameplay.Sprint.started += PlayerControls_OnSprintStarted;
-        playerControls.Gameplay.Sprint.canceled += PlayerControls_OnSprintCanceled;    
+        playerControls.Gameplay.Sprint.canceled += PlayerControls_OnSprintCanceled;
+
+        playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
     private void OnDisable()
@@ -63,6 +66,8 @@ public class PlayerInputReader : MonoBehaviour
 
         playerControls.Gameplay.Sprint.started -= PlayerControls_OnSprintStarted;
         playerControls.Gameplay.Sprint.canceled -= PlayerControls_OnSprintCanceled;
+
+        playerControls.Gameplay.MemoryAbility.performed -= PlayerControls_OnMemoryAbilityPerformed;
     }
 
     private void Update()
@@ -170,6 +175,14 @@ public class PlayerInputReader : MonoBehaviour
     private void PlayerControls_OnSprintCanceled(InputAction.CallbackContext context)
     {
         player.PlayerSprintState.IsSprinting = false;
+    }
+
+    private void PlayerControls_OnMemoryAbilityPerformed(InputAction.CallbackContext context)
+    {
+        if (player.CurrentState == player.PlayerAbilityState) return;
+
+        Debug.LogWarning("Cannot activate memory ability: Memory system not implemented yet.");
+        //player.PlayerAbilityState.ChangeAbilityState(ability, false);
     }
 
     private void HandleAttackHoldInputs()

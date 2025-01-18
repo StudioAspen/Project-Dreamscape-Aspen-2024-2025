@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.Utilities;
 
 public class PlayerInputManager : MonoBehaviour
@@ -10,7 +11,8 @@ public class PlayerInputManager : MonoBehaviour
     private GameManager gameManager;
 
     public PlayerControls PlayerControls { get; private set; }
-    public string CurrentControlScheme { get; private set; } = "KeyboardMouse"; // Default
+
+    public string CurrentControlScheme { get; private set; } = "Keyboard&Mouse";
 
     private void Awake()
     {
@@ -23,7 +25,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         PlayerControls.Enable();
 
-        InputSystem.onAnyButtonPress.Call(InputSystem_OnAnyButtonPress);
+        InputSystem.onEvent += InputSystem_OnEvent;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
@@ -32,36 +34,36 @@ public class PlayerInputManager : MonoBehaviour
     {
         PlayerControls.Disable();
 
-        InputSystem.onAnyButtonPress.Call(null);
+        InputSystem.onEvent -= InputSystem_OnEvent;
 
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void InputSystem_OnAnyButtonPress(InputControl control)
+    private void InputSystem_OnEvent(InputEventPtr eventPtr, InputDevice device)
     {
-        // Detect the current control scheme
-        if (control.device is Gamepad)
+        // Detect the type of input source being used
+        if (device is Gamepad)
         {
             SetControlScheme("Gamepad");
         }
-        else if (control.device is Keyboard || control.device is Mouse)
+        else if (device is Keyboard || device is Mouse)
         {
-            SetControlScheme("KeyboardMouse");
+            SetControlScheme("Keyboard&Mouse");
         }
     }
 
     /// <summary>
-    /// Sets the control scheme for the player input manager.
+    /// Sets the control scheme variable.
     /// </summary>
-    /// <param name="controlScheme">The name of the control scheme to set.</param>
-    private void SetControlScheme(string controlScheme)
+    /// <param name="newControlScheme">The new control scheme to set.</param>
+    private void SetControlScheme(string newControlScheme)
     {
-        if (controlScheme != CurrentControlScheme)
+        if (newControlScheme != CurrentControlScheme)
         {
-            CurrentControlScheme = controlScheme;
-            Debug.Log($"Control scheme changed to: {controlScheme}");
+            CurrentControlScheme = newControlScheme;
+            Debug.Log($"Control Scheme Changed to: {CurrentControlScheme}");
 
-            // Perform any additional logic needed when control scheme changes
+            // Add your logic for switching input UI or behavior
         }
     }
 
@@ -70,6 +72,7 @@ public class PlayerInputManager : MonoBehaviour
         PlayerControls.Gameplay.Disable();
         PlayerControls.LandPlacement.Disable();
         PlayerControls.LandEmpowerment.Disable();
+        PlayerControls.UI.Disable();
 
         switch (newState)
         {
@@ -77,8 +80,10 @@ public class PlayerInputManager : MonoBehaviour
                 PlayerControls.Gameplay.Enable();
                 break;
             case GameState.PAUSED:
+                PlayerControls.UI.Enable();
                 break;
             case GameState.BIOME_SELECTION:
+                PlayerControls.UI.Enable();
                 break;
             case GameState.LAND_PLACEMENT:
                 PlayerControls.LandPlacement.Enable();
@@ -87,8 +92,10 @@ public class PlayerInputManager : MonoBehaviour
                 PlayerControls.LandEmpowerment.Enable();
                 break;
             case GameState.EVENT_SELECTION:
+                PlayerControls.UI.Enable();
                 break;
             case GameState.ASPECT_SELECTION:
+                PlayerControls.UI.Enable();
                 break;
             default:
                 break;
