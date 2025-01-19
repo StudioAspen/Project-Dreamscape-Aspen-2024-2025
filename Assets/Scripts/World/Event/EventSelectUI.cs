@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 public class EventSelectUI : MonoBehaviour
 {
-    private InputManager playerInputManager;
+    private InputManager inputManager;
     private GameManager gameManager;
     private EventManager eventManager;
     private Image panel;
@@ -39,7 +39,7 @@ public class EventSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        playerInputManager = FindObjectOfType<InputManager>();
+        inputManager = FindObjectOfType<InputManager>();
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         panel = GetComponent<Image>();
@@ -47,19 +47,19 @@ public class EventSelectUI : MonoBehaviour
         backgroundStartingColor = background.color;
         titleTextStartingColor = titleText.color;
 
-        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
     {
-        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
 
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void PlayerInputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
 
@@ -249,7 +249,7 @@ public class EventSelectUI : MonoBehaviour
         }
 
         // Set the middle card as selected
-        EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
+        if (inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
     }
 
     private void DisableCardButtons()

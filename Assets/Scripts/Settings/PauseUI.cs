@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PauseUI : MonoBehaviour
 {
-    private InputManager playerInputManager;
+    private InputManager inputManager;
     private PlayerControls playerControls;
     private GameManager gameManager;
 
@@ -27,11 +27,11 @@ public class PauseUI : MonoBehaviour
 
     private void Awake()
     {
-        playerInputManager = FindObjectOfType<InputManager>();
-        playerControls = playerInputManager.PlayerControls;
+        inputManager = FindObjectOfType<InputManager>();
+        playerControls = inputManager.PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
 
-        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
@@ -48,7 +48,7 @@ public class PauseUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
 
         playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
 
@@ -63,7 +63,7 @@ public class PauseUI : MonoBehaviour
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
-    private void PlayerInputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.PAUSED) return;
 
@@ -98,7 +98,7 @@ public class PauseUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
+        if(inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
     }
 
     private void Disable()
