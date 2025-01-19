@@ -249,7 +249,9 @@ public class Weapon : MonoBehaviour
         Time.timeScale = timeScale;
         Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime * Time.timeScale;
 
-        DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames");
+        DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames").OnUpdate(() => {
+            if(gameManager.CurrentState == GameState.PAUSED) DOTween.Kill("ImpactFrames");
+        });
 
         // local function to reset timescale
         void ResetTimeScale()
