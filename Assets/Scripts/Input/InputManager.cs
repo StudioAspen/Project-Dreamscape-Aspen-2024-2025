@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.Utilities;
 
-public class PlayerInputManager : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
     private GameManager gameManager;
 

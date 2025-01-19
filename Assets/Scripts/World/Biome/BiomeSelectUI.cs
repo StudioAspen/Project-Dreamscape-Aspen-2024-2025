@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class BiomeSelectUI : MonoBehaviour
 {
-    private PlayerInputManager playerInputManager;
+    private InputManager inputManager;
     private GameManager gameManager;
     private Image panel;
 
@@ -20,23 +20,23 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        playerInputManager = FindObjectOfType<PlayerInputManager>();
+        inputManager = FindObjectOfType<InputManager>();
         gameManager = FindObjectOfType<GameManager>();
         panel = GetComponent<Image>();
 
-        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
     {
-        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+        inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
 
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.BIOME_SELECTION) return;
 
@@ -46,7 +46,7 @@ public class BiomeSelectUI : MonoBehaviour
             //card.DisableSelectedIndicator();
         }
 
-        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
         {
             // Set the middle card as selected
             EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
@@ -107,7 +107,7 @@ public class BiomeSelectUI : MonoBehaviour
             card.EnableButton();
         }
 
-        EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
+        if (inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
     }
 
     private void DisableCards()

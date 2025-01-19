@@ -28,7 +28,7 @@ public class AspectsTreeUI : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-        playerControls = FindObjectOfType<PlayerInputManager>().PlayerControls;
+        playerControls = FindObjectOfType<InputManager>().PlayerControls;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
