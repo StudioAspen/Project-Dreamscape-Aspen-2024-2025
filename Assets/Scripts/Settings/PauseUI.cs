@@ -129,7 +129,8 @@ public class PauseUI : MonoBehaviour
 
     private void QuitButton_OnButtonClicked()
     {
-        Debug.LogWarning("Quit not implemented yet.");
+        //Debug.LogWarning("Quit not implemented yet.");
+        ConfirmQuitButton_OnButtonClicked();
     }
 
     private void ConfirmQuitButton_OnButtonClicked()

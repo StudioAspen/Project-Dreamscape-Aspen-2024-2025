@@ -137,7 +137,6 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void PlayerControls_LandPlacement_OnSelectedPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (gameManager.CurrentState != GameState.LAND_PLACEMENT) return;
 
         worldManager.TrySpawnLandAtGhost();

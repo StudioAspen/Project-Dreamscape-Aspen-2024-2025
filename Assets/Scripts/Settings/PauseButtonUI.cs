@@ -15,6 +15,8 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public Action OnButtonClicked = delegate { };
 
+    private bool isSelected;
+
     private void Awake()
     {
         pauseUI = GetComponentInParent<PauseUI>();
@@ -34,8 +36,12 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void OnEnable()
     {
-        buttonText.text = originalText;
-        buttonText.color = originalColor;
+        if(isSelected) EnableSelectedIndicator();
+    }
+
+    private void OnDisable()
+    {
+        DisableSelectedIndicator();
     }
 
     private void Button_OnClick()
@@ -55,11 +61,15 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnSelect(BaseEventData eventData)
     {
+        isSelected = true;
+
         EnableSelectedIndicator();
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
+        isSelected = false;
+
         DisableSelectedIndicator();
     }
 

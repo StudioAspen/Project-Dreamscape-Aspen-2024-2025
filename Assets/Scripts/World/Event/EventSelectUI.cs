@@ -59,6 +59,27 @@ public class EventSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
+    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    {
+        if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
+
+        // Visually deselect all cards
+        foreach (EventCardUI card in eventCards)
+        {
+            card.DisableSelectedIndicator();
+        }
+
+        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        {
+            // Set the middle card as selected
+            EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
     private void GameManager_OnGameStateChanged(GameState newState)
     {
         if (newState != GameState.EVENT_SELECTION)
@@ -238,27 +259,6 @@ public class EventSelectUI : MonoBehaviour
             card.DisableButton();
 
             card.OnCardClicked -= Card_OnCardClicked;
-        }
-    }
-
-    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
-    {
-        if(gameManager.CurrentState != GameState.EVENT_SELECTION) return;
-
-        // Visually deselect all cards
-        foreach (EventCardUI card in eventCards)
-        {
-            card.DisableSelectedIndicator();
-        }
-
-        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
-        {
-            // Set the middle card as selected
-            EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
-        }
-        else
-        {
-            EventSystem.current.SetSelectedGameObject(null);
         }
     }
 }

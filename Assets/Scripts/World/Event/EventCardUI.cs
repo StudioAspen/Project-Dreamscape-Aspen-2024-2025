@@ -98,15 +98,11 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     #region Hovering/Selecting
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!Cursor.visible) return;
-
         OnSelect(eventData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Cursor.visible) return;
-
         OnDeselect(eventData);
     }
 
