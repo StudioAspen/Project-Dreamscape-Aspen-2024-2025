@@ -27,7 +27,7 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<PlayerInputManager>().PlayerControls;
+        playerControls = FindObjectOfType<InputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
         worldManager = FindObjectOfType<WorldManager>();
         progressionManager = FindObjectOfType<ProgressionManager>();
