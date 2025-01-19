@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 5018665820156850097}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.916365, y: -0.16465712, z: -34.267517}
+  m_LocalPosition: {x: 13.02, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -50,13 +50,28 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 100
+        m_Name: Mesh Size
+        m_Overridden: 1
+      - m_Value: 0.5
+        m_Name: MeshRotateOverride
+        m_Overridden: 0
+      - m_Value: 1
+        m_Name: MeshYPos
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: MeshRot
+        m_Overridden: 1
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 5.9921575, y: 5.9921575, z: 5.9921575, w: 1}
+        m_Name: Fresnel
+        m_Overridden: 0
     m_Uint:
       m_Array: []
     m_Int:
@@ -68,7 +83,11 @@ VisualEffect:
     m_Gradient:
       m_Array: []
     m_NamedObject:
-      m_Array: []
+      m_Array:
+      - m_Value: {fileID: -5495902117074765545, guid: 26f47f7ec138f0f4884033829bae7dec,
+          type: 3}
+        m_Name: MeshtoMat
+        m_Overridden: 1
     m_Bool:
       m_Array: []
 --- !u!73398921 &8576521398528397369
@@ -120,6 +139,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 907070687069301345}
+  - component: {fileID: 1927549556296071580}
   m_Layer: 0
   m_Name: Materialize Effect
   m_TagString: Untagged
@@ -144,6 +164,18 @@ Transform:
   - {fileID: 3866736833998921720}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1927549556296071580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860281344281482287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c35bb8a51b6f541a5b362f9dd7749a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7599478034595715168
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +203,7 @@ Transform:
   m_GameObject: {fileID: 7599478034595715168}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.916365, y: -0.16465712, z: -34.267517}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
