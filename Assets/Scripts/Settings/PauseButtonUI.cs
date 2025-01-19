@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private PauseUI pauseUI;
     private Button button;
@@ -14,6 +14,8 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Color originalColor;
 
     public Action OnButtonClicked = delegate { };
+
+    private bool isSelected;
 
     private void Awake()
     {
@@ -34,8 +36,12 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void OnEnable()
     {
-        buttonText.text = originalText;
-        buttonText.color = originalColor;
+        if(isSelected) EnableSelectedIndicator();
+    }
+
+    private void OnDisable()
+    {
+        DisableSelectedIndicator();
     }
 
     private void Button_OnClick()
@@ -45,11 +51,35 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        OnSelect(eventData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnDeselect(eventData);
+    }
+
+    public void OnSelect(BaseEventData eventData)
+    {
+        isSelected = true;
+
+        EnableSelectedIndicator();
+    }
+
+    public void OnDeselect(BaseEventData eventData)
+    {
+        isSelected = false;
+
+        DisableSelectedIndicator();
+    }
+
+    private void EnableSelectedIndicator()
+    {
         buttonText.text = $"> {originalText} <";
         buttonText.color = pauseUI.ButtonHighlightColor;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    private void DisableSelectedIndicator()
     {
         buttonText.text = originalText;
         buttonText.color = originalColor;

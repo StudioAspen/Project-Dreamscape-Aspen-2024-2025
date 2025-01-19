@@ -5,9 +5,12 @@ using System.Linq;
 using System;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class EventSelectUI : MonoBehaviour
 {
+    private PlayerInputManager playerInputManager;
     private GameManager gameManager;
     private EventManager eventManager;
     private Image panel;
@@ -36,6 +39,7 @@ public class EventSelectUI : MonoBehaviour
 
     private void Awake()
     {
+        playerInputManager = FindObjectOfType<PlayerInputManager>();
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         panel = GetComponent<Image>();
@@ -43,12 +47,37 @@ public class EventSelectUI : MonoBehaviour
         backgroundStartingColor = background.color;
         titleTextStartingColor = titleText.color;
 
+        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
     {
+        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    {
+        if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
+
+        // Visually deselect all cards
+        foreach (EventCardUI card in eventCards)
+        {
+            card.DisableSelectedIndicator();
+        }
+
+        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        {
+            // Set the middle card as selected
+            EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -218,6 +247,9 @@ public class EventSelectUI : MonoBehaviour
 
             card.OnCardClicked += Card_OnCardClicked;
         }
+
+        // Set the middle card as selected
+        EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
     }
 
     private void DisableCardButtons()

@@ -7,10 +7,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.InputSystem.LowLevel;
+using System;
 
 public class MinimapController : MonoBehaviour
 {
     private GameManager gameManager;
+    private PlayerControls playerControls;
 
     [SerializeField] private RectTransform minimapRectTransform; // Raw Image Render Texture
     private Vector2 normalSize;
@@ -50,10 +52,21 @@ public class MinimapController : MonoBehaviour
         thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
         image = mask.GetComponentInChildren<RawImage>();
         border = transform.GetChild(0).Find("Border");
+
+        playerControls = FindObjectOfType<PlayerInputManager>().PlayerControls;
+        playerControls.Gameplay.ToggleMinimap.performed += PlayerControls_OnToggleMinimapPerformed;
     }
+
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+
+        playerControls.Gameplay.ToggleMinimap.performed -= PlayerControls_OnToggleMinimapPerformed;
+    }
+
+    private void PlayerControls_OnToggleMinimapPerformed(InputAction.CallbackContext context)
+    {
+        ToggleMinimap();
     }
 
     public void ToggleMinimap()
