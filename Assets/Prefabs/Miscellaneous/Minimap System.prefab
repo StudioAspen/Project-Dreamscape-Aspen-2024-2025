@@ -344,7 +344,6 @@ GameObject:
   m_Component:
   - component: {fileID: 168353287977500528}
   - component: {fileID: 7179195883975607760}
-  - component: {fileID: 406411436350425511}
   m_Layer: 0
   m_Name: Minimap System
   m_TagString: Untagged
@@ -381,83 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be96fbcfc0f5d7646ac2c69e830c3c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 0}
   m_Camera: {fileID: 3515041053628074707}
---- !u!114 &406411436350425511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3861754354389956843}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: c295c894e6e34544a94ebeed5421e59f,
-    type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b0d41093-f5c1-400f-abb5-138bcdbb365e
-    m_ActionName: Gameplay/Movement[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 560c6455-832a-44d1-826b-83f40ab84f3a
-    m_ActionName: Gameplay/Jump[/Keyboard/space]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8df375f3-89b0-4f6c-89c9-c6853e0611be
-    m_ActionName: Gameplay/Sprint[/Keyboard/leftShift]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 3adb18b7-5ef0-425c-95e9-4b88fd31ff3f
-    m_ActionName: Gameplay/Attack1[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: cf046295-d184-4d0a-b328-115600037407
-    m_ActionName: Gameplay/Attack2[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: dd863170-060b-4c82-b313-30b4ce93d62a
-    m_ActionName: Gameplay/CameraLook[/Mouse/delta]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5828995240267279469}
-        m_TargetAssemblyTypeName: MinimapController, Assembly-CSharp
-        m_MethodName: ToggleMinimap
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 1b02d0f8-1456-47c8-9920-270553edc714
-    m_ActionName: UI/Minimap Toggle[/Keyboard/m]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 77b60454-e697-4a6a-84e5-77d3febbcfd0
-    m_ActionName: UI/OpenSettings[/Keyboard/o]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: UI
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!1 &4675992030871345375
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,7 +716,6 @@ MonoBehaviour:
   maximizedZoom: 80
   minimap_opacity: 0.75
   minimap_canvas: {fileID: 4082575377189925010}
-  gameManager: {fileID: 0}
 --- !u!222 &5311334982300330976
 CanvasRenderer:
   m_ObjectHideFlags: 0

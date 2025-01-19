@@ -1,13 +1,17 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class BiomeSelectUI : MonoBehaviour
 {
+    private PlayerInputManager playerInputManager;
     private GameManager gameManager;
     private Image panel;
 
@@ -16,15 +20,41 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void Awake()
     {
+        playerInputManager = FindObjectOfType<PlayerInputManager>();
         gameManager = FindObjectOfType<GameManager>();
         panel = GetComponent<Image>();
+
+        playerInputManager.OnControlSchemeChanged += PlayerInputManager_OnControlSchemeChanged;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     private void OnDestroy()
     {
+        playerInputManager.OnControlSchemeChanged -= PlayerInputManager_OnControlSchemeChanged;
+
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    {
+        if (gameManager.CurrentState != GameState.BIOME_SELECTION) return;
+
+        // Visually deselect all cards
+        foreach (BiomeCardUI card in biomeCards)
+        {
+            //card.DisableSelectedIndicator();
+        }
+
+        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        {
+            // Set the middle card as selected
+            EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -60,7 +90,7 @@ public class BiomeSelectUI : MonoBehaviour
 
         foreach (BiomeCardUI card in biomeCards)
         {
-            int randomIndex = Random.Range(0, potentialBiomes.Count);
+            int randomIndex = UnityEngine.Random.Range(0, potentialBiomes.Count);
 
             Biome randomBiome = potentialBiomes[randomIndex];
 
@@ -76,6 +106,8 @@ public class BiomeSelectUI : MonoBehaviour
         {
             card.EnableButton();
         }
+
+        EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
     }
 
     private void DisableCards()

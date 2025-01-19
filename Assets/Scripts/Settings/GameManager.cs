@@ -36,18 +36,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdateState(CurrentState);
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            if (CurrentState == GameState.PLAYING) ChangeState(GameState.ASPECT_SELECTION);
-            else if (CurrentState == GameState.ASPECT_SELECTION) ChangeState(GameState.PLAYING);
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            if (CurrentState == GameState.PLAYING) ChangeState(GameState.PAUSED);
-            else if (CurrentState == GameState.PAUSED) ChangeState(GameState.PLAYING);
-        }
     }
 
     #region State Machine Functions
@@ -85,38 +73,24 @@ public class GameManager : MonoBehaviour
         {
             case GameState.PLAYING:
                 Time.timeScale = 1f;
-
-                LockCursor();
                 break;
             case GameState.PAUSED:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             case GameState.BIOME_SELECTION:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             case GameState.LAND_PLACEMENT:
                 Time.timeScale = 0f;
-
-                LockCursor();
                 break;
             case GameState.LAND_EMPOWERMENT:
                 Time.timeScale = 0f;
-
-                LockCursor();
                 break;
             case GameState.EVENT_SELECTION:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             case GameState.ASPECT_SELECTION:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             default:
                 break;
@@ -133,33 +107,21 @@ public class GameManager : MonoBehaviour
         {
             case GameState.PLAYING:
                 Time.timeScale = 1f;
-
-                LockCursor();
                 break;
             case GameState.PAUSED:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             case GameState.BIOME_SELECTION:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             case GameState.LAND_PLACEMENT:
                 Time.timeScale = 0f;
-
-                LockCursor();
                 break;
             case GameState.LAND_EMPOWERMENT:
                 Time.timeScale = 0f;
-
-                LockCursor();
                 break;
             case GameState.EVENT_SELECTION:
                 Time.timeScale = 0f;
-
-                UnlockCursor();
                 break;
             default:
                 break;
@@ -169,17 +131,5 @@ public class GameManager : MonoBehaviour
 
         OnGameStateChanged?.Invoke(newState);
     }
-    #endregion  
-
-    private void LockCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    private void UnlockCursor()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
+    #endregion
 }
