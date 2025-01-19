@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class BiomeSelectUI : MonoBehaviour
 {
-    private PlayerInputManager playerInputManager;
+    private InputManager playerInputManager;
     private GameManager gameManager;
     private Image panel;
 
@@ -20,7 +20,7 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        playerInputManager = FindObjectOfType<PlayerInputManager>();
+        playerInputManager = FindObjectOfType<InputManager>();
         gameManager = FindObjectOfType<GameManager>();
         panel = GetComponent<Image>();
 
@@ -36,7 +36,7 @@ public class BiomeSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    private void PlayerInputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.BIOME_SELECTION) return;
 
@@ -46,7 +46,7 @@ public class BiomeSelectUI : MonoBehaviour
             //card.DisableSelectedIndicator();
         }
 
-        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
         {
             // Set the middle card as selected
             EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);

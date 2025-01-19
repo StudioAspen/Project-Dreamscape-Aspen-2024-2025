@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 public class EventSelectUI : MonoBehaviour
 {
-    private PlayerInputManager playerInputManager;
+    private InputManager playerInputManager;
     private GameManager gameManager;
     private EventManager eventManager;
     private Image panel;
@@ -39,7 +39,7 @@ public class EventSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        playerInputManager = FindObjectOfType<PlayerInputManager>();
+        playerInputManager = FindObjectOfType<InputManager>();
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         panel = GetComponent<Image>();
@@ -59,7 +59,7 @@ public class EventSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void PlayerInputManager_OnControlSchemeChanged(PlayerInputManager.ControlScheme newControlScheme)
+    private void PlayerInputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
 
@@ -69,7 +69,7 @@ public class EventSelectUI : MonoBehaviour
             card.DisableSelectedIndicator();
         }
 
-        if (newControlScheme == PlayerInputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
         {
             // Set the middle card as selected
             EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
