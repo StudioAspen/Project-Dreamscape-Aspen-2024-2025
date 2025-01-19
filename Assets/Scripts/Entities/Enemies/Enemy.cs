@@ -172,7 +172,7 @@ public class Enemy : Entity
         Vector3 currentDestination = path[1];
 
         Vector3 direction = (currentDestination - transform.position).normalized;
-        direction = AdjustForObstacles(direction);
+        direction = CalculateDirectionAwayFromObstacle(direction);
 
         if (lookAtPath) LookAt(transform.position + direction);
 
@@ -204,7 +204,7 @@ public class Enemy : Entity
     /// <param name="direction">The original movement direction.</param>
     /// <param name="avoidDistance">The distance to check for obstacles.</param>
     /// <returns>The adjusted movement direction.</returns>
-    private Vector3 AdjustForObstacles(Vector3 direction, float avoidDistance = 0.5f)
+    private Vector3 CalculateDirectionAwayFromObstacle(Vector3 direction, float avoidDistance = 0.5f)
     {
         // Get the height and radius from the CharacterController's properties
         float height = CharacterController.height;
