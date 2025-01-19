@@ -250,7 +250,7 @@ public class Weapon : MonoBehaviour
         Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime * Time.timeScale;
 
         DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames").OnUpdate(() => {
-            if(gameManager.CurrentState == GameState.PAUSED) DOTween.Kill("ImpactFrames");
+            if(gameManager.CurrentState == GameState.PAUSED) DOTween.Kill("ImpactFrames"); // stop impact frames if game is paused, otherwise it would unofficially unpause the game
         });
 
         // local function to reset timescale

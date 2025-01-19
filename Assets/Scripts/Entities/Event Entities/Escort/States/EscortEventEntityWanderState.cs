@@ -46,17 +46,24 @@ public class EscortEventEntityWanderState : EntityBaseState
 
         wanderTimeElapsed += escortEventEntity.LocalDeltaTime;
 
-        if (wanderTimeElapsed > randomWanderIntervalDuration || escortEventEntity.CloseToPoint(currentWanderDestination))
-        {
-            wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+        if (!escortEventEntity.IsCurrentPathValid()) SetNewWanderDestination();
 
-            currentWanderDestination = escortEventEntity.GetRandomWanderPoint(GetRandomAdjacentLand().transform.position, WanderRadiusRange);
-            escortEventEntity.SetDestination(currentWanderDestination);
-        }
+        if (wanderTimeElapsed > randomWanderIntervalDuration || escortEventEntity.CloseToPoint(currentWanderDestination, 1f)) SetNewWanderDestination();
 
         escortEventEntity.MoveTowardsDestination();
         escortEventEntity.SetSpeedModifier(escortEventEntity.CloseToPoint(currentWanderDestination) ? 0f : 1f);
+    }
+
+    /// <summary>
+    /// Sets a new wander destination for the escort event entity.
+    /// </summary>
+    private void SetNewWanderDestination()
+    {
+        wanderTimeElapsed = 0f;
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+
+        currentWanderDestination = escortEventEntity.GetRandomWanderPoint(GetRandomAdjacentLand().transform.position, WanderRadiusRange);
+        escortEventEntity.SetDestination(currentWanderDestination);
     }
 
     /// <summary>

@@ -149,30 +149,83 @@ public class Enemy : Entity
     /// </summary>
     public void MoveTowardsDestination(bool lookAtPath = true)
     {
-        if (path == null) return;
-        if (path.Count < 2) return;
+        if (path == null)
+        {
+            Debug.LogWarning($"{gameObject.name} has no path to follow. Make sure you handle this using bool IsCurrentPathValid().");
+            return;
+        }
+        if (path.Count < 2)
+        {
+            Debug.LogWarning($"{gameObject.name} has a path with only 1 waypoint. Make sure you handle this bool IsCurrentPathValid().");
+            return;
+        }
 
         #region Debug
 /*        Vector3 prevCorner = transform.position;
         foreach (Vector3 wayPoint in path)
         {
-            Debug.DrawLine(prevCorner, wayPoint, Color.red);
+            Debug.DrawLine(prevCorner, wayPoint, Color.green);
             prevCorner = wayPoint;
         }*/
         #endregion
 
         Vector3 currentDestination = path[1];
-        if (lookAtPath) LookAt(currentDestination);
 
         Vector3 direction = (currentDestination - transform.position).normalized;
+        direction = AdjustForObstacles(direction);
+
+        if (lookAtPath) LookAt(transform.position + direction);
 
         UpdateHorizontalVelocity(direction);
         ApplyHorizontalVelocity();
 
-        if (CloseToPoint(currentDestination, 0.05f))
+        if (Vector3.Dot(direction, (path[1] - path[0]).normalized) < 0 || CloseToPoint(currentDestination, 0.05f))
         {
             path.RemoveAt(0);
         }
+    }
+
+    /// <summary>
+    /// Checks if the current path of the enemy is valid.
+    /// </summary>
+    /// <returns>True if the path is valid, false otherwise.</returns>
+    public bool IsCurrentPathValid()
+    {
+        if (path == null) return false;
+        if (path.Count < 2) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Adjusts the movement direction to avoid obstacles in the specified direction using a CapsuleCast,
+    /// based on the CharacterController's capsule dimensions.
+    /// </summary>
+    /// <param name="direction">The original movement direction.</param>
+    /// <param name="avoidDistance">The distance to check for obstacles.</param>
+    /// <returns>The adjusted movement direction.</returns>
+    private Vector3 AdjustForObstacles(Vector3 direction, float avoidDistance = 0.5f)
+    {
+        // Get the height and radius from the CharacterController's properties
+        float height = CharacterController.height;
+        float radius = CharacterController.radius;
+        Vector3 center = CharacterController.center;
+        float offsetFromGround = 0.1f;
+
+        // Calculate the starting (point1) and ending (point2) points for the CapsuleCast
+        // point1 is the bottom of the capsule and point2 is the top of the capsule
+        Vector3 point1 = transform.position + center - (height * 0.5f - offsetFromGround) * Vector3.up; // The center of the bottom sphere
+        Vector3 point2 = transform.position + center + (height * 0.5f) * Vector3.up; // The center of the top sphere
+
+        // Perform the CapsuleCast to detect obstacles
+        if (Physics.CapsuleCast(point1, point2, radius, direction, out RaycastHit hit, avoidDistance, LayerMask.GetMask("Entity", "Ground")))
+        {
+            // Calculate a perpendicular vector to avoid the obstacle
+            Vector3 avoidDirection = Vector3.Cross(hit.normal, Vector3.up).normalized;
+            direction += avoidDirection * 0.5f; // Blend avoidance into the movement direction
+        }
+
+        return direction.normalized;
     }
 
     /// <summary>
