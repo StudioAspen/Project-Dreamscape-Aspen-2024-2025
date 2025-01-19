@@ -172,7 +172,7 @@ public class Enemy : Entity
         Vector3 currentDestination = path[1];
 
         Vector3 direction = (currentDestination - transform.position).normalized;
-        direction = CalculateDirectionAwayFromObstacle(direction);
+        //direction = CalculateDirectionAwayFromObstacle(direction);
 
         if (lookAtPath) LookAt(transform.position + direction);
 
