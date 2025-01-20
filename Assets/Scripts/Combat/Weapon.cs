@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 using System;
+using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
@@ -63,6 +64,7 @@ public class Weapon : MonoBehaviour
     private float percentDamage;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
+    private Coroutine impactFramesCoroutine;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void Awake()
@@ -245,20 +247,28 @@ public class Weapon : MonoBehaviour
         GameManager gameManager = FindObjectOfType<GameManager>();
         if (gameManager == null) return;
 
-        DOTween.Kill("ImpactFrames");
-        Time.timeScale = timeScale;
-        Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime * Time.timeScale;
+        if(impactFramesCoroutine != null) StopCoroutine(impactFramesCoroutine);
+        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(gameManager, timeScale, duration));
+    }
 
-        DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames").OnUpdate(() => {
-            if(gameManager.CurrentState == GameState.PAUSED) DOTween.Kill("ImpactFrames"); // stop impact frames if game is paused, otherwise it would unofficially unpause the game
-        });
+    /// <summary>
+    /// Coroutine that handles the impact frames of the weapon.
+    /// </summary>
+    /// <param name="gameManager">The game manager instance.</param>
+    /// <param name="timeScale">The time scale of the impact frames.</param>
+    /// <param name="duration">The duration of the impact frames.</param>
+    private IEnumerator ImpactFramesCoroutine(GameManager gameManager, float timeScale, float duration)
+    {
+        gameManager.SetTimeScale(timeScale);
 
-        // local function to reset timescale
-        void ResetTimeScale()
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
         {
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime;
+            if (gameManager.CurrentState == GameState.PLAYING) elapsedTime += Time.unscaledDeltaTime; // only increment if playing
+            yield return null;
         }
+
+        gameManager.SetTimeScale(1);
     }
 
     /// <summary>

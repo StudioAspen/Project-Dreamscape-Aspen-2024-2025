@@ -72,7 +72,7 @@ public class InputManager : MonoBehaviour
         if (newControlScheme != CurrentControlScheme)
         {
             CurrentControlScheme = newControlScheme;
-            Debug.Log($"Control Scheme Changed to: {CurrentControlScheme}");
+            //Debug.Log($"Control Scheme Changed to: {CurrentControlScheme}");
 
             // Add your logic for switching input UI or behavior
             OnControlSchemeChanged?.Invoke(CurrentControlScheme);

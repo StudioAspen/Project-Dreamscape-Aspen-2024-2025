@@ -1,4 +1,5 @@
-﻿using DG.Tweening.Core.Easing;
+﻿using DG.Tweening;
+using DG.Tweening.Core.Easing;
 using System;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     #region Time Scale
     public float DefaultFixedDeltaTime { get; private set; }
+    private float previousTimeScale;
     #endregion
 
     private void Awake()
@@ -66,31 +68,35 @@ public class GameManager : MonoBehaviour
     {
         if(CurrentState == newState) return;
 
-        //print($"GameManager: Going from {CurrentState} to {newState}");
+        ForceChangeState(newState);
+    }
+
+    public void ForceChangeState(GameState newState)
+    {
         PreviousState = CurrentState;
 
         switch (newState)
         {
             case GameState.PLAYING:
-                Time.timeScale = 1f;
+                SetTimeScale(previousTimeScale);
                 break;
             case GameState.PAUSED:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             case GameState.BIOME_SELECTION:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             case GameState.LAND_PLACEMENT:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             case GameState.LAND_EMPOWERMENT:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             case GameState.EVENT_SELECTION:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             case GameState.ASPECT_SELECTION:
-                Time.timeScale = 0f;
+                SetTimeScale(0);
                 break;
             default:
                 break;
@@ -100,36 +106,19 @@ public class GameManager : MonoBehaviour
 
         OnGameStateChanged?.Invoke(newState);
     }
+    #endregion
 
-    public void ForceChangeState(GameState newState)
+    #region Time Scale Functions
+    /// <summary>
+    /// Sets the time scale of the game.
+    /// Saves the previous time scale value.
+    /// </summary>
+    /// <param name="timeScale">The new time scale value.</param>
+    public void SetTimeScale(float timeScale)
     {
-        switch (newState)
-        {
-            case GameState.PLAYING:
-                Time.timeScale = 1f;
-                break;
-            case GameState.PAUSED:
-                Time.timeScale = 0f;
-                break;
-            case GameState.BIOME_SELECTION:
-                Time.timeScale = 0f;
-                break;
-            case GameState.LAND_PLACEMENT:
-                Time.timeScale = 0f;
-                break;
-            case GameState.LAND_EMPOWERMENT:
-                Time.timeScale = 0f;
-                break;
-            case GameState.EVENT_SELECTION:
-                Time.timeScale = 0f;
-                break;
-            default:
-                break;
-        }
-
-        CurrentState = newState;
-
-        OnGameStateChanged?.Invoke(newState);
+        previousTimeScale = Time.timeScale;
+        Time.timeScale = timeScale;
+        Time.fixedDeltaTime = DefaultFixedDeltaTime * timeScale;
     }
     #endregion
 }
