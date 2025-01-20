@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     #region Time Scale
     public float DefaultFixedDeltaTime { get; private set; }
-    private float previousTimeScale;
+    private float previousTimeScale = 1f;
     #endregion
 
     private void Awake()
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
                 SetTimeScale(previousTimeScale);
                 break;
             case GameState.PAUSED:
-                SetTimeScale(0);
+                SetTimeScale(0, true);
                 break;
             case GameState.BIOME_SELECTION:
                 SetTimeScale(0);
@@ -111,12 +111,14 @@ public class GameManager : MonoBehaviour
     #region Time Scale Functions
     /// <summary>
     /// Sets the time scale of the game.
-    /// Saves the previous time scale value.
+    /// You can specify whether to save the previous time scale value.
     /// </summary>
     /// <param name="timeScale">The new time scale value.</param>
-    public void SetTimeScale(float timeScale)
+    /// <param name="trackPrevious">Whether to save the previous time scale value.</param>
+    public void SetTimeScale(float timeScale, bool trackPrevious = false)
     {
-        previousTimeScale = Time.timeScale;
+        if (trackPrevious) previousTimeScale = Time.timeScale;
+        else previousTimeScale = 1f;
         Time.timeScale = timeScale;
         Time.fixedDeltaTime = DefaultFixedDeltaTime * timeScale;
     }
