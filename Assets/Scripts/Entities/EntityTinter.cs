@@ -37,10 +37,10 @@ public class EntityTinter : MonoBehaviour
     }
 
     /// <summary>
-    /// Tweens the object's tint color to the specified new color.
+    /// Tints the entity with the specified new color.
     /// </summary>
-    /// <param name="newColor">The new color to tween to.</param>
-    public void TweenTint(Color newColor)
+    /// <param name="newColor">The new color to apply.</param>
+    public void Tint(Color newColor)
     {
         foreach (Renderer renderer in originalColors.Keys)
         {
@@ -49,7 +49,27 @@ public class EntityTinter : MonoBehaviour
             {
                 if (material.HasProperty("_Color"))
                 {
-                    material.DOColor(newColor, 0.2f);
+                    material.color = newColor;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tweens the object's tint color to the specified new color.
+    /// </summary>
+    /// <param name="newColor">The new color to tween to.</param>
+    /// <param name="duration">The duration of the tween</param>
+    public void TweenTint(Color newColor, float duration = 0.2f)
+    {
+        foreach (Renderer renderer in originalColors.Keys)
+        {
+            DOTween.Kill(renderer);
+            foreach (Material material in renderer.materials)
+            {
+                if (material.HasProperty("_Color"))
+                {
+                    material.DOColor(newColor, duration);
                 }
             }
         }
@@ -58,7 +78,8 @@ public class EntityTinter : MonoBehaviour
     /// <summary>
     /// Tweens the entity back to its original colors.
     /// </summary>
-    public void TweenUnTint()
+    /// <param name="duration">The duration of the tween</param>
+    public void TweenUnTint(float duration = 0.2f)
     {
         foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
         {
@@ -70,7 +91,7 @@ public class EntityTinter : MonoBehaviour
                 DOTween.Kill(renderer);
                 if (renderer.materials[i].HasProperty("_Color"))
                 {
-                    renderer.materials[i].DOColor(colors[i], 0.2f);
+                    renderer.materials[i].DOColor(colors[i], duration);
                 }
             }
         }

@@ -96,7 +96,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>GameObject source</c>: The killer source.</description></item>
+    /// <item><description><c>GameObject killer</c>: The killer source.</description></item>
     /// </list>
     /// </remarks>
     public Action<GameObject> OnEntityDeath = delegate { };

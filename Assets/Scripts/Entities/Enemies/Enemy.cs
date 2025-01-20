@@ -8,6 +8,7 @@ public class Enemy : Entity
 {
     [field : Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
+    [field: SerializeField] public int EXPValue { get; protected set; }
 
     [field: Header("Enemy: Custom Collider Settings")]
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }

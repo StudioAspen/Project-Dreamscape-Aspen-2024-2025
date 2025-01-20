@@ -1,6 +1,8 @@
+using AYellowpaper.SerializedCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,6 +23,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float baseCurrency;
     [SerializeField] private float growthFactor;
     [SerializeField] private int polynomialDegree;
+    [SerializeField] private float eliteChance = 0.5f;
     private float maxShopCurrency;
     private float currentShopCurrency;
     private bool isUsingCurrency;
@@ -115,6 +118,11 @@ public class EnemySpawner : MonoBehaviour
 
                 Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(GetRandomEnemySpawnPointTransform().position);
                 spawnedEnemy.Init(this);
+
+                if (UnityEngine.Random.value < eliteChance)
+                {
+                    // Elitify the enemy
+                }
 
                 OnEnemySpawned?.Invoke(spawnedEnemy);
 
