@@ -43,13 +43,13 @@ public class BurnStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        base.OnStack(newStatusEffect);
 
-        DamagePerTick = (newStatusEffect as BurnStatusEffectSO).DamagePerTick;
-        HasExtraTickOnApply = (newStatusEffect as BurnStatusEffectSO).HasExtraTickOnApply;
+        BurnStatusEffectSO overridingStatusEffect = newStatusEffect as BurnStatusEffectSO;
 
-        return true;
+        DamagePerTick = overridingStatusEffect.DamagePerTick;
+        HasExtraTickOnApply = overridingStatusEffect.HasExtraTickOnApply;
     }
 }

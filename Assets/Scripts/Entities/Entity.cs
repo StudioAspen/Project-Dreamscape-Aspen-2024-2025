@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
@@ -92,7 +93,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </remarks>
     public Action<int, Vector3, GameObject> OnEntityTakeDamage = delegate { };
     /// <summary>
-    /// Action that is invoked when the entity dies.
+    /// Action that is invoked when the entity enters the death state.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
@@ -1196,6 +1197,54 @@ public class Entity : MonoBehaviour, IPoolableObject
         }
 
         return entities.OrderBy(target => Vector3.SqrMagnitude(hitPosition - target.transform.position)).ToList();
+    }
+
+    /// <summary>
+    /// Applies area of effect damage to entities within a given radius.
+    /// </summary>
+    /// <param name="attacker">The entity causing the damage.</param>
+    /// <param name="radius">The radius within which entities will be damaged.</param>
+    /// <param name="percentDamage">The percentage of damage to apply to each entity.</param>
+    /// <returns>A list of entities that were damaged.</returns>
+    public static List<Entity> DamageEntitiesWithAOE(Entity attacker, float radius, float percentDamage)
+    {
+        List<Entity> entitiesInRadius = GetEntitiesThroughAOE(attacker.transform.position, radius, false);
+        List<Entity> entitiesDamaged = new List<Entity>();
+
+        foreach (Entity entityHit in entitiesInRadius)
+        {
+            if (entityHit.Team == attacker.Team) continue; // skip friendly entities
+
+            entityHit.TakeDamage(
+                attacker.CalculateDamage(percentDamage),
+                entityHit.GetComponent<Collider>().ClosestPointOnBounds(attacker.transform.position),
+                attacker.gameObject,
+                false);
+
+            entitiesDamaged.Add(entityHit);
+        }
+
+        return entitiesDamaged;
+    }
+
+    /// <summary>
+    /// Damages entities within a specified area of effect (AOE) and launches them in a given direction with a specified force and stun duration.
+    /// </summary>
+    /// <param name="attacker">The entity initiating the AOE damage.</param>
+    /// <param name="radius">The radius of the AOE.</param>
+    /// <param name="percentDamage">The percentage of damage to apply to the entities within the AOE.</param>
+    /// <param name="launchForce">The force with which to launch the entities within the AOE.</param>
+    /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
+    public static void DamageEntitiesWithAOELaunch(Entity attacker, float radius, float percentDamage, float launchForce, float stunDuration)
+    {
+        List<Entity> entitiesHit = DamageEntitiesWithAOE(attacker, radius, percentDamage);
+
+        foreach (Entity entityHit in entitiesHit)
+        {
+            Vector3 direction = (entityHit.GetColliderCenterPosition() - attacker.transform.position).normalized;
+
+            entityHit.ForceChangeToLaunchState(direction, launchForce, stunDuration);
+        }
     }
 
     /// <summary>

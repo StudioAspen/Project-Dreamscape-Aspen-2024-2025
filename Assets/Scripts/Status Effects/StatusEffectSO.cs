@@ -69,18 +69,26 @@ public class StatusEffectSO : ScriptableObject
     /// <summary>
     /// Overrides the current status effect with a new status effect of the specified type.
     /// Called once when a status effect is stackable and a new status effect of the same type is applied.
-    /// Override if you want to add custom behavior when overriding the status effect.
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
-    /// <returns>True if the override is successful, false otherwise.</returns>
-    public virtual bool OnStack(StatusEffectSO newStatusEffect)
+    public void Stack(StatusEffectSO newStatusEffect)
     {
         if (newStatusEffect.GetType() != GetType())
         {
             Debug.LogError($"Cannot override {name} with a different status effect type.");
-            return false;
+            return;
         }
 
-        return true;
+        OnStack(newStatusEffect);
+    }
+
+    /// <summary>
+    /// Called when the status effect is stacked with a new status effect of the same type.
+    /// Override if you want to add custom behavior when overriding the status effect.
+    /// </summary>
+    /// <param name="newStatusEffect">The new status effect to override with.</param>
+    private protected virtual void OnStack(StatusEffectSO newStatusEffect)
+    {
+
     }
 }

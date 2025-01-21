@@ -41,7 +41,7 @@ public class EntityStatusEffector : MonoBehaviour
             }
 
             StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-            currentStatusEffect.OnStack(newStatusEffect); // extend and override
+            currentStatusEffect.Stack(newStatusEffect); // extend and override
 
             return currentStatusEffect;
         }

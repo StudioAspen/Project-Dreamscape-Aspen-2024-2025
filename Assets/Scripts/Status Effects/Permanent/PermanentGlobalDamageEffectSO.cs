@@ -20,15 +20,13 @@ public class PermanentGlobalDamageEffectSO : StatusEffectSO
         entity.SetDamageModifier(entity.DamageModifier / GlobalDamageMultiplierIncrease); // undo the damage multiplier
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        PermanentGlobalDamageEffectSO overridingStatusEffect = newStatusEffect as PermanentGlobalDamageEffectSO;
 
         entity.SetDamageModifier(entity.DamageModifier / GlobalDamageMultiplierIncrease); // undo the damage multiplier
-        GlobalDamageMultiplierIncrease *= (newStatusEffect as PermanentGlobalDamageEffectSO).GlobalDamageMultiplierIncrease; // update the damage multiplier
+        GlobalDamageMultiplierIncrease *= overridingStatusEffect.GlobalDamageMultiplierIncrease; // update the damage multiplier
         entity.SetDamageModifier(entity.DamageModifier * GlobalDamageMultiplierIncrease); // reapply the new updated damage multiplier
-
-        return true;
     }
 }
 

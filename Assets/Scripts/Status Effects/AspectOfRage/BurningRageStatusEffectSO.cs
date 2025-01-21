@@ -56,28 +56,24 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         base.Cancel();
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (newStatusEffect.GetType() != GetType())
-        {
-            Debug.LogError($"Cannot override {name} with a different status effect type.");
-            return false;
-        }
+        base.OnStack(newStatusEffect);
+
+        BurningRageStatusEffectSO overridingStatusEffect = newStatusEffect as BurningRageStatusEffectSO;
 
         currentTicks = 0; // reset the ticks
-        TickDamageMultiplierPerStack = (newStatusEffect as BurningRageStatusEffectSO).TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
+        TickDamageMultiplierPerStack = overridingStatusEffect.TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Recalculate damage per tick based on our multiplier
 
-        if (currentStacks >= MaxStacks) return true; // still successful, we just hit max stacks
+        if (currentStacks >= MaxStacks) return; // we hit max stacks
 
         currentStacks++;
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate again based on new stacks
 
         if (entityTinter) entityTinter.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
-
-        return true;
     }
 
     private void Entity_OnEntityDeath(GameObject killer)

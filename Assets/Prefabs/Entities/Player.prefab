@@ -1591,7 +1591,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a05f0ec93e9c8a43bd1e8b06656cce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expDatabaseConfig: {fileID: 11400000, guid: 0879fdd9954b4c84fb338e947c209d00, type: 2}
   baseMaxEXP: 10
   maxEXPLinearGrowth: 10
   maxEXPExponentialGrowth: 1.2
@@ -1699,6 +1698,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdfa5f99c0738034384fed80a4044c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 6984206866885531703}
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0

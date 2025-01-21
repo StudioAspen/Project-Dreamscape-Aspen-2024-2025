@@ -39,13 +39,9 @@ public class LifeStealStatusEffectSO : StatusEffectSO
         ownerWeapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
-
-        // add expansion logic here when stacked
-
-        return true;
+        LifeStealStatusEffectSO overridingStatusEffect = newStatusEffect as LifeStealStatusEffectSO;
     }
 
     private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)

@@ -4,12 +4,89 @@ using UnityEngine;
 
 public class EntityTinter : MonoBehaviour
 {
-    private Dictionary<Renderer, Color[]> originalColors = new Dictionary<Renderer, Color[]>();
+    [SerializeField] private List<Renderer> renderers = new List<Renderer>();
+
+    private Dictionary<Renderer, List<Material>> originalMaterials = new Dictionary<Renderer, List<Material>>();
+    private Dictionary<Renderer, List<Color>> originalColors = new Dictionary<Renderer, List<Color>>();
 
     private void Awake()
     {
+        CacheOriginalMaterials();
         CacheOriginalTints();
     }
+
+    #region Material Functions
+    /// <summary>
+    /// Caches the original materials of the entity's mesh renderers.
+    /// </summary>
+    public void CacheOriginalMaterials()
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            List<Material> materials = new List<Material>();
+            renderer.GetSharedMaterials(materials);
+
+            originalMaterials.Add(renderer, materials);
+        }
+    }
+
+    /// <summary>
+    /// Adds a new material to the entity's mesh renderers.
+    /// </summary>
+    /// <param name="newMaterial">The new material to add.</param>
+    public void AddMaterial(Material newMaterial)
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            List<Material> materials = new List<Material>();
+            renderer.GetSharedMaterials(materials);
+            materials.Add(newMaterial);
+            renderer.SetSharedMaterials(materials);
+        }
+    }
+
+    /// <summary>
+    /// Removes a material from the entity's mesh renderers.
+    /// </summary>
+    /// <param name="material">The material to remove.</param>
+    public void RemoveMaterial(Material material)
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            List<Material> materials = new List<Material>();
+            renderer.GetSharedMaterials(materials);
+            if (materials.Contains(material)) materials.Remove(material);
+            else
+            {
+                Debug.LogWarning($"Material {material.name} not found in {renderer.name}.");
+                continue;
+            }
+            renderer.SetSharedMaterials(materials);
+        }
+    }
+
+    /// <summary>
+    /// Removes all materials from the entity's mesh renderers.
+    /// </summary>
+    public void RemoveAllMaterials()
+    {
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.SetSharedMaterials(new List<Material>());
+        }
+    }
+
+    /// <summary>
+    /// Restores the original materials of the entity's mesh renderers.
+    /// </summary>
+    public void RestoreOriginalMaterials()
+    {
+        foreach (Renderer renderer in originalMaterials.Keys)
+        {
+            renderer.SetSharedMaterials(originalMaterials[renderer]);
+        }
+    }
+    #endregion
 
     #region Tinting Functions
     /// <summary>
@@ -17,19 +94,14 @@ public class EntityTinter : MonoBehaviour
     /// </summary>
     private void CacheOriginalTints()
     {
-        // Get all renderers in the character model, including any child objects
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-
         foreach (Renderer renderer in renderers)
         {
-            if (renderer.TryGetComponent(out Weapon weapon)) continue;
-
-            Color[] colors = new Color[renderer.materials.Length];
+            List<Color> colors = new List<Color>();
             for (int i = 0; i < renderer.materials.Length; i++)
             {
                 if (renderer.materials[i].HasProperty("_Color"))
                 {
-                    colors[i] = renderer.materials[i].color;
+                    colors.Add(renderer.materials[i].color);
                 }
             }
             originalColors.Add(renderer, colors);
@@ -81,10 +153,10 @@ public class EntityTinter : MonoBehaviour
     /// <param name="duration">The duration of the tween</param>
     public void TweenUnTint(float duration = 0.2f)
     {
-        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
         {
             Renderer renderer = entry.Key;
-            Color[] colors = entry.Value;
+            List<Color> colors = entry.Value;
 
             for (int i = 0; i < renderer.materials.Length; i++)
             {
@@ -102,10 +174,10 @@ public class EntityTinter : MonoBehaviour
     /// </summary>
     public void ResetTint()
     {
-        foreach (KeyValuePair<Renderer, Color[]> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
         {
             Renderer renderer = entry.Key;
-            Color[] colors = entry.Value;
+            List<Color> colors = entry.Value;
 
             for (int i = 0; i < renderer.materials.Length; i++)
             {
