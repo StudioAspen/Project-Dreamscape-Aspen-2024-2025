@@ -13,7 +13,7 @@ public class DefendEventEntity : Entity
     {
         base.OnOnEnable();
 
-        SetStartState(EntityEmptyState);
+        SetStartState(EntitySpawnState);
     }
 
     private protected override void OnOnDisable()

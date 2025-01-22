@@ -29,10 +29,10 @@ public class WorldManager : MonoBehaviour
     private float landScale;
 
     [Header("Land Position Selection")]
-    [SerializeField] private LandManager landToSpawnPrefab;
     [SerializeField] private Transform ghostLandTransform;
 
     [field: Header("Biome Selection")]
+    [field: SerializeField] public EliteVariantDatabaseSO EliteVariantDatabase { get; private set; }
     [field: SerializeField] public BiomeDatabaseSO BiomeDatabase { get; private set; }
     private Biome currentBiomeSelection = Biome.DREAM;
 
@@ -50,7 +50,7 @@ public class WorldManager : MonoBehaviour
 
         DisableGhostLand();
 
-        landScale = landToSpawnPrefab.transform.localScale.x;
+        landScale = BiomeDatabase.DefaultLandPrefab.transform.localScale.x;
     }
 
     #region Grid Functions
@@ -179,10 +179,21 @@ public class WorldManager : MonoBehaviour
     /// <param name="gridPosition">The grid position of the land.</param>
     private void SpawnLand(Vector2Int gridPosition)
     {
-        float landScale = landToSpawnPrefab.transform.localScale.x;
+        LandManager landPrefabToUse = null;
+        if (BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count == 0)
+        {
+            Debug.LogWarning($"No possible lands for biome {currentBiomeSelection}. Using default land prefab.");
+            landPrefabToUse = BiomeDatabase.DefaultLandPrefab;
+        }
+        else
+        {
+            landPrefabToUse = BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands[Random.Range(0, BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count)];
+        }
 
-        LandManager spawnedLand = Instantiate(landToSpawnPrefab, new Vector3(landScale * gridPosition.x, -5f, landScale * gridPosition.y), Quaternion.identity, transform);
-        spawnedLand.Init(gridPosition);
+        float landScale = BiomeDatabase.DefaultLandPrefab.transform.localScale.x;
+
+        LandManager spawnedLand = Instantiate(landPrefabToUse, new Vector3(landScale * gridPosition.x, -5f, landScale * gridPosition.y), Quaternion.identity, transform);
+        spawnedLand.Init(gridPosition, currentBiomeSelection);
 
         SpawnedLands.Add(gridPosition, spawnedLand);
     }

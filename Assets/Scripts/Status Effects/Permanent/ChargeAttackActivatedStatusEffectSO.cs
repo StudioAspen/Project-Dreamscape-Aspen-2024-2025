@@ -25,12 +25,10 @@ public class ChargeAttackActivatedStatusEffectSO : StatusEffectSO
         base.Cancel();
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        ChargeAttackActivatedStatusEffectSO overridingStatusEffect = newStatusEffect as ChargeAttackActivatedStatusEffectSO;
 
-        SetMaxChargeDuration((newStatusEffect as ChargeAttackActivatedStatusEffectSO).MaxChargeDuration);
-
-        return true;
+        SetMaxChargeDuration(overridingStatusEffect.MaxChargeDuration);
     }
 }

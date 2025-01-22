@@ -1,5 +1,53 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &159607596206527180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1138654289131146229}
+  - component: {fileID: 3709978251149039425}
+  m_Layer: 0
+  m_Name: MaterializeVFXPooler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1138654289131146229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159607596206527180}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8938620608541455539}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3709978251149039425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159607596206527180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d9e613cf60fcdd4f87efc340c998c15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectPrefab: {fileID: 5860281344281482287, guid: 70bd4e497e88a9b4581b60f89f79dae2,
+    type: 3}
+  defaultCapacity: 100
+  maxSize: 150
 --- !u!1 &3004667545289962807
 GameObject:
   m_ObjectHideFlags: 0
@@ -36,6 +84,7 @@ Transform:
   - {fileID: 4562900200964922340}
   - {fileID: 2505134226417377920}
   - {fileID: 7186845640020004704}
+  - {fileID: 1138654289131146229}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7451146893933980580
@@ -50,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landToSpawnPrefab: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
-    type: 3}
   ghostLandTransform: {fileID: 4562900200964922340}
+  <EliteVariantDatabase>k__BackingField: {fileID: 11400000, guid: 909ef3a8bcbb21d41bf1bcac6385883e,
+    type: 2}
   <BiomeDatabase>k__BackingField: {fileID: 11400000, guid: 3cd142a13b4f30541b5d350499677ef4,
     type: 2}
 --- !u!114 &8447086163662410526
@@ -259,6 +308,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LandPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642624367869852063, guid: 006873e2de8d753499aa3b3f6548874b,
+        type: 3}
+      propertyPath: eliteChance
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3642624367869852063, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}

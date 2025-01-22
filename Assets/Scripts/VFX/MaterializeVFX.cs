@@ -3,30 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
 using UnityEngine.VFX;
 
-public class MaterializeVFX : MonoBehaviour
+public class MaterializeVFX : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private VisualEffect[] _vfxObjects;
     [SerializeField] private Material _materializeMaterial;
 
     private float materializeSpeed = 0.675f;
 
-    public UnityEvent onMaterializationComplete = new UnityEvent();
+    public UnityEvent OnMaterializationComplete = new UnityEvent();
 
-    // FOR TESTING
-    //
-    /*[SerializeField] private SkinnedMeshRenderer _meshRenderer;
-    private IEnumerator Start()
+    #region Pooling
+    private ObjectPool<GameObject> pool;
+
+    public void SetObjectPool(ObjectPool<GameObject> objectPool)
     {
-        yield return new WaitForSeconds(3);
-        
-        TriggerMaterializeVFX(_meshRenderer);
-    }*/
+        pool = objectPool;
+    }
+
+    public void ReleaseObjectBackToPool()
+    {
+        pool.Release(gameObject);
+    }
+    #endregion
 
     ///-////////////////////////////////////////////////////////////////////////
     /// 
-    public void TriggerMaterializeVFX(SkinnedMeshRenderer meshRenderer, Texture2D texture = null)
+    public void TriggerMaterializeVFX(SkinnedMeshRenderer meshRenderer, bool willInvokeCallback = false, Texture2D texture = null)
     {
         foreach (VisualEffect vfxObject in _vfxObjects)
         {
@@ -34,12 +39,12 @@ public class MaterializeVFX : MonoBehaviour
             vfxObject.Play();
         }
         
-        StartCoroutine(MaterializeSkinnedMesh(meshRenderer, texture));
+        StartCoroutine(MaterializeSkinnedMesh(meshRenderer, willInvokeCallback, texture));
     }
     
     ///-////////////////////////////////////////////////////////////////////////
     /// 
-    public void TriggerMaterializeVFX(MeshRenderer meshRenderer, Texture2D texture = null)
+    public void TriggerMaterializeVFX(MeshRenderer meshRenderer, bool willInvokeCallback = false, Texture2D texture = null)
     {
         foreach (VisualEffect vfxObject in _vfxObjects)
         {
@@ -47,12 +52,12 @@ public class MaterializeVFX : MonoBehaviour
             vfxObject.Play();
         }
         
-        StartCoroutine(MaterializeMesh(meshRenderer, texture));
+        StartCoroutine(MaterializeMesh(meshRenderer, willInvokeCallback, texture));
     }
 
     ///-////////////////////////////////////////////////////////////////////////
     /// 
-    private IEnumerator MaterializeSkinnedMesh(SkinnedMeshRenderer meshRenderer, Texture2D texture)
+    private IEnumerator MaterializeSkinnedMesh(SkinnedMeshRenderer meshRenderer, bool willInvokeCallback = false, Texture2D texture = null)
     {
         float clip = 1;
 
@@ -88,12 +93,12 @@ public class MaterializeVFX : MonoBehaviour
         // Remove the materialize material
         meshRenderer.SetSharedMaterials(defaultMaterials);
 
-        onMaterializationComplete.Invoke();
+        if(willInvokeCallback) OnMaterializationComplete.Invoke();
     }
     
     ///-////////////////////////////////////////////////////////////////////////
     /// 
-    private IEnumerator MaterializeMesh(MeshRenderer meshRenderer, Texture2D texture)
+    private IEnumerator MaterializeMesh(MeshRenderer meshRenderer, bool willInvokeCallback = false, Texture2D texture = null)
     {
         float clip = 1;
 
@@ -129,6 +134,6 @@ public class MaterializeVFX : MonoBehaviour
         // Remove the materialize material
         meshRenderer.SetSharedMaterials(defaultMaterials);
 
-        onMaterializationComplete.Invoke();
+        if (willInvokeCallback) OnMaterializationComplete.Invoke();
     }
 }

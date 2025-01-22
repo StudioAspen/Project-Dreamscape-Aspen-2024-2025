@@ -4,16 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Biome Database", menuName = "Biome Database")]
+public enum Biome
+{
+    DREAM,
+    FIRE,
+    FOOD,
+    OTHER_BIOME
+}
+
+[CreateAssetMenu(fileName = "Biome Database", menuName = "World/Biome Database")]
 public class BiomeDatabaseSO : ScriptableObject
 {
     [Serializable]
     public class BiomeData
     {
+        [field: Header("Display")]
         [field: SerializeField] public string BiomeName { get; private set; } = "Biome Name";
         [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of biome.";
         [field: SerializeField] public Color BiomeColor { get; private set; } = Color.black;
+
+        [field: Header("Config")]
+        [field: SerializeField] public List<LandManager> PossibleLands { get; private set; } = new List<LandManager>();
     }
+
+    [field: SerializeField] public LandManager DefaultLandPrefab { get; private set; }
 
     [field: Header("Biomes")]
     [field: SerializeField, SerializedDictionary("Biome Type", "Biome Data")]
@@ -54,12 +68,4 @@ public class BiomeDatabaseSO : ScriptableObject
             Debug.Log("BiomeDatabase has no errors.");
         }
     }
-}
-
-public enum Biome
-{
-    DREAM,
-    FIRE,
-    FOOD,
-    OTHER_BIOME
 }

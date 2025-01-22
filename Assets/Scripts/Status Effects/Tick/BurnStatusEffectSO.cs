@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burn")]
 public class BurnStatusEffectSO : TickStatusEffectSO
 {
-    EntityTinter entityTinter;
+    EntityRendererManager entityRendererManager;
 
     [field: Header("Burn: Settings")]
     [field: SerializeField] public int DamagePerTick { get; private set; } = 1;
@@ -15,9 +15,9 @@ public class BurnStatusEffectSO : TickStatusEffectSO
     {
         base.OnApply();
 
-        entityTinter = entity.GetComponent<EntityTinter>();
+        entityRendererManager = entity.GetComponent<EntityRendererManager>();
 
-        if(entityTinter) entityTinter.TweenTint(Color.red);
+        if(entityRendererManager) entityRendererManager.TweenTint(Color.red);
 
         if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false);
     }
@@ -31,25 +31,25 @@ public class BurnStatusEffectSO : TickStatusEffectSO
 
     private protected override void OnExpire()
     {
-        if (entityTinter) entityTinter.TweenUnTint();
+        if (entityRendererManager) entityRendererManager.TweenUnTint();
 
         base.OnExpire();
     }
 
     public override void Cancel()
     {
-        if (entityTinter) entityTinter.ResetTint();
+        if (entityRendererManager) entityRendererManager.ResetTint();
 
         base.Cancel();
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        base.OnStack(newStatusEffect);
 
-        DamagePerTick = (newStatusEffect as BurnStatusEffectSO).DamagePerTick;
-        HasExtraTickOnApply = (newStatusEffect as BurnStatusEffectSO).HasExtraTickOnApply;
+        BurnStatusEffectSO overridingStatusEffect = newStatusEffect as BurnStatusEffectSO;
 
-        return true;
+        DamagePerTick = overridingStatusEffect.DamagePerTick;
+        HasExtraTickOnApply = overridingStatusEffect.HasExtraTickOnApply;
     }
 }

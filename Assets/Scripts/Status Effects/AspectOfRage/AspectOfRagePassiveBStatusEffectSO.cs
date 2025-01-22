@@ -34,7 +34,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         if (playerCombat == null)
         {
             Debug.LogError($"{name}: PlayerCombat not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false); // If theres no PlayerCombat, remove this passive
+            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no PlayerCombat, remove this passive
             return;
         }
 
@@ -61,27 +61,25 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         playerCombat.Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        AspectOfRagePassiveBStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfRagePassiveBStatusEffectSO;
 
         // Set new max charge duration
         entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>()
-            .SetMaxChargeDuration((newStatusEffect as AspectOfRagePassiveBStatusEffectSO).MaxChargeDuration);
+            .SetMaxChargeDuration(overridingStatusEffect.MaxChargeDuration);
 
         // Set new damage bonus values
-        ChargeDurationBonusPercentDamages = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargeDurationBonusPercentDamages;
+        ChargeDurationBonusPercentDamages = overridingStatusEffect.ChargeDurationBonusPercentDamages;
 
         // Set new charged on hit config values
-        ChargedOnHitExplosionPercentDamage = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargedOnHitExplosionPercentDamage;
-        ChargedOnHitExplosionRadius = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).ChargedOnHitExplosionRadius;
+        ChargedOnHitExplosionPercentDamage = overridingStatusEffect.ChargedOnHitExplosionPercentDamage;
+        ChargedOnHitExplosionRadius = overridingStatusEffect.ChargedOnHitExplosionRadius;
 
         // Set extended passive config values
-        PerfectTimingWindowDuration = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingWindowDuration;
-        PerfectTimingBonusPercentDamage = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingBonusPercentDamage;
-        PerfectTimingOnHitExplosionRadiusMultiplier = (newStatusEffect as AspectOfRagePassiveBStatusEffectSO).PerfectTimingOnHitExplosionRadiusMultiplier;
-
-        return true;
+        PerfectTimingWindowDuration = overridingStatusEffect.PerfectTimingWindowDuration;
+        PerfectTimingBonusPercentDamage = overridingStatusEffect.PerfectTimingBonusPercentDamage;
+        PerfectTimingOnHitExplosionRadiusMultiplier = overridingStatusEffect.PerfectTimingOnHitExplosionRadiusMultiplier;
     }
 
     public override void Update()
@@ -179,7 +177,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
 
             int explosionDamage = attacker.CalculateDamage(radius); // calculate the damage
 
-            enemy.TakeDamage(explosionDamage, hitPoint, attacker.gameObject); // deal damage to enemy entities
+            attacker.DealDamageToOtherEntity(enemy, explosionDamage, hitPoint); // deal damage to enemy entities
         }
 
         CustomDebug.InstantiateTemporarySphere(hitPoint, radius, 0.25f, new Color(1f, 0, 0, 0.2f));

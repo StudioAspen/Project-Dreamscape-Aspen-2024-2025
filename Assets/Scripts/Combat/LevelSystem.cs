@@ -6,7 +6,6 @@ public class LevelSystem : MonoBehaviour
     private Entity entity;
 
     [Header("Config")]
-    [SerializeField] private EXPDatabaseConfigSO expDatabaseConfig;
     [SerializeField] private int baseMaxEXP = 10;
     [SerializeField] private int maxEXPLinearGrowth = 10;
     [SerializeField] private float maxEXPExponentialGrowth = 1.2f;
@@ -35,10 +34,10 @@ public class LevelSystem : MonoBehaviour
 
     private void Entity_OnKillEntity(Entity victim)
     {
-        bool isEnemyElite = false; // TODO: Implement elite enemies
-        int expReward = expDatabaseConfig.GetEXPFromType(victim.GetType(), isEnemyElite);
+        Enemy victimAsEnemy = victim as Enemy;
+        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue;
 
-        //Debug.Log($"{(isEnemyElite ? "Elite: " : "")}{victim.gameObject.name} was killed, rewarding {expReward} EXP");
+        //Debug.Log($"{{victim.gameObject.name} was killed, rewarding {expReward} EXP");
         AddEXP(expReward);
     }
 

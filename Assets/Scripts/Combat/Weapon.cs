@@ -3,9 +3,13 @@ using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 using System;
+using System.Collections;
+using DG.Tweening.Core.Easing;
 
 public class Weapon : MonoBehaviour
 {
+    private GameManager gameManager;
+
     private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
     private ParticleSystem trailParticle;
     private Entity holderEntity;
@@ -45,7 +49,7 @@ public class Weapon : MonoBehaviour
     /// </remarks>
     public Action<Entity> OnWeaponEndSwing = delegate { };
     /// <summary>
-    /// Action that is invoked when the weapon starts swinging.
+    /// Action that is invoked when the weapon hits.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
@@ -63,10 +67,13 @@ public class Weapon : MonoBehaviour
     private float percentDamage;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
+    private Coroutine impactFramesCoroutine;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         capsuleColliders = GetComponents<CapsuleCollider>().ToList();
         trailParticle = GetComponentInChildren<ParticleSystem>();
         holderEntity = GetComponentInParent<Entity>();
@@ -156,7 +163,7 @@ public class Weapon : MonoBehaviour
                     Vector3 currPoint = currentFrameCollisionRays[i].origin + s / (float)segments * currentFrameCollisionRays[i].direction;
                     Vector3 prevPoint = previousFrameCollisionRays[i].origin + s / (float)segments * previousFrameCollisionRays[i].direction;
 
-                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.localScale.x);
+                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.lossyScale.x);
 
                     // Debugging
                     /*Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
@@ -229,7 +236,7 @@ public class Weapon : MonoBehaviour
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
 
-        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
+        holderEntity.DealDamageToOtherEntity(victim, damageValue, hitPoint);
     }
 
     /// <summary>
@@ -241,24 +248,33 @@ public class Weapon : MonoBehaviour
     {
         if (impactFramesDuration <= 0) return;
 
-        // cant change timescale without game manager
-        GameManager gameManager = FindObjectOfType<GameManager>();
-        if (gameManager == null) return;
-
-        DOTween.Kill("ImpactFrames");
-        Time.timeScale = timeScale;
-        Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime * Time.timeScale;
-
-        DOVirtual.DelayedCall(duration, ResetTimeScale).SetId("ImpactFrames").OnUpdate(() => {
-            if(gameManager.CurrentState == GameState.PAUSED) DOTween.Kill("ImpactFrames"); // stop impact frames if game is paused, otherwise it would unofficially unpause the game
-        });
-
-        // local function to reset timescale
-        void ResetTimeScale()
+        if(impactFramesCoroutine != null)
         {
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = gameManager.DefaultFixedDeltaTime;
+            StopCoroutine(impactFramesCoroutine);
+            gameManager.SetTimeScale(1);
         }
+            
+        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(timeScale, duration));
+    }
+
+    /// <summary>
+    /// Coroutine that handles the impact frames of the weapon.
+    /// </summary>
+    /// <param name="gameManager">The game manager instance.</param>
+    /// <param name="timeScale">The time scale of the impact frames.</param>
+    /// <param name="duration">The duration of the impact frames.</param>
+    private IEnumerator ImpactFramesCoroutine(float timeScale, float duration)
+    {
+        gameManager.SetTimeScale(timeScale);
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            if (gameManager.CurrentState == GameState.PLAYING) elapsedTime += Time.unscaledDeltaTime; // only increment if playing
+            yield return null;
+        }
+
+        gameManager.SetTimeScale(1);
     }
 
     /// <summary>

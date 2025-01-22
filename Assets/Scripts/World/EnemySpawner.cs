@@ -1,6 +1,8 @@
+using AYellowpaper.SerializedCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,9 +11,10 @@ public class EnemySpawner : MonoBehaviour
     private LandManager landManager;
     private WorldManager worldManager;
     private ObjectPooler enemyPooler;
+    private ObjectPooler materializeVFXPooler;
 
-    [Header("References")]
-    [SerializeField] private List<Enemy> enemyPrefabs = new List<Enemy>();
+    [field: Header("References")]
+    [field: SerializeField] public List<Enemy> NeutralEnemyPrefabs { get; private set; } = new List<Enemy>();
     [SerializeField] private List<Transform> enemySpawnPoints;
     private List<float> enemyNormalizedWeights = new List<float>();
 
@@ -21,6 +24,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float baseCurrency;
     [SerializeField] private float growthFactor;
     [SerializeField] private int polynomialDegree;
+    [SerializeField] private float eliteChance = 0.5f;
     private float maxShopCurrency;
     private float currentShopCurrency;
     private bool isUsingCurrency;
@@ -45,7 +49,8 @@ public class EnemySpawner : MonoBehaviour
         landManager = GetComponent<LandManager>();
         worldManager = FindObjectOfType<WorldManager>();
 
-        enemyPooler = worldManager.GetComponentInChildren<ObjectPooler>();
+        enemyPooler = worldManager.transform.Find("EnemyPooler").GetComponent<ObjectPooler>();
+        materializeVFXPooler = worldManager.transform.Find("MaterializeVFXPooler").GetComponent<ObjectPooler>();
 
         CalculateNormalizedWeights();
     }
@@ -103,30 +108,73 @@ public class EnemySpawner : MonoBehaviour
         int spawnLocation = UnityEngine.Random.Range(1, 5);
         float cumalativeWeight = 0f;
 
-        for (int i = 0; i < enemyPrefabs.Count; i++)
+        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
         {
             cumalativeWeight += enemyNormalizedWeights[i];
 
-            if (willUseCurrency && currentShopCurrency < enemyPrefabs[i].Cost) continue;
+            if (willUseCurrency && currentShopCurrency < NeutralEnemyPrefabs[i].Cost) continue;
 
             if (randomValue < cumalativeWeight)
             {
-                enemyPooler.ChangePrefab(enemyPrefabs[i].gameObject);
+                Enemy spawnedEnemy = SpawnEnemy(NeutralEnemyPrefabs[i], GetRandomEnemySpawnPointTransform().position);
 
-                Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(GetRandomEnemySpawnPointTransform().position);
-                spawnedEnemy.Init(this);
+                // If the spawned enemy is an elite, apply a random elite status effect
+                if (UnityEngine.Random.value < eliteChance)
+                {
+                    int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantDatabase.EliteVariantStatusEffects.Count);
+                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantDatabase.EliteVariantStatusEffects[randomIndex];
 
-                OnEnemySpawned?.Invoke(spawnedEnemy);
+                    EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
+                }
 
-                enemiesSpawned.Add(spawnedEnemy);
+                MaterializeEntity(spawnedEnemy);
 
                 if (willUseCurrency)
                 {
-                    currentShopCurrency -= enemyPrefabs[i].Cost;
+                    currentShopCurrency -= NeutralEnemyPrefabs[i].Cost;
                 }
 
                 break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Spawns an enemy based on the provided enemy prefab.
+    /// </summary>
+    /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
+    public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
+    {
+        enemyPooler.ChangePrefab(enemyPrefab.gameObject);
+
+        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(spawnPosition);
+        spawnedEnemy.Init(this);
+
+        OnEnemySpawned?.Invoke(spawnedEnemy);
+
+        enemiesSpawned.Add(spawnedEnemy);
+
+        return spawnedEnemy;
+    }
+
+    /// <summary>
+    /// Materializes an entity by instantiating a materialization visual effect at its position.
+    /// </summary>
+    /// <param name="entity">The entity to materialize.</param>
+    public void MaterializeEntity(Entity entity)
+    {
+        EntityRendererManager entityRendererManager = entity.GetComponent<EntityRendererManager>();
+        if (entityRendererManager == null) return;
+
+        MaterializeVFX materializeVFX = materializeVFXPooler.SpawnObject<MaterializeVFX>(entity.transform.position);
+
+        for(int i = 0; i < entityRendererManager.Renderers.Count; i++)
+        {
+            SkinnedMeshRenderer skinnedMeshRenderer = entityRendererManager.Renderers[i] as SkinnedMeshRenderer;
+            if (skinnedMeshRenderer == null) continue;
+
+            // If the current renderer is the last one, invoke the callback
+            materializeVFX.TriggerMaterializeVFX(skinnedMeshRenderer, i == entityRendererManager.Renderers.Count - 1);
         }
     }
 
@@ -165,14 +213,14 @@ public class EnemySpawner : MonoBehaviour
 
         float totalWeight = 0f;
 
-        foreach (Enemy enemy in enemyPrefabs)
+        foreach (Enemy enemy in NeutralEnemyPrefabs)
         {
             totalWeight += 1f / Mathf.Pow(enemy.Cost, weightingSkewFactor);
         }
 
-        for (int i = 0; i < enemyPrefabs.Count; i++)
+        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
         {
-            float weight = 1f / Mathf.Pow(enemyPrefabs[i].Cost, weightingSkewFactor);
+            float weight = 1f / Mathf.Pow(NeutralEnemyPrefabs[i].Cost, weightingSkewFactor);
 
             enemyNormalizedWeights.Add(weight / totalWeight);
         }
