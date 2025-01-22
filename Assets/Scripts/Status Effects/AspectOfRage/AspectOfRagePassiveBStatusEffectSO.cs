@@ -177,7 +177,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
 
             int explosionDamage = attacker.CalculateDamage(radius); // calculate the damage
 
-            enemy.TakeDamage(explosionDamage, hitPoint, attacker.gameObject); // deal damage to enemy entities
+            attacker.DealDamageToOtherEntity(enemy, explosionDamage, hitPoint); // deal damage to enemy entities
         }
 
         CustomDebug.InstantiateTemporarySphere(hitPoint, radius, 0.25f, new Color(1f, 0, 0, 0.2f));

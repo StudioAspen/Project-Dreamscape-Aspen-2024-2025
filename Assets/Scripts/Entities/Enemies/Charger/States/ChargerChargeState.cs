@@ -96,7 +96,7 @@ public class ChargerChargeState : ChargerBaseState
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
                 enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
-                enemyEntity.TakeDamage(charger.CalculateDamage(ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), charger.gameObject, false);
+                charger.DealDamageToOtherEntity(enemyEntity, charger.CalculateDamage(ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), false);
 
                 charger.ChangeState(charger.ChargerWindDownState);
                 return;

@@ -12,8 +12,8 @@ public class EnemySpawner : MonoBehaviour
     private WorldManager worldManager;
     private ObjectPooler enemyPooler;
 
-    [Header("References")]
-    [SerializeField] private List<Enemy> neutralEnemyPrefabs = new List<Enemy>();
+    [field: Header("References")]
+    [field: SerializeField] public List<Enemy> NeutralEnemyPrefabs { get; private set; } = new List<Enemy>();
     [SerializeField] private List<Transform> enemySpawnPoints;
     private List<float> enemyNormalizedWeights = new List<float>();
 
@@ -106,24 +106,26 @@ public class EnemySpawner : MonoBehaviour
         int spawnLocation = UnityEngine.Random.Range(1, 5);
         float cumalativeWeight = 0f;
 
-        for (int i = 0; i < neutralEnemyPrefabs.Count; i++)
+        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
         {
             cumalativeWeight += enemyNormalizedWeights[i];
 
-            if (willUseCurrency && currentShopCurrency < neutralEnemyPrefabs[i].Cost) continue;
+            if (willUseCurrency && currentShopCurrency < NeutralEnemyPrefabs[i].Cost) continue;
 
             if (randomValue < cumalativeWeight)
             {
-                enemyPooler.ChangePrefab(neutralEnemyPrefabs[i].gameObject);
+                enemyPooler.ChangePrefab(NeutralEnemyPrefabs[i].gameObject);
 
                 Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(GetRandomEnemySpawnPointTransform().position);
                 spawnedEnemy.Init(this);
 
                 if(UnityEngine.Random.value < eliteChance)
                 {
-                    Debug.Log($"Elite {spawnedEnemy.GetType()} spawned");
                     // If the spawned enemy is an elite, apply the elite status effect
-                    EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, worldManager.BiomeDatabase.BombEliteStatusEffect, spawnedEnemy.gameObject);
+                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.BiomeDatabase.EliteStatusEffects[UnityEngine.Random.Range(0, worldManager.BiomeDatabase.EliteStatusEffects.Count)];
+                    //Debug.Log($"Elite {eliteStatusEffectToApply.Name} {spawnedEnemy.GetType()} spawned!");
+
+                    EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
                 }
 
                 OnEnemySpawned?.Invoke(spawnedEnemy);
@@ -132,12 +134,28 @@ public class EnemySpawner : MonoBehaviour
 
                 if (willUseCurrency)
                 {
-                    currentShopCurrency -= neutralEnemyPrefabs[i].Cost;
+                    currentShopCurrency -= NeutralEnemyPrefabs[i].Cost;
                 }
 
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// Spawns an enemy based on the provided enemy prefab.
+    /// </summary>
+    /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
+    public void SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
+    {
+        enemyPooler.ChangePrefab(enemyPrefab.gameObject);
+
+        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(spawnPosition);
+        spawnedEnemy.Init(this);
+
+        OnEnemySpawned?.Invoke(spawnedEnemy);
+
+        enemiesSpawned.Add(spawnedEnemy);
     }
 
     /// <summary>
@@ -175,14 +193,14 @@ public class EnemySpawner : MonoBehaviour
 
         float totalWeight = 0f;
 
-        foreach (Enemy enemy in neutralEnemyPrefabs)
+        foreach (Enemy enemy in NeutralEnemyPrefabs)
         {
             totalWeight += 1f / Mathf.Pow(enemy.Cost, weightingSkewFactor);
         }
 
-        for (int i = 0; i < neutralEnemyPrefabs.Count; i++)
+        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
         {
-            float weight = 1f / Mathf.Pow(neutralEnemyPrefabs[i].Cost, weightingSkewFactor);
+            float weight = 1f / Mathf.Pow(NeutralEnemyPrefabs[i].Cost, weightingSkewFactor);
 
             enemyNormalizedWeights.Add(weight / totalWeight);
         }

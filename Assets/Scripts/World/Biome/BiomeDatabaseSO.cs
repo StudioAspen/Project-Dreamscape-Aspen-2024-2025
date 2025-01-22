@@ -30,7 +30,7 @@ public class BiomeDatabaseSO : ScriptableObject
     [field: SerializeField] public LandManager DefaultLandPrefab { get; private set; }
 
     [field: Header("Elite Status Effects")]
-    [field: SerializeField] public BombEliteVariantStatusEffectSO BombEliteStatusEffect { get; private set; }
+    [field: SerializeField] public List<EliteVariantStatusEffectSO> EliteStatusEffects { get; private set; } = new List<EliteVariantStatusEffectSO>();
 
     [field: Header("Biomes")]
     [field: SerializeField, SerializedDictionary("Biome Type", "Biome Data")]

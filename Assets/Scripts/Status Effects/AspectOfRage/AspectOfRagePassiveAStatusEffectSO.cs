@@ -45,8 +45,8 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
 
 
     // for stacks
-    private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, entity.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, attacker.gameObject);
     }
 }

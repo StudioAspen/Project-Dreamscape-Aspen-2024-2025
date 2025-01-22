@@ -10,12 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60aad13350c08ac458666a61ea5ae678, type: 3}
-  m_Name: WorldDatabase
+  m_Name: BiomeDatabase
   m_EditorClassIdentifier: 
   <DefaultLandPrefab>k__BackingField: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
-  <BombEliteStatusEffect>k__BackingField: {fileID: 11400000, guid: 076d2b95efb85964ebe73b4fef7d25fe,
-    type: 2}
+  <EliteStatusEffects>k__BackingField:
+  - {fileID: 11400000, guid: 076d2b95efb85964ebe73b4fef7d25fe, type: 2}
+  - {fileID: 11400000, guid: fb00bcff14eb5df4885bef7461ddcd90, type: 2}
+  - {fileID: 11400000, guid: ee93f4f7b9df7bb4a850cfd107539d3a, type: 2}
+  - {fileID: 11400000, guid: 7e7eb645585274f4d8fcfbcc4c301120, type: 2}
+  - {fileID: 11400000, guid: d0bd0b4a909472a4b91a87d8edcf6f9e, type: 2}
+  - {fileID: 11400000, guid: cd80a2c8d212e674599d6764bcee072e, type: 2}
   <BiomesDictionary>k__BackingField:
     _serializedList:
     - Key: 0

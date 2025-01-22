@@ -18,11 +18,13 @@ public class EntityDebugCanvasUI : MonoBehaviour
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
+        entity.OnEntityHeal += Entity_OnEntityHeal;
     }
 
     private void OnDestroy()
     {
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
+        entity.OnEntityHeal -= Entity_OnEntityHeal;
     }
 
     private void OnEnable()
@@ -52,5 +54,10 @@ public class EntityDebugCanvasUI : MonoBehaviour
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
         healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth);
+    }
+
+    private void Entity_OnEntityHeal(Entity healedEntity, int healValue)
+    {
+        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth);
     }
 }

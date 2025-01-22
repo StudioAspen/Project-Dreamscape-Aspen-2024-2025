@@ -98,9 +98,7 @@ public class Leaper : Enemy
                 if (hitEntities.Contains(enemyEntity)) continue;
                 hitEntities.Add(enemyEntity);
 
-                enemyEntity.TakeDamage(CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()), gameObject, true);
-
-                //switch to some state
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
             }
         }
     }

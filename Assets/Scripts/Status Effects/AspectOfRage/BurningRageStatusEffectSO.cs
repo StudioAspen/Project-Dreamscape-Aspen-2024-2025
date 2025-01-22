@@ -35,7 +35,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     {
         base.OnTick();
 
-        if(damagePerTick > 0) entity.TakeDamage(damagePerTick, entity.GetRandomPositionOnCollider(), source, false);
+        if(damagePerTick > 0) entity.TakeDamage(damagePerTick, entity.GetRandomPositionOnCollider(), source, false); // Don't use DealDamageToEntity as we don't want DOT to count as lifesteal
     }
 
     private protected override void OnExpire()
@@ -95,9 +95,16 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
             if (enemy.Team != entity.Team) continue; // filter out unfriendly entities
 
-            TrySpreadToNearbyAlly(enemy, source, ref hasSpreadedToNearestAlly); // try to spread to nearby ally (if not already spreaded)
+            TrySpreadToNearbyAlly(enemy, ref hasSpreadedToNearestAlly); // try to spread to nearby ally (if not already spreaded)
 
-            enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
+            if(source.TryGetComponent(out Entity sourceEntity))
+            {
+                sourceEntity.DealDamageToOtherEntity(enemy, combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition));
+            }
+            else
+            {
+                enemy.TakeDamage(combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
+            }
         }
 
         CustomDebug.InstantiateTemporarySphere(explosionPosition, currentCombustRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
@@ -127,9 +134,8 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     /// Tries to spread the status effect to a nearby ally entity.
     /// </summary>
     /// <param name="target">The target entity to spread the status effect to.</param>
-    /// <param name="killerObject">The object responsible for killing the entity.</param>
     /// <param name="hasSpreadedToNearbyAlly">A reference to a boolean indicating whether the status effect has already spread to a nearby ally.</param>
-    private void TrySpreadToNearbyAlly(Entity target, GameObject killerObject, ref bool hasSpreadedToNearbyAlly)
+    private void TrySpreadToNearbyAlly(Entity target, ref bool hasSpreadedToNearbyAlly)
     {
         if (hasSpreadedToNearbyAlly) return;
         hasSpreadedToNearbyAlly = true;
@@ -137,6 +143,6 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         if (TickDamageMultiplierPerStack == 0) return; // This isnt the extended version of the status effect
 
         // repeatedly apply the status effect to the target entity based on the number of stacks
-        for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, killerObject);
+        for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, source);
     }
 }

@@ -4,9 +4,12 @@ using DG.Tweening;
 using System.Linq;
 using System;
 using System.Collections;
+using DG.Tweening.Core.Easing;
 
 public class Weapon : MonoBehaviour
 {
+    private GameManager gameManager;
+
     private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
     private ParticleSystem trailParticle;
     private Entity holderEntity;
@@ -46,7 +49,7 @@ public class Weapon : MonoBehaviour
     /// </remarks>
     public Action<Entity> OnWeaponEndSwing = delegate { };
     /// <summary>
-    /// Action that is invoked when the weapon starts swinging.
+    /// Action that is invoked when the weapon hits.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
@@ -69,6 +72,8 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         capsuleColliders = GetComponents<CapsuleCollider>().ToList();
         trailParticle = GetComponentInChildren<ParticleSystem>();
         holderEntity = GetComponentInParent<Entity>();
@@ -158,7 +163,7 @@ public class Weapon : MonoBehaviour
                     Vector3 currPoint = currentFrameCollisionRays[i].origin + s / (float)segments * currentFrameCollisionRays[i].direction;
                     Vector3 prevPoint = previousFrameCollisionRays[i].origin + s / (float)segments * previousFrameCollisionRays[i].direction;
 
-                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.localScale.x);
+                    CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.lossyScale.x);
 
                     // Debugging
                     /*Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
@@ -231,7 +236,7 @@ public class Weapon : MonoBehaviour
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
 
-        victim.TakeDamage(damageValue, hitPoint, holderEntity.gameObject);
+        holderEntity.DealDamageToOtherEntity(victim, damageValue, hitPoint);
     }
 
     /// <summary>
@@ -243,12 +248,13 @@ public class Weapon : MonoBehaviour
     {
         if (impactFramesDuration <= 0) return;
 
-        // cant change timescale without game manager
-        GameManager gameManager = FindObjectOfType<GameManager>();
-        if (gameManager == null) return;
-
-        if(impactFramesCoroutine != null) StopCoroutine(impactFramesCoroutine);
-        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(gameManager, timeScale, duration));
+        if(impactFramesCoroutine != null)
+        {
+            StopCoroutine(impactFramesCoroutine);
+            gameManager.SetTimeScale(1);
+        }
+            
+        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(timeScale, duration));
     }
 
     /// <summary>
@@ -257,7 +263,7 @@ public class Weapon : MonoBehaviour
     /// <param name="gameManager">The game manager instance.</param>
     /// <param name="timeScale">The time scale of the impact frames.</param>
     /// <param name="duration">The duration of the impact frames.</param>
-    private IEnumerator ImpactFramesCoroutine(GameManager gameManager, float timeScale, float duration)
+    private IEnumerator ImpactFramesCoroutine(float timeScale, float duration)
     {
         gameManager.SetTimeScale(timeScale);
 

@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Bomb Elite Variant
   m_EditorClassIdentifier: 
   <Stackable>k__BackingField: 0
-  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 5686f86fef18ba6468e1bcfb9bc298db,
+  <Name>k__BackingField: Bomb
+  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 29a5e056ffced1d4a894b9b037698663,
     type: 2}
+  <MaxHealthMultiplier>k__BackingField: 1.5
+  <SizeMultiplier>k__BackingField: 1.5
+  <DamageMultiplier>k__BackingField: 1
   <ExplosionDelay>k__BackingField: 1
   <ExplosionRadius>k__BackingField: 5
   <ExplosionPercentDamage>k__BackingField: 150
