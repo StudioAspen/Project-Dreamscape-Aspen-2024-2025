@@ -22,7 +22,7 @@ public class EscortEventEntity : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(EscortEventEntityWanderState);
+        SetStartState(EntitySpawnState);
     }
 
     private protected override void OnOnDisable()

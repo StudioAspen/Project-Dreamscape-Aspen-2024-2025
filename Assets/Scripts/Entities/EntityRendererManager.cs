@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityTinter : MonoBehaviour
+public class EntityRendererManager : MonoBehaviour
 {
-    [SerializeField] private List<Renderer> renderers = new List<Renderer>();
+    [field: SerializeField] public List<Renderer> Renderers { get; private set; } = new List<Renderer>();
 
     private Dictionary<Renderer, List<Material>> originalMaterials = new Dictionary<Renderer, List<Material>>();
     private Dictionary<Renderer, List<Color>> originalColors = new Dictionary<Renderer, List<Color>>();
@@ -21,7 +21,7 @@ public class EntityTinter : MonoBehaviour
     /// </summary>
     public void CacheOriginalMaterials()
     {
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in Renderers)
         {
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
@@ -36,7 +36,7 @@ public class EntityTinter : MonoBehaviour
     /// <param name="newMaterial">The new material to add.</param>
     public void AddMaterial(Material newMaterial)
     {
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in Renderers)
         {
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
@@ -51,7 +51,7 @@ public class EntityTinter : MonoBehaviour
     /// <param name="material">The material to remove.</param>
     public void RemoveMaterial(Material material)
     {
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in Renderers)
         {
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
@@ -70,7 +70,7 @@ public class EntityTinter : MonoBehaviour
     /// </summary>
     public void RemoveAllMaterials()
     {
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in Renderers)
         {
             renderer.SetSharedMaterials(new List<Material>());
         }
@@ -94,7 +94,7 @@ public class EntityTinter : MonoBehaviour
     /// </summary>
     private void CacheOriginalTints()
     {
-        foreach (Renderer renderer in renderers)
+        foreach (Renderer renderer in Renderers)
         {
             List<Color> colors = new List<Color>();
             for (int i = 0; i < renderer.materials.Length; i++)

@@ -77,7 +77,7 @@ public class Enemy : Entity
 
         if (Ticker.Instance != null) Ticker.Instance.OnTick += OnTick;
 
-        SetStartState(EnemyIdleState);
+        SetStartState(EntitySpawnState);
 
         Target = null;
     }

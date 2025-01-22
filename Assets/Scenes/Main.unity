@@ -757,55 +757,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2866989536264367900, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: eliteChance
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3004667545289962807, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_Name
       value: WorldManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Name
-      value: Bounds_center
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[4].m_Name
-      value: Bounds_size
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[4].m_Value.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[4].m_Value.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[4].m_Value.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[3].m_Overridden
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[4].m_Overridden
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8938620608541455539, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -1600,8 +1555,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

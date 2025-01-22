@@ -3,7 +3,7 @@
 public class EliteVariantStatusEffectSO : StatusEffectSO
 {
     private protected Enemy enemy;
-    private protected EntityTinter entityTinter;
+    private protected EntityRendererManager entityRendererManager;
 
     [field: Header("Elite Config")]
     [field: SerializeField] public string Name { get; private set; } = "Elite";
@@ -30,11 +30,11 @@ public class EliteVariantStatusEffectSO : StatusEffectSO
             return;
         }
 
-        entityTinter = enemy.GetComponent<EntityTinter>();
-        if (entityTinter != null)
+        entityRendererManager = enemy.GetComponent<EntityRendererManager>();
+        if (entityRendererManager != null)
         {
-            entityTinter.RemoveAllMaterials();
-            entityTinter.AddMaterial(EliteMaterial);
+            entityRendererManager.RemoveAllMaterials();
+            entityRendererManager.AddMaterial(EliteMaterial);
         }
 
         enemy.SetMaxHealthModifier(enemy.MaxHealthModifier * MaxHealthMultiplier);
@@ -47,7 +47,7 @@ public class EliteVariantStatusEffectSO : StatusEffectSO
     {
         base.Cancel();
 
-        if (entityTinter != null) entityTinter.RestoreOriginalMaterials();
+        if (entityRendererManager != null) entityRendererManager.RestoreOriginalMaterials();
 
         enemy.SetMaxHealthModifier(enemy.MaxHealthModifier / MaxHealthMultiplier, false);
         enemy.SetEXPValueMultiplier(enemy.EXPValueMultiplier / EXPValueMultiplier);

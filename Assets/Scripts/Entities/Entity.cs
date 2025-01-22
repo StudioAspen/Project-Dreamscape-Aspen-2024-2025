@@ -369,12 +369,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region States
     [field: Header("Entity: States")]
     public EntityBaseState CurrentState { get; protected set; }
+    public EntityBaseState PreviousState { get; protected set; }
     public EntityBaseState DefaultState { get; protected set; }
 
     public EntityEmptyState EntityEmptyState { get; protected set; }
     public EntityStaggeredState EntityStaggeredState { get; protected set; }
     public EntityDeathState EntityDeathState { get; protected set; }
     public EntityLaunchState EntityLaunchState { get; protected set; }
+    public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -388,6 +390,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityDeathState = EntityBaseState.InitializeOrCreate<EntityDeathState>(this);
         EntityLaunchState = EntityBaseState.InitializeOrCreate<EntityLaunchState>(this);
         EntityStaggeredState = EntityBaseState.InitializeOrCreate<EntityStaggeredState>(this);
+        EntitySpawnState = EntityBaseState.InitializeOrCreate<EntitySpawnState>(this);
     }
 
     /// <summary>
@@ -420,6 +423,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
         if (!willForceChange && CurrentState == state) return;
+
+        PreviousState = CurrentState;
 
         CurrentState.OnExit();
         CurrentState = state;

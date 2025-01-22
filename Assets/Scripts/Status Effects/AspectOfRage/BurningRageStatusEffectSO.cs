@@ -6,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Aspect of Rage/Passive A/Burning Rage Stacks")]
 public class BurningRageStatusEffectSO : TickStatusEffectSO
 {
-    private EntityTinter entityTinter;
+    private EntityRendererManager entityRendererManager;
 
     [field: Header("Burning Rage Stacks: Settings")]
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
@@ -25,8 +25,8 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate initial damage per tick
 
-        entityTinter = entity.GetComponent<EntityTinter>();
-        if (entityTinter) entityTinter.TweenTint(GetColorBasedOnStacks(currentStacks));
+        entityRendererManager = entity.GetComponent<EntityRendererManager>();
+        if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks));
 
         entity.OnEntityDeath += Entity_OnEntityDeath;
     }
@@ -40,7 +40,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
     private protected override void OnExpire()
     {
-        if (entityTinter) entityTinter.TweenUnTint();
+        if (entityRendererManager) entityRendererManager.TweenUnTint();
 
         entity.OnEntityDeath -= Entity_OnEntityDeath;
 
@@ -49,7 +49,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
     public override void Cancel()
     {
-        if (entityTinter) entityTinter.ResetTint();
+        if (entityRendererManager) entityRendererManager.ResetTint();
 
         entity.OnEntityDeath -= Entity_OnEntityDeath;
 
@@ -73,7 +73,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate again based on new stacks
 
-        if (entityTinter) entityTinter.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
+        if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
     }
 
     private void Entity_OnEntityDeath(GameObject killer)

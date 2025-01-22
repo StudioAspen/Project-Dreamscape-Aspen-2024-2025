@@ -11,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
     private LandManager landManager;
     private WorldManager worldManager;
     private ObjectPooler enemyPooler;
+    private ObjectPooler materializeVFXPooler;
 
     [field: Header("References")]
     [field: SerializeField] public List<Enemy> NeutralEnemyPrefabs { get; private set; } = new List<Enemy>();
@@ -48,7 +49,8 @@ public class EnemySpawner : MonoBehaviour
         landManager = GetComponent<LandManager>();
         worldManager = FindObjectOfType<WorldManager>();
 
-        enemyPooler = worldManager.GetComponentInChildren<ObjectPooler>();
+        enemyPooler = worldManager.transform.Find("EnemyPooler").GetComponent<ObjectPooler>();
+        materializeVFXPooler = worldManager.transform.Find("MaterializeVFXPooler").GetComponent<ObjectPooler>();
 
         CalculateNormalizedWeights();
     }
@@ -114,23 +116,18 @@ public class EnemySpawner : MonoBehaviour
 
             if (randomValue < cumalativeWeight)
             {
-                enemyPooler.ChangePrefab(NeutralEnemyPrefabs[i].gameObject);
+                Enemy spawnedEnemy = SpawnEnemy(NeutralEnemyPrefabs[i], GetRandomEnemySpawnPointTransform().position);
 
-                Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(GetRandomEnemySpawnPointTransform().position);
-                spawnedEnemy.Init(this);
-
-                if(UnityEngine.Random.value < eliteChance)
+                // If the spawned enemy is an elite, apply a random elite status effect
+                if (UnityEngine.Random.value < eliteChance)
                 {
-                    // If the spawned enemy is an elite, apply the elite status effect
-                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.BiomeDatabase.EliteStatusEffects[UnityEngine.Random.Range(0, worldManager.BiomeDatabase.EliteStatusEffects.Count)];
-                    //Debug.Log($"Elite {eliteStatusEffectToApply.Name} {spawnedEnemy.GetType()} spawned!");
+                    int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantDatabase.EliteVariantStatusEffects.Count);
+                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantDatabase.EliteVariantStatusEffects[randomIndex];
 
                     EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
                 }
 
-                OnEnemySpawned?.Invoke(spawnedEnemy);
-
-                enemiesSpawned.Add(spawnedEnemy);
+                MaterializeEntity(spawnedEnemy);
 
                 if (willUseCurrency)
                 {
@@ -146,7 +143,7 @@ public class EnemySpawner : MonoBehaviour
     /// Spawns an enemy based on the provided enemy prefab.
     /// </summary>
     /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
-    public void SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
+    public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
     {
         enemyPooler.ChangePrefab(enemyPrefab.gameObject);
 
@@ -156,6 +153,29 @@ public class EnemySpawner : MonoBehaviour
         OnEnemySpawned?.Invoke(spawnedEnemy);
 
         enemiesSpawned.Add(spawnedEnemy);
+
+        return spawnedEnemy;
+    }
+
+    /// <summary>
+    /// Materializes an entity by instantiating a materialization visual effect at its position.
+    /// </summary>
+    /// <param name="entity">The entity to materialize.</param>
+    public void MaterializeEntity(Entity entity)
+    {
+        EntityRendererManager entityRendererManager = entity.GetComponent<EntityRendererManager>();
+        if (entityRendererManager == null) return;
+
+        MaterializeVFX materializeVFX = materializeVFXPooler.SpawnObject<MaterializeVFX>(entity.transform.position);
+
+        for(int i = 0; i < entityRendererManager.Renderers.Count; i++)
+        {
+            SkinnedMeshRenderer skinnedMeshRenderer = entityRendererManager.Renderers[i] as SkinnedMeshRenderer;
+            if (skinnedMeshRenderer == null) continue;
+
+            // If the current renderer is the last one, invoke the callback
+            materializeVFX.TriggerMaterializeVFX(skinnedMeshRenderer, i == entityRendererManager.Renderers.Count - 1);
+        }
     }
 
     /// <summary>

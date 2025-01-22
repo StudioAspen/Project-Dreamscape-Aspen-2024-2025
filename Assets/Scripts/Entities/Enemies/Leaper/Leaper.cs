@@ -35,8 +35,6 @@ public class Leaper : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(LeaperWanderState);
-
         OnGrounded += Leaper_OnGrounded;
     }
 
@@ -213,6 +211,7 @@ public class Leaper : Enemy
     private void Leaper_OnGrounded(Vector3 groundedPosition)
     {
         if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntitySpawnState) return;
         if (CurrentState == EntityLaunchState) return;
         if (CurrentState == EntityStaggeredState) return;
 

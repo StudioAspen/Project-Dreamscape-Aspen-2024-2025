@@ -12,7 +12,7 @@ public enum Biome
     OTHER_BIOME
 }
 
-[CreateAssetMenu(fileName = "Biome Database", menuName = "Biome Database")]
+[CreateAssetMenu(fileName = "Biome Database", menuName = "World/Biome Database")]
 public class BiomeDatabaseSO : ScriptableObject
 {
     [Serializable]
@@ -28,9 +28,6 @@ public class BiomeDatabaseSO : ScriptableObject
     }
 
     [field: SerializeField] public LandManager DefaultLandPrefab { get; private set; }
-
-    [field: Header("Elite Status Effects")]
-    [field: SerializeField] public List<EliteVariantStatusEffectSO> EliteStatusEffects { get; private set; } = new List<EliteVariantStatusEffectSO>();
 
     [field: Header("Biomes")]
     [field: SerializeField, SerializedDictionary("Biome Type", "Biome Data")]
