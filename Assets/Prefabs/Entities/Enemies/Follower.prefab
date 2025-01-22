@@ -69,6 +69,7 @@ MonoBehaviour:
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 1
+  <EXPValue>k__BackingField: 20
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
@@ -171,6 +172,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdfa5f99c0738034384fed80a4044c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Renderers>k__BackingField:
+  - {fileID: 7989203739341791905}
+  - {fileID: 3278909593834522684}
 --- !u!1 &2299435363706797073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,6 +1060,12 @@ CapsuleCollider:
   m_Height: 0.35343927
   m_Direction: 0
   m_Center: {x: -0.004895717, y: 3.0477767e-14, z: -6.6753375e-15}
+--- !u!137 &3278909593834522684 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7813590141776298306, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4472509618577045122}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3536604789643257992 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
@@ -1294,6 +1304,12 @@ CapsuleCollider:
   m_Height: 0.56398207
   m_Direction: 1
   m_Center: {x: 9.190318e-11, y: 0.21800901, z: 5.1334492e-11}
+--- !u!137 &7989203739341791905 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5822821947120931875, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4472509618577045122}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8125812320357812319 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3542885339558904099, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,

@@ -33,8 +33,23 @@ public class HealthBarUI : MonoBehaviour
         healthDifferenceFill.sizeDelta = healthFill.sizeDelta;
     }
 
+    /// <summary>
+    /// Sets the health bar based on the current and maximum values.
+    /// If the maximum value is 0, the health bar is set to full and displays "Invincible".
+    /// </summary>
+    /// <param name="currentValue">The current value of the health bar.</param>
+    /// <param name="maxValue">The maximum value of the health bar.</param>
     public void SetHealthBar(int currentValue, int maxValue)
     {
+        if (maxValue == 0)
+        {
+            value = 1; // Make bar full
+            healthFill.sizeDelta = new Vector2(value * rectTransform.sizeDelta.x, rectTransform.sizeDelta.y); // Update fill size
+            healthText.text = "Invincible"; // Update text
+            healthDifferenceFill.sizeDelta = healthFill.sizeDelta;
+            return;
+        }
+
         value = (float)Mathf.Clamp(currentValue, 0, maxValue) / maxValue;
 
         healthFill.sizeDelta = new Vector2(value * rectTransform.sizeDelta.x, rectTransform.sizeDelta.y);

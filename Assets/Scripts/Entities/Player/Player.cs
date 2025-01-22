@@ -59,6 +59,8 @@ public class Player : Entity
         if (!willForceChange && CurrentState == state) return;
         if (CurrentState == PlayerAbilityState && !PlayerAbilityState.CanCancelAbility(state)) return;
 
+        PreviousState = CurrentState;
+
         CurrentState.OnExit();
         CurrentState = state;
         CurrentState.OnEnter();

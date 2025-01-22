@@ -6,15 +6,29 @@ using UnityEngine.AI;
 
 public class Enemy : Entity
 {
-    [field : Header("Enemy: Settings")]
+    [field: Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
+    [field: SerializeField] public int EXPValue { get; protected set; }
+    public float EXPValueMultiplier { get; protected set; } = 1f;
+    private float originalEXPValue;
+
+    /// <summary>
+    /// Sets the EXP value multiplier for the enemy.
+    /// Updates the EXP value based on the new multiplier.
+    /// </summary>
+    /// <param name="multiplier">The new EXP value multiplier.</param>
+    public void SetEXPValueMultiplier(float multiplier)
+    {
+        EXPValueMultiplier = multiplier;
+        EXPValue = Mathf.RoundToInt(EXPValueMultiplier * originalEXPValue);
+    }
 
     [field: Header("Enemy: Custom Collider Settings")]
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }
     [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
     [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (CharacterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (CharacterController.height / 2 - CustomCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + transform.localScale.x * (Quaternion.LookRotation(transform.forward) * CustomCollisionCenterOffset) - transform.localScale.x * (CharacterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + transform.localScale.x * (Quaternion.LookRotation(transform.forward) * CustomCollisionCenterOffset) + transform.localScale.x * (CharacterController.height / 2 -  CustomCollisionRadius) * Vector3.up;
 
     #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }
@@ -23,7 +37,7 @@ public class Enemy : Entity
 
     public Entity Target { get; protected set; }
 
-    private EnemySpawner spawner;
+    public EnemySpawner Spawner { get; private set; }
 
     [HideInInspector] public bool IsAttackAnimationPlaying;
 
@@ -47,12 +61,14 @@ public class Enemy : Entity
     /// <param name="enemySpawner">The enemy spawner.</param>
     public void Init(EnemySpawner enemySpawner)
     {
-        spawner = enemySpawner;
+        Spawner = enemySpawner;
     }
 
     private protected override void OnAwake()
     {
         base.OnAwake();
+
+        originalEXPValue = EXPValue;
     }
 
     private protected override void OnOnEnable()
@@ -61,7 +77,7 @@ public class Enemy : Entity
 
         if (Ticker.Instance != null) Ticker.Instance.OnTick += OnTick;
 
-        SetStartState(EnemyIdleState);
+        SetStartState(EntitySpawnState);
 
         Target = null;
     }
@@ -69,6 +85,8 @@ public class Enemy : Entity
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
+
+        SetEXPValueMultiplier(1f);
 
         if (Ticker.Instance != null) Ticker.Instance.OnTick -= OnTick;
     }
@@ -105,7 +123,7 @@ public class Enemy : Entity
 
 #if UNITY_EDITOR
         Gizmos.color = Color.white;
-        CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+        CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius * transform.localScale.x);
 #endif
     }
 
@@ -113,7 +131,7 @@ public class Enemy : Entity
     {
         base.Die();
 
-        if (spawner != null) spawner.RemoveEnemy(this);
+        if (Spawner != null) Spawner.RemoveEnemy(this);
     }
 
     /// <summary>
@@ -409,7 +427,7 @@ public class Enemy : Entity
 
         if (CustomCollisionRadius <= 0) return result;
 
-        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius, mask);
+        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius * transform.localScale.x, mask);
         if (hits == null) return result;
         if (hits.Length == 0) return result;
 

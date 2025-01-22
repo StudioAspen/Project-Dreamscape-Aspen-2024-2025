@@ -81,32 +81,11 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
             TransitionToAbilityAnimation(GroundImpactAnimationClip);
 
-            DamageWithAOE(AOERadius);
+            Entity.DamageEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEPercentDamage, AOELaunchForce, AOEStunDuration);
+
+            CustomDebug.InstantiateTemporarySphere(player.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
             CameraShakeManager.Instance.ShakeCamera(15f, 1f);
         }
-    }
-
-    private void DamageWithAOE(float radius)
-    {
-        List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(player.transform.position, radius, false);
-
-        foreach (Entity entity in entitiesHit)
-        {
-            if (entity.Team == player.Team) continue; // skip friendly entities
-
-            entity.TakeDamage(
-                player.CalculateDamage(AOEPercentDamage),
-                entity.GetComponent<Collider>().ClosestPointOnBounds(player.transform.position), 
-                player.gameObject, 
-                false);
-
-            Vector3 launchDirection = (entity.GetColliderCenterPosition() - player.transform.position).normalized;
-
-            entity.TryChangeToLaunchState(launchDirection, AOELaunchForce, AOEStunDuration);
-        }
-
-        //insert explosion vfx here:
-        CustomDebug.InstantiateTemporarySphere(player.transform.position, radius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 }

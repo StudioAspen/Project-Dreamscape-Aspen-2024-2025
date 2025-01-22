@@ -2,11 +2,26 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class EntityStatusEffector : MonoBehaviour
 {
+    private Entity entity;
+
     public Dictionary<Type, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<Type, StatusEffectSO>();
+
+    private void Awake()
+    {
+        entity = GetComponent<Entity>();
+
+        entity.OnEntityDestroyed += Entity_OnEntityDestroyed;
+    }
+
+    private void OnDestroy()
+    {
+        entity.OnEntityDestroyed -= Entity_OnEntityDestroyed;
+    }
 
     private void Update()
     {
@@ -19,7 +34,7 @@ public class EntityStatusEffector : MonoBehaviour
     private void UpdateStatusEffects()
     {
         foreach (StatusEffectSO statusEffect in new List<StatusEffectSO>(CurrentStatusEffects.Values))
-        {
+        {   
             statusEffect.Update();
         }
     }
@@ -41,7 +56,7 @@ public class EntityStatusEffector : MonoBehaviour
             }
 
             StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-            currentStatusEffect.OnStack(newStatusEffect); // extend and override
+            currentStatusEffect.Stack(newStatusEffect); // extend and override
 
             return currentStatusEffect;
         }
@@ -127,12 +142,13 @@ public class EntityStatusEffector : MonoBehaviour
         return null;
     }
 
+
     /// <summary>
-    /// Cancels and removes all current status effects from the entity when it is disabled.
+    /// Cancels and removes all current status effects from the entity when it destroyed.
     /// </summary>
-    private void OnDisable()
+    private void Entity_OnEntityDestroyed(Entity entity, GameObject @object)
     {
-        for(int i = 0; i < CurrentStatusEffects.Count; i++)
+        for (int i = 0; i < CurrentStatusEffects.Count; i++)
         {
             StatusEffectSO statusEffect = CurrentStatusEffects.Values.ElementAt(i);
             statusEffect.Cancel();

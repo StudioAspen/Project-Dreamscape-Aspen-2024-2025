@@ -17,7 +17,7 @@ public class HammerFlamingAuraStatusEffectSO : StatusEffectSO
         if (hammerHeadCollider == null)
         {
             Debug.LogError($"{name}: Hammer head capsule collider not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false); // If theres no Weapon, remove this passive
+            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no Weapon, remove this passive
             return;
         }
 
@@ -33,19 +33,15 @@ public class HammerFlamingAuraStatusEffectSO : StatusEffectSO
         hammerHeadCollider.height /= HammerHeadHitboxMultiplier;
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (newStatusEffect.GetType() != GetType())
-        {
-            Debug.LogError($"Cannot override {name} with a different status effect type.");
-            return false;
-        }
+        base.OnStack(newStatusEffect);
 
-        float newToOldRatio = (newStatusEffect as HammerFlamingAuraStatusEffectSO).HammerHeadHitboxMultiplier/HammerHeadHitboxMultiplier;
+        HammerFlamingAuraStatusEffectSO overridingStatusEffect = newStatusEffect as HammerFlamingAuraStatusEffectSO;
+
+        float newToOldRatio = overridingStatusEffect.HammerHeadHitboxMultiplier / HammerHeadHitboxMultiplier;
 
         hammerHeadCollider.radius *= newToOldRatio;
         hammerHeadCollider.height *= newToOldRatio;
-
-        return true;
     }
 }

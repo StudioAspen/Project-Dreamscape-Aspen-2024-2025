@@ -34,6 +34,8 @@ public class DefendWorldEventSO : WorldEventSO
         defendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
         defendEventEntity.SetMaxHealth(DefendEventMaxHealth, true);
 
+        randomLand.EnemySpawner.MaterializeEntity(defendEventEntity);
+
         // Listen for when the defend event entity dies
         defendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 

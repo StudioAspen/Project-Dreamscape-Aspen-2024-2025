@@ -35,8 +35,6 @@ public class Leaper : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(LeaperWanderState);
-
         OnGrounded += Leaper_OnGrounded;
     }
 
@@ -98,9 +96,7 @@ public class Leaper : Enemy
                 if (hitEntities.Contains(enemyEntity)) continue;
                 hitEntities.Add(enemyEntity);
 
-                enemyEntity.TakeDamage(CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()), gameObject, true);
-
-                //switch to some state
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
             }
         }
     }
@@ -215,6 +211,7 @@ public class Leaper : Enemy
     private void Leaper_OnGrounded(Vector3 groundedPosition)
     {
         if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntitySpawnState) return;
         if (CurrentState == EntityLaunchState) return;
         if (CurrentState == EntityStaggeredState) return;
 

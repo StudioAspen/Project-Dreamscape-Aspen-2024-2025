@@ -32,6 +32,8 @@ public class EscortWorldEventSO : WorldEventSO
         escortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
+        randomLand.EnemySpawner.MaterializeEntity(escortEventEntity);
+
         // The land the escort entity spawns on will spawn enemies
         StartEnemySpawnerWithCurrency(randomLand);
 

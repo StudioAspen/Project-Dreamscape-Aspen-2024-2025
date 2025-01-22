@@ -40,12 +40,12 @@ public class DurationStatusEffectSO : StatusEffectSO
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
     /// <returns>True if the override is successful, false otherwise.</returns>
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        base.OnStack(newStatusEffect);
 
-        RemainingDuration += (newStatusEffect as DurationStatusEffectSO).Duration;
+        DurationStatusEffectSO overridingStatusEffect = newStatusEffect as DurationStatusEffectSO;
 
-        return true;
+        RemainingDuration += overridingStatusEffect.Duration;
     }
 }

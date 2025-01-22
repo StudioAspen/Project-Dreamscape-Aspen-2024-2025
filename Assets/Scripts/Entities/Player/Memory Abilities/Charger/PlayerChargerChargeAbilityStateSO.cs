@@ -83,7 +83,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
             Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - player.transform.position;
             enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
-            enemyEntity.TakeDamage(player.CalculateDamage(ChargeContactPercentDamage), hit.point, player.gameObject, false);
+            player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactPercentDamage), hit.point, false);
 
             player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
             return;

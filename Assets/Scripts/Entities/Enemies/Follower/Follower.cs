@@ -33,8 +33,6 @@ public class Follower : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(FollowerWanderState);
-
         FinishAnimation();
     }
 

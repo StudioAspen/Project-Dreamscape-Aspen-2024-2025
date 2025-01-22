@@ -130,14 +130,16 @@ public class Fireball : MonoBehaviour, IPoolableObject
         {
             if (entity.Team != team) 
             {
-                int damage = 0;
-
                 // if caster is an entity, calculate damage based on entity stats
-                if(caster.TryGetComponent(out Entity casterEntity)) damage = casterEntity.CalculateDamage(damagePercent);
-                // otherwise 
-                else damage = Random.Range(damageRange.x, damageRange.y);
-
-                entity.TakeDamage(damage, transform.position, caster);
+                if(caster.TryGetComponent(out Entity casterEntity))
+                {
+                    casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damagePercent), transform.position);
+                }
+                else
+                {
+                    // otherwise 
+                    entity.TakeDamage(Random.Range(damageRange.x, damageRange.y), transform.position, caster);
+                }
             }
         }
 

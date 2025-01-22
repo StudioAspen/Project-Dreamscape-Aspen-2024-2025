@@ -44,8 +44,6 @@ public class Charger : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(ChargerWanderState);
-
         FinishAnimation();
     }
 

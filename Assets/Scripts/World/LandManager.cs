@@ -18,6 +18,7 @@ public class LandManager : MonoBehaviour
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
     [field: SerializeField] public int Level { get; private set; }
+    public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
@@ -26,9 +27,11 @@ public class LandManager : MonoBehaviour
     /// Initializes the LandManager with the given grid position.
     /// </summary>
     /// <param name="gridPosition">The grid position to initialize with.</param>
-    public void Init(Vector2Int gridPosition)
+    public void Init(Vector2Int gridPosition, Biome biomeType)
     {
         GridPosition = gridPosition;
+
+        Biome = biomeType;
     }
 
     private void Awake()

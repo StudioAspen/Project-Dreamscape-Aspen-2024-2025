@@ -22,7 +22,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         if (ownerWeapon == null)
         {
             Debug.LogError($"{name}: Weapon not found on entity: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false); // If theres no Weapon, remove this passive
+            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no Weapon, remove this passive
             return;
         }
 
@@ -36,18 +36,17 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         ownerWeapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
+        AspectOfRagePassiveAStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfRagePassiveAStatusEffectSO;
 
-        BurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStack;
-
-        return true;
+        BurningRageStack = overridingStatusEffect.BurningRageStack;
     }
 
+
     // for stacks
-    private void Weapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, entity.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, attacker.gameObject);
     }
 }
