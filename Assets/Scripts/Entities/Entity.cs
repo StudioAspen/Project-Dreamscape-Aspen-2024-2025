@@ -1209,6 +1209,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Gets the largest size of the collider attached to the entity.
+    /// </summary>
+    /// <returns>The largest size of the collider.</returns>
+    public float GetColliderLargestSize()
+    {
+        Vector3 size = CharacterController.bounds.size;
+
+        return Mathf.Max(size.x, size.y, size.z);
+    }
+
+    /// <summary>
     /// Returns a random position on the collider of the entity.
     /// </summary>
     /// <returns>The random position on the collider.</returns>
