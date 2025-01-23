@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-
 public class AspectsTreeUI : MonoBehaviour
 {
     private GameManager gameManager;
