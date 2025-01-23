@@ -31,14 +31,9 @@ public class FollowerWanderState : FollowerBaseState
 
         wanderTimeElapsed += follower.LocalDeltaTime;
 
-        if (wanderTimeElapsed > randomWanderIntervalDuration)
-        {
-            wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+        if(!follower.IsCurrentPathValid()) SetNewWanderDestination();
 
-            currentWanderDestination = follower.GetRandomWanderPoint(WanderRadiusRange);
-            follower.SetDestination(currentWanderDestination);
-        }
+        if (wanderTimeElapsed > randomWanderIntervalDuration) SetNewWanderDestination();
 
         follower.MoveTowardsDestination();
         follower.SetSpeedModifier(follower.CloseToPoint(currentWanderDestination) ? 0f : 1f);
@@ -48,5 +43,14 @@ public class FollowerWanderState : FollowerBaseState
             follower.ChangeState(follower.EnemyChaseState);
             return;
         }
+    }
+
+    private void SetNewWanderDestination()
+    {
+        wanderTimeElapsed = 0f;
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+
+        currentWanderDestination = follower.GetRandomWanderPoint(WanderRadiusRange);
+        follower.SetDestination(currentWanderDestination);
     }
 }

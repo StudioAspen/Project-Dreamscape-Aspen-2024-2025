@@ -9,7 +9,6 @@ public class EscortEventEntityWanderState : EntityBaseState
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(7f, 10f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(7f, 10f);
 
-
     private EscortEventEntity escortEventEntity;
     private WorldManager worldManager;
 

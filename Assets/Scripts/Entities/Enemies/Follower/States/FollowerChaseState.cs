@@ -41,6 +41,12 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
+        if (!follower.IsCurrentPathValid())
+        {
+            follower.ChangeState(follower.FollowerWanderState);
+            return;
+        }
+
         if(follower.Distance(follower.Target) < follower.FollowerCircleState.CircleRadius)
         {
             CheckCanCircle();
