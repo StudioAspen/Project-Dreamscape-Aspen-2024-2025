@@ -39,6 +39,10 @@ public class ComboDataSO : ScriptableObject
     [field: SerializeField] public float ImpactFramesTimeScale { get; private set; }
     [field: SerializeField] public float ImpactFramesDuration { get; private set; } = 0.25f;
 
+    [field: Header("Weapon Size")]
+    [field: SerializeField] public float WeaponScale { get; private set; } = 1f;
+    [field: SerializeField] public float WeaponScalingDuration { get; private set; } = 0.1f;
+
     /// <summary>
     /// Checks to see if the given combo (starting from the front) is potentially in the other combo
     /// </summary>

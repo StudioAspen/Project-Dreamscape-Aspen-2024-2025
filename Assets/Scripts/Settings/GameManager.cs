@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         DefaultFixedDeltaTime = Time.fixedDeltaTime;
+        Debug.Log(DefaultFixedDeltaTime);
     }
 
     private void Start()
