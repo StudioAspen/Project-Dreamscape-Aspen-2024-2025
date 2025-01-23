@@ -67,6 +67,7 @@ public class Weapon : MonoBehaviour
     private float percentDamage;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
+    private float impactFramesRemainingTime;
     private Coroutine impactFramesCoroutine;
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
 
@@ -246,35 +247,37 @@ public class Weapon : MonoBehaviour
     /// <param name="duration">The duration of the impact frames.</param>
     private void StartImpactFrames(float timeScale, float duration)
     {
-        if (impactFramesDuration <= 0) return;
+        if (duration <= 0) return;
 
         if(impactFramesCoroutine != null)
         {
-            StopCoroutine(impactFramesCoroutine);
-            gameManager.SetTimeScale(1);
+            impactFramesRemainingTime = Mathf.Max(impactFramesRemainingTime, duration);
+            return;
         }
-            
-        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(timeScale, duration));
+        
+        impactFramesRemainingTime = duration;
+        impactFramesCoroutine = StartCoroutine(ImpactFramesCoroutine(timeScale));
     }
 
     /// <summary>
     /// Coroutine that handles the impact frames of the weapon.
     /// </summary>
-    /// <param name="gameManager">The game manager instance.</param>
     /// <param name="timeScale">The time scale of the impact frames.</param>
-    /// <param name="duration">The duration of the impact frames.</param>
-    private IEnumerator ImpactFramesCoroutine(float timeScale, float duration)
+    private IEnumerator ImpactFramesCoroutine(float timeScale)
     {
         gameManager.SetTimeScale(timeScale);
 
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
+        while (impactFramesRemainingTime > 0f)
         {
-            if (gameManager.CurrentState == GameState.PLAYING) elapsedTime += Time.unscaledDeltaTime; // only increment if playing
+            if (gameManager.CurrentState == GameState.PLAYING)
+                impactFramesRemainingTime -= Time.unscaledDeltaTime; // only increment if playing
+
             yield return null;
         }
+        impactFramesRemainingTime = 0f;
 
         gameManager.SetTimeScale(1);
+        impactFramesCoroutine = null;
     }
 
     /// <summary>
