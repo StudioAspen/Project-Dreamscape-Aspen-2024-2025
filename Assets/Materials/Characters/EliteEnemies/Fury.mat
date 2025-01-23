@@ -78,6 +78,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: beb36e10fdd086b478ae021db16c9ffc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_2d6d16e9d31649079d6c7947c2ab4fe1_PainterlyTexture_558820014_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 918130781bc469c44b95dffa9abfa325, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_186755f1ae094704a321b8545877fd6b_Texture_1_Texture2D:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -111,10 +115,13 @@ Material:
     - _Blend: {r: 0.17254902, g: 0, b: 0.3882353, a: 0}
     - _BlendColor: {r: 0.3301887, g: 0.10435208, b: 0.10435208, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _DiffuseColor: {r: 0.8, g: 0.8, b: 0.8, a: 0}
     - _EmissionColor: {r: 5.3403134, g: 5.3403134, b: 5.3403134, a: 0}
     - _EyeGlowColor: {r: 5.3403144, g: 0.16357449, b: 0, a: 0}
     - _Fresnel: {r: 0.654902, g: 1, b: 0.9372549, a: 0}
     - _FresnelColor: {r: 5.992157, g: 2.1877236, b: 0, a: 0}
     - _Shadow: {r: 0.30233067, g: 0.08993412, b: 0.44339618, a: 0}
+    - _ShadowColor: {r: 0.6, g: 0.6, b: 0.6, a: 0}
     - _Specular: {r: 0, g: 1, b: 0.8979104, a: 0}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

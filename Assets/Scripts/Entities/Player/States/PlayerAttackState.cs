@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Unity.Burst.Intrinsics;
@@ -19,6 +21,8 @@ public class PlayerAttackState : PlayerBaseState
 
     private float duration;
     private float timer;
+
+    private Coroutine weaponScaleCoroutine;
 
     private protected override void Init(Entity entity)
     {
@@ -88,6 +92,9 @@ public class PlayerAttackState : PlayerBaseState
         if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
+
+        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
     }
 
     public override void OnExit()
@@ -105,6 +112,9 @@ public class PlayerAttackState : PlayerBaseState
         extraPercentDamage = 100f; // reset the extra damage percentage
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
+
+        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
     public override void OnUpdate()
@@ -283,6 +293,26 @@ public class PlayerAttackState : PlayerBaseState
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
         return true;
+    }
+
+    private IEnumerator StartWeaponScaleCoroutine(float targetScale, float duration)
+    {
+        Ease easeType = Ease.OutQuint;
+
+        float startScale = playerCombat.Weapon.transform.localScale.x;
+        float endScale = targetScale * playerCombat.Weapon.OriginalScale;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            float currentScale = DOVirtual.EasedValue(startScale, endScale, elapsedTime / duration, easeType);
+            playerCombat.Weapon.transform.localScale = currentScale * Vector3.one;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
     }
 }
 
