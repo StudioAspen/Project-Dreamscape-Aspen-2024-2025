@@ -39,13 +39,14 @@ public class ChargerWanderState : ChargerBaseState
 
         charger.TryAssignTarget();
 
+        if(!charger.IsCurrentPathValid())
+        {
+            SetNewWanderDestination();
+        }
+
         if(wanderTimeElapsed > randomWanderIntervalDuration)
         {
-            wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
-
-            currentWanderDestination = charger.GetRandomWanderPoint(WanderRadiusRange);
-            charger.SetDestination(currentWanderDestination);
+            SetNewWanderDestination();
         }
 
         charger.MoveTowardsDestination();
@@ -57,5 +58,17 @@ public class ChargerWanderState : ChargerBaseState
             charger.ChangeState(charger.ChargerTargetDetectedState);
             return;
         }
+    }
+
+    /// <summary>
+    /// Sets a new wander destination for the entity;
+    /// </summary>
+    private void SetNewWanderDestination()
+    {
+        wanderTimeElapsed = 0f;
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+
+        currentWanderDestination = charger.GetRandomWanderPoint(WanderRadiusRange);
+        charger.SetDestination(currentWanderDestination);
     }
 }

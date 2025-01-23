@@ -4,19 +4,19 @@ using UnityEngine;
 public class BruteEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public float MovementSpeedMultiplier { get; private set; } = 0.67f;
+    [field: SerializeField] public float TimeScaleMultiplier { get; private set; } = 0.5f;
 
     private protected override void OnApply()
     {
         base.OnApply();
 
-        enemy.SetStatusSpeedModifier(enemy.SpeedModifier * MovementSpeedMultiplier);
+        enemy.SetLocalTimeScaleModifier(enemy.LocalTimeScaleModifier * TimeScaleMultiplier);
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        enemy.SetStatusSpeedModifier(enemy.SpeedModifier / MovementSpeedMultiplier);
+        enemy.SetLocalTimeScaleModifier(enemy.LocalTimeScaleModifier / TimeScaleMultiplier);
     }
 }

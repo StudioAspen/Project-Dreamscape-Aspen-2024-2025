@@ -7,14 +7,17 @@ using UnityEngine;
 public class EntityDebugCanvasUI : MonoBehaviour
 {
     private Entity entity;
+    private EntityStatusEffector entityStatusEffector;
     private HealthBarUI healthBarUI;
 
     [Header("References")]
     [SerializeField] private TMP_Text entityStateText;
+    [SerializeField] private TMP_Text entityNameText;
 
     private void Awake()
     {
         entity = GetComponentInParent<Entity>();
+        entityStatusEffector = entity.GetComponent<EntityStatusEffector>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
@@ -35,6 +38,22 @@ public class EntityDebugCanvasUI : MonoBehaviour
     private void LateOnEnable()
     {
         healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth);
+
+        EliteVariantStatusEffectSO eliteStatus = null;
+        if (entityStatusEffector != null)
+        {
+            foreach (StatusEffectSO statusEffect in entityStatusEffector.CurrentStatusEffects.Values)
+            {
+                EliteVariantStatusEffectSO eliteVariantStatusEffect = statusEffect as EliteVariantStatusEffectSO;
+                if (eliteVariantStatusEffect != null)
+                {
+                    eliteStatus = eliteVariantStatusEffect;
+                    break;
+                }
+            }
+        }
+
+        if(entityNameText != null) entityNameText.text = $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name}")} {entity.GetType()}";
     }
 
     private IEnumerator LateOnEnableCoroutine()
