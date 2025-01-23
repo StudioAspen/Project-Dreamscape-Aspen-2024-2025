@@ -8,10 +8,10 @@ public class EliteVariantStatusEffectSO : StatusEffectSO
     [field: Header("Elite Config")]
     [field: SerializeField] public string Name { get; private set; } = "Elite";
     [field: SerializeField] public Material EliteMaterial { get; private set; }
-    [field: SerializeField] public float MaxHealthMultiplier { get; private set; } = 1.5f;
-    [field: SerializeField] public float EXPValueMultiplier { get; private set; } = 1.5f;
-    [field: SerializeField] public float SizeMultiplier { get; private set; } = 1.5f;
-    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1.5f;
+    [field: SerializeField] public float MaxHealthMultiplier { get; private set; } = 1.25f;
+    [field: SerializeField] public float EXPValueMultiplier { get; private set; } = 1.25f;
+    [field: SerializeField] public float SizeMultiplier { get; private set; } = 1.25f;
+    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1.25f;
 
     private void OnValidate()
     {
