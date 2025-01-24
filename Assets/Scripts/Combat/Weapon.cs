@@ -99,8 +99,16 @@ public class Weapon : MonoBehaviour
             start.transform.SetParent(transform);
             end.transform.SetParent(transform);
 
-            start.transform.localPosition = capsuleColliders[i].center - (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * Vector3.up;
-            end.transform.localPosition = capsuleColliders[i].center + (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * Vector3.up;
+            Vector3 capsuleColliderDirection = Vector3.up; // Assume the capsule collider direction is set to Y-Axis by default
+            switch (capsuleColliders[i].direction)
+            {
+                case 0: capsuleColliderDirection = Vector3.right; break; // X-Axis
+                case 1: capsuleColliderDirection = Vector3.up; break; // Y-Axis
+                case 2: capsuleColliderDirection = Vector3.forward; break; // Z-Axis
+            }
+
+            start.transform.localPosition = capsuleColliders[i].center - (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * capsuleColliderDirection;
+            end.transform.localPosition = capsuleColliders[i].center + (0.5f * capsuleColliders[i].height - capsuleColliders[i].radius) * capsuleColliderDirection;
 
             colliderStartTransforms.Add(start.transform);
             colliderEndTransforms.Add(end.transform);
@@ -142,7 +150,6 @@ public class Weapon : MonoBehaviour
         if (!isCheckingCollisions)
         {
             currentHitFrame = 0;
-
             return;
         }
 
@@ -167,10 +174,10 @@ public class Weapon : MonoBehaviour
                     CheckHitsWithSphereCast(new Ray(prevPoint, currPoint - prevPoint), Vector3.Distance(currPoint, prevPoint), capsuleColliders[i].radius * transform.lossyScale.x);
 
                     // Debugging
-                    /*Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
-                    CustomGizmos.InstantiateTemporarySphere(currPoint, capsuleColliders[i].radius, 5f,
+/*                    Debug.DrawLine(currPoint, prevPoint, Color.red, 2f);
+                    CustomDebug.InstantiateTemporarySphere(currPoint, capsuleColliders[i].radius * transform.lossyScale.x, 5f,
                         Color.Lerp(new Color(1f, 0, 0, 0.1f), new Color(0, 0, 1f, 0.1f), (i + 1) / capsuleColliders.Count));
-                    CustomGizmos.InstantiateTemporarySphere(prevPoint, capsuleColliders[i].radius, 5f,
+                    CustomDebug.InstantiateTemporarySphere(prevPoint, capsuleColliders[i].radius * transform.lossyScale.x, 5f,
                         Color.Lerp(new Color(1f, 0, 0, 0.1f), new Color(0, 0, 1f, 0.1f), (i + 1) / capsuleColliders.Count));*/
                 }
             }
