@@ -2,46 +2,101 @@
 
 public class PlayerChargeState : PlayerBaseState
 {
-    public PlayerChargeState(Player player) : base(player)
+    private PlayerCombat playerCombat;
+
+    private int attackInputNumber;
+
+    public float Timer { get; private set; }
+    private float duration;
+
+    private protected override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
+
+        playerCombat = player.GetComponent<PlayerCombat>();
+    }
+
+    /// <summary>
+    /// Sets the charge attack input number.
+    /// 1 is Attack1, 2 is Attack2
+    /// </summary>
+    /// <param name="attackInputNumber">The attack input number to set.</param>
+    public void SetChargeAttackInput(int attackInputNumber)
+    {
+        this.attackInputNumber = attackInputNumber;
     }
 
     public override void OnEnter()
     {
-        player.DefaultTransitionToAnimation("Charge");
+        player.TransitionToAnimation("Charge");
 
         player.SetSpeedModifier(0);
+
+        Timer = 0f;
+
+        playerCombat.OnChargeStart?.Invoke(attackInputNumber);
+
+        ChargeAttackActivatedStatusEffectSO chargeAttackActivatedStatusEffect =
+            EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject);
+        duration = chargeAttackActivatedStatusEffect == null ? Mathf.Infinity : chargeAttackActivatedStatusEffect.MaxChargeDuration;
     }
 
     public override void OnExit()
     {
+        playerCombat.OnChargeRelease?.Invoke(attackInputNumber, Timer);
 
+        Timer = 0f;
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        player.DefaultTransitionToAnimation("Charge");
+        Timer += player.LocalDeltaTime;
 
         player.ApplyGravity();
 
+        player.TransitionToAnimation("Charge");
+
         if (player.MoveDirection != Vector3.zero)
         {
-            player.AccelerateToSpeed(player.MovementSpeed);
+            player.AccelerateToHorizontalSpeed(player.MovementSpeed);
             player.ApplyRotationToNextMovement();
         }
         else
         {
-            player.AccelerateToSpeed(0f);
+            player.AccelerateToHorizontalSpeed(0f);
         }
 
         player.RotateToTargetRotation();
-        player.InstantlySetSpeed(player.GetGroundedVelocity().magnitude);
-        player.GroundedMove();
+        player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
+        player.ApplyHorizontalVelocity();
     }
 
-    public override void FixedUpdate()
-    {
 
+    /// <summary>
+    /// Checks if the player can perform a charged attack.
+    /// </summary>
+    /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
+    public bool CanChargedAttack()
+    {
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Checks if the player can charge.
+    /// </summary>
+    /// <returns>True if the player can charge, false otherwise.</returns>
+    public bool CanCharge()
+    {
+        if (EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject) == null) return false;
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.PlayerAttackState) return false;
+        if (player.CurrentState == player.PlayerDashState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+
+        return true;
     }
 }

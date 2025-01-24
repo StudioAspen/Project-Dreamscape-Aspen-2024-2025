@@ -1,21 +1,16 @@
 ﻿using UnityEngine;
 
-public class EntityDeathState : BaseState
+public class EntityDeathState : EntityBaseState
 {
-    private Entity entity;
-
-    private float timer;
-
-    public EntityDeathState(Entity entity) : base(entity)
-    {
-        this.entity = entity;
-    }
-
     public override void OnEnter()
     {
-        entity.DefaultTransitionToAnimation("Death");
+        entity.TransitionToAnimation("Death");
 
-        timer = 0f;
+        entity.SetSpeedModifier(0f);
+
+        entity.SetLocalTimeScale(1f);
+
+        entity.IgnoreOtherEntityCollisions(true);
     }
 
     public override void OnExit()
@@ -23,18 +18,8 @@ public class EntityDeathState : BaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        timer += Time.deltaTime;
-
-        if(timer > 1f)
-        {
-            entity.DestroyEntity();
-        }
-    }
-
-    public override void FixedUpdate()
-    {
-
+        entity.ApplyGravity();
     }
 }

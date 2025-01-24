@@ -4,4 +4,6 @@
 Unity Version 2022.3.5f1
 
 ## External Packages
-1. (Scene Reference Attributes)[https://github.com/KyleBanks/scene-ref-attribute]
+1. https://github.com/Siccity/xNode
+2. https://assetstore.unity.com/packages/tools/utilities/serialized-dictionary-243052 
+3. https://github.com/starikcetin/Eflatun.SceneReference

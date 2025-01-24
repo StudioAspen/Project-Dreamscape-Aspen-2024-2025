@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,18 +11,12 @@ public class Ticker : MonoBehaviour
     [SerializeField] private float tickDuration = 0.2f;
     private float tickTimer;
 
-    [HideInInspector] public UnityEvent OnTick = new UnityEvent();
+    public Action OnTick = delegate { };
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     private void Update()
@@ -33,7 +28,6 @@ public class Ticker : MonoBehaviour
             tickTimer = 0f;
 
             OnTick?.Invoke();
-            Debug.Log("Tick");
         }
     }
 }
