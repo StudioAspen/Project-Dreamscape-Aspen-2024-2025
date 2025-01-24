@@ -21,10 +21,11 @@ public class EscortWorldEventUI : WorldEventUI
     {
         if (escortWorldEvent.EscortEventEntity == null)
         {
+            displayText.color = Color.red;
             displayText.text = $"Failed";
             return;
         }
 
-        displayText.text = $"({escortWorldEvent.EscortEventEntity.CurrentHealth}/{escortWorldEvent.EscortEventEntity.MaxHealth}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
+        displayText.text = $"({Mathf.Max(escortWorldEvent.EscortEventEntity.CurrentHealth, 0)}/{escortWorldEvent.EscortEventEntity.MaxHealth}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
     }
 }

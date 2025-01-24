@@ -21,10 +21,11 @@ public class DefendWorldEventUI : WorldEventUI
     {
         if(defendWorldEvent.DefendEventEntity == null)
         {
+            displayText.color = Color.red;
             displayText.text = $"Failed";
             return;
         }
 
-        displayText.text = $"({defendWorldEvent.DefendEventEntity.CurrentHealth}/{defendWorldEvent.DefendEventEntity.MaxHealth}): {Mathf.Round(defendWorldEvent.RemainingTime)}s";
+        displayText.text = $"({Mathf.Max(defendWorldEvent.DefendEventEntity.CurrentHealth, 0)}/{defendWorldEvent.DefendEventEntity.MaxHealth}): {Mathf.Round(defendWorldEvent.RemainingTime)}s";
     }
 }

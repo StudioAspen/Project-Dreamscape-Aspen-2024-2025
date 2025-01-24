@@ -739,7 +739,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Slides off other entities if there are any below the entity.
     /// </summary>
-    private void SlideOffOtherEntities()
+    private protected virtual void SlideOffOtherEntities()
     {
         if(CurrentState == EntityDeathState) return;
         if(IsIgnoringOtherEntityCollisions()) return;
@@ -748,13 +748,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         int validHitEntitiesBelow = 0;
 
-        // Filter out dead entities
         foreach(RaycastHit hit in GetHitsBelowEntity(LayerMask.GetMask("Entity"), distanceToCheckBelow))
         {
             if(hit.collider.TryGetComponent(out Entity hitEntity))
             {
-                if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue;
-                if(hitEntity.IsIgnoringOtherEntityCollisions()) continue;
+                if(hitEntity.CurrentState == hitEntity.EntityDeathState) continue; // Filter out dead entities
+                if (hitEntity.IsIgnoringOtherEntityCollisions()) continue;
 
                 validHitEntitiesBelow++;
             }
