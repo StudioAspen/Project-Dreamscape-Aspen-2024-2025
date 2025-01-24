@@ -25,12 +25,6 @@ public class EnemyChaseState : EnemyBaseState
             return;
         }
 
-        if (!enemy.IsCurrentPathValid())
-        {
-            enemy.ChangeState(enemy.DefaultState);
-            return;
-        }
-
         enemy.SetDestination(enemy.Target.transform.position);
         enemy.MoveTowardsDestination();
     }

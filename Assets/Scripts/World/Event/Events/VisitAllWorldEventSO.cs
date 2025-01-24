@@ -15,7 +15,7 @@ public class VisitAllWorldEventSO : WorldEventSO
 
     private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
 
-    public override void OnStarted()
+    private protected override void OnStarted()
     {
         // Find all players and if there are none, clear the event
         players = GameObject.FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
@@ -40,7 +40,7 @@ public class VisitAllWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnCleared()
+    private protected override void OnCleared()
     {
         StopEnemySpawners();
 
