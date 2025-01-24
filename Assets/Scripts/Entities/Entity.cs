@@ -1325,8 +1325,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius within which entities will be damaged.</param>
     /// <param name="percentDamage">The percentage of damage to apply to each entity.</param>
+    /// <param name="willTryStagger">Whether to try to stagger the entites hit.</param>
     /// <returns>A list of entities that were damaged.</returns>
-    public static List<Entity> DamageEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float percentDamage)
+    public static List<Entity> DamageEnemyEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float percentDamage, bool willTryStagger = true)
     {
         List<Entity> entitiesInRadius = GetEntitiesThroughAOE(center, radius, false);
         List<Entity> entitiesDamaged = new List<Entity>();
@@ -1338,7 +1339,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             attacker.DealDamageToOtherEntity(entityHit,
                 attacker.CalculateDamage(percentDamage),
                 entityHit.CharacterController.ClosestPointOnBounds(center),
-                false);
+                willTryStagger);
 
             entitiesDamaged.Add(entityHit);
         }
@@ -1355,9 +1356,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="percentDamage">The percentage of damage to apply to the entities within the AOE.</param>
     /// <param name="launchForce">The force with which to launch the entities within the AOE.</param>
     /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
-    public static void DamageEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration)
+    public static void DamageEnemyEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration)
     {
-        List<Entity> entitiesHit = DamageEntitiesWithAOE(attacker, center, radius, percentDamage);
+        List<Entity> entitiesHit = DamageEnemyEntitiesWithAOE(attacker, center, radius, percentDamage, false);
 
         foreach (Entity entityHit in entitiesHit)
         {

@@ -21,7 +21,13 @@ public class EnemyChaseState : EnemyBaseState
 
         if (enemy.Target == null)
         {
-            enemy.ChangeState(enemy.EnemyIdleState);
+            enemy.ChangeState(enemy.DefaultState);
+            return;
+        }
+
+        if (!enemy.IsCurrentPathValid())
+        {
+            enemy.ChangeState(enemy.DefaultState);
             return;
         }
 
