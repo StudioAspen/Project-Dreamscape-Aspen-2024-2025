@@ -23,6 +23,8 @@ public class WorldEventSO : ScriptableObject
     [field: Header("Display")]
     [field: SerializeField] public string EventName { get; private set; } = "Event";
     [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
+    [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
+    private WorldEventUI eventUI;
 
     /// <summary>
     /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
@@ -37,14 +39,52 @@ public class WorldEventSO : ScriptableObject
     }
 
     /// <summary>
+    /// Starts the event.
+    /// Spawns the event UI prefab on the main canvas if a prefab is provided.
+    /// </summary>
+    public void Start()
+    {
+        OnStarted();
+
+        if (EventUIPrefab != null)
+        {
+            Transform mainCanvasTransform = GameObject.FindGameObjectWithTag("Main Canvas").transform;
+            if (mainCanvasTransform == null)
+            {
+                Debug.LogError("Main Canvas not found, cannot instantiate event UI");
+                return;
+            }
+
+            eventUI = GameObject.Instantiate(EventUIPrefab, mainCanvasTransform);
+        }
+    }
+
+    /// <summary>
     /// Called once when starting the event.
     /// </summary>
-    public virtual void OnStarted() { }
+    private protected virtual void OnStarted()
+    {
+
+    }
+
+    /// <summary>
+    /// Clears the event.
+    /// Deletes the event UI prefab if it exists.
+    /// </summary>
+    public void Clear()
+    {
+        OnCleared();
+
+        if (eventUI != null) GameObject.Destroy(eventUI.gameObject);
+    }
 
     /// <summary>
     /// Called once when the event is cleared.
     /// </summary>
-    public virtual void OnCleared() { }
+    private protected virtual void OnCleared()
+    {
+        
+    }
 
     /// <summary>
     /// Called every frame to update the event.

@@ -79,7 +79,7 @@ public class EventManager : MonoBehaviour
     private void SetStartEvent(Type eventType)
     {
         CurrentEvent = GetEvent(eventType);
-        CurrentEvent.OnStarted();
+        CurrentEvent.Start();
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class EventManager : MonoBehaviour
     public void ChangeEvent(Type eventType)
     {
         CurrentEvent = GetEvent(eventType);
-        CurrentEvent.OnStarted();
+        CurrentEvent.Start();
 
         gameManager.ChangeState(GameState.PLAYING);
     }
@@ -163,7 +163,7 @@ public class EventManager : MonoBehaviour
     /// </summary>
     public void ClearEvent()
     {
-        CurrentEvent?.OnCleared();
+        CurrentEvent?.Clear();
 
         gameManager.ChangeState(GameState.BIOME_SELECTION);
     }

@@ -81,7 +81,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
             TransitionToAbilityAnimation(GroundImpactAnimationClip);
 
-            Entity.DamageEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEPercentDamage, AOELaunchForce, AOEStunDuration);
+            Entity.DamageEnemyEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEPercentDamage, AOELaunchForce, AOEStunDuration);
 
             CustomDebug.InstantiateTemporarySphere(player.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 

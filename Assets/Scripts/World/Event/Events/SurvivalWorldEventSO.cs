@@ -10,23 +10,18 @@ public class SurvivalWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
     [field: SerializeField] public float SurvivalEventDuration { get; private set; } = 120f;
-    [field: SerializeField] public TMP_Text SurvivalEventUIPrefab { get; private set; }
 
-    private TMP_Text UIText;
+    public float RemainingTime { get; private set; }
 
-    private float remainingTime;
-
-    public override void OnStarted()
+    private protected override void OnStarted()
     {
-        UIText = GameObject.Instantiate(SurvivalEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
-
         // Spawn enemies on all lands for the duration of the event
         StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), SurvivalEventDuration);
 
-        remainingTime = SurvivalEventDuration;
+        RemainingTime = SurvivalEventDuration;
     }
 
-    public override void OnCleared()
+    private protected override void OnCleared()
     {
         StopEnemySpawners();
 
@@ -34,19 +29,15 @@ public class SurvivalWorldEventSO : WorldEventSO
         {
             land.EnemySpawner.KillAll();
         }
-
-        GameObject.Destroy(UIText.gameObject);
     }
 
     public override void OnUpdate()
     {
-        remainingTime -= Time.deltaTime;
+        RemainingTime -= Time.deltaTime;
 
-        UIText.text = $"{Mathf.Round(remainingTime)}s";
-
-        if(remainingTime <= 0f)
+        if(RemainingTime <= 0f)
         {
-            remainingTime = 0f;
+            RemainingTime = 0f;
             eventManager.ClearEvent();
             return;
         }

@@ -19,16 +19,13 @@ public class PlayerCameraController : MonoBehaviour
         player = FindObjectOfType<Player>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        AttachToPlayer();
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
-
-    private void Start()
-    {
-        AttachToPlayer();
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)

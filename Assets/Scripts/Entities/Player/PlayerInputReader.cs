@@ -10,7 +10,6 @@ public class PlayerInputReader : MonoBehaviour
     private PlayerControls playerControls;
 
     private Player player;
-    private GameManager gameManager;
 
     public Action<ComboAction> OnComboAction = delegate { };
 
@@ -29,12 +28,6 @@ public class PlayerInputReader : MonoBehaviour
     {
         playerControls = FindObjectOfType<InputManager>().PlayerControls;
         player = GetComponent<Player>();
-
-        gameManager = FindObjectOfType<GameManager>();
-        if(gameManager == null)
-        {
-            Debug.LogWarning("No game manager found.");
-        }
     }
 
     private void OnEnable()
@@ -222,35 +215,26 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack1Performed()
     {
-        if (!IsPlaying()) return;
-
         BufferInput(ComboAction.ATTACK1);
     }
 
     private void OnAttack2Performed()
     {
-        if (!IsPlaying()) return;
-
         BufferInput(ComboAction.ATTACK2);
     }
 
     private void OnAttack1ChargedPerformed()
     {
-        if (!IsPlaying()) return;
-
         BufferInput(ComboAction.CHARGED_ATTACK1);
     }
 
     private void OnAttack2ChargedPerformed()
     {
-        if (!IsPlaying()) return;
-
         BufferInput(ComboAction.CHARGED_ATTACK2);
     }
 
     private void OnAttack1Charging()
     {
-        if (!IsPlaying()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(1);
@@ -259,21 +243,9 @@ public class PlayerInputReader : MonoBehaviour
 
     private void OnAttack2Charging()
     {
-        if (!IsPlaying()) return;
         if (!player.PlayerChargeState.CanCharge()) return;
 
         player.PlayerChargeState.SetChargeAttackInput(2);
         player.ChangeState(player.PlayerChargeState);
-    }
-
-    /// <summary>
-    /// Determines whether the game is currently in the playing state.
-    /// </summary>
-    /// <returns>True if the game is in the playing state, false otherwise.</returns>
-    private bool IsPlaying()
-    {
-        if (gameManager == null) return true;
-
-        return gameManager.CurrentState == GameState.PLAYING;
     }
 }
