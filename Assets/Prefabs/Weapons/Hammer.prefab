@@ -4935,10 +4935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6783d80e507fcc4fb394fa75f758f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capsuleColliders:
-  - {fileID: 8465198154066823501}
-  - {fileID: 7691410506760389046}
-  trailParticle: {fileID: 6969131340073634712}
   <Combos>k__BackingField:
   - {fileID: 11400000, guid: d08752b192726424c84ffaff07eb3ab1, type: 2}
   - {fileID: 11400000, guid: 00d269358e037cb45b41ba880a256c9b, type: 2}
@@ -4994,9 +4990,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.120803565
-  m_Height: 1.0826007
+  m_Height: 1.1511238
   m_Direction: 1
-  m_Center: {x: 0, y: 0.4048211, z: 0}
+  m_Center: {x: 0, y: 0.37055957, z: 0}
 --- !u!1 &2206007959178876986
 GameObject:
   m_ObjectHideFlags: 0
