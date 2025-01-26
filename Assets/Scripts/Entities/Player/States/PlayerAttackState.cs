@@ -13,7 +13,7 @@ public class PlayerAttackState : PlayerBaseState
 
     [field: Header("Config")]
     [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
-    [field: SerializeField] public float AttackNearbyInDirectionHalfAngle { get; private set; } = 25f;
+    [field: SerializeField] public float AttackNearbyInFrontHalfAngle { get; private set; } = 25f;
 
     public ComboDataSO ComboData { get; private set; }
 
@@ -40,8 +40,8 @@ public class PlayerAttackState : PlayerBaseState
 
         Gizmos.DrawLine(transform.position, transform.position + player.TargetForwardDirection * AttackNearbyRadius);
 
-        Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInDirectionHalfAngle, 0f) * player.TargetForwardDirection;
-        Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInDirectionHalfAngle, 0f) * player.TargetForwardDirection;
+        Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
+        Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
 
         Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
         Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
@@ -114,7 +114,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
         if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
-        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
     public override void OnUpdate()
@@ -151,52 +151,23 @@ public class PlayerAttackState : PlayerBaseState
         if (nearbyTargets.Count == 0)
         {
             // If there is no nearby target, look at the direction the player is moving
-            if (player.IsMoving)
-            {
-                player.ApplyRotationToNextMovement();
-                player.RotateToTargetRotation();
-                //Debug.Log("No nearby targets, looking at direction of movement");
-            }
-            else
-            {
-                // If not moving just rotate to the direction of the camera calculated on enter this state
-                player.RotateToTargetRotation();
-                //Debug.Log("No nearby targets, looking at direction of camera");
-            }
+            if(player.IsMoving) player.ApplyRotationToNextMovement(); // If moving calculate the target rotation/forward based on the input and camera
+            player.RotateToTargetRotation();
         }
         else
         {
-            if (player.IsMoving)
-            {
-                // If there is a nearby target and you are pressing inputs, look at the nearest target at the direction you are trying to move
-                player.ApplyRotationToNextMovement(); // Calculate the target rotation/forward based on the input and camera
+            player.ApplyRotationToNextMovement(); // Calculate the target rotation/forward based on the input and camera
 
-                Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.TargetForwardDirection, AttackNearbyInDirectionHalfAngle);
-                if (closestEntity != null)
-                {
-                    player.LookAt(closestEntity.transform.position);
-                    //Debug.Log("Looking at closest target in direction of movement");
-                }
-                else
-                {
-                    player.RotateToTargetRotation();
-                    //Debug.Log("No nearby targets in direction of movement, looking at direction of movement");
-                } 
+            // If there is a nearby target, look at the target based off your camera/moving direction
+            Entity closestEntityInFront = GetClosestEntityFromPieCutout(nearbyTargets, player.TargetForwardDirection, AttackNearbyInFrontHalfAngle);
+            if(closestEntityInFront != null)
+            {
+                player.LookAt(closestEntityInFront.transform.position);
             }
             else
             {
-                // If there is a nearby target and you are NOT pressing inputs, try look at the nearest target in the direction you are facing
-                Entity closestEntity = GetClosestEntityFromPieCutout(nearbyTargets, player.transform.forward, AttackNearbyInDirectionHalfAngle);
-                if (closestEntity != null)
-                {
-                    player.LookAt(closestEntity.transform.position);
-                    //Debug.Log("Looking at closest target in direction of facing");
-                }
-                else
-                {
-                    player.LookAt(nearbyTargets[0].transform.position);
-                    //Debug.Log("No nearby targets in direction of facing, looking at closest target");
-                } 
+                if(player.IsMoving) player.RotateToTargetRotation(); // If no target is in front of you, look at the direction you are moving
+                else player.LookAt(nearbyTargets[0].transform.position); // If no target is in front of you, look at the closest target
             }
         }
     }

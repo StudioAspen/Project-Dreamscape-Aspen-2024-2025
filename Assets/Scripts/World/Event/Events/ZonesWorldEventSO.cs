@@ -15,7 +15,7 @@ public class ZonesWorldEventSO : WorldEventSO
 
     private List<GameObject> debugSpheres = new List<GameObject>();
 
-    public override void OnStarted()
+    private protected override void OnStarted()
     {
         activeLands = 0;
 
@@ -39,7 +39,7 @@ public class ZonesWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnCleared()
+    private protected override void OnCleared()
     {
         StopEnemySpawners();
 

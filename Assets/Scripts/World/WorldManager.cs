@@ -32,9 +32,11 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private Transform ghostLandTransform;
 
     [field: Header("Biome Selection")]
-    [field: SerializeField] public EliteVariantDatabaseSO EliteVariantDatabase { get; private set; }
     [field: SerializeField] public BiomeDatabaseSO BiomeDatabase { get; private set; }
     private Biome currentBiomeSelection = Biome.DREAM;
+
+    [field: Header("Possible Elites")]
+    [field: SerializeField] public List<EliteVariantStatusEffectSO> EliteVariantStatusEffects { get; private set; } = new List<EliteVariantStatusEffectSO>();
 
     private void Awake()
     {

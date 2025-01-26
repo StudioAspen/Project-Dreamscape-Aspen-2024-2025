@@ -14,35 +14,29 @@ public class DefendWorldEventSO : WorldEventSO
     [field: SerializeField] public float DefendEventDuration { get; private set; } = 60f;
     [field: SerializeField] public int DefendEventMaxHealth { get; private set; } = 200;
     [field: SerializeField] public DefendEventEntity DefendEventEntityPrefab { get; private set; }
-    [field: SerializeField] public TMP_Text DefendEventUIPrefab { get; private set; }
+    public DefendEventEntity DefendEventEntity { get; private set; }
 
-    private TMP_Text UIText;
+    public float RemainingTime { get; private set; }
 
-    private DefendEventEntity defendEventEntity;
-
-    float remainingTime;
-
-    public override void OnStarted()
+    private protected override void OnStarted()
     {
-        UIText = GameObject.Instantiate(DefendEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
-        
         // All lands will spawn enemies
         StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
 
         // Select a random land and spawn the defend event entity in the center of the land
         LandManager randomLand = worldManager.GetRandomLand();
-        defendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        defendEventEntity.SetMaxHealth(DefendEventMaxHealth, true);
+        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
+        DefendEventEntity.SetMaxHealth(DefendEventMaxHealth, true);
 
-        randomLand.EnemySpawner.MaterializeEntity(defendEventEntity);
+        randomLand.EnemySpawner.MaterializeEntity(DefendEventEntity);
 
         // Listen for when the defend event entity dies
-        defendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
+        DefendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 
-        remainingTime = DefendEventDuration;
+        RemainingTime = DefendEventDuration;
     }
 
-    public override void OnCleared()
+    private protected override void OnCleared()
     {
         StopEnemySpawners();
 
@@ -52,26 +46,22 @@ public class DefendWorldEventSO : WorldEventSO
         }
         
         // Remove the defend event entity and cleanup the listener
-        if(defendEventEntity != null)
+        if(DefendEventEntity != null)
         {
-            defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
-            GameObject.Destroy(defendEventEntity.gameObject);
+            DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
+            GameObject.Destroy(DefendEventEntity.gameObject);
         }
-
-        GameObject.Destroy(UIText.gameObject);
     }
 
     public override void OnUpdate()
     {
-        if(defendEventEntity == null) return;
+        if(DefendEventEntity == null) return;
 
-        remainingTime -= Time.deltaTime;   
+        RemainingTime -= Time.deltaTime;   
 
-        UIText.text = $"{Mathf.Round(remainingTime)}s";
-
-        if (remainingTime <= 0 && defendEventEntity.CurrentHealth > 0)
+        if (RemainingTime <= 0 && DefendEventEntity.CurrentHealth > 0)
         {
-            remainingTime = 0f;
+            RemainingTime = 0f;
             eventManager.ClearEvent();
             return;
         }
@@ -79,7 +69,7 @@ public class DefendWorldEventSO : WorldEventSO
 
     private void DefendEventEntity_OnEntityDeath(GameObject killerObject)
     {
-        defendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
+        DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
 
         Debug.Log("Defend Event Entity has died. You failed.");
     }

@@ -16,9 +16,9 @@ MonoBehaviour:
   <Description>k__BackingField: A stationary object will placed at the center of
     the land for 1 minute, Every 30 seconds it will go to a neighboring land. All
     lands will spawn enemies, if the object survives, trigger EOW.
+  <EventUIPrefab>k__BackingField: {fileID: 597010184163234115, guid: a36730bfe74a18e49a364614fc6e99e6,
+    type: 3}
   <DefendEventDuration>k__BackingField: 60
   <DefendEventMaxHealth>k__BackingField: 200
   <DefendEventEntityPrefab>k__BackingField: {fileID: -6622033700469236084, guid: 283748bb881c25f47834dfa195740453,
-    type: 3}
-  <DefendEventUIPrefab>k__BackingField: {fileID: 4578142094218361530, guid: a36730bfe74a18e49a364614fc6e99e6,
     type: 3}

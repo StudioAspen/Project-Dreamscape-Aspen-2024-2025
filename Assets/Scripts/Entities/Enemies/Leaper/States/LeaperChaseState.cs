@@ -15,6 +15,7 @@ public class LeaperChaseState : EnemyChaseState
     private Entity rememberedTarget;
 
     private Vector3 currentHopDestination;
+    private Vector3 directionToHopDestination;
 
     private protected override void Init(Entity entity)
     {
@@ -67,13 +68,14 @@ public class LeaperChaseState : EnemyChaseState
             }
 
             currentHopDestination = GetCurrentHopDestination();
+            directionToHopDestination = (currentHopDestination - leaper.transform.position).normalized;
 
             leaper.Hop(currentHopDestination, ChaseHopHeight);
 
             leaper.TransitionToAnimation("JumpingUp");
         }
 
-        leaper.LookAt(currentHopDestination);
+        leaper.LookAt(leaper.transform.position + directionToHopDestination);
 
         if (!leaper.IsGrounded)
         {

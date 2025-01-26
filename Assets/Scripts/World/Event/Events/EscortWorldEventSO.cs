@@ -12,38 +12,32 @@ public class EscortWorldEventSO : WorldEventSO
     [field: SerializeField] public float EscortEventDuration { get; private set; } = 120f;
     [field: SerializeField] public int EscortEventMaxHealth { get; private set; } = 200;
     [field: SerializeField] public EscortEventEntity EscortEventEntityPrefab { get; private set; }
-    [field: SerializeField] public TMP_Text EscortEventUIPrefab { get; private set; }
-
-    private TMP_Text UIText;
-
-    private EscortEventEntity escortEventEntity;
+    public EscortEventEntity EscortEventEntity { get; private set; }
     private LandManager escortPreviousLand;
 
-    float remainingTime;
+    public float RemainingTime { get; private set; }
 
-    public override void OnStarted()
+    private protected override void OnStarted()
     {
-        UIText = GameObject.Instantiate(EscortEventUIPrefab, GameObject.FindGameObjectWithTag("Main Canvas").transform);
-
         LandManager randomLand = worldManager.GetRandomLand();
 
         // Spawn the escort entity on the random land
-        escortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        escortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
+        EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
+        EscortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
-        randomLand.EnemySpawner.MaterializeEntity(escortEventEntity);
+        randomLand.EnemySpawner.MaterializeEntity(EscortEventEntity);
 
         // The land the escort entity spawns on will spawn enemies
         StartEnemySpawnerWithCurrency(randomLand);
 
         // Listen for the escort entity's death
-        escortEventEntity.OnEntityDeath += EscortEventEntity_OnEntityDeath;
+        EscortEventEntity.OnEntityDeath += EscortEventEntity_OnEntityDeath;
 
-        remainingTime = EscortEventDuration;
+        RemainingTime = EscortEventDuration;
     }
 
-    public override void OnCleared()
+    private protected override void OnCleared()
     {
         StopEnemySpawners();
 
@@ -53,28 +47,24 @@ public class EscortWorldEventSO : WorldEventSO
         }
 
         // Remove the escort entity and cleanup the listener
-        if(escortEventEntity != null)
+        if(EscortEventEntity != null)
         {
-            escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
-            GameObject.Destroy(escortEventEntity.gameObject);
+            EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
+            GameObject.Destroy(EscortEventEntity.gameObject);
         }
-
-        GameObject.Destroy(UIText.gameObject);
     }
 
     public override void OnUpdate()
     {
-        if (escortEventEntity == null) return;
+        if (EscortEventEntity == null) return;
 
         MonitorEscortEntityLand();
 
-        remainingTime -= Time.deltaTime;
+        RemainingTime -= Time.deltaTime;
 
-        UIText.text = $"{Mathf.Round(remainingTime)}s";
-
-        if (remainingTime <= 0 && escortEventEntity.CurrentHealth > 0)
+        if (RemainingTime <= 0 && EscortEventEntity.CurrentHealth > 0)
         {
-            remainingTime = 0f;
+            RemainingTime = 0f;
             eventManager.ClearEvent();
             return;
         }
@@ -93,7 +83,7 @@ public class EscortWorldEventSO : WorldEventSO
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
     {
-        escortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
+        EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         
         StopEnemySpawners();
 
@@ -105,7 +95,7 @@ public class EscortWorldEventSO : WorldEventSO
     /// </summary>
     private void MonitorEscortEntityLand()
     {
-        if (worldManager.TryGetLandByWorldPosition(escortEventEntity.transform.position, out LandManager currentLand))
+        if (worldManager.TryGetLandByWorldPosition(EscortEventEntity.transform.position, out LandManager currentLand))
         {
             if (currentLand != escortPreviousLand)
             {

@@ -43,7 +43,6 @@ public class FollowerChaseState : EnemyChaseState
 
         if (!follower.IsCurrentPathValid())
         {
-            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 

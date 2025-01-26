@@ -121,8 +121,8 @@ public class EnemySpawner : MonoBehaviour
                 // If the spawned enemy is an elite, apply a random elite status effect
                 if (UnityEngine.Random.value < eliteChance)
                 {
-                    int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantDatabase.EliteVariantStatusEffects.Count);
-                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantDatabase.EliteVariantStatusEffects[randomIndex];
+                    int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantStatusEffects.Count);
+                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantStatusEffects[randomIndex];
 
                     EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
                 }
