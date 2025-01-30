@@ -95,7 +95,7 @@ public static class CustomDebug
     public static GameObject InstantiateTemporarySphere(Vector3 center, float radius, float expireDuration, UnityEngine.Color color)
     {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        GameObject.Destroy(sphere.GetComponent<Collider>());
+        sphere.GetComponent<Collider>().enabled = false;
         sphere.name = "Temporary Sphere";
         sphere.transform.position = center;
         sphere.transform.localScale = radius * 2f * Vector3.one;

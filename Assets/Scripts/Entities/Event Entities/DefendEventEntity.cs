@@ -40,4 +40,10 @@ public class DefendEventEntity : Entity
     {
         
     }
+
+    // Override to disable sliding
+    private protected override void SlideOffOtherEntities()
+    {
+
+    }
 }

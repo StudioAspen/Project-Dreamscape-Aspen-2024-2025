@@ -175,7 +175,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
             if (enemy == victim) continue; // filter out victim
             if (enemy.Team != victim.Team) continue; // filter out attacker's allies
 
-            int explosionDamage = attacker.CalculateDamage(radius); // calculate the damage
+            int explosionDamage = attacker.CalculateDamage(ChargedOnHitExplosionPercentDamage); // calculate the damage
 
             attacker.DealDamageToOtherEntity(enemy, explosionDamage, hitPoint); // deal damage to enemy entities
         }

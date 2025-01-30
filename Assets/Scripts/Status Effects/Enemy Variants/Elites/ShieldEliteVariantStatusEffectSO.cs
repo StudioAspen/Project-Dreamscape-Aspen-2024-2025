@@ -5,7 +5,8 @@ using UnityEngine;
 public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public float TodoShieldPrefab { get; private set; } = 1f;
+    [field: SerializeField] public ShieldVFX ShieldVFXPrefab { get; private set; }
+    private ShieldVFX shieldVFXInstance;
 
     private protected override void OnApply()
     {
@@ -14,6 +15,10 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
         enemy.SetMaxHealth(0, false); // Make the enemy invincible (MaxHealth = 0 means unkillable)
 
         enemy.OnEntityTakeDamage += Enemy_OnEntityTakeDamage;
+
+        shieldVFXInstance = Instantiate(ShieldVFXPrefab, enemy.GetColliderCenterPosition(), Quaternion.identity);
+        shieldVFXInstance.Init(enemy.GetColliderLargestSize() / 2, enemy.transform, enemy.GetColliderCenterPosition() - enemy.transform.position);
+        shieldVFXInstance.PlayStartAnimation();
     }
 
     public override void Cancel()
@@ -21,6 +26,14 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
         base.Cancel();
 
         enemy.OnEntityTakeDamage -= Enemy_OnEntityTakeDamage; // Just in case the enemy dies before the shield is broken
+
+        // Just in case the enemy dies before the shield is broken
+        if (shieldVFXInstance != null) shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
+    }
+
+    public override void Update()
+    {
+        base.Update();
     }
 
     private void Enemy_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
@@ -29,5 +42,7 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
 
         enemy.SetMaxHealthModifier(enemy.MaxHealthModifier); // Make the enemy killable again
         enemy.TakeDamage(0, enemy.GetColliderCenterPosition(), source, false); // Deal 0 damage to update the health bar
+
+        shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
     }
 }

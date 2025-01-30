@@ -100,10 +100,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghostLandTransform: {fileID: 4562900200964922340}
-  <EliteVariantDatabase>k__BackingField: {fileID: 11400000, guid: 909ef3a8bcbb21d41bf1bcac6385883e,
-    type: 2}
   <BiomeDatabase>k__BackingField: {fileID: 11400000, guid: 3cd142a13b4f30541b5d350499677ef4,
     type: 2}
+  <EliteVariantStatusEffects>k__BackingField:
+  - {fileID: 11400000, guid: 076d2b95efb85964ebe73b4fef7d25fe, type: 2}
+  - {fileID: 11400000, guid: fb00bcff14eb5df4885bef7461ddcd90, type: 2}
+  - {fileID: 11400000, guid: ee93f4f7b9df7bb4a850cfd107539d3a, type: 2}
+  - {fileID: 11400000, guid: 7e7eb645585274f4d8fcfbcc4c301120, type: 2}
+  - {fileID: 11400000, guid: d0bd0b4a909472a4b91a87d8edcf6f9e, type: 2}
+  - {fileID: 11400000, guid: cd80a2c8d212e674599d6764bcee072e, type: 2}
 --- !u!114 &8447086163662410526
 MonoBehaviour:
   m_ObjectHideFlags: 0

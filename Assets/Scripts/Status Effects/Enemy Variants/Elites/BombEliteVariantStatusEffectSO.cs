@@ -36,7 +36,7 @@ public class BombEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
 
     private void Explode(Vector3 center)
     {
-        Entity.DamageEntitiesWithAOELaunch(enemy, center, ExplosionRadius, ExplosionPercentDamage, ExplosionLaunchForce, ExplosionStunDuration);
+        Entity.DamageEnemyEntitiesWithAOELaunch(enemy, center, ExplosionRadius, ExplosionPercentDamage, ExplosionLaunchForce, ExplosionStunDuration);
 
         CustomDebug.InstantiateTemporarySphere(center, ExplosionRadius, 1f, new Color(1f, 0, 0, 0.2f));
     }

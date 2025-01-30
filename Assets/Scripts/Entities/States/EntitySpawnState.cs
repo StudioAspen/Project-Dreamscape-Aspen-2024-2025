@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class EntitySpawnState : EntityBaseState
 {
@@ -6,6 +7,16 @@ public class EntitySpawnState : EntityBaseState
     [field: SerializeField] public float SpawnDuration { get; protected set; } = 1.5f;
 
     private protected float timer = 0f;
+
+    /// <summary>
+    /// Action that is invoked when the entity finsihes spawning
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity spawnedEntity</c>: The spawned entity.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity> OnEntityFinishSpawn = delegate { };
 
     public override void OnEnter()
     {
@@ -18,7 +29,7 @@ public class EntitySpawnState : EntityBaseState
 
     public override void OnExit()
     {
-
+        OnEntityFinishSpawn?.Invoke(entity);
     }
 
     public override void OnUpdate()
