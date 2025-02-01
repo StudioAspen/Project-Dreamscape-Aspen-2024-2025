@@ -10,9 +10,9 @@ public class AspectsTreeUI : MonoBehaviour
 {
     private GameManager gameManager;
     private PlayerControls playerControls;
+    private AspectsManager aspectsManager;
 
     [Header("References")]
-    [SerializeField] private AspectsManager aspectsManager;
     [SerializeField] private AspectButtonUI aspectButtonUIPrefab;
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text tokensText;
@@ -27,11 +27,13 @@ public class AspectsTreeUI : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-        playerControls = FindObjectOfType<InputManager>().PlayerControls;
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
+
+        Player.OnPlayerSpawned += Player_OnPlayerSpawned;
     }
 
     private void OnDestroy()
@@ -39,6 +41,8 @@ public class AspectsTreeUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
 
         playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
+
+        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -49,34 +53,33 @@ public class AspectsTreeUI : MonoBehaviour
             return;
         }
 
+        if(aspectsManager == null) return;
+
         Enable();
     }
 
     private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
     {
-/*        if (gameManager.CurrentState == GameState.PLAYING) ;
-        else if (gameManager.CurrentState == GameState.ASPECT_SELECTION) gameManager.ChangeState(GameState.PLAYING);
-*/
+        if(aspectsManager == null) return;
+
         gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
-    private void OnEnable()
+    private void Player_OnPlayerSpawned(Player player)
     {
-        // reset scroll rect back to center
-        if(scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
-
-        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
-
-        GenerateTree();
-    }
-    
-    private void OnDisable()
-    {
-        DeleteTree();
+        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+        
+        aspectsManager = player.GetComponent<AspectsManager>();
     }
 
     private void GenerateTree()
     {
+        if (aspectsManager == null)
+        {
+            Debug.LogError("Aspects manager not found");
+            return;
+        }
+
         AspectTree aspectTree = aspectsManager.CurrentAspectTree;
         if(aspectTree == null)
         {
@@ -120,11 +123,20 @@ public class AspectsTreeUI : MonoBehaviour
 
     private void Enable()
     {
+        // reset scroll rect back to center
+        if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
+
+        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
+
+        GenerateTree();
+
         gameObject.SetActive(true);
     }
 
     private void Disable()
     {
         gameObject.SetActive(false);
+
+        DeleteTree();
     }
 }

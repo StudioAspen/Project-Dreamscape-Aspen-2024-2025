@@ -26,7 +26,7 @@ public class PlayerInputReader : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<InputManager>().PlayerControls;
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
     }
 

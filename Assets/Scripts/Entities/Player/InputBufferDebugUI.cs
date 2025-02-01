@@ -2,10 +2,15 @@
 
 public class InputBufferDebugUI : MonoBehaviour
 {
-    [SerializeField] private PlayerInputReader playerInputReader;
+    private PlayerInputReader playerInputReader;
 
     [SerializeField] private int fontSize = 36; // Added for scaling text
     [SerializeField] private float scaleFactor = 3f; // Scale multiplier for area
+
+    private void Awake()
+    {
+        playerInputReader = FindObjectOfType<PlayerInputReader>();
+    }
 
     private void OnGUI()
     {

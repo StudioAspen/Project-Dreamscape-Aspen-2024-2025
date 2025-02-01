@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 public class EventSelectUI : MonoBehaviour
 {
-    private InputManager inputManager;
+    private GameInputManager inputManager;
     private GameManager gameManager;
     private EventManager eventManager;
     private Image panel;
@@ -39,7 +39,7 @@ public class EventSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = FindObjectOfType<InputManager>();
+        inputManager = FindObjectOfType<GameInputManager>();
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         panel = GetComponent<Image>();
@@ -59,7 +59,7 @@ public class EventSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(GameInputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
 
@@ -69,7 +69,7 @@ public class EventSelectUI : MonoBehaviour
             card.DisableSelectedIndicator();
         }
 
-        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == GameInputManager.ControlScheme.GAMEPAD)
         {
             // Set the middle card as selected
             EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
@@ -249,7 +249,7 @@ public class EventSelectUI : MonoBehaviour
         }
 
         // Set the middle card as selected
-        if (inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
+        if (inputManager.CurrentControlScheme == GameInputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
     }
 
     private void DisableCardButtons()

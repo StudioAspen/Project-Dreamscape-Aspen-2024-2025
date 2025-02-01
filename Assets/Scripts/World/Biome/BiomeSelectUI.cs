@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class BiomeSelectUI : MonoBehaviour
 {
-    private InputManager inputManager;
+    private GameInputManager inputManager;
     private GameManager gameManager;
     private Image panel;
 
@@ -20,7 +20,7 @@ public class BiomeSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = FindObjectOfType<InputManager>();
+        inputManager = FindObjectOfType<GameInputManager>();
         gameManager = FindObjectOfType<GameManager>();
         panel = GetComponent<Image>();
 
@@ -36,7 +36,7 @@ public class BiomeSelectUI : MonoBehaviour
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(GameInputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.BIOME_SELECTION) return;
 
@@ -46,7 +46,7 @@ public class BiomeSelectUI : MonoBehaviour
             //card.DisableSelectedIndicator();
         }
 
-        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == GameInputManager.ControlScheme.GAMEPAD)
         {
             // Set the middle card as selected
             EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
@@ -107,7 +107,7 @@ public class BiomeSelectUI : MonoBehaviour
             card.EnableButton();
         }
 
-        if (inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
+        if (inputManager.CurrentControlScheme == GameInputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(biomeCards[1].gameObject);
     }
 
     private void DisableCards()

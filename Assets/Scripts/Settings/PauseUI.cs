@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PauseUI : MonoBehaviour
 {
-    private InputManager inputManager;
+    private GameInputManager inputManager;
     private PlayerControls playerControls;
     private GameManager gameManager;
 
@@ -27,7 +27,7 @@ public class PauseUI : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = FindObjectOfType<InputManager>();
+        inputManager = FindObjectOfType<GameInputManager>();
         playerControls = inputManager.PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
 
@@ -63,11 +63,11 @@ public class PauseUI : MonoBehaviour
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
-    private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
+    private void InputManager_OnControlSchemeChanged(GameInputManager.ControlScheme newControlScheme)
     {
         if (gameManager.CurrentState != GameState.PAUSED) return;
 
-        if (newControlScheme == InputManager.ControlScheme.GAMEPAD)
+        if (newControlScheme == GameInputManager.ControlScheme.GAMEPAD)
         {
             // Set the resume button as selected
             EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
@@ -98,7 +98,7 @@ public class PauseUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        if(inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
+        if(inputManager.CurrentControlScheme == GameInputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
     }
 
     private void Disable()

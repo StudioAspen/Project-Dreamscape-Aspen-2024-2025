@@ -1,9 +1,12 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 
 public class ProgressionUI : MonoBehaviour
 {
+    private GameManager gameManager;
     private ProgressionManager progressionManager;
 
     [Header("References")]
@@ -13,7 +16,26 @@ public class ProgressionUI : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         progressionManager = FindObjectOfType<ProgressionManager>();
+
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void GameManager_OnGameStateChanged(GameState newState)
+    {
+        if (newState != GameState.LAND_EMPOWERMENT)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
+        gameObject.SetActive(true);
     }
 
     private void Update()

@@ -11,6 +11,8 @@ public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
+    public static Action<Player> OnPlayerSpawned = delegate { };
+
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
@@ -82,6 +84,8 @@ public class Player : Entity
         base.OnAwake();
 
         playerInputReader = GetComponent<PlayerInputReader>();
+
+        OnPlayerSpawned?.Invoke(this);
 
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
     }
