@@ -40,17 +40,6 @@ public class LeaperAttackState : LeaperBaseState
             * leaper.CalculateHopDuration(rememberedTarget.transform.position, hopHeight) // time it takes to get to target
             * rememberedTarget.transform.forward; // direction of the target
 
-        Debug.Log($"Hop height: {hopHeight}, Predicted Movement: {predictedMovement}");
-        if (float.IsNaN(predictedMovement.x) || float.IsNaN(predictedMovement.y) || float.IsNaN(predictedMovement.z))
-        {
-            Debug.LogError($"Target: {rememberedTarget.gameObject.name}, " +
-                $"Target Speed: {rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed}, " +
-                $"Time To Target: {leaper.CalculateHopDuration(rememberedTarget.transform.position, hopHeight)}, " +
-                $"Target Direction: {rememberedTarget.transform.forward}");
-
-            Debug.Break();
-        }
-
         hopDestination = rememberedTarget.GetColliderCenterPosition() + predictedMovement;
 
         hopDirection = (hopDestination - leaper.transform.position).normalized;
