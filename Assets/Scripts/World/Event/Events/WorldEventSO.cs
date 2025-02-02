@@ -48,14 +48,14 @@ public class WorldEventSO : ScriptableObject
 
         if (EventUIPrefab != null)
         {
-            Transform mainCanvasTransform = GameObject.FindGameObjectWithTag("Main Canvas").transform;
-            if (mainCanvasTransform == null)
+            Transform eventDisplayUITransform = GameObject.FindObjectOfType<EventDisplayUI>(true).transform;
+            if (eventDisplayUITransform == null)
             {
                 Debug.LogError("Main Canvas not found, cannot instantiate event UI");
                 return;
             }
 
-            eventUI = GameObject.Instantiate(EventUIPrefab, mainCanvasTransform);
+            eventUI = GameObject.Instantiate(EventUIPrefab, eventDisplayUITransform);
         }
     }
 

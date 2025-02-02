@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: be98add809526944cb143b629904c882,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -259,18 +260,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e9449c6a8e69744db25aff9cece0927, type: 3}
---- !u!114 &333654149 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7451146893933980580, guid: 7e9449c6a8e69744db25aff9cece0927,
-    type: 3}
-  m_PrefabInstance: {fileID: 333654148}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &465791416
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,18 +446,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 895479b7b710f754d80573e1c56c7601, type: 3}
---- !u!114 &661545480 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1619562510006565679, guid: 895479b7b710f754d80573e1c56c7601,
-    type: 3}
-  m_PrefabInstance: {fileID: 661545479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13ad7cfa1c863794e8d569f31452ea3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &847638417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -481,26 +458,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BirdsEyeCamera
-      objectReference: {fileID: 0}
-    - target: {fileID: 1407205188494873199, guid: 081e0c914e0572649ba66e57371d2a14,
-        type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 661545480}
-    - target: {fileID: 1407205188494873199, guid: 081e0c914e0572649ba66e57371d2a14,
-        type: 3}
-      propertyPath: worldManager
-      value: 
-      objectReference: {fileID: 333654149}
-    - target: {fileID: 1407205188494873199, guid: 081e0c914e0572649ba66e57371d2a14,
-        type: 3}
-      propertyPath: landPlacementUIObject
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1407205188494873199, guid: 081e0c914e0572649ba66e57371d2a14,
-        type: 3}
-      propertyPath: landEmpowermentUIObject
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9095603079523069886, guid: 081e0c914e0572649ba66e57371d2a14,
         type: 3}
@@ -722,8 +679,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -963,7 +920,7 @@ SceneRoots:
   - {fileID: 1083734830}
   - {fileID: 465791419}
   - {fileID: 2035567243}
+  - {fileID: 661545479}
   - {fileID: 5378668796785396742}
   - {fileID: 154444554}
-  - {fileID: 661545479}
   - {fileID: 333654148}

@@ -46,21 +46,6 @@ public class AspectsTreeUIPanel : UIPanel
         closeButton.onClick.RemoveListener(CloseButton_OnClick);
     }
 
-    private void OnEnable()
-    {
-        // reset scroll rect back to center
-        if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
-
-        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
-
-        GenerateTree();
-    }
-
-    private void OnDisable()
-    {
-        DeleteTree();
-    }
-
     private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
     {
         if(aspectsManager == null) return;
@@ -78,6 +63,27 @@ public class AspectsTreeUIPanel : UIPanel
     private void CloseButton_OnClick()
     {
         gameManager.ChangeState(GameState.PLAYING);
+    }
+
+    private void OnEnable()
+    {
+        if(aspectsManager == null)
+        {
+            Debug.LogWarning("Aspects manager not found");
+            return;
+        }
+
+        // reset scroll rect back to center
+        if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
+
+        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
+
+        GenerateTree();
+    }
+
+    private void OnDisable()
+    {
+        DeleteTree();
     }
 
     private void GenerateTree()

@@ -136,6 +136,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandEmpowermentUIPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 437933590835551885, guid: 34e64382503536249a5b13e715b66c5a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 928246222418900925, guid: 34e64382503536249a5b13e715b66c5a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -271,6 +276,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EventSelectionUIPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575158561041908543, guid: fc8480327f8c8834f97fe270ef82a988,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4735225833320688023, guid: fc8480327f8c8834f97fe270ef82a988,
         type: 3}
@@ -508,6 +518,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BiomeSelectionUIPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 6720848867947313540, guid: 29c40066b5360f04bbd8a6a98d22b071,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -644,6 +659,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AspectsTreeUIPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 8663218925736720942, guid: d8018c55af358d04fabeebd6843fed24,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -779,6 +799,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LandPlacementUIPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381863932719247587, guid: f38e328eb35ba644aa26985287e04665,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5846276402027858975, guid: f38e328eb35ba644aa26985287e04665, type: 3}
@@ -1153,6 +1178,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseUIPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 7374850743803701376, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8405598298585338313, guid: b0a829d76639fe2488fd029069edc4c6,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1310,10 +1340,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1498068003087667052, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1498068003087667052, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1498068003087667052, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2952021310492031058, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
         type: 3}
       propertyPath: m_Name
       value: PlayUIPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2952021310492031058, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

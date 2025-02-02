@@ -32,7 +32,7 @@ public class PlayerCameraController : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        if(newState == GameState.PLAYING)
+        if (newState == GameState.PLAYING)
         {
             EnableCameraInputs();
         }
@@ -47,7 +47,6 @@ public class PlayerCameraController : MonoBehaviour
         Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
 
         AttachToTarget(spawnedPlayer.transform);
-        EnableCameraInputs();
     }
 
     private void AttachToTarget(Transform targetTransform)
@@ -56,13 +55,13 @@ public class PlayerCameraController : MonoBehaviour
         vCam.Follow = targetTransform;
     }
 
-    private void DisableCameraInputs()
-    {
-        inputProvider.enabled = false;
-    }
-
     private void EnableCameraInputs()
     {
         inputProvider.enabled = true;
+    }
+
+    private void DisableCameraInputs()
+    {
+        inputProvider.enabled = false;
     }
 }

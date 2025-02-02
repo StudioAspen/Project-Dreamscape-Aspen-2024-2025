@@ -357,7 +357,8 @@ MonoBehaviour:
   - asset: {fileID: 102900000, guid: 30b9c8b3e34ba9b47a199c383b0d97f4, type: 3}
     guid: 30b9c8b3e34ba9b47a199c383b0d97f4
   loadingBarSlider: {fileID: 1508882616}
-  afterLoadDelay: 1
+  sliderSmoothSpeed: 0.5
+  afterLoadDelay: 0.5
 --- !u!1 &941490270
 GameObject:
   m_ObjectHideFlags: 0
