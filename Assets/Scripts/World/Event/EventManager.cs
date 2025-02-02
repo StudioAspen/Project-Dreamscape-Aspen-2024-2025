@@ -149,6 +149,20 @@ public class EventManager : MonoBehaviour
         worldManager = GetComponent<WorldManager>();
 
         InitializeEvents();
+
+        Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
+    }
+
+    private void OnDestroy()
+    {
+        Player.OnPlayerDestroyed -= Player_OnPlayerDestroyed;
+    }
+
+    private void Player_OnPlayerDestroyed(Player player)
+    {
+        // If the player is destroyed, fail the event. Keeps track of players before failing if this is multiplayer.
+
+        FailEvent();
     }
 
     private void Start()
@@ -177,5 +191,16 @@ public class EventManager : MonoBehaviour
         CurrentEvent?.Clear();
 
         gameManager.ChangeState(GameState.BIOME_SELECTION);
+    }
+
+    /// <summary>
+    /// Clears the current event and changes the game state to GAME_OVER.
+    /// Unlike a traditional state machine, the EventManager state machine calls OnExit() when clearing the event instead of when changing states.
+    /// </summary>
+    public void FailEvent()
+    {
+        CurrentEvent?.Clear();
+
+        gameManager.ChangeState(GameState.GAME_OVER);
     }
 }

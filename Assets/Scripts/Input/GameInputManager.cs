@@ -77,6 +77,10 @@ public class GameInputManager : InputManager
                 PlayerControls.UI.Enable();
                 UnlockCursor();
                 break;
+            case GameState.GAME_OVER:
+                PlayerControls.UI.Enable();
+                UnlockCursor();
+                break;
             default:
                 break;
         }

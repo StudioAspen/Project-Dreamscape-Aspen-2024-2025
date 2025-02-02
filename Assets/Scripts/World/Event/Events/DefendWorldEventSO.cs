@@ -71,6 +71,8 @@ public class DefendWorldEventSO : WorldEventSO
     {
         DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
 
-        Debug.Log("Defend Event Entity has died. You failed.");
+        StopEnemySpawners();
+
+        eventManager.FailEvent();
     }
 }

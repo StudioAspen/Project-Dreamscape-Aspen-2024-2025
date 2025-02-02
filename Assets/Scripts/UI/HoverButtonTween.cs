@@ -12,10 +12,16 @@ public class HoverButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private Ease tweenEase = Ease.OutCubic;
 
     private Vector3 originalScale;
+    private bool isSelected;
 
     private void Awake()
     {
         originalScale = transform.localScale;
+    }
+
+    private void OnEnable()
+    {
+        if(isSelected) OnSelect(null);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -30,12 +36,16 @@ public class HoverButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnSelect(BaseEventData eventData)
     {
+        isSelected = true;
+
         transform.DOKill();
         transform.DOScale(originalScale * hoverScale, tweenDuration).SetEase(tweenEase).SetUpdate(true);
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
+        isSelected = false;
+
         transform.DOKill();
         transform.DOScale(originalScale, tweenDuration).SetEase(tweenEase).SetUpdate(true);
     }

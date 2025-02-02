@@ -11,7 +11,8 @@ public enum GameState
     LAND_PLACEMENT,
     LAND_EMPOWERMENT,
     EVENT_SELECTION,
-    ASPECT_SELECTION
+    ASPECT_SELECTION,
+    GAME_OVER
 }
 
 public class GameManager : MonoBehaviour
@@ -35,35 +36,7 @@ public class GameManager : MonoBehaviour
         ForceChangeState(GameState.EVENT_SELECTION);
     }
 
-    private void Update()
-    {
-        UpdateState(CurrentState);
-    }
-
     #region State Machine Functions
-    private void UpdateState(GameState state)
-    {
-        switch (state)
-        {
-            case GameState.PLAYING:
-                break;
-            case GameState.PAUSED:
-                break;
-            case GameState.BIOME_SELECTION:
-                break;
-            case GameState.LAND_PLACEMENT:
-                break;
-            case GameState.LAND_EMPOWERMENT:
-                break;
-            case GameState.EVENT_SELECTION:
-                break;
-            case GameState.ASPECT_SELECTION:
-                break;
-            default:
-                break;
-        }
-    }
-
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
@@ -96,6 +69,9 @@ public class GameManager : MonoBehaviour
                 SetTimeScale(0);
                 break;
             case GameState.ASPECT_SELECTION:
+                SetTimeScale(0);
+                break;
+            case GameState.GAME_OVER:
                 SetTimeScale(0);
                 break;
             default:

@@ -87,7 +87,7 @@ public class EscortWorldEventSO : WorldEventSO
         
         StopEnemySpawners();
 
-        Debug.Log("Escort Event Entity has died. You failed.");
+        eventManager.FailEvent();
     }
 
     /// <summary>
