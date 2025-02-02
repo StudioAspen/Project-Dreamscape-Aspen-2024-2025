@@ -5,9 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-public class PauseUI : MonoBehaviour
+public class PauseUIPanel : UIPanel
 {
-    private GameInputManager inputManager;
     private PlayerControls playerControls;
     private GameManager gameManager;
 
@@ -27,15 +26,10 @@ public class PauseUI : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = FindObjectOfType<GameInputManager>();
-        playerControls = inputManager.PlayerControls;
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
 
-        inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
-
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
-
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         resumeButton.OnButtonClicked += ResumeButton_OnButtonClicked;
         optionsButton.OnButtonClicked += OptionsButton_OnButtonClicked;
@@ -48,11 +42,7 @@ public class PauseUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
-
         playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
-
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
 
         resumeButton.OnButtonClicked -= ResumeButton_OnButtonClicked;
         optionsButton.OnButtonClicked -= OptionsButton_OnButtonClicked;
@@ -63,47 +53,9 @@ public class PauseUI : MonoBehaviour
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
-    private void InputManager_OnControlSchemeChanged(GameInputManager.ControlScheme newControlScheme)
-    {
-        if (gameManager.CurrentState != GameState.PAUSED) return;
-
-        if (newControlScheme == GameInputManager.ControlScheme.GAMEPAD)
-        {
-            // Set the resume button as selected
-            EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
-        }
-        else
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
-    }
-
     private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
     {
         gameManager.ChangeState(GameState.PAUSED);
-    }
-
-    private void GameManager_OnGameStateChanged(GameState newState)
-    {
-        if (newState != GameState.PAUSED)
-        {
-            Disable();
-            return;
-        }
-
-        Enable();
-    }
-
-    private void Enable()
-    {
-        gameObject.SetActive(true);
-
-        if(inputManager.CurrentControlScheme == GameInputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
-    }
-
-    private void Disable()
-    {
-        gameObject.SetActive(false);
     }
 
     #region Button Click Events

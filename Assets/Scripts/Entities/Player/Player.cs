@@ -11,7 +11,15 @@ public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
-    public static Action<Player> OnPlayerSpawned = delegate { };
+    /// <summary>
+    /// Action that is invoked when the player is first instantiated.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Player player</c>: The instantiated player</description></item>
+    /// </list>
+    /// </remarks>
+    public static Action<Player> OnPlayerInstantiated = delegate { };
 
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
@@ -85,7 +93,7 @@ public class Player : Entity
 
         playerInputReader = GetComponent<PlayerInputReader>();
 
-        OnPlayerSpawned?.Invoke(this);
+        OnPlayerInstantiated?.Invoke(this);
 
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
     }

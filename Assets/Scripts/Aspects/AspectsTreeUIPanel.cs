@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-public class AspectsTreeUI : MonoBehaviour
+public class AspectsTreeUIPanel : UIPanel
 {
-    private GameManager gameManager;
     private PlayerControls playerControls;
+    private GameManager gameManager;
     private AspectsManager aspectsManager;
 
     [Header("References")]
@@ -18,6 +18,7 @@ public class AspectsTreeUI : MonoBehaviour
     [SerializeField] private TMP_Text tokensText;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private Transform contentTransform;
+    [SerializeField] private Button closeButton;
 
     [Header("Settings")]
     [SerializeField] private float aspectButtonSpacing = 250f;
@@ -26,36 +27,38 @@ public class AspectsTreeUI : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
-
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        gameManager = FindObjectOfType<GameManager>();
 
         playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
 
-        Player.OnPlayerSpawned += Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
+
+        closeButton.onClick.AddListener(CloseButton_OnClick);
     }
 
     private void OnDestroy()
     {
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-
         playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
 
-        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
+
+        closeButton.onClick.RemoveListener(CloseButton_OnClick);
     }
 
-    private void GameManager_OnGameStateChanged(GameState newState)
+    private void OnEnable()
     {
-        if(newState != GameState.ASPECT_SELECTION)
-        {
-            Disable();
-            return;
-        }
+        // reset scroll rect back to center
+        if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
 
-        if(aspectsManager == null) return;
+        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
 
-        Enable();
+        GenerateTree();
+    }
+
+    private void OnDisable()
+    {
+        DeleteTree();
     }
 
     private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
@@ -67,9 +70,14 @@ public class AspectsTreeUI : MonoBehaviour
 
     private void Player_OnPlayerSpawned(Player player)
     {
-        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
         
         aspectsManager = player.GetComponent<AspectsManager>();
+    }
+
+    private void CloseButton_OnClick()
+    {
+        gameManager.ChangeState(GameState.PLAYING);
     }
 
     private void GenerateTree()
@@ -119,24 +127,5 @@ public class AspectsTreeUI : MonoBehaviour
         }
 
         aspectButtonUIs.Clear();
-    }
-
-    private void Enable()
-    {
-        // reset scroll rect back to center
-        if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
-
-        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
-
-        GenerateTree();
-
-        gameObject.SetActive(true);
-    }
-
-    private void Disable()
-    {
-        gameObject.SetActive(false);
-
-        DeleteTree();
     }
 }

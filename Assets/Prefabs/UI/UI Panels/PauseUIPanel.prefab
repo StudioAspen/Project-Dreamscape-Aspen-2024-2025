@@ -1312,7 +1312,7 @@ GameObject:
   - component: {fileID: 8742628126314996836}
   - component: {fileID: 6104820980071430226}
   m_Layer: 5
-  m_Name: PauseUI
+  m_Name: PauseUIPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1350,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88f7bc93fae15e84c82338022ca2b14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DefaultSelectedObject>k__BackingField: {fileID: 1831929751886362336}
   resumeButton: {fileID: 291170545839412760}
   optionsButton: {fileID: 5025451346046659839}
   saveButton: {fileID: 1585568782291963112}

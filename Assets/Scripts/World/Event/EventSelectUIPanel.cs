@@ -8,10 +8,8 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class EventSelectUI : MonoBehaviour
+public class EventSelectUIPanel : UIPanel
 {
-    private GameInputManager inputManager;
-    private GameManager gameManager;
     private EventManager eventManager;
     private Image panel;
 
@@ -39,62 +37,24 @@ public class EventSelectUI : MonoBehaviour
 
     private void Awake()
     {
-        inputManager = FindObjectOfType<GameInputManager>();
-        gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         panel = GetComponent<Image>();
 
         backgroundStartingColor = background.color;
         titleTextStartingColor = titleText.color;
-
-        inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
-
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
-    private void OnDestroy()
+    public override void OnDeselected()
     {
-        inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
-
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
-
-    private void InputManager_OnControlSchemeChanged(GameInputManager.ControlScheme newControlScheme)
-    {
-        if (gameManager.CurrentState != GameState.EVENT_SELECTION) return;
-
         // Visually deselect all cards
         foreach (EventCardUI card in eventCards)
         {
             card.DisableSelectedIndicator();
         }
-
-        if (newControlScheme == GameInputManager.ControlScheme.GAMEPAD)
-        {
-            // Set the middle card as selected
-            EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
-        }
-        else
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
     }
 
-    private void GameManager_OnGameStateChanged(GameState newState)
+    public void OnEnable()
     {
-        if (newState != GameState.EVENT_SELECTION)
-        {
-            Disable();
-            return;
-        }
-
-        Enable();
-    }
-
-    public void Enable()
-    {
-        gameObject.SetActive(true);
-
         AssignRandomEventsToCards();
 
         // Kill all previous tweens on the title and return it to its starting state
@@ -115,7 +75,7 @@ public class EventSelectUI : MonoBehaviour
         PlayStartCardsAnimation();
     }
 
-    public void Disable()
+    public void OnDisable()
     {
         DisableCardButtons();
 
@@ -123,8 +83,6 @@ public class EventSelectUI : MonoBehaviour
         {
             card.InstantlyFlipCard(false);
         }
-
-        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -247,9 +205,6 @@ public class EventSelectUI : MonoBehaviour
 
             card.OnCardClicked += Card_OnCardClicked;
         }
-
-        // Set the middle card as selected
-        if (inputManager.CurrentControlScheme == GameInputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(eventCards[1].gameObject);
     }
 
     private void DisableCardButtons()

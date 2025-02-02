@@ -18,7 +18,7 @@ public class PlayerCameraController : MonoBehaviour
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        Player.OnPlayerSpawned += Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
 
         DisableCameraInputs();
     }
@@ -27,7 +27,7 @@ public class PlayerCameraController : MonoBehaviour
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
 
-        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -44,7 +44,7 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Player_OnPlayerSpawned(Player spawnedPlayer)
     {
-        Player.OnPlayerSpawned -= Player_OnPlayerSpawned;
+        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
 
         AttachToTarget(spawnedPlayer.transform);
         EnableCameraInputs();

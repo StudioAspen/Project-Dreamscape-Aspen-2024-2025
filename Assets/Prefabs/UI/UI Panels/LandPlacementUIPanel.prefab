@@ -143,9 +143,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6848684975116392871}
-  - component: {fileID: 5846276402027858975}
+  - component: {fileID: 1720480282607343814}
   m_Layer: 5
-  m_Name: LandPlacementUI
+  m_Name: LandPlacementUIPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.00012207031}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5846276402027858975
+--- !u!114 &1720480282607343814
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,6 +180,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7381863932719247587}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4d78b3783ec32b4abd1518124cd4783, type: 3}
+  m_Script: {fileID: 11500000, guid: 089d0b9c400c7e641b011d3bc0213529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DefaultSelectedObject>k__BackingField: {fileID: 0}

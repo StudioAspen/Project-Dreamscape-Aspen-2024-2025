@@ -17,6 +17,16 @@ public class EventManager : MonoBehaviour
     public WorldEventSO CurrentEvent { get; private set; } // Current event doesn't update if the game state is not PLAYING
     public WorldEventSO DefaultEvent { get; private set; }
 
+    /// <summary>
+    /// Action that is invoked when the event changes.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>WorldEventSO newEvent</c>: The new event</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<WorldEventSO> OnEventChanged = delegate { };
+
 
     /// <summary>
     /// Initializes the states for the EventManager state machine.
@@ -117,6 +127,7 @@ public class EventManager : MonoBehaviour
     {
         CurrentEvent = GetEvent(eventType);
         CurrentEvent.Start();
+        OnEventChanged?.Invoke(CurrentEvent);
 
         gameManager.ChangeState(GameState.PLAYING);
     }
