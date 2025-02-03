@@ -46,6 +46,7 @@ public class AspectsTreeUIPanel : UIPanel
         Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
         
         aspectsManager = player.GetComponent<AspectsManager>();
+        Debug.LogWarning("Aspects manager assigned");
     }
 
     private void CloseButton_OnClick()

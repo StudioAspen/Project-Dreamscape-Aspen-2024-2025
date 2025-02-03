@@ -9,9 +9,6 @@ public class GameOverUIPanel : UIPanel
 {
     private GameManager gameManager;
 
-    [Header("Scene")]
-    [SerializeField] private SceneReference menuScene;
-
     [Header("Buttons")]
     [SerializeField] private Button menuButton;
 
@@ -29,7 +26,6 @@ public class GameOverUIPanel : UIPanel
 
     private void MenuButton_OnClicked()
     {
-        gameManager.SetTimeScale(1f); // Reset the time scale so that in the next scene, the game runs at normal speed
-        SceneManager.LoadScene(menuScene.Name, LoadSceneMode.Single);
+        gameManager.GoBackToMenu();
     }
 }

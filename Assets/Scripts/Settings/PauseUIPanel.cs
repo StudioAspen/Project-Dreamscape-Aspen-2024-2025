@@ -65,7 +65,7 @@ public class PauseUIPanel : UIPanel
 
     private void MenuButton_OnButtonClicked()
     {
-        Debug.LogWarning("Menu not implemented yet.");
+        gameManager.GoBackToMenu();
     }
 
     private void QuitButton_OnButtonClicked()

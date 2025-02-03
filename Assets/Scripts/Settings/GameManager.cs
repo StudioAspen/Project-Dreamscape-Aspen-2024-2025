@@ -1,8 +1,10 @@
 ﻿using DG.Tweening;
 using DG.Tweening.Core.Easing;
+using Eflatun.SceneReference;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -19,6 +21,9 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     private PlayerControls playerControls;
+
+    [Header("Scene")]
+    [SerializeField] private SceneReference menuScene;
 
     public GameState CurrentState { get; private set; }
     public GameState PreviousState { get; private set; }
@@ -131,4 +136,14 @@ public class GameManager : MonoBehaviour
         Time.fixedDeltaTime = DefaultFixedDeltaTime * timeScale;
     }
     #endregion
+
+    /// <summary>
+    /// Resets the time scale to 1f so that in the next scene, the game runs at normal speed.
+    /// Loads the menu scene.
+    /// </summary>
+    public void GoBackToMenu()
+    {
+        SetTimeScale(1f);
+        SceneManager.LoadScene(menuScene.Name, LoadSceneMode.Single);
+    }
 }
