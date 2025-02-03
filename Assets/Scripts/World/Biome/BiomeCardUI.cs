@@ -30,6 +30,11 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         button.onClick.RemoveListener(OnClickCard);
     }
 
+    private void OnDisable()
+    {
+        isSelected = false;
+    }
+
     public void EnableButton()
     {
         button.interactable = true;

@@ -11,10 +11,6 @@ public class BirdsEyeCameraController : MonoBehaviour
     private WorldManager worldManager;
     private ProgressionManager progressionManager;
 
-    [Header("References")]
-    [SerializeField] private GameObject landPlacementUIObject;
-    [SerializeField] private GameObject landEmpowermentUIObject;
-
     [Header("Settings")]
     [SerializeField] private float minMoveSpeed = 30f;
     [SerializeField] private float maxMoveSpeed = 100f;
@@ -27,7 +23,7 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<InputManager>().PlayerControls;
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
         worldManager = FindObjectOfType<WorldManager>();
         progressionManager = FindObjectOfType<ProgressionManager>();
@@ -81,20 +77,11 @@ public class BirdsEyeCameraController : MonoBehaviour
     private void GameManager_OnGameStateChanged(GameState newState)
     {
         Disable();
-        landPlacementUIObject.SetActive(false);
-        landEmpowermentUIObject.SetActive(false);
 
-        if(newState == GameState.LAND_PLACEMENT)
+        if(newState == GameState.LAND_PLACEMENT || newState == GameState.LAND_EMPOWERMENT)
         {
             Enable();
-            landPlacementUIObject.SetActive(true);
         }
-        
-        if (newState == GameState.LAND_EMPOWERMENT)
-        {
-            Enable();
-            landEmpowermentUIObject.SetActive(true);
-        }    
     }
 
     private void PlayerControls_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)

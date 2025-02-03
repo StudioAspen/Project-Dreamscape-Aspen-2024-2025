@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,49 +6,24 @@ using UnityEngine;
 
 public class EventDisplayUI : MonoBehaviour
 {
-    private GameManager gameManager;
     private EventManager eventManager;
     private TMP_Text titleText;
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
         titleText = GetComponentInChildren<TMP_Text>();
 
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        eventManager.OnEventChanged += EventManager_OnEventChanged;
     }
 
     private void OnDestroy()
     {
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        eventManager.OnEventChanged -= EventManager_OnEventChanged;
     }
 
-    private void Update()
+    private void EventManager_OnEventChanged(WorldEventSO newEvent)
     {
-        if (eventManager.CurrentEvent == null) return;
-
-        titleText.text = $"{eventManager.CurrentEvent.EventName} Event";
-    }
-
-    private void GameManager_OnGameStateChanged(GameState newState)
-    {
-        if (newState != GameState.PLAYING)
-        {
-            Disable();
-            return;
-        }
-
-        Enable();
-    }
-
-    public void Enable()
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void Disable()
-    {
-        gameObject.SetActive(false);
+        titleText.text = $"{newEvent.EventName} Event";
     }
 }

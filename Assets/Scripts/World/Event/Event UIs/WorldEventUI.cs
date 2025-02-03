@@ -14,8 +14,6 @@ public class WorldEventUI : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
 
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
         OnAwake();
     }
 
@@ -26,8 +24,6 @@ public class WorldEventUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-
         OnOnDestroy();
     }
 

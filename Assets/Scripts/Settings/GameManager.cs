@@ -2,6 +2,7 @@
 using DG.Tweening.Core.Easing;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum GameState
 {
@@ -11,11 +12,14 @@ public enum GameState
     LAND_PLACEMENT,
     LAND_EMPOWERMENT,
     EVENT_SELECTION,
-    ASPECT_SELECTION
+    ASPECT_SELECTION,
+    GAME_OVER
 }
 
 public class GameManager : MonoBehaviour
 {
+    private PlayerControls playerControls;
+
     public GameState CurrentState { get; private set; }
     public GameState PreviousState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
@@ -28,6 +32,27 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         DefaultFixedDeltaTime = Time.fixedDeltaTime;
+
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+
+        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
+        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
+    }
+
+    private void OnDestroy()
+    {
+        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
+        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
+    }
+
+    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
+    {
+        ChangeState(GameState.PAUSED);
+    }
+
+    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
+    {
+        ChangeState(GameState.ASPECT_SELECTION);
     }
 
     private void Start()
@@ -37,33 +62,13 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateState(CurrentState);
-    }
-
-    #region State Machine Functions
-    private void UpdateState(GameState state)
-    {
-        switch (state)
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            case GameState.PLAYING:
-                break;
-            case GameState.PAUSED:
-                break;
-            case GameState.BIOME_SELECTION:
-                break;
-            case GameState.LAND_PLACEMENT:
-                break;
-            case GameState.LAND_EMPOWERMENT:
-                break;
-            case GameState.EVENT_SELECTION:
-                break;
-            case GameState.ASPECT_SELECTION:
-                break;
-            default:
-                break;
+            ChangeState(GameState.GAME_OVER);
         }
     }
 
+    #region State Machine Functions
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
@@ -96,6 +101,9 @@ public class GameManager : MonoBehaviour
                 SetTimeScale(0);
                 break;
             case GameState.ASPECT_SELECTION:
+                SetTimeScale(0);
+                break;
+            case GameState.GAME_OVER:
                 SetTimeScale(0);
                 break;
             default:

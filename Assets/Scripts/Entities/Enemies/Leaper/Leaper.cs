@@ -137,7 +137,7 @@ public class Leaper : Enemy
         if (hopDuration == 0f)
         {
             // Calculate initial vertical velocity required to reach hopHeight
-            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
 
             totalFlightTime = CalculateHopDuration(endPosition, hopHeight);
         }
@@ -150,10 +150,12 @@ public class Leaper : Enemy
             // s = v*t - 0.5*g*t^2
             // verticalDisplacement = v * totalFlightTime - 0.5 * gravity * totalFlightTime^2
             initialVerticalVelocity = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(totalFlightTime, 2)) / totalFlightTime;
+            if(float.IsNaN(initialVerticalVelocity)) initialVerticalVelocity = 0f;
         }
 
         // Calculate the horizontal velocity
         Vector3 horizontalVelocity = horizontalDisplacement / totalFlightTime;
+        if(totalFlightTime == 0f) horizontalVelocity = Vector3.zero;
 
         // Combine horizontal and vertical components into the final velocity vector
         Vector3 hopVelocity = horizontalVelocity + Vector3.up * initialVerticalVelocity;
@@ -180,13 +182,14 @@ public class Leaper : Enemy
         float verticalDisplacement = endPosition.y - startPosition.y;
 
         // Calculate initial vertical velocity required to reach hopHeight
-        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
 
         // Time to reach the apex of the hop
         float timeToApex = initialVerticalVelocity / gravity;
 
         // Time to descend from the apex to the end position
         float timeToDescend = Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+        if(float.IsNaN(timeToDescend)) timeToDescend = 0f;
 
         // Total flight time (ascent + descent)
         float totalFlightTime = timeToApex + timeToDescend;
@@ -204,6 +207,8 @@ public class Leaper : Enemy
     public void Hop(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight, hopDuration);
+        
+        if(hopVelocity == Vector3.zero) return;
 
         Launch(hopVelocity.normalized, hopVelocity.magnitude);
     }

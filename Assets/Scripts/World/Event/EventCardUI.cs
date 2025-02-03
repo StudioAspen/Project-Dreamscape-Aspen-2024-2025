@@ -51,6 +51,11 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         button.onClick.RemoveListener(Button_OnClick);
     }
 
+    private void OnDisable()
+    {
+        isSelected = false;
+    }
+
     public void EnableButton()
     {
         button.interactable = true;
