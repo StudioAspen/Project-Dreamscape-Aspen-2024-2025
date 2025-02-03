@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 
 public class PauseUIPanel : UIPanel
 {
-    private PlayerControls playerControls;
     private GameManager gameManager;
 
     [Header("Pause Buttons")]
@@ -26,10 +25,7 @@ public class PauseUIPanel : UIPanel
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
-
-        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
         resumeButton.OnButtonClicked += ResumeButton_OnButtonClicked;
         optionsButton.OnButtonClicked += OptionsButton_OnButtonClicked;
@@ -42,8 +38,6 @@ public class PauseUIPanel : UIPanel
 
     private void OnDestroy()
     {
-        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
-
         resumeButton.OnButtonClicked -= ResumeButton_OnButtonClicked;
         optionsButton.OnButtonClicked -= OptionsButton_OnButtonClicked;
         saveButton.OnButtonClicked -= SaveButton_OnButtonClicked;
@@ -51,11 +45,6 @@ public class PauseUIPanel : UIPanel
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
-    }
-
-    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
-    {
-        gameManager.ChangeState(GameState.PAUSED);
     }
 
     #region Button Click Events

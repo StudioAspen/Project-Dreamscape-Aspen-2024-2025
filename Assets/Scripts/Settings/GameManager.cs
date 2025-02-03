@@ -2,6 +2,7 @@
 using DG.Tweening.Core.Easing;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum GameState
 {
@@ -17,6 +18,8 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    private PlayerControls playerControls;
+
     public GameState CurrentState { get; private set; }
     public GameState PreviousState { get; private set; }
     public Action<GameState> OnGameStateChanged = delegate { };
@@ -29,11 +32,40 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         DefaultFixedDeltaTime = Time.fixedDeltaTime;
+
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+
+        playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
+        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
+    }
+
+    private void OnDestroy()
+    {
+        playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
+        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
+    }
+
+    private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
+    {
+        ChangeState(GameState.PAUSED);
+    }
+
+    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
+    {
+        ChangeState(GameState.ASPECT_SELECTION);
     }
 
     private void Start()
     {
         ForceChangeState(GameState.EVENT_SELECTION);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            ChangeState(GameState.GAME_OVER);
+        }
     }
 
     #region State Machine Functions

@@ -27,10 +27,7 @@ public class AspectsTreeUIPanel : UIPanel
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
-
-        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
 
         Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
 
@@ -39,18 +36,9 @@ public class AspectsTreeUIPanel : UIPanel
 
     private void OnDestroy()
     {
-        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
-
         Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
 
         closeButton.onClick.RemoveListener(CloseButton_OnClick);
-    }
-
-    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
-    {
-        if(aspectsManager == null) return;
-
-        gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
     private void Player_OnPlayerSpawned(Player player)
