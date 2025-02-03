@@ -20,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
     [field: Header("Combo")]
     [SerializeField] private float nonAttackComboResetDelay = 1f;
     [SerializeField] private float attackComboResetDelay = 0.1f;
+    private Coroutine delayedComboResetCoroutine;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
@@ -150,7 +151,7 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void ResetCombos()
     {
-        DOTween.Kill("DelayedComboReset");
+        if (delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
 
         CurrentInputsList.Clear();
         potentialCombos.Clear();
@@ -217,11 +218,33 @@ public class PlayerCombat : MonoBehaviour
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
     private void StartDelayedComboListsReset(float delay)
     {
-        DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(delay / player.LocalTimeScale, ResetCombos).SetId("DelayedComboReset").OnUpdate(() => { 
-            if(player.CurrentState == player.PlayerAttackState) DOTween.Kill("DelayedComboReset");
-            if(player.CurrentState == player.PlayerChargeState) DOTween.Kill("DelayedComboReset");
-        });
+        if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
+        delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
+    }
+
+    private IEnumerator DelayedComboResetCoroutine(float delay)
+    {
+        float elapsedTime = 0;
+        while(elapsedTime < delay)
+        {
+            elapsedTime += player.LocalDeltaTime;
+            yield return null;
+
+            if (player.CurrentState == player.PlayerAttackState)
+            {
+                delayedComboResetCoroutine = null;
+                yield break;
+            }
+            if (player.CurrentState == player.PlayerChargeState)
+            {
+                delayedComboResetCoroutine = null;
+                yield break;
+            }
+        }
+
+        ResetCombos();
+
+        delayedComboResetCoroutine = null;
     }
 
     /// <summary>
