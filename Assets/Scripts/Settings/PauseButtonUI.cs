@@ -41,6 +41,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void OnDisable()
     {
+        isSelected = false;
         DisableSelectedIndicator();
     }
 

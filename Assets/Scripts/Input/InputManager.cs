@@ -81,10 +81,10 @@ public class InputManager : MonoBehaviour
     {
         if (newControlScheme != CurrentControlScheme)
         {
+            // Add your logic for switching input UI or behavior
             CurrentControlScheme = newControlScheme;
 
-            // Add your logic for switching input UI or behavior
-            OnControlSchemeChanged?.Invoke(CurrentControlScheme);
+            OnControlSchemeChanged?.Invoke(newControlScheme);
         }
     }
 

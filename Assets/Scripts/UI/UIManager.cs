@@ -43,7 +43,8 @@ public class UIManager : MonoBehaviour
         // Enable the panel for the new state
         UIPanel panelToActivate = gamePanels[newState];
         panelToActivate.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(panelToActivate.DefaultSelectedObject);
+        panelToActivate.OnDeselected();
+        if (gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(panelToActivate.DefaultSelectedObject);
     }
 
     private void GameInputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
