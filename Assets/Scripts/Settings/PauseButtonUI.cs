@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
-    private PauseUI pauseUI;
+    private PauseUIPanel pauseUI;
     private Button button;
     private TMP_Text buttonText;
 
@@ -19,7 +19,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void Awake()
     {
-        pauseUI = GetComponentInParent<PauseUI>();
+        pauseUI = GetComponentInParent<PauseUIPanel>();
         button = GetComponent<Button>();
         buttonText = GetComponentInChildren<TMP_Text>();
 
@@ -41,6 +41,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void OnDisable()
     {
+        isSelected = false;
         DisableSelectedIndicator();
     }
 

@@ -1240,8 +1240,8 @@ public class Entity : MonoBehaviour, IPoolableObject
         // Calculate the resulting change in velocity from the impulse
         Vector3 deltaVelocity = (force * direction.normalized) / mass;
 
+        AllowChangeFromGroundedToAirborne();
         IsGrounded = false;
-        inAirTimer = 0.01f;
 
         // Apply the change to the current velocity
         velocity = deltaVelocity;

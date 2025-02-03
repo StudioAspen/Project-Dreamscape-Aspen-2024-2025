@@ -53,7 +53,7 @@ public class MinimapController : MonoBehaviour
         image = mask.GetComponentInChildren<RawImage>();
         border = transform.GetChild(0).Find("Border");
 
-        playerControls = FindObjectOfType<InputManager>().PlayerControls;
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         playerControls.Gameplay.ToggleMinimap.performed += PlayerControls_OnToggleMinimapPerformed;
     }
 

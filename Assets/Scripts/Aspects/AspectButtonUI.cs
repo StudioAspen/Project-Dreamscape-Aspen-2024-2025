@@ -10,7 +10,7 @@ public class AspectButtonUI : MonoBehaviour
     private Button button;
     private TMP_Text text;
 
-    private AspectsTreeUI aspectsTreeUI;
+    private AspectsTreeUIPanel aspectsTreeUI;
     private AspectsManager aspectsManager;
     private AspectNodeNode aspectNode;
 
@@ -20,7 +20,7 @@ public class AspectButtonUI : MonoBehaviour
     /// <param name="treeUI">The AspectsTreeUI instance.</param>
     /// <param name="aspectsManager">The AspectsManager instance.</param>
     /// <param name="aspectNode">The AspectNodeNode instance.</param>
-    public void Init(AspectsTreeUI treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
+    public void Init(AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
     {
         aspectsTreeUI = treeUI;
         this.aspectsManager = aspectsManager;
@@ -58,7 +58,7 @@ public class AspectButtonUI : MonoBehaviour
     /// <param name="treeUI">The AspectsTreeUI instance.</param>
     /// <param name="aspectsManager">The AspectsManager instance.</param>
     /// <param name="aspectNode">The AspectNodeNode instance.</param>
-    private void ChangeButton(AspectsTreeUI treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
+    private void ChangeButton(AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
     {
         // only the next possible nodes will be interactable and on the same level as the first applied multi-node level node
         button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);

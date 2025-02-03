@@ -228,10 +228,6 @@ public class PlayerAttackState : PlayerBaseState
         if (victim.WillDieFromDamage(damage)) return;
 
         victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
-
-        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
-
-        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
     }
 
     /// <summary>

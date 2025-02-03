@@ -13,6 +13,10 @@ public class BombEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     [field: SerializeField] public float ExplosionLaunchForce { get; private set; } = 15f;
     [field: SerializeField] public float ExplosionStunDuration { get; private set; } = 2f;
 
+    [field: Header("Camera Shake")]
+    [field: SerializeField] public float CameraShakeDuration { get; private set; } = 1f;
+    [field: SerializeField] public float CameraShakeStrength { get; private set; } = 10f;
+
     private protected override void OnApply()
     {
         base.OnApply();
@@ -37,7 +41,7 @@ public class BombEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     private void Explode(Vector3 center)
     {
         Entity.DamageEnemyEntitiesWithAOELaunch(enemy, center, ExplosionRadius, ExplosionPercentDamage, ExplosionLaunchForce, ExplosionStunDuration);
-
+        CameraShakeManager.Instance.ShakeCamera(CameraShakeStrength, CameraShakeDuration);
         CustomDebug.InstantiateTemporarySphere(center, ExplosionRadius, 1f, new Color(1f, 0, 0, 0.2f));
     }
 }
