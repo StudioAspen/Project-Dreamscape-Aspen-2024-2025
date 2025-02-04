@@ -43,7 +43,7 @@ public class EscortWorldEventSO : WorldEventSO
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
-            land.EnemySpawner.KillAll();
+            land.EnemySpawner.DeactivateAllEnemies();
         }
 
         // Remove the escort entity and cleanup the listener

@@ -45,7 +45,7 @@ public class ZonesWorldEventSO : WorldEventSO
 
         foreach (LandManager land in affectedLands)
         {
-            land.EnemySpawner.KillAll();
+            land.EnemySpawner.DeactivateAllEnemies();
 
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;

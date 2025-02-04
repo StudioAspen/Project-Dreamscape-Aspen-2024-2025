@@ -46,9 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf06985c6b3e8345aa1c8909c9ed3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 0.5
-  bobAmplitude: 0.25
-  bobSpeed: 0.5
+  moveSpeed: 10
   meshRenderer: {fileID: 7158780166949137880}
 --- !u!136 &9018040502299656915
 CapsuleCollider:

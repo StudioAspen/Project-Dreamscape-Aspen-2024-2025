@@ -20,7 +20,7 @@ public class PlayerLeaperGroundPoundJumpAbilityStateSO : PlayerAbilityStateSO
 
     public override bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
-        return GroundPoundState.CanCancelAbility(player, desiredState);
+        return desiredState == player.PlayerAbilityState || desiredState == player.DefaultState;
     }
 
     public override void OnEnter()

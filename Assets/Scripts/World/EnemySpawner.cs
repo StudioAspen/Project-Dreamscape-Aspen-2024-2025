@@ -258,6 +258,19 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// Deactivates all spawned enemies by calling their Die() method.
+    /// </summary>
+    public void DeactivateAllEnemies()
+    {
+        foreach (Enemy enemy in new List<Enemy>(enemiesSpawned))
+        {
+            enemy.Die();
+        }
+
+        isUsingCurrency = false;
+    }
+
+    /// <summary>
     /// Checks if the enemy spawner has used up all of its currency and has all spawned enemies defeated.
     /// Use this method only when the enemy spawner is using currency and has a finite number of enemies to spawn.
     /// </summary>

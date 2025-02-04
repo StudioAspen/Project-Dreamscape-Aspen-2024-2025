@@ -30,6 +30,9 @@ public class ShardHolder : MonoBehaviour
         spawnedShard.Init(entity.GetType(), color, memoryAbility, GetShardDropCount());
     }
 
+    /// <summary>
+    /// Calculates how many shards the shard holder will drop taking into consideration the elite multiplier.
+    /// </summary>
     private int GetShardDropCount()
     {
         int finalShardDropCount = shardDropCount;

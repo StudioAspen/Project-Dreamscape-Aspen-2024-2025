@@ -18,7 +18,7 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
     public override bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
-        return ChargeState.CanCancelAbility(player, desiredState);
+        return desiredState == player.PlayerAbilityState || desiredState == player.DefaultState;
     }
 
     public override void OnEnter()

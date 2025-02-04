@@ -27,7 +27,7 @@ public class SurvivalWorldEventSO : WorldEventSO
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
-            land.EnemySpawner.KillAll();
+            land.EnemySpawner.DeactivateAllEnemies();
         }
     }
 

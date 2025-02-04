@@ -1,13 +1,14 @@
 ﻿using DG.Tweening;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class ShardCollectible : MonoBehaviour
 {
+    private Player player;
+
     [Header("Config")]
-    [SerializeField] private float rotationSpeed = 2f;
-    [SerializeField] private float bobAmplitude = 0.5f;
-    [SerializeField] private float bobSpeed = 1f;
+    [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private MeshRenderer meshRenderer;
     private Color shardColor = Color.blue;
     private Type entityType;
@@ -27,20 +28,26 @@ public class ShardCollectible : MonoBehaviour
         this.shardCount = count;
     }
 
+    private void Awake()
+    {
+        // Gets the closest player
+        player = FindObjectsByType<Player>(FindObjectsSortMode.None).OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).ToList()[0];
+    }
+
     private void Start()
     {
         meshRenderer.material.SetColor("_main", shardColor);
         meshRenderer.material.SetColor("_highlight", shardColor);
         meshRenderer.material.SetColor("_Shine", shardColor);
 
-        transform.localScale = (shardCount/10f) * Vector3.one;
-
-        transform.DOMoveY(transform.position.y + bobAmplitude, bobSpeed).SetLoops(-1, LoopType.Yoyo);
+        transform.localScale = (shardCount/20f) * Vector3.one;
     }
 
     private void Update()
     {
-        transform.Rotate(Vector3.up, rotationSpeed);
+        if (player == null) return;
+
+        transform.position = Vector3.MoveTowards(transform.position, player.GetColliderCenterPosition(), moveSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
