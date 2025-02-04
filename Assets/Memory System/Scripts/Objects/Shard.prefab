@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 943258557320054671}
   - component: {fileID: -4096516039555360675}
   m_Layer: 0
-  m_Name: Leaper
+  m_Name: Shard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,5 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac336d97b0467664da9cea6d9d8c1fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shard: {fileID: 0}
+  shard: {fileID: 11400000, guid: 5da9441fd175d4048aea8b999d86e7bb, type: 2}
   moveSpeed: 5

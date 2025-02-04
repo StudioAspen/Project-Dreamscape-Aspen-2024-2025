@@ -8,7 +8,7 @@ public class TestCrystal : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E)) // Replace with your desired key
         {
-            MemorySystemInterface.Instance.ActivateAbility();
+           // MemorySystemInterface.Instance.ActivateAbility();
         }
     }
 }

@@ -27,4 +27,13 @@ public class Shard : ScriptableObject
         if (level < 1 || level > 3) return null;
         return abilities[level - 1];
     }
+    public string GetShardType()
+    {
+        return shardName;
+    }
+
+    public Color GetShardColor()
+    {
+        return shardColor;
+    }
 }

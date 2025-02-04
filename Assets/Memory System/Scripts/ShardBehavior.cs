@@ -4,27 +4,23 @@ using UnityEngine;
 
 public class ShardBehavior : MonoBehaviour
 {
+    public Shard shard; // Reference to the shard data
+    public float moveSpeed = 5f; // Speed at which the shard moves towards the player
 
-    public Shard shard;
-    public float moveSpeed = 5f;
-
-    private Transform player;
+    private Transform player; // Reference to the player's transform
 
     void Start()
     {
+        // Find the player object by tag
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     void Update()
     {
-        if (player)
+        // Move the shard towards the player
+        if (player != null)
         {
             transform.position = Vector3.MoveTowards(transform.position, player.position, moveSpeed * Time.deltaTime);
-            if (Vector3.Distance(transform.position, player.position) < 0.5f)
-            {
-                MemorySystemInterface.Instance.AddShard(shard);
-                Destroy(gameObject);
-            }
         }
     }
 
@@ -36,7 +32,7 @@ public class ShardBehavior : MonoBehaviour
             MemorySystemInterface memorySystem = other.GetComponent<MemorySystemInterface>();
             if (memorySystem != null)
             {
-                memorySystem.AddShard(shard); // Update the shard count and UI
+                memorySystem.CollectCrystal(shard); // Update the shard count and UI
             }
 
             // Destroy the shard object
