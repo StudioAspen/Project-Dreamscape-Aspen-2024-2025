@@ -12,6 +12,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
     public int RemainingJabs { get; private set; }
 
     private Entity rememberedTarget;
+    private Vector3 directionToTarget;
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
@@ -43,6 +44,8 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
             LeftFistWeapon.SetPercentDamage(JabPercentDamage);
         }
+
+        directionToTarget = rememberedTarget.transform.position - charger.transform.position;
     }
 
     public override void OnExit()
@@ -72,7 +75,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
             return;
         }
 
-        charger.LookAt(rememberedTarget.transform.position, JabRotationSpeed);
+        charger.LookAt(charger.transform.position + directionToTarget, JabRotationSpeed);
 
         // blocks update until attack animation is done
         if (charger.IsAttackAnimationPlaying) return;

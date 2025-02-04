@@ -141,7 +141,6 @@ public class EntityStatusEffector : MonoBehaviour
         return null;
     }
 
-
     /// <summary>
     /// Cancels and removes all current status effects from the entity when it destroyed.
     /// </summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ public class PlayerInputReader : MonoBehaviour
     private PlayerControls playerControls;
 
     private Player player;
+    private MemorySystem memorySystem;
 
     public Action<ComboAction> OnComboAction = delegate { };
 
@@ -28,6 +30,7 @@ public class PlayerInputReader : MonoBehaviour
     {
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
+        memorySystem = player.GetComponent<MemorySystem>();
     }
 
     private void OnEnable()
@@ -173,8 +176,8 @@ public class PlayerInputReader : MonoBehaviour
     {
         if (player.CurrentState == player.PlayerAbilityState) return;
 
-        Debug.LogWarning("Cannot activate memory ability: Memory system not implemented yet.");
-        //player.PlayerAbilityState.ChangeAbilityState(ability, false);
+        //Debug.LogWarning("Cannot activate memory ability: Memory system not implemented yet.");
+        memorySystem.TryActivateMemoryAbility();
     }
 
     private void HandleAttackHoldInputs()

@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AttackNearbyRadius>k__BackingField: 5
-  <AttackNearbyInDirectionHalfAngle>k__BackingField: 25
+  <AttackNearbyInFrontHalfAngle>k__BackingField: 25
 --- !u!1 &2183081733502869962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,6 +1447,7 @@ GameObject:
   - component: {fileID: 3702187593430642151}
   - component: {fileID: 5066363359248579512}
   - component: {fileID: 3859803993434958765}
+  - component: {fileID: 6950320168933061115}
   - component: {fileID: 4562688828567907799}
   - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
@@ -1594,6 +1595,21 @@ MonoBehaviour:
   baseMaxEXP: 10
   maxEXPLinearGrowth: 10
   maxEXPExponentialGrowth: 1.2
+--- !u!114 &6950320168933061115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3f0d576a2c534438f25af9a3c5d2cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShardDictionary>k__BackingField:
+    _serializedList: []
+  <MaxShardsPerLevel>k__BackingField: 25
 --- !u!114 &4562688828567907799
 MonoBehaviour:
   m_ObjectHideFlags: 0

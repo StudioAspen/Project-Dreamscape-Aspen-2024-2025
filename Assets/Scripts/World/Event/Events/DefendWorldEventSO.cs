@@ -42,7 +42,7 @@ public class DefendWorldEventSO : WorldEventSO
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
-            land.EnemySpawner.KillAll();
+            land.EnemySpawner.DeactivateAllEnemies();
         }
         
         // Remove the defend event entity and cleanup the listener

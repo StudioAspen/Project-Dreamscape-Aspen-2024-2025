@@ -46,7 +46,7 @@ public class VisitAllWorldEventSO : WorldEventSO
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
-            land.EnemySpawner.KillAll();
+            land.EnemySpawner.DeactivateAllEnemies();
         }
 
         // Cleanup all visit indicators

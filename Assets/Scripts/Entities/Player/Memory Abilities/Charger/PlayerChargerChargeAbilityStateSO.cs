@@ -29,17 +29,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
     public override bool CanCancelAbility(Player player, EntityBaseState desiredState)
     {
-        bool cannotCancelAbility =
-            desiredState == player.PlayerAttackState ||
-            desiredState == player.PlayerChargeState ||
-            desiredState == player.PlayerDashState ||
-            desiredState == player.PlayerJumpState ||
-            desiredState == player.PlayerFallState ||
-            desiredState == player.PlayerSlideState ||
-            desiredState == player.EntityStaggeredState ||
-            desiredState == player.EntityLaunchState;
-
-        return !cannotCancelAbility;
+        return desiredState == player.PlayerAbilityState || desiredState == player.DefaultState;
     }
 
     public override void OnEnter()
