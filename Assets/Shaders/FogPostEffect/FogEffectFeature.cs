@@ -59,7 +59,7 @@ public class FogEffectFeature : ScriptableRendererFeature
             //if (cameraData.isSceneViewCamera) return;
         
             CommandBuffer cmd = CommandBufferPool.Get("FogEffectFeature");
-            var stack = VolumeManager.instance.stack;
+            var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
             var fogEffect = stack.GetComponent<FogEffectComponent>();
 
             if (fogEffect != null && fogEffect.IsActive())
