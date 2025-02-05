@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8702003990657789017}
   - component: {fileID: 3915645929625153338}
   - component: {fileID: 2681398956060235860}
+  - component: {fileID: 8914569455070870180}
   m_Layer: 16
   m_Name: DefendEventEntity
   m_TagString: Untagged
@@ -155,6 +156,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Renderers>k__BackingField:
   - {fileID: 247041964670782608}
+--- !u!114 &8914569455070870180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2299435363706797073
 GameObject:
   m_ObjectHideFlags: 0
