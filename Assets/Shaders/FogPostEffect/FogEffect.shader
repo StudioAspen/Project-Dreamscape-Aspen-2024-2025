@@ -3,24 +3,23 @@
     Properties
     {
         _MainTex ("Main Texture", 2D) = "white" {}
-        //_PFogColor ("Primary Fog Color", Color) = (1,1,1,1)
-        //_SFogColor("Secondary Fog Color", Color) = (1,1,1,1)
-        //_SkyBoxFogColor("Skybox Fog Color", Color) = (1,1,1,1)
-        //_FogDensity ("Fog Density", Float) = 0.1 // Controls fog intensity
-        //_FogOffset ("Fog Offset", Float) = 1.0  // Distance from which fog starts to apply
-        //_SecondaryOffset ("Secondary Offset", Float) = 1.0
-        //_GradientStrength("Gradient Strength", Float) = 0.7
-        //_FogScattering("Fog Scattering", Float) = 1.0
-        //_NoiseTex ("Noise Texture", 2D) = "white" {} // Add noise texture
-        //_NoiseScale ("Noise Scale", Float) = 1.0
-        //_NoiseSpeed ("Noise Speed", Float) = 1.0
-        //_SkyBoxNoiseSpeed ("Sky Box Noise Speed", Float) = 1.0
-        //_SkyBoxNoiseScale ("Sky Box Noise Scale", Float) = 1.0
-        //_SkyBoxFogDensity ("Sky Box Fog Density", Float) = 1 // Controls fog intensity
-        //_SkyBoxNoiseTransparency ("Sky Box Noise Transparency", Float) = 1.0
-        //_RotateFogNoise ("Rotate Fog Noise", Float) = 1.0
-        //_RotateSkyBoxNoise ("Rotate Sky Box Noise", Float) = 1.0
-        //_DesaturateSecondColor ("Desaturate Second Color", Float) = 1
+        //_NoiseTex ("Noise Texture", 2D) = "white" {}
+       // _FogNoiseScale ("Noise Scale", Float) = 1.0
+        //_FogNoiseVelocity ("Noise Velocity", Float) = 1.0
+       // _SkyBoxNoiseScale ("Sky Box Noise Scale", Float) = 1.0
+       //_SkyBoxNoiseVelocity ("Sky Box Noise Velocity", Float) = 1.0
+       // _PFogColor ("Primary Fog Color", Color) = (1,1,1,1)
+       // _SFogColor("Secondary Fog Color", Color) = (1,1,1,1)
+       // _SkyBoxFogColor("Skybox Fog Color", Color) = (1,1,1,1)
+       // _FogDensity ("Fog Density", Float) = 0.1 
+      //  _SkyBoxFogDensity ("Fog Density", Float) = 0.1 
+       // _FogOffset ("Fog Offset", Float) = 1.0  
+      //  _SecondaryFogOffset ("Secondary Offset", Float) = 1.0
+      //  _GradientStrength("Gradient Strength", Float) = 0.7
+      //  _FogScattering("Fog Scattering", Float) = 1.0
+      //  _SkyBoxNoiseTransparency("Sky Box Noise Transparency", Float) = 1.0
+      //  _RotateFogNoise ("Rotate Fog Noise", Float) = 1.0
+      //  _RotateSkyBoxNoise ("Rotate Sky Box Noise", Float) = 1.0
     }
     SubShader
     {
@@ -47,10 +46,10 @@
 
             sampler2D _MainTex;
             sampler2D _NoiseTex;
-            Float _FogNoiseScale;
-            Float _FogNoiseVelocity;
-            Float _SkyBoxNoiseScale;
-            Float _SkyBoxNoiseVelocity;
+            float _FogNoiseScale;
+            float _FogNoiseVelocity;
+            float _SkyBoxNoiseScale;
+            float _SkyBoxNoiseVelocity;
             sampler2D _CameraDepthTexture;
             float4 _PFogColor;
             float4 _SFogColor;
