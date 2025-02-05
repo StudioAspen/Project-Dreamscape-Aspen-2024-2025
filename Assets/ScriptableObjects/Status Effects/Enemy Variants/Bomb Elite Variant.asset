@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Stackable>k__BackingField: 0
   <Name>k__BackingField: Bomb
-  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 29a5e056ffced1d4a894b9b037698663,
+  <VariantMaterial>k__BackingField: {fileID: 2100000, guid: 29a5e056ffced1d4a894b9b037698663,
     type: 2}
   <MaxHealthMultiplier>k__BackingField: 1.2
   <EXPValueMultiplier>k__BackingField: 1.5
@@ -25,3 +25,5 @@ MonoBehaviour:
   <ExplosionPercentDamage>k__BackingField: 150
   <ExplosionLaunchForce>k__BackingField: 15
   <ExplosionStunDuration>k__BackingField: 2
+  <CameraShakeDuration>k__BackingField: 1
+  <CameraShakeStrength>k__BackingField: 10

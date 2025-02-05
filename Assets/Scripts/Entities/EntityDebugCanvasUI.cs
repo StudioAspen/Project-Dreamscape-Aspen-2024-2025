@@ -53,7 +53,24 @@ public class EntityDebugCanvasUI : MonoBehaviour
             }
         }
 
-        if(entityNameText != null) entityNameText.text = $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name}")} {entity.GetType()}";
+        BiomeVariantStatusEffectSO biomeVariantStatus = null;
+        if (entityStatusEffector != null)
+        {
+            foreach (StatusEffectSO statusEffect in entityStatusEffector.CurrentStatusEffects.Values)
+            {
+                BiomeVariantStatusEffectSO biomeVariantStatusEffect = statusEffect as BiomeVariantStatusEffectSO;
+                if (biomeVariantStatusEffect != null)
+                {
+                    biomeVariantStatus = biomeVariantStatusEffect;
+                    break;
+                }
+            }
+        }
+
+        if (entityNameText != null) entityNameText.text = 
+                $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name}")} " +
+                $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name}")} " +
+                $"{entity.GetType()}";
     }
 
     private IEnumerator LateOnEnableCoroutine()

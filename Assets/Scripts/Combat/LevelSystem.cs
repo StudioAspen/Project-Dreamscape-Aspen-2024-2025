@@ -14,7 +14,24 @@ public class LevelSystem : MonoBehaviour
     public int CurrentEXP { get; private set; }
     public int MaxEXP { get; private set; }
 
-    public Action OnLevelUp = delegate { };
+    /// <summary>
+    /// Action that is invoked when the player levels up.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int newLevel</c>: The new level after levelling up.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int> OnLevelUp = delegate { };
+    /// <summary>
+    /// Action that is invoked when the player gains EXP.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int newLevel</c>: The amount of EXP added.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int> OnEXPAdded = delegate { };
 
     private void Awake()
     {
@@ -37,7 +54,6 @@ public class LevelSystem : MonoBehaviour
         Enemy victimAsEnemy = victim as Enemy;
         int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue;
 
-        //Debug.Log($"{{victim.gameObject.name} was killed, rewarding {expReward} EXP");
         AddEXP(expReward);
     }
 
@@ -65,6 +81,7 @@ public class LevelSystem : MonoBehaviour
             return;
         }
 
+        OnEXPAdded.Invoke(amount);
         CurrentEXP += amount;
 
         if (CurrentEXP >= MaxEXP)
@@ -78,11 +95,11 @@ public class LevelSystem : MonoBehaviour
     /// </summary>
     public void LevelUp()
     {
-        OnLevelUp?.Invoke();
-
         CurrentEXP -= MaxEXP;
         Level++;
         MaxEXP = CalculateMaxEXP();
+
+        OnLevelUp?.Invoke(Level);
 
         AddEXP(0); // Check if the player has enough EXP to level up again
     }

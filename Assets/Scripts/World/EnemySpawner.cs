@@ -14,6 +14,7 @@ public class EnemySpawner : MonoBehaviour
     private ObjectPooler materializeVFXPooler;
 
     [field: Header("References")]
+    [field: SerializeField] public BiomeVariantStatusEffectSO BiomeVariantStatusEffect { get; private set; } 
     [field: SerializeField] public List<Enemy> NeutralEnemyPrefabs { get; private set; } = new List<Enemy>();
     [SerializeField] private List<Transform> enemySpawnPoints;
     private List<float> enemyNormalizedWeights = new List<float>();
@@ -153,6 +154,8 @@ public class EnemySpawner : MonoBehaviour
         OnEnemySpawned?.Invoke(spawnedEnemy);
 
         enemiesSpawned.Add(spawnedEnemy);
+
+        if(BiomeVariantStatusEffect != null) EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, BiomeVariantStatusEffect, spawnedEnemy.gameObject);
 
         return spawnedEnemy;
     }
