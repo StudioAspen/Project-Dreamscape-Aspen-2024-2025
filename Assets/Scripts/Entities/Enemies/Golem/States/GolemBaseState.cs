@@ -1,0 +1,11 @@
+public class GolemBaseState : EnemyBaseState
+{
+    private protected Golem golem;
+
+    private protected override void Init(Entity entity)
+    {
+        base.Init(entity);
+
+        golem = entity as Golem;
+    }
+}
