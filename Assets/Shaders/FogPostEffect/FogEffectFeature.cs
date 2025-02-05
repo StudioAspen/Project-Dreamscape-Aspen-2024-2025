@@ -21,7 +21,7 @@ public class FogEffectFeature : ScriptableRendererFeature
     }
 
     [System.Serializable]
-    public class RenderPass : ScriptableRenderPass
+    class RenderPass : ScriptableRenderPass
     {
         private Material material;
         private RenderTargetIdentifier source;
