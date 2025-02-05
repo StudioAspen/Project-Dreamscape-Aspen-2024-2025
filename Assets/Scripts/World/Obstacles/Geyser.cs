@@ -52,14 +52,17 @@ public class Geyser : MonoBehaviour
         {
             if (geyseredEntities.TryGetValue(entity, out float remainingTime))
             {
-                geyseredEntities[entity] -= Time.deltaTime;
                 if (geyseredEntities[entity] <= 0)
                 {
                     int damage = Random.Range(eruptDamageRange.x, eruptDamageRange.y);
                     entity.TakeDamage(damage, entity.GetColliderCenterPosition(), gameObject);
 
                     geyseredEntities[entity] = damageTickDuration;
-                } 
+                }
+                else
+                {
+                    geyseredEntities[entity] -= Time.deltaTime;
+                }
             }
         }
     }
@@ -67,7 +70,6 @@ public class Geyser : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         Entity hitEntity = other.gameObject.GetComponent<Entity>();
-        if (hitEntity == null) hitEntity = other.gameObject.GetComponentInParent<Entity>();
         if (hitEntity == null) return;
 
         if (!geyseredEntities.ContainsKey(hitEntity))
@@ -79,7 +81,6 @@ public class Geyser : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         Entity hitEntity = other.gameObject.GetComponent<Entity>();
-        if (hitEntity == null) hitEntity = other.gameObject.GetComponentInParent<Entity>();
         if (hitEntity == null) return;
 
         if (geyseredEntities.ContainsKey(hitEntity))
@@ -128,6 +129,6 @@ public class Geyser : MonoBehaviour
     /// <param name="willIgnore">True to ignore collisions with other entities, false to include collisions.</param>
     public void IgnoreOtherEntityCollisions(bool willIgnore = true)
     {
-        capsuleCollider.excludeLayers = willIgnore ? LayerMask.GetMask("Entity", "Damageable Entity") : 0;
+        capsuleCollider.excludeLayers = willIgnore ? LayerMask.GetMask("Entity") : 0;
     }
 }
