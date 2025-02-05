@@ -48,4 +48,13 @@ public class DurationStatusEffectSO : StatusEffectSO
 
         RemainingDuration += overridingStatusEffect.Duration;
     }
+
+    /// <summary>
+    /// Overrides the current duration
+    /// </summary>
+    /// <param name="newDuration">The new duration to override with.</param>
+    public void OverrideDuration(float newDuration)
+    {
+        Duration = newDuration;
+    }
 }
