@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -54,8 +52,7 @@ public class FogEffectFeature : ScriptableRendererFeature
         {
             if (material == null) return;
 
-            var cameraData = renderingData.cameraData;
-
+            //var cameraData = renderingData.cameraData;
             //if (cameraData.isSceneViewCamera) return;
         
             CommandBuffer cmd = CommandBufferPool.Get("FogEffectFeature");
@@ -99,7 +96,5 @@ public class FogEffectFeature : ScriptableRendererFeature
             //context.ExecuteCommandBuffer(cmd);
             //CommandBufferPool.Release(cmd);
         }
-
-
     }
 }
