@@ -67,7 +67,7 @@ public class Geyser : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         Entity hitEntity = other.gameObject.GetComponent<Entity>();
-        if (hitEntity == null) hitEntity = other.transform.parent.GetComponent<Entity>();
+        if (hitEntity == null) hitEntity = other.gameObject.GetComponentInParent<Entity>();
         if (hitEntity == null) return;
 
         if (!geyseredEntities.ContainsKey(hitEntity))
@@ -79,7 +79,7 @@ public class Geyser : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         Entity hitEntity = other.gameObject.GetComponent<Entity>();
-        if (hitEntity == null) hitEntity = other.transform.parent.GetComponent<Entity>();
+        if (hitEntity == null) hitEntity = other.gameObject.GetComponentInParent<Entity>();
         if (hitEntity == null) return;
 
         if (geyseredEntities.ContainsKey(hitEntity))

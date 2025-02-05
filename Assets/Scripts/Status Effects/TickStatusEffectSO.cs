@@ -54,5 +54,14 @@ public class TickStatusEffectSO : StatusEffectSO
         Ticks += overridingStatusEffect.Ticks;
         TickDuration = overridingStatusEffect.TickDuration;
     }
+
+    /// <summary>
+    /// Overrides the number of active ticks
+    /// </summary>
+    /// <param name="newTicks">The new ticks to override with.</param>
+    public void OverrideTicks(int newTicks)
+    {
+        Ticks = newTicks;
+    }
 }
 
