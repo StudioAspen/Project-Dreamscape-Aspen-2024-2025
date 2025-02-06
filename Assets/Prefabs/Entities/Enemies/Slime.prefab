@@ -93,7 +93,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3186133371071620309}
-  - component: {fileID: 8379282351917465333}
   - component: {fileID: 796325873204930862}
   - component: {fileID: 6764650017304162668}
   - component: {fileID: 6639080308347767829}
@@ -127,41 +126,6 @@ Transform:
   - {fileID: 7237329991370873262}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8379282351917465333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4518511054676028987}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 838c1900f811cba449eedf1336fa32f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
-    type: 2}
-  model: {fileID: 3121701890540656384}
-  <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 40
-  baseSpeed: 3
-  rotationSpeed: 15
-  mass: 1
-  IsGrounded: 0
-  targetDetectionRadius: 3
-  <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 5, y: 10}
-  <DamageModifier>k__BackingField: 1
-  UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
-  <Cost>k__BackingField: 1
-  <EXPValue>k__BackingField: 30
-  <CustomCollisionRadius>k__BackingField: 0.4
-  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0
-  <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  IsAttackAnimationPlaying: 0
-  <DetectionDistance>k__BackingField: 15
-  <DetectionConeHalfAngle>k__BackingField: 30
 --- !u!114 &796325873204930862
 MonoBehaviour:
   m_ObjectHideFlags: 0

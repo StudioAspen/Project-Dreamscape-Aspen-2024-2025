@@ -8,6 +8,8 @@ public class Slime : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
+    [field: SerializeField] public bool isSplit { get; private set; } = false; 
+
 
     #region States
     public SlimeIdleState SlimeIdleState {get; private set;}
@@ -51,7 +53,7 @@ public class Slime : Enemy
     {
         base.OnStart();
 
-        SetDefaultState(SlimeIdleState);  
+        SetDefaultState(SlimeSplitState);  
     }
 
     private protected override void OnUpdate()
