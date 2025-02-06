@@ -56,8 +56,9 @@
             float4 _SkyBoxFogColor;
             float _FogDensity;
             float _SkyBoxFogDensity;
+            float _PrimaryFogColorOffset;
+            float _SecondaryFogColorOffset;
             float _FogOffset;
-            float _SecondaryFogOffset;
             float _GradientStrength;
             float _FogScattering;
             float _SkyBoxNoiseTransparency;
@@ -103,14 +104,15 @@
             float viewDistance = depth * _ProjectionParams.z;
 
             // Calculate fog factor
-            float fogFactor = exp(-viewDistance * _FogDensity);
+            float fogFactor = (_FogDensity / sqrt(log(2))) * max(0.0f, viewDistance - _FogOffset);
+            fogFactor = exp2(-fogFactor * fogFactor);
 
             // Add fog effect
             float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
-            fogFactor *= lerp(1, noiseValue, _FogScattering); // Combine fog density with original noise
+            fogFactor *= lerp(1, noiseValue, _FogScattering); 
 
             // Calculate distance factor for color interpolation
-            float distanceFactor = pow(saturate((viewDistance - _FogOffset) / _SecondaryFogOffset), _GradientStrength);
+            float distanceFactor = pow(saturate((viewDistance - _PrimaryFogColorOffset) / _SecondaryFogColorOffset), _GradientStrength);
 
             // Interpolate between primary and secondary fog colors
             float4 finalFogColor = lerp(_PFogColor, _SFogColor, distanceFactor);
