@@ -9,7 +9,9 @@ public class GolemAttackRecoverState : GolemBaseState
 
     public override void OnEnter()
     {
+        golem.TransitionToAnimation("FlatMovement");
         golem.SetSpeedModifier(0f);
+        
 
         recoverTimer = 0f;
     }

@@ -27,10 +27,7 @@ public class GolemReadyAttackState : GolemBaseState
     public override void OnUpdate() // Adjust the logic later here to either stomp or ground smash depending on range
     {
         golem.ApplyGravity();
-
         golem.LookAt(golem.transform.position + attackDirection);
-        
-        golem.TransitionToAnimation("GolemGroundSmash");
 
         readyTimer += golem.LocalDeltaTime;
 

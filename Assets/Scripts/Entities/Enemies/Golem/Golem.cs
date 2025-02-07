@@ -11,6 +11,9 @@ public class Golem : Enemy
     public GolemReadyAttackState GolemReadyAttackState {get; private set;}
     public GolemAttackRecoverState GolemAttackRecoverState {get; private set;}
 
+
+    private Coroutine camShakeCoroutine;
+    
     private protected override void InitializeStates()
     {
         base.InitializeStates();
@@ -70,13 +73,24 @@ public class Golem : Enemy
         EndHit();
     }
 
-    public void StartHit()
-    {
-        GolemGroundSmashState.Weapon.EnableTriggers();
+    public void StartHit() { // Called via Animation Event
+        GolemGroundSmashState.GroundImpact();
+    }
+
+    public void ShakeCam() {
+        camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale));
     }
 
     public void EndHit()
     {
         GolemGroundSmashState.Weapon.DisableTriggers();
     }
+
+    private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay) {
+        for (int i = 0; i < numShakes; i++) {
+            CameraShakeManager.Instance.ShakeCamera(Random.Range(4f,8f), shakeDelay);    
+            yield return new WaitForSeconds(shakeDelay);
+        }
+    }
+    
 }
