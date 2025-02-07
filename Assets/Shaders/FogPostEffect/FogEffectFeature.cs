@@ -67,7 +67,8 @@ public class FogEffectFeature : ScriptableRendererFeature
                 material.SetFloat("_FogDensity", fogEffect.fogDensity.value);
                 material.SetFloat("_SkyBoxFogDensity", fogEffect.skyBoxFogDensity.value);
                 material.SetFloat("_FogOffset", fogEffect.fogOffset.value);
-                material.SetFloat("_SecondaryFogOffset", fogEffect.secondaryFogOffset.value);
+                material.SetFloat("_PrimaryFogColorOffset", fogEffect.primaryFogColorOffset.value);
+                material.SetFloat("_SecondaryFogColorOffset", fogEffect.secondaryFogColorOffset.value);
                 material.SetFloat("_GradientStrength", fogEffect.gradientStrength.value);
                 material.SetFloat("_FogScattering", fogEffect.fogScattering.value);
                 material.SetTexture("_NoiseTex", fogEffect.noiseTexture.value);
