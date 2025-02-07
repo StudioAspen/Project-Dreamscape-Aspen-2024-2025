@@ -117,7 +117,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.539509, y: 0.0000009536743, z: 6.1137896}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3666914600907076981}
@@ -138,10 +138,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7a9ccd8f9cd58d4ebe3a8b0d48d0c80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <PhysicsConfig>k__BackingField: {fileID: 0}
-  model: {fileID: 0}
+  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+    type: 2}
+  model: {fileID: 3186133371071620309}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
+  <MaxHealth>k__BackingField: 40
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1
@@ -152,14 +153,15 @@ MonoBehaviour:
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
-  <Cost>k__BackingField: 0
-  <EXPValue>k__BackingField: 0
+  <Cost>k__BackingField: 1
+  <EXPValue>k__BackingField: 20
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   IsAttackAnimationPlaying: 0
   <DetectionDistance>k__BackingField: 10
   <DetectionConeHalfAngle>k__BackingField: 20
+  <isSplit>k__BackingField: 0
 --- !u!114 &6764650017304162668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,6 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7721e406cf51e4d4ca4b0ff11aa68710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <SplitCount>k__BackingField: 2
 --- !u!1001 &3231396680522412267
 PrefabInstance:
   m_ObjectHideFlags: 0
