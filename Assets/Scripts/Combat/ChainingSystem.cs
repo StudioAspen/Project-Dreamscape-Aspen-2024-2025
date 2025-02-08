@@ -15,6 +15,11 @@ public class ChainingSystem : MonoBehaviour
     [SerializeField] private int Y = 18;
     [SerializeField] private int Z = 24;
     [SerializeField] private int A = 30;
+
+    [SerializeField] private float firstBoost = 0.25f;
+    [SerializeField] private float secondBoost = 0.5f;
+    [SerializeField] private float thirdBoost = 0.75f;
+    [SerializeField] private float fourthBoost = 2f;
     private float timer;
 
     public int ChainCount { get; private set; }
@@ -23,6 +28,13 @@ public class ChainingSystem : MonoBehaviour
     {
         playerCombat = GetComponent<PlayerCombat>();
         levelSystem = GetComponent<LevelSystem>();
+
+        levelSystem.OnEXPAdded += LevelSystem_OnEXPAdded;
+    }
+
+    private void OnDestroy()
+    {
+        levelSystem.OnEXPAdded -= LevelSystem_OnEXPAdded;
     }
 
     private void Start()
@@ -81,19 +93,19 @@ public class ChainingSystem : MonoBehaviour
 
         if (ChainCount > 6 && ChainCount < X)
         {
-            expBoost = Mathf.RoundToInt(addedAmount * 0.25f);
+            expBoost = Mathf.RoundToInt(addedAmount * firstBoost);
         }
         else if (ChainCount >= X && ChainCount < Y)
         {
-            expBoost = Mathf.RoundToInt(addedAmount * 0.5f);
+            expBoost = Mathf.RoundToInt(addedAmount * secondBoost);
         }
         else if (ChainCount >= Y && ChainCount < Z)
         {
-            expBoost = Mathf.RoundToInt(addedAmount * 0.75f);
+            expBoost = Mathf.RoundToInt(addedAmount * thirdBoost);
         }
         else if (ChainCount >= Z && ChainCount < A)
         {
-            expBoost = Mathf.RoundToInt(addedAmount * 2f);
+            expBoost = Mathf.RoundToInt(addedAmount * fourthBoost);
         }
 
         if (expBoost > 0)
