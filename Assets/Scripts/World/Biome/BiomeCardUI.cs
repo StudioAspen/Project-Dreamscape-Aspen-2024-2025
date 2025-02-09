@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private WorldManager worldManager;
-    private Button button;
 
     [Header("References")]
+    [SerializeField] private Button button;
     [SerializeField] private Image image;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private GameObject backgroundGlow;
@@ -20,7 +20,6 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Awake()
     {
         worldManager = FindObjectOfType<WorldManager>();
-        button = GetComponent<Button>();
 
         button.onClick.AddListener(OnClickCard);
     }

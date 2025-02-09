@@ -11,14 +11,12 @@ using UnityEngine.UI;
 
 public class BiomeSelectUIPanel : UIPanel
 {
-    private Image panel;
-
     [Header("References")]
     [SerializeField] private List<BiomeCardUI> biomeCards;
 
     private void Awake()
     {
-        panel = GetComponent<Image>();
+        
     }
 
     public void OnEnable()

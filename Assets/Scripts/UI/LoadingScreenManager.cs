@@ -66,7 +66,6 @@ public class LoadingScreenManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("All scenes ready, setting slider to full");
         loadingBarSlider.value = 1f;
 
         yield return new WaitForSecondsRealtime(afterLoadDelay);
@@ -80,5 +79,4 @@ public class LoadingScreenManager : MonoBehaviour
 
         SceneManager.UnloadSceneAsync(loadingScreenScene);
     }
-
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerDebugUI : MonoBehaviour
 {
@@ -36,7 +37,20 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void Start()
     {
+        // Need to delay start for a frame because of potential race condition as Player hp is also set in start.
+        StartCoroutine(LateStartCoroutine());
+    }
+
+    private void LateStart()
+    {
         healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth);
+    }
+
+    private IEnumerator LateStartCoroutine()
+    {
+        yield return null;
+
+        LateStart();
     }
 
     private void OnDestroy()
