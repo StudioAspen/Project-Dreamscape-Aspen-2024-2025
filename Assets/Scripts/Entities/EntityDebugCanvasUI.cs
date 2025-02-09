@@ -32,6 +32,7 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void OnEnable()
     {
+        // Need to delay OnEnable for a frame because of potential race condition as entity hp is also set in OnEnable.
         StartCoroutine(LateOnEnableCoroutine());
     }
 
@@ -68,8 +69,8 @@ public class EntityDebugCanvasUI : MonoBehaviour
         }
 
         if (entityNameText != null) entityNameText.text = 
-                $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name}")} " +
-                $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name}")} " +
+                $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name} ")}" +
+                $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name} ")}" +
                 $"{entity.GetType()}";
     }
 

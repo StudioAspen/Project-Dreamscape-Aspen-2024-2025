@@ -14,7 +14,8 @@ public class UIManager : MonoBehaviour
     [Header("UI Panels")]
     [SerializeField, SerializedDictionary("Game State", "UI Panels")] private SerializedDictionary<GameState, UIPanel> gamePanels = new();
 
-    private void Awake()
+    // Call everything in start instead of Awake to allow initialization of UIPanels before disable
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         gameInputManager = FindObjectOfType<GameInputManager>();

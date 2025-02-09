@@ -11,7 +11,6 @@ using UnityEngine.InputSystem;
 public class EventSelectUIPanel : UIPanel
 {
     private EventManager eventManager;
-    private Image panel;
 
     [Header("References")]
     [SerializeField] private Image background;
@@ -38,7 +37,6 @@ public class EventSelectUIPanel : UIPanel
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
-        panel = GetComponent<Image>();
 
         backgroundStartingColor = background.color;
         titleTextStartingColor = titleText.color;
