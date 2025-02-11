@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,23 +7,16 @@ using UnityEngine;
 public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
 {
     // Base Class: You have access to the Entity entity being affected and the GameObject source of the object that applied this effect
-    // TickStatusEffectSOClass: You have access to the int Ticks and float TicksDuration
 
-    [field: Header("TickTemplate: Settings")]
-    [field: SerializeField] public int TemplateInt { get; private set; } = 1;
+    [field: Header("Volcanic Biome Variant Status Effect: Settings")]
+    [field: SerializeField] public BurnStatusEffectSO BurnStatusEffect { get; private set; }
 
     private protected override void OnApply()
     {
         base.OnApply();
 
         // your logic for when the effect is applied
-    }
-
-    private protected override void OnExpire()
-    {
-        base.OnExpire();
-
-        // your logic for when the effect expires
+        source.GetComponent<Entity>().OnEntityDealDamage += Biome_OnEntityDealDamage; // suscribe
     }
 
     public override void Cancel()
@@ -30,14 +24,13 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         base.Cancel();
 
         // your logic for when the effect is cancelled
+        source.GetComponent<Entity>().OnEntityDealDamage -= Biome_OnEntityDealDamage; // unsuscribe
     }
 
-    private protected override void OnStack(StatusEffectSO newStatusEffect)
+    private void Biome_OnEntityDealDamage(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        base.OnStack(newStatusEffect);
-
-        DurationStatusEffectSO overridingStatusEffect = newStatusEffect as DurationStatusEffectSO;
-
-        // your logic for when the effect is stacked
+        //EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurnStatusEffect, attacker.gameObject);
+        //victim.gameObject.GetComponent<EntityStatusEffector>().ApplyStatusEffect(BurnStatusEffect, source.gameObject);
+        Debug.Log("player hit valconooooooooooooooooooooo");
     }
 }
