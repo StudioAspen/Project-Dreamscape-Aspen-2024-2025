@@ -18,11 +18,6 @@ public class Slime : Enemy
     public SlimeSplitState SlimeSplitState {get; private set;}
     public SlimeGrowthState SlimeGrowthState {get; private set;}
 
-    // private void Init(Entity entity)
-    // {
-    //     slime = entity as Slime;
-    // }
-
     private protected override void InitializeStates()
     {
         base.InitializeStates();
@@ -30,7 +25,13 @@ public class Slime : Enemy
         SlimeIdleState = EntityBaseState.InitializeOrCreate<SlimeIdleState>(this);
         SlimePlayerDetectedState = EntityBaseState.InitializeOrCreate<SlimePlayerDetectedState>(this);
         SlimeAttackState = EntityBaseState.InitializeOrCreate<SlimeAttackState>(this);
+
+
+        // is this the issue? initializing state causes 
         SlimeSplitState = EntityBaseState.InitializeOrCreate<SlimeSplitState>(this);
+
+
+
         SlimeGrowthState = EntityBaseState.InitializeOrCreate<SlimeGrowthState>(this);
 
     }
@@ -61,9 +62,8 @@ public class Slime : Enemy
     {
         base.OnStart();
 
-        SetDefaultState(SlimeSplitState);  
+        SetDefaultState(SlimeIdleState);  
 
-        Debug.Log(Spawner);
     }
 
     private protected override void OnUpdate()
@@ -91,6 +91,13 @@ public class Slime : Enemy
     {
         // replace default radius-based target assignment with cone-based target assignment
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
+    }
+
+    private protected override void OnDeath()
+    {
+        base.OnDeath();
+        Debug.Log("death is triggered");
+        // ChangeState(SlimeSplitState, true);
     }
 
 
