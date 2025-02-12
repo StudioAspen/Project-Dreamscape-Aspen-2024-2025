@@ -43,7 +43,7 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
         if (timer > TargetDetectedDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(ChargeState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(ChargeState, true);
             return;
         }
 
