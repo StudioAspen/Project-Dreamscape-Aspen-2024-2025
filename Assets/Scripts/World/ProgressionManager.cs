@@ -75,8 +75,10 @@ public class ProgressionManager : MonoBehaviour
             EmpowerTokens++;
         }
 
-        hoveredLand.AddLevel(1);
-        EmpowerTokens--;
+        if (hoveredLand.TryAddLevel(1))
+        {
+            EmpowerTokens--;
+        }
     }
 
     /// <summary>
@@ -106,8 +108,10 @@ public class ProgressionManager : MonoBehaviour
             WeakenTokens++;
         }
 
-        hoveredLand.AddLevel(-1);
-        WeakenTokens--;
+        if (hoveredLand.TryAddLevel(-1))
+        {
+            WeakenTokens--;
+        }        
     }
 
     /// <summary>

@@ -26,7 +26,7 @@ public class WorldManager : MonoBehaviour
     [field: Header("Pseudo Grid")]
     public Dictionary<Vector2Int, LandManager> SpawnedLands { get; private set; } = new Dictionary<Vector2Int, LandManager>(); // a list of all currently spawned lands
     public Dictionary<Vector2Int, List<LandBorder>> Borders { get; private set; } = new Dictionary<Vector2Int, List<LandBorder>>(); // a list of all currently available borders
-    private float landScale;
+    [SerializeField] private float landScale = 30f;
 
     [Header("Land Position Selection")]
     [SerializeField] private Transform ghostLandTransform;
@@ -51,8 +51,6 @@ public class WorldManager : MonoBehaviour
         BuildNavMesh();
 
         DisableGhostLand();
-
-        landScale = BiomeDatabase.DefaultLandPrefab.transform.localScale.x;
     }
 
     #region Grid Functions
@@ -192,9 +190,7 @@ public class WorldManager : MonoBehaviour
             landPrefabToUse = BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands[Random.Range(0, BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count)];
         }
 
-        float landScale = BiomeDatabase.DefaultLandPrefab.transform.localScale.x;
-
-        LandManager spawnedLand = Instantiate(landPrefabToUse, new Vector3(landScale * gridPosition.x, -5f, landScale * gridPosition.y), Quaternion.identity, transform);
+        LandManager spawnedLand = Instantiate(landPrefabToUse, new Vector3(landScale * gridPosition.x, 0, landScale * gridPosition.y), Quaternion.identity, transform);
         spawnedLand.Init(gridPosition, currentBiomeSelection);
 
         SpawnedLands.Add(gridPosition, spawnedLand);

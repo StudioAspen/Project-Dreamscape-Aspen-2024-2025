@@ -17,11 +17,13 @@ public class LandManager : MonoBehaviour
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
-    [field: SerializeField] public int Level { get; private set; }
     public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
+    [field: SerializeField] public int Level { get; private set; }
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
+    [SerializeField] private int minLevel = -5;
+    [SerializeField] private int maxLevel = 10;
 
     /// <summary>
     /// Initializes the LandManager with the given grid position.
@@ -83,8 +85,21 @@ public class LandManager : MonoBehaviour
     /// Also updates the LevelDifference which is used to track the changes made to the current level.
     /// </summary>
     /// <param name="amount">The amount to add to the level.</param>
-    public void AddLevel(int amount)
+    /// <returns>Whether the land's level was sucessfully changed</returns>
+    public bool TryAddLevel(int amount)
     {
+        // If at minimum
+        if(Level + amount < minLevel)
+        {
+            return false;
+        }
+
+        // If at maximum
+        if(Level + amount > maxLevel)
+        {
+            return false;
+        }
+
         Level += amount;
         LevelDifference += amount;
 
@@ -98,6 +113,8 @@ public class LandManager : MonoBehaviour
         {
             levelText.color = Color.black;
         }
+
+        return true;
     }
 
     /// <summary>
@@ -114,7 +131,7 @@ public class LandManager : MonoBehaviour
     /// </summary>
     public void UndoLevelChanges()
     {
-        AddLevel(-LevelDifference);
+        TryAddLevel(-LevelDifference);
         ResetLevelDifference();
     }
 
