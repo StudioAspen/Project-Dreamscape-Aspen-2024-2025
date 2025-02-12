@@ -6,14 +6,19 @@ public class Shielder : Enemy
 {
     #region States
     public ShielderQuickAttackState ShielderQuickAttackState { get; private set; }
+    public ShielderPowerAttack ShielderPowerAttackState { get; private set; }
+    public ShielderIdleState ShielderIdleState { get; private set; }
+    public ShielderPlayerDetectState ShielderPlayerDetectState { get; private set; }
 
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        ShielderQuickAttackState = EntityBaseState.InitializeOrCreate<ShielderQuickAttackState>(this);   
-
+        ShielderQuickAttackState = EntityBaseState.InitializeOrCreate<ShielderQuickAttackState>(this);
+        ShielderPowerAttackState = EnemyBaseState.InitializeOrCreate<ShielderPowerAttack>(this);
+        ShielderIdleState = EnemyBaseState.InitializeOrCreate<ShielderIdleState>(this);
+        ShielderPlayerDetectState = EnemyBaseState.InitializeOrCreate<ShielderPlayerDetectState>(this);
     }
     #endregion
 
@@ -39,7 +44,7 @@ public class Shielder : Enemy
         base.OnStart();
 
         //for testing purposes, set the default state to the quick attack state.
-        SetDefaultState(ShielderQuickAttackState);
+        SetDefaultState(ShielderIdleState);
 
         FinishAnimation();
     }

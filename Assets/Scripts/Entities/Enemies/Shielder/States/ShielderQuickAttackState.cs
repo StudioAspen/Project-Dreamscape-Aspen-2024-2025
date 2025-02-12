@@ -56,7 +56,8 @@ public class ShielderQuickAttackState : ShielderBaseState
         //After the Quick Attack Animation is done changes to specified state.
         if (!shielder.IsAttackAnimationPlaying)
         {
-            shielder.ChangeState(shielder.ShielderQuickAttackState);
+
+            shielder.ChangeState(shielder.ShielderPowerAttackState);
             return;
         }
     }
