@@ -92,9 +92,12 @@ public class ChainingSystem : MonoBehaviour
 
         if (ChainCount == 0) return; // No need to check for rewards if there is no chain
 
+        List<int> milestones = new List<int>(chainRewards.Keys);
+        milestones.Sort(); // Ensures the milestones are in ascending order
+
         // Finds the largest milestone that is less than or equal to the chain count
         int currentMilestone = 0;
-        foreach(int milestone in chainRewards.Keys)
+        foreach(int milestone in milestones)
         {
             if (milestone > ChainCount) break;
             currentMilestone = milestone;
