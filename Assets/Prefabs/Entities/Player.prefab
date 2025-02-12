@@ -1568,6 +1568,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeBetween: 2
+  chainRewards:
+    _serializedList:
+    - Key: 6
+      Value: 0.25
+    - Key: 12
+      Value: 0.5
+    - Key: 18
+      Value: 0.75
+    - Key: 24
+      Value: 1
+  X: 12
+  Y: 18
+  Z: 24
+  A: 30
+  firstBoost: 0.25
+  secondBoost: 0.5
+  thirdBoost: 0.75
+  fourthBoost: 2
 --- !u!114 &5066363359248579512
 MonoBehaviour:
   m_ObjectHideFlags: 0
