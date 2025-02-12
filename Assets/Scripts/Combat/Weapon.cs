@@ -373,4 +373,17 @@ public class Weapon : MonoBehaviour
 
         return validCombos;
     }
+
+    //Called as Weapon.ColliderAdjustment(x, y);
+    public void ColliderAdjustment(float radius, float height)
+    {
+        foreach (CapsuleCollider collider in capsuleColliders)
+        {
+            if (collider != null)
+            {
+                collider.radius = radius;
+                collider.height = height;
+            }
+        }
+    }
 }

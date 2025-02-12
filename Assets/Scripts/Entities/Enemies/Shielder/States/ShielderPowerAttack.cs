@@ -6,7 +6,7 @@ public class ShielderPowerAttack : ShielderBaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public float AttackRange { get; private set; } = 6f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 150f;
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 250f;
 
     public Weapon Weapon { get; protected set; }
     private Vector3 attackDirection;
@@ -37,6 +37,8 @@ public class ShielderPowerAttack : ShielderBaseState
         shielder.TransitionToAnimation("PowerAttack");
         shielder.SetSpeedModifier(0f);
 
+        //NEW FUNCTION USED TO SCALE COLLIDER FOR THE POWER ATTACK TO HAVE MORE IMPACT.
+        Weapon.ColliderAdjustment(.4f, 1.663404f);
         Weapon.OnWeaponStartSwing?.Invoke(shielder);
         Weapon.ClearEnemiesHitList();
 
@@ -44,10 +46,12 @@ public class ShielderPowerAttack : ShielderBaseState
 
         shielder.IsAttackAnimationPlaying = true;
         shielder.UseRootMotion = true;
+
     }
 
     public override void OnExit()
     {
+        Weapon.ColliderAdjustment(.25f, 1.663404f);
         Weapon.OnWeaponEndSwing?.Invoke(shielder);
         shielder.IsAttackAnimationPlaying = false;
         shielder.UseRootMotion = false;
