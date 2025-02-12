@@ -8,42 +8,35 @@ public class Slime : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
+
+    // if true is small else false
     [field: SerializeField] public bool isSplit { get; private set; } = false; 
-    
+    [field: SerializeField] public int SplitCount { get; private set; } = 2;
+    private Enemy slimeEnemyPrefab;
 
     #region States
     public SlimeIdleState SlimeIdleState {get; private set;}
-    public SlimePlayerDetectedState SlimePlayerDetectedState {get; private set;}
-    public SlimeAttackState SlimeAttackState {get; private set;}
-    public SlimeSplitState SlimeSplitState {get; private set;}
-    public SlimeGrowthState SlimeGrowthState {get; private set;}
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
         SlimeIdleState = EntityBaseState.InitializeOrCreate<SlimeIdleState>(this);
-        SlimePlayerDetectedState = EntityBaseState.InitializeOrCreate<SlimePlayerDetectedState>(this);
-        SlimeAttackState = EntityBaseState.InitializeOrCreate<SlimeAttackState>(this);
-
-
-        // is this the issue? initializing state causes 
-        SlimeSplitState = EntityBaseState.InitializeOrCreate<SlimeSplitState>(this);
-
-
-
-        SlimeGrowthState = EntityBaseState.InitializeOrCreate<SlimeGrowthState>(this);
 
     }
 
     #endregion
 
+    // public void Init()
+    // {
+
+    // }
     
 
     private protected override void OnAwake()
     {
         base.OnAwake();
-
+        
     }
 
     private protected override void OnOnEnable()
@@ -55,15 +48,15 @@ public class Slime : Enemy
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
-
+        OnEntityDeath -= Entity_OnEntityDeath;
     }
 
     private protected override void OnStart()
     {
         base.OnStart();
-
+        slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
+        OnEntityDeath += Entity_OnEntityDeath;
         SetDefaultState(SlimeIdleState);  
-
     }
 
     private protected override void OnUpdate()
@@ -100,6 +93,12 @@ public class Slime : Enemy
         // ChangeState(SlimeSplitState, true);
     }
 
+    private void Entity_OnEntityDeath(GameObject entityGameObject)
+    {
+        Debug.Log("pimp down, pimp in distress");
+        onDuplicate();
+        OnEntityDeath -= Entity_OnEntityDeath;
+    }
 
     // <summary>
     // Checks for collisions with enemy entities and applies damage if a collision occurs.
@@ -122,4 +121,49 @@ public class Slime : Enemy
     //         }
     //     }
     // }
+
+
+
+
+    private Enemy GetEnemyPrefabFromCurrentType()
+    {
+        if(this.Spawner == null)
+        {
+            Debug.Log("spawner = null ");
+        }
+        
+        foreach (Enemy enemyPrefab in this.Spawner.NeutralEnemyPrefabs)
+        {
+            if (enemyPrefab.GetType() == this.GetType())
+            {
+                return enemyPrefab;
+            }
+        }
+
+        Debug.LogWarning("Could not find enemy prefab from current type.");
+
+        return null;
+    }
+
+    // method for duplicate but the code in it should work in Entity_OnEntityDeath without it
+    // only here for debugging 
+    private void onDuplicate()
+    {
+            for (int i = 0; i < SplitCount; i++ )
+            {
+                // if you suspect this is crashing game uncomment bellow
+                // Debug.Break();
+                float angle = i * (360f / SplitCount);
+
+            
+                Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)) * 1f;
+            
+            
+                Vector3 spawnPos = this.transform.position + offset;
+                this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos);
+
+                
+        
+            }
+    }
 }
