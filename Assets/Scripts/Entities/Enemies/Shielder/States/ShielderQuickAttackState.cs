@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class ShielderQuickAttackState : ShielderBaseState
 {
     [field: Header("Config")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 2f;
     [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+
+    private Entity rememberedTarget;
 
     public Weapon Weapon { get; protected set; }
     private Vector3 attackDirection;
 
-    //Long Sword Weapon Class Reference
+    public void AssignCurrentRememberedTarget(Entity target)
+    {
+        rememberedTarget = target;
+    }
+
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
@@ -53,11 +60,17 @@ public class ShielderQuickAttackState : ShielderBaseState
 
         shielder.LookAt(shielder.transform.position + attackDirection);
 
-        //After the Quick Attack Animation is done changes to specified state.
-        if (!shielder.IsAttackAnimationPlaying)
+        //After the attack animation is done, check if the target is still in range of the Power Attack, if so goes to Power Attack state, else goes to Idle state.
+        if (!shielder.IsAttackAnimationPlaying && shielder.Distance(shielder.Target) < shielder.ShielderPowerAttackState.AttackRange)
         {
-
+            Vector3 attackDir = shielder.Target.transform.position - shielder.transform.position;
+            shielder.ShielderPowerAttackState.SetAttackDirection(attackDir);
             shielder.ChangeState(shielder.ShielderPowerAttackState);
+            return;
+        }
+        else if (!shielder.IsAttackAnimationPlaying && shielder.Distance(shielder.Target) > shielder.ShielderPowerAttackState.AttackRange)
+        {
+            shielder.ChangeState(shielder.ShielderIdleState);
             return;
         }
     }

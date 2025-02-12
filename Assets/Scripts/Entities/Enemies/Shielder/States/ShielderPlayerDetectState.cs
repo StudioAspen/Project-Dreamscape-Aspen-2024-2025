@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class ShielderPlayerDetectState : ShielderBaseState 
+public class ShielderPlayerDetectState : EnemyChaseState 
 {
     private Shielder shielder;
 

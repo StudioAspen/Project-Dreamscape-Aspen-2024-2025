@@ -5,13 +5,20 @@ using UnityEngine;
 public class ShielderPowerAttack : ShielderBaseState
 {
     [field: Header("Config")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 2f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 6f;
+    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 150f;
 
     public Weapon Weapon { get; protected set; }
     private Vector3 attackDirection;
 
-    //Long Sword Weapon Class Reference
+    private Entity rememberedTarget;
+
+    public void AssignCurrentRememberedTarget(Entity target)
+    {
+        rememberedTarget = target;
+    }
+
+
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
