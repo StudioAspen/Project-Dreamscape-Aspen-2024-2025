@@ -10,18 +10,11 @@ public class GolemGroundSmashState : GolemBaseState
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
     public Weapon Weapon { get; protected set; }
 
-    private Vector3 attackDirection;
-
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
 
         Weapon = entity.GetComponentInChildren<Weapon>();
-    }
-
-    public void SetAttackDirection(Vector3 direction)
-    {
-        attackDirection = direction;
     }
 
     public override void OnEnter()
@@ -32,13 +25,9 @@ public class GolemGroundSmashState : GolemBaseState
 
         Weapon.OnWeaponStartSwing?.Invoke(golem);
         Weapon.ClearEnemiesHitList();
-
-        // Weapon.SetPercentDamage(AOEPercentDamage); // Golem deals damage from AOE shockwave instead of weapon
-
-  
         
         golem.IsAttackAnimationPlaying = true;
-        golem.UseRootMotion = true;
+        golem.UseRootMotion = false;
     }
 
     public override void OnExit()
@@ -53,7 +42,7 @@ public class GolemGroundSmashState : GolemBaseState
     {
         golem.ApplyGravity();
 
-        golem.LookAt(golem.transform.position + attackDirection);
+        golem.LookAt(golem.GolemReadyAttackState.GetAttackDirection());
 
         if (!golem.IsAttackAnimationPlaying)
         {
@@ -64,13 +53,12 @@ public class GolemGroundSmashState : GolemBaseState
 
     public void GroundImpact() {
         golem.ShakeCam();
-        Weapon.EnableTriggers();
         GolemHitEntitiesWithAOEIgnoreTeam(golem, golem.transform.position, AOERadius, AOEPercentDamage, AOELaunchForce, AOEStunDuration);
         CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
     
     
-     /// <summary>
+    /// <summary>
     /// Applies area of effect damage to enemy entities within a given radius. The AOE ignores the attacker.
     /// Launches all hit entities regardless of team, excluding the attacker.
     /// Modified/Combined version of DamageEnemyEntitiesWithAOELaunch and DamageEnemyEntitiesWithAOE
@@ -84,7 +72,7 @@ public class GolemGroundSmashState : GolemBaseState
     /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
     /// <param name="willTryStagger">Whether to try to stagger the entities hit.</param>
     /// <returns>A list of entities that were hit.</returns>
-    public static List<Entity> GolemHitEntitiesWithAOEIgnoreTeam(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration,  bool willTryStagger = true)
+    public static List<Entity> GolemHitEntitiesWithAOEIgnoreTeam(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration, bool willTryStagger = true)
     {
         List<Entity> entitiesInRadius = Entity.GetEntitiesThroughAOE(center, radius, false);
         List<Entity> entitiesHit = new List<Entity>();
@@ -102,7 +90,6 @@ public class GolemGroundSmashState : GolemBaseState
         }
         return entitiesHit;
     }
-    
     
     
 }

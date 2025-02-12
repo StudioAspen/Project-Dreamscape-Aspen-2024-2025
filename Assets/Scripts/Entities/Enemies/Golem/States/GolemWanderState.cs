@@ -14,7 +14,7 @@ public class GolemWanderState : GolemBaseState
     {
         enemy.TransitionToAnimation("FlatMovement");
 
-        golem.SetSpeedModifier(1f);
+        golem.SetSpeedModifier(.5f);
 
         wanderTimeElapsed = Mathf.Infinity;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
@@ -40,7 +40,7 @@ public class GolemWanderState : GolemBaseState
 
         if (golem.Target != null)
         {
-            golem.ChangeState(golem.EnemyChaseState);
+            golem.ChangeState(golem.GolemChaseState);
             return;
         }
     }

@@ -10,6 +10,7 @@ public class Golem : Enemy
     public GolemChaseState GolemChaseState { get; private set; }
     public GolemReadyAttackState GolemReadyAttackState {get; private set;}
     public GolemAttackRecoverState GolemAttackRecoverState {get; private set;}
+    public GolemStompState GolemStompState {get; private set;}
 
 
     private Coroutine camShakeCoroutine;
@@ -23,9 +24,7 @@ public class Golem : Enemy
         GolemAttackRecoverState = EntityBaseState.InitializeOrCreate<GolemAttackRecoverState>(this);
         GolemChaseState = EntityBaseState.InitializeOrCreate<GolemChaseState>(this);
         GolemReadyAttackState = EntityBaseState.InitializeOrCreate<GolemReadyAttackState>(this);
-
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<FollowerChaseState>(this);
-   
+        GolemStompState = EntityBaseState.InitializeOrCreate<GolemStompState>(this);
     }
     #endregion
 
@@ -50,9 +49,7 @@ public class Golem : Enemy
     {
         base.OnStart();
 
-        // SetDefaultState(GolemWanderState);
-
-        SetDefaultState(GolemGroundSmashState); // For testing purposes only
+        SetDefaultState(GolemWanderState);
         
         FinishAnimation();
     }
@@ -77,6 +74,10 @@ public class Golem : Enemy
         GolemGroundSmashState.GroundImpact();
     }
 
+    public void StompImpact() { // called via Animation Event
+        GolemStompState.GroundImpactShockwave();
+    }
+
     public void ShakeCam() {
         camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale));
     }
@@ -92,5 +93,7 @@ public class Golem : Enemy
             yield return new WaitForSeconds(shakeDelay);
         }
     }
+    
+   
     
 }

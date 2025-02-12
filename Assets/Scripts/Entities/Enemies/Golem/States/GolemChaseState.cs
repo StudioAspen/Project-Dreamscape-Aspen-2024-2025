@@ -5,7 +5,7 @@ using UnityEngine;
 public class GolemChaseState : EnemyChaseState
 {
     [field: Header("Config")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 5f;
     
     private Golem golem;
 
@@ -18,7 +18,7 @@ public class GolemChaseState : EnemyChaseState
 
     public override void OnEnter()
     {
-        base.OnEnter();
+        golem.SetSpeedModifier(.75f);
     }
 
     public override void OnExit()
@@ -38,8 +38,6 @@ public class GolemChaseState : EnemyChaseState
 
         if(golem.Distance(golem.Target) < AttackRange)
         {
-            Vector3 attackDir = golem.Target.transform.position - golem.transform.position;
-            golem.GolemReadyAttackState.SetAttackDirection(attackDir);
             golem.ChangeState(golem.GolemReadyAttackState);
             return;
         }

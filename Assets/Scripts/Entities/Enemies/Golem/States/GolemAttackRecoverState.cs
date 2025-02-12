@@ -29,8 +29,7 @@ public class GolemAttackRecoverState : GolemBaseState
 
         if (recoverTimer > AttackRecoverDuration)
         {
-            // golem.ChangeState(golem.DefaultState);
-            golem.ChangeState(golem.GolemGroundSmashState); // For testing purposes only
+            golem.ChangeState(golem.GolemWanderState);
             return;
         }
     }

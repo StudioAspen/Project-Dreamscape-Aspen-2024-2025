@@ -58,12 +58,12 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
-  baseSpeed: 3
+  <MaxHealth>k__BackingField: 100
+  baseSpeed: 1.5
   rotationSpeed: 5
   mass: 1
   IsGrounded: 0
-  targetDetectionRadius: 10
+  targetDetectionRadius: 20
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField: 1
@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 5392196128862372024}
   - component: {fileID: 2509868483899744837}
   - component: {fileID: 3593046390679252307}
+  - component: {fileID: 1578901079306579272}
   - component: {fileID: 4900044992831005937}
   m_Layer: 0
   m_Name: States
@@ -255,7 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2e5df8714ce824088a7bc8830409fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackRange>k__BackingField: 1
+  <AttackRange>k__BackingField: 4
 --- !u!114 &2509868483899744837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,7 +285,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69f651596469a74d862bc67f4233a31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackReadyDuration>k__BackingField: 0.5
+  <StompReadyDuration>k__BackingField: 2
+  <GroundSmashReadyDuration>k__BackingField: 1
+  <CloseRangeCutoff>k__BackingField: 2
+--- !u!114 &1578901079306579272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d0fc58b4984e043858c968487da5cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <AOEInitialRadius>k__BackingField: 1
+  <AOEPercentDamage>k__BackingField: 100
+  <AOELaunchForce>k__BackingField: 7.5
+  <AOEStunDuration>k__BackingField: 1.5
+  <ShockwaveGrowMaxSteps>k__BackingField: 16
+  <ShockwaveGrowStepDuration>k__BackingField: 0.03333334
+  <ShockwaveGrowStepIncrement>k__BackingField: 0.6666667
 --- !u!114 &4900044992831005937
 MonoBehaviour:
   m_ObjectHideFlags: 0
