@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6113067411317021007}
-  - component: {fileID: 5897492690260637928}
-  - component: {fileID: 3560980410691548524}
-  - component: {fileID: 7867287705451663276}
-  - component: {fileID: 4763016521836496815}
-  - component: {fileID: 1838122196115541053}
+  - component: {fileID: 3253044860096186008}
+  - component: {fileID: 217798598386823054}
+  - component: {fileID: 9141571146152035501}
+  - component: {fileID: 7360638026223732565}
+  - component: {fileID: 8384524534497389969}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -36,7 +36,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8775985641968563314}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5897492690260637928
+--- !u!114 &3253044860096186008
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,12 +45,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 715649333153130698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff3b8b3a5194ace40b22dba07d42e489, type: 3}
+  m_Script: {fileID: 11500000, guid: a4be2949b12f044baa63fcfdac1feeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
   <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
---- !u!114 &3560980410691548524
+--- !u!114 &217798598386823054
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -59,15 +59,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 715649333153130698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423e064946ee0f048877d0ede16c302e, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d35ba3700c6c47d9b958693f7c84028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CircleFollowerCountThreshold>k__BackingField: 2
-  <ChangeDirectionInterval>k__BackingField: 0.5
-  <ChangeDirectionReciprocal>k__BackingField: 50
-  <CircleRadius>k__BackingField: 5
-  <MaxCircleRadius>k__BackingField: 8
---- !u!114 &7867287705451663276
+--- !u!114 &9141571146152035501
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,25 +71,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 715649333153130698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d92fb50fe6f7584f82dbc2218038d78, type: 3}
+  m_Script: {fileID: 11500000, guid: c24618bdc751859439623b51408f4f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackRecoverDuration>k__BackingField: 1
---- !u!114 &4763016521836496815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 715649333153130698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b92f8d54a89a034ab7375cd8299c461, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackRange>k__BackingField: 1
+  <AttackRange>k__BackingField: 2
   <AttackPercentDamage>k__BackingField: 100
---- !u!114 &1838122196115541053
+--- !u!114 &7360638026223732565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,10 +85,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 715649333153130698}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a202a20108b5e294686878b77e3f1181, type: 3}
+  m_Script: {fileID: 11500000, guid: a309f2ddb9bd24ecfb8012959501c957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackReadyDuration>k__BackingField: 0.5
+  <AttackRange>k__BackingField: 6
+  <AttackPercentDamage>k__BackingField: 250
+--- !u!114 &8384524534497389969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 715649333153130698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b152a612d230a042914b1f2aa0f29e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShielderFlyingLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
+  <AttackContactDamagePercent>k__BackingField: 100
 --- !u!1 &2723855053524731469
 GameObject:
   m_ObjectHideFlags: 0

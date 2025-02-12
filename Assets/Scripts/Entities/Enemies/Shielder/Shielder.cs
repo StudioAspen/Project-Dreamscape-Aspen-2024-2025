@@ -9,6 +9,7 @@ public class Shielder : Enemy
     public ShielderPowerAttack ShielderPowerAttackState { get; private set; }
     public ShielderIdleState ShielderIdleState { get; private set; }
     public ShielderPlayerDetectState ShielderPlayerDetectState { get; private set; }
+    public ShielderFlyingState ShielderFlyingState { get; private set; }
 
 
     private protected override void InitializeStates()
@@ -19,6 +20,7 @@ public class Shielder : Enemy
         ShielderPowerAttackState = EnemyBaseState.InitializeOrCreate<ShielderPowerAttack>(this);
         ShielderIdleState = EnemyBaseState.InitializeOrCreate<ShielderIdleState>(this);
         ShielderPlayerDetectState = EnemyBaseState.InitializeOrCreate<ShielderPlayerDetectState>(this);
+        ShielderFlyingState = EnemyBaseState.InitializeOrCreate<ShielderFlyingState>(this);
     }
     #endregion
 
@@ -52,6 +54,7 @@ public class Shielder : Enemy
     private protected override void OnUpdate()
     {
         base.OnUpdate();
+
     }
 
     private protected override void OnFixedUpdate()
@@ -73,6 +76,23 @@ public class Shielder : Enemy
     public void EndHit()
     {
         ShielderQuickAttackState.Weapon.DisableTriggers();
+    }
+
+
+    public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
+    {
+        List<Collider> hits = GetCustomCollisionHits(ShielderFlyingState.ShielderFlyingLayerMask);
+
+        foreach (Collider hit in hits)
+        {
+            if (DidHitEnemyEntity(hit, out Entity enemyEntity))
+            {
+                if (hitEntities.Contains(enemyEntity)) continue;
+                hitEntities.Add(enemyEntity);
+
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
+            }
+        }
     }
 
 }
