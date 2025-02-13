@@ -111,6 +111,6 @@ public class ChainingSystem : MonoBehaviour
         int bonusEXP = Mathf.RoundToInt(bonusEXPMultiplier * addedAmount);
         if (bonusEXP > 0) levelSystem.AddEXP(bonusEXP, false); // False because you dont want to cause an infinite loop of adding EXP and giving bonus EXP
 
-        Debug.Log($"Bonus EXP Multiplier: {bonusEXPMultiplier}, Bonus EXP: {bonusEXP}");
+        //Debug.Log($"Bonus EXP Multiplier: {bonusEXPMultiplier}, Bonus EXP: {bonusEXP}");
     }
 }

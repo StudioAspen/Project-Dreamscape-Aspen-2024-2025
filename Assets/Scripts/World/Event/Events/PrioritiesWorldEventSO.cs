@@ -6,7 +6,7 @@ using UnityEngine;
 
 // 3 Lands of the highest Level are selected.
 // All lands will spawn enemies, once the enemies spawned from the specific lands chosen are defeated trigger EOW
-[CreateAssetMenu(fileName = "Priorities World Event", menuName = "World Event/Priorities")]
+[CreateAssetMenu(fileName = "Priorities World Event", menuName = "World/World Event/Priorities")]
 public class PrioritiesWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
