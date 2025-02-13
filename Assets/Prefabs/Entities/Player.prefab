@@ -1523,6 +1523,9 @@ MonoBehaviour:
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
+  healthRegenAmount: 1
+  healthRegenRate: 0.25
+  durationSinceLastHitToRegen: 5
   groundedAcceleration: 4
 --- !u!114 &5620550920081884860
 MonoBehaviour:
@@ -1738,6 +1741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f963d3c9ebb57e4181ea71ba5805abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skyBoxChangeFadeDuration: 0.5
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0
