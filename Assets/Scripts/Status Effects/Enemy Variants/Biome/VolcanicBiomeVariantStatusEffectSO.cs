@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [CreateAssetMenu(fileName = "Data", menuName = "Volcanic Biome Variant Status Effect SO")]
 public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
@@ -16,7 +17,7 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         base.OnApply();
 
         // your logic for when the effect is applied
-        source.GetComponent<Entity>().OnEntityDealDamage += Biome_OnEntityDealDamage; // suscribe
+        source.GetComponent<Entity>().OnEntityDealDamage += Entity_OnEntityDealDamage; // suscribe
     }
 
     public override void Cancel()
@@ -24,13 +25,16 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         base.Cancel();
 
         // your logic for when the effect is cancelled
-        source.GetComponent<Entity>().OnEntityDealDamage -= Biome_OnEntityDealDamage; // unsuscribe
+        source.GetComponent<Entity>().OnEntityDealDamage -= Entity_OnEntityDealDamage; // unsuscribe
     }
 
-    private void Biome_OnEntityDealDamage(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
+    private void Entity_OnEntityDealDamage(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
         //EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurnStatusEffect, attacker.gameObject);
         //victim.gameObject.GetComponent<EntityStatusEffector>().ApplyStatusEffect(BurnStatusEffect, source.gameObject);
+
+        // stack overflow exception
+        entity.OnEntityDealDamage(attacker, victim, hitPoint, damageValue);
         Debug.Log("player hit valconooooooooooooooooooooo");
     }
 }
