@@ -65,7 +65,7 @@ MonoBehaviour:
   IsGrounded: 0
   targetDetectionRadius: 20
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <BaseDamageRange>k__BackingField: {x: 20, y: 25}
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
@@ -75,6 +75,8 @@ MonoBehaviour:
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   IsAttackAnimationPlaying: 0
+  dazeDamageThreshold: 25
+  staggerDamageThreshold: 10
 --- !u!114 &2008562887667020325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +211,8 @@ GameObject:
   - component: {fileID: 3593046390679252307}
   - component: {fileID: 1578901079306579272}
   - component: {fileID: 4900044992831005937}
+  - component: {fileID: 1200696102969395278}
+  - component: {fileID: 8012411747568153416}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -257,6 +261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AttackRange>k__BackingField: 4
+  <ChaseSpeed>k__BackingField: 1
 --- !u!114 &2509868483899744837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,7 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AOERadius>k__BackingField: 5
-  <AOEPercentDamage>k__BackingField: 100
+  <AOEPercentDamage>k__BackingField: 115
   <AOELaunchForce>k__BackingField: 15
   <AOEStunDuration>k__BackingField: 3
 --- !u!114 &3593046390679252307
@@ -287,7 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <StompReadyDuration>k__BackingField: 2
   <GroundSmashReadyDuration>k__BackingField: 1
-  <CloseRangeCutoff>k__BackingField: 2
+  <CloseRangeCutoff>k__BackingField: 3
 --- !u!114 &1578901079306579272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,12 +306,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AOEInitialRadius>k__BackingField: 1
-  <AOEPercentDamage>k__BackingField: 100
+  <AOEPercentDamage>k__BackingField: 75
   <AOELaunchForce>k__BackingField: 7.5
   <AOEStunDuration>k__BackingField: 1.5
   <ShockwaveGrowMaxSteps>k__BackingField: 16
   <ShockwaveGrowStepDuration>k__BackingField: 0.03333334
-  <ShockwaveGrowStepIncrement>k__BackingField: 0.6666667
+  <ShockwaveGrowStepIncrement>k__BackingField: 0.5
 --- !u!114 &4900044992831005937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,6 +326,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
   <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+  <WanderSpeed>k__BackingField: 0.75
+--- !u!114 &1200696102969395278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c3e6e07af141bb8d310939f76b89b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <StaggerDuration>k__BackingField: 0.6666667
+--- !u!114 &8012411747568153416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857298160996688264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e087107e14443d690e3e099ab7a4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DazedDuration>k__BackingField: 6
 --- !u!1 &6512184381983205014
 GameObject:
   m_ObjectHideFlags: 0

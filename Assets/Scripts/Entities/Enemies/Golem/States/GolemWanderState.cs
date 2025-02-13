@@ -5,6 +5,7 @@ public class GolemWanderState : GolemBaseState
     [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public float WanderSpeed { get; private set; } = .75f;
 
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
@@ -14,7 +15,7 @@ public class GolemWanderState : GolemBaseState
     {
         enemy.TransitionToAnimation("FlatMovement");
 
-        golem.SetSpeedModifier(.5f);
+        golem.SetSpeedModifier(WanderSpeed);
 
         wanderTimeElapsed = Mathf.Infinity;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);

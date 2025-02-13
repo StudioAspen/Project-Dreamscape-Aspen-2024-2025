@@ -81,7 +81,7 @@ public class GolemGroundSmashState : GolemBaseState
             if (entityHit == attacker) continue;
             entitiesHit.Add(entityHit);
             Vector3 direction = (entityHit.GetColliderCenterPosition() - center).normalized;
-            entityHit.ForceChangeToLaunchState(direction, launchForce, stunDuration);
+            entityHit.TryChangeToLaunchState(direction, launchForce, stunDuration);
             if (entityHit.Team == attacker.Team) continue; // skip friendly entities, but still add them to hitEntities to launch them
             attacker.DealDamageToOtherEntity(entityHit,
                 attacker.CalculateDamage(percentDamage),

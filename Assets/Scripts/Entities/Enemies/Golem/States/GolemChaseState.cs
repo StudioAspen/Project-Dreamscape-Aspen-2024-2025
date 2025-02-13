@@ -6,6 +6,7 @@ public class GolemChaseState : EnemyChaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public float AttackRange { get; private set; } = 5f;
+    [field: SerializeField] public float ChaseSpeed { get; private set; } = 1f;
     
     private Golem golem;
 
@@ -18,7 +19,7 @@ public class GolemChaseState : EnemyChaseState
 
     public override void OnEnter()
     {
-        golem.SetSpeedModifier(.75f);
+        golem.SetSpeedModifier(ChaseSpeed);
     }
 
     public override void OnExit()
