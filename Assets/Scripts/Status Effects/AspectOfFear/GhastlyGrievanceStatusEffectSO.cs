@@ -6,7 +6,7 @@ using UnityEngine;
 public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
 {
     [field: Header("Ghastly Grievance Stacks: Settings")]
-    [field: SerializeField] public float dmgThreshold { get; private set; } = 0.1f; 
+    [field: SerializeField] public float DamageThreshold { get; private set; } = 0.1f; 
     private protected override void OnApply()
     {
         base.OnApply();
@@ -16,8 +16,15 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
 
     private protected override void OnExpire()
     {
-        base.OnExpire();
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
+
+        base.OnExpire();
+    }
+
+    public override void Cancel()
+    {
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
+        base.Cancel();
     }
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
