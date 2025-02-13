@@ -30,9 +30,10 @@ public class PlayerDebugUI : MonoBehaviour
         levelSystem = player.GetComponent<LevelSystem>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-        player.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
-        
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
+        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
+        player.OnEntityHeal += Player_OnEntityHeal;
+
+        if (playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void Start()
@@ -55,7 +56,8 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
+        player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
+        player.OnEntityHeal -= Player_OnEntityHeal;
 
         if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
 
@@ -70,9 +72,14 @@ public class PlayerDebugUI : MonoBehaviour
         levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
     }
 
-    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
         healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth);
+    }
+
+    private void Player_OnEntityHeal(Entity healedEntity, int healAmount)
+    {
+        healthBarUI.SetHealthBar(player.CurrentHealth + healAmount, player.MaxHealth);
     }
 
     private void Weapon_OnWeaponStartSwing(Entity source)

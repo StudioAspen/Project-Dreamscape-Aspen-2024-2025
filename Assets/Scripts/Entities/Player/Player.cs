@@ -32,7 +32,7 @@ public class Player : Entity
 
     [field: Header("Player: Health Regen Config")]
     [SerializeField] private int healthRegenAmount = 1;
-    [SerializeField] private float healthRegenRate = 0.1f;
+    [SerializeField] private float healthRegenRate = 0.25f;
     [SerializeField] private float durationSinceLastHitToRegen = 5f;
     private float elapsedTimeSinceLastHit;
     private float healthRegenTimer;
