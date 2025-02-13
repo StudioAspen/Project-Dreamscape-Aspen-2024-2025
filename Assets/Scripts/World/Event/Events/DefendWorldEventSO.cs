@@ -7,7 +7,7 @@ using UnityEngine;
 
 // A stationary object will placed at the center of the land for 1 minute, Every 30 seconds it will go to a neighboring land.
 // All lands will spawn enemies, if the object survives, trigger EOW
-[CreateAssetMenu(fileName = "Defend World Event", menuName = "World Event/Defend")]
+[CreateAssetMenu(fileName = "Defend World Event", menuName = "World/World Event/Defend")]
 public class DefendWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]

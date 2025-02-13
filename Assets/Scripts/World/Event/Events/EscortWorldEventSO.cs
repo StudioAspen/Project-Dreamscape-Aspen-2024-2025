@@ -5,7 +5,7 @@ using UnityEngine;
 
 // An NPC will run around the map for X minutes.
 // Only land the NPC stands on spawn enemies,if they survive trigger EOW
-[CreateAssetMenu(fileName = "Escort World Event", menuName = "World Event/Escort")]
+[CreateAssetMenu(fileName = "Escort World Event", menuName = "World/World Event/Escort")]
 public class EscortWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
