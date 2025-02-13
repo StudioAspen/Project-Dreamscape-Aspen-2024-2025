@@ -14,6 +14,8 @@ public class LandManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private List<LandBorder> borders;
+    [SerializeField] private Transform bodyContentTransform;
+    [field: SerializeField] public Material SkyBoxMaterial { get; private set; }
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
@@ -41,6 +43,9 @@ public class LandManager : MonoBehaviour
         worldManager = FindObjectOfType<WorldManager>();
         EnemySpawner = GetComponent<EnemySpawner>();
         navMeshSurface = GetComponent<NavMeshSurface>();
+
+        // Give the body a random 90 degree rotation
+        bodyContentTransform.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 4) * 90f, 0);
     }
 
     void Start()
