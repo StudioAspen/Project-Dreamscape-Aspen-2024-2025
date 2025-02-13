@@ -116,15 +116,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""OpenAspects"",
-                    ""type"": ""Button"",
-                    ""id"": ""2560052c-a633-4121-ac25-282b39b94311"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -378,28 +369,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""MemoryAbility"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f6f9e8e0-5088-4978-b5e7-9f7bad100f0f"",
-                    ""path"": ""<Keyboard>/p"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""OpenAspects"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f642572d-7f87-41e9-9f12-9694f626810a"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""OpenAspects"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1303,7 +1272,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_CameraLook = m_Gameplay.FindAction("CameraLook", throwIfNotFound: true);
         m_Gameplay_ToggleMinimap = m_Gameplay.FindAction("ToggleMinimap", throwIfNotFound: true);
         m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
-        m_Gameplay_OpenAspects = m_Gameplay.FindAction("OpenAspects", throwIfNotFound: true);
         // Land Placement
         m_LandPlacement = asset.FindActionMap("Land Placement", throwIfNotFound: true);
         m_LandPlacement_Movement = m_LandPlacement.FindAction("Movement", throwIfNotFound: true);
@@ -1400,7 +1368,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_CameraLook;
     private readonly InputAction m_Gameplay_ToggleMinimap;
     private readonly InputAction m_Gameplay_Pause;
-    private readonly InputAction m_Gameplay_OpenAspects;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -1415,7 +1382,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @CameraLook => m_Wrapper.m_Gameplay_CameraLook;
         public InputAction @ToggleMinimap => m_Wrapper.m_Gameplay_ToggleMinimap;
         public InputAction @Pause => m_Wrapper.m_Gameplay_Pause;
-        public InputAction @OpenAspects => m_Wrapper.m_Gameplay_OpenAspects;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1455,9 +1421,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
-            @OpenAspects.started += instance.OnOpenAspects;
-            @OpenAspects.performed += instance.OnOpenAspects;
-            @OpenAspects.canceled += instance.OnOpenAspects;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -1492,9 +1455,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
-            @OpenAspects.started -= instance.OnOpenAspects;
-            @OpenAspects.performed -= instance.OnOpenAspects;
-            @OpenAspects.canceled -= instance.OnOpenAspects;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -1808,7 +1768,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnCameraLook(InputAction.CallbackContext context);
         void OnToggleMinimap(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
-        void OnOpenAspects(InputAction.CallbackContext context);
     }
     public interface ILandPlacementActions
     {

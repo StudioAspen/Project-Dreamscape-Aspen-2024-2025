@@ -39,7 +39,7 @@ public class ProgressionManager : MonoBehaviour
     private void GameManager_OnGameStateChanged(GameState newState)
     {
         // If just entering playmode for the first time (ignores pause/unpause and other game state changes)
-        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.EVENT_SELECTION)
+        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.ASPECT_SELECTION)
         {
             CreateNewQuests();
         }
