@@ -10,9 +10,12 @@ public class Slime : Enemy
 
 
     // if true is small else false
-    [field: SerializeField] public bool isSplit { get; private set; } = false; 
+    // [field: SerializeField] public bool isSplit { get; private set; }
     [field: SerializeField] public int SplitCount { get; private set; } = 2;
     private Enemy slimeEnemyPrefab;
+
+    public bool isSplit = false;
+
 
     #region States
     public SlimeIdleState SlimeIdleState {get; private set;}
@@ -25,13 +28,7 @@ public class Slime : Enemy
 
     }
 
-    #endregion
-
-    // public void Init()
-    // {
-
-    // }
-    
+    #endregion    
 
     private protected override void OnAwake()
     {
@@ -54,9 +51,10 @@ public class Slime : Enemy
     private protected override void OnStart()
     {
         base.OnStart();
+        Debug.Log(isSplit);
         slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
         OnEntityDeath += Entity_OnEntityDeath;
-        SetDefaultState(SlimeIdleState);  
+        SetDefaultState(SlimeIdleState);
     }
 
     private protected override void OnUpdate()
@@ -89,13 +87,11 @@ public class Slime : Enemy
     private protected override void OnDeath()
     {
         base.OnDeath();
-        Debug.Log("death is triggered");
-        // ChangeState(SlimeSplitState, true);
     }
 
     private void Entity_OnEntityDeath(GameObject entityGameObject)
     {
-        Debug.Log("pimp down, pimp in distress");
+        // Debug.Log("pimp down, pimp in distress");
         onDuplicate();
         OnEntityDeath -= Entity_OnEntityDeath;
     }
@@ -149,6 +145,13 @@ public class Slime : Enemy
     // only here for debugging 
     private void onDuplicate()
     {
+            
+            if(isSplit == true)
+            {
+                Debug.Log("cancel");
+                return;
+            }
+            
             for (int i = 0; i < SplitCount; i++ )
             {
                 // if you suspect this is crashing game uncomment bellow
@@ -160,9 +163,17 @@ public class Slime : Enemy
             
             
                 Vector3 spawnPos = this.transform.position + offset;
-                this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos);
+                // this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos);
 
-                
+                // similar to previous code except this time it changes isSplit to true
+                // so the duplicate cant split
+                Slime duplicateSlime = this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
+                if (isSplit == false)
+                {
+                    duplicateSlime.isSplit = true;
+                    
+                }
+
         
             }
     }
