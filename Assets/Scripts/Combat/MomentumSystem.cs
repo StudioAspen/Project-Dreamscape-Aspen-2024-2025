@@ -85,28 +85,31 @@ public class MomentumSystem : MonoBehaviour
 
         if(momentum % 10 == 0)
         {
+            //if momentum reaches mutliple of 10 you get healed yay
             player.Heal(healAmount);
-            Debug.Log("momentum heal");
+            Debug.Log("momentum heal!");
         }
         else if(momentum % 2 == 1)
         {
+            //activates every odd increment of momentum (1,3,5..)
             if(currentDamageBonus < maxDamageBonus)
             {
+                //if damage bonus isnt maxed out already, add percent bonus
                 player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
                 currentDamageBonus += percentDamageBonus;
                 player.SetDamageModifier(player.DamageModifier * currentDamageBonus);
             }
-            Debug.Log("damage mod = " + currentDamageBonus);
         }
         else
         {
+            //activates every even increment (2,4,6..)
             if(currentMoveSpeedBonus < maxMoveSpeedBonus)
             {
+                //if speed bonus hasnt maxed out add percent bonus
                 player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
                 currentMoveSpeedBonus += percentMoveSpeedBonus;
                 player.SetSpeedModifier(player.SpeedModifier * currentMoveSpeedBonus);
             }
-            Debug.Log("speed mod = " + currentMoveSpeedBonus);
         }
 
     }
@@ -116,6 +119,7 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         momentum = 0;
+        //resets modifiers yay
         player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
         currentMoveSpeedBonus = 1;
         player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
