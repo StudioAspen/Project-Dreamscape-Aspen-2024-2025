@@ -129,7 +129,7 @@ public class EventManager : MonoBehaviour
         CurrentEvent.Start();
         OnEventChanged?.Invoke(CurrentEvent);
 
-        gameManager.ChangeState(GameState.PLAYING);
+        gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
     /// <summary>

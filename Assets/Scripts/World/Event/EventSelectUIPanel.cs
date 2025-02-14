@@ -53,6 +53,9 @@ public class EventSelectUIPanel : UIPanel
 
     public void OnEnable()
     {
+        // If the cards are not ready dont do anything
+        if (!eventCards[0].IsReady) return;
+
         AssignRandomEventsToCards();
 
         // Kill all previous tweens on the title and return it to its starting state

@@ -18,6 +18,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject frontFaceObject;
     [SerializeField] private GameObject backFaceObject;
 
+    public bool IsReady => eventManager != null;
     private bool isFrontFacing;
     private bool isSelected;
 

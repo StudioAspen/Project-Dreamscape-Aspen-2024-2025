@@ -112,12 +112,12 @@ public class MemorySystem : MonoBehaviour
             return;
         }
 
-        OnMemoryAbilityActivated.Invoke(largestShardType);
-
-        // Activate ability
-        player.PlayerAbilityState.ChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false);
-
-        ShardDictionary.Clear();
+        // Try to activate ability
+        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        {
+            OnMemoryAbilityActivated.Invoke(largestShardType);
+            ShardDictionary.Clear();
+        }
     }
 
     /// <summary>

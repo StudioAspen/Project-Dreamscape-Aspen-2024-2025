@@ -1453,6 +1453,7 @@ GameObject:
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
   - component: {fileID: 3554812273690287485}
+  - component: {fileID: 6259942536886293904}
   m_Layer: 16
   m_Name: Player
   m_TagString: Untagged
@@ -1522,6 +1523,9 @@ MonoBehaviour:
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
+  healthRegenAmount: 1
+  healthRegenRate: 0.25
+  durationSinceLastHitToRegen: 5
   groundedAcceleration: 4
 --- !u!114 &5620550920081884860
 MonoBehaviour:
@@ -1568,6 +1572,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeBetween: 2
+  chainRewards:
+    _serializedList:
+    - Key: 6
+      Value: 0.25
+    - Key: 12
+      Value: 0.5
+    - Key: 18
+      Value: 0.75
+    - Key: 24
+      Value: 1
 --- !u!114 &5066363359248579512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1624,7 +1638,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aspectTrees:
   - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
-  <AspectTokens>k__BackingField: 10
 --- !u!95 &2171180168782530629
 Animator:
   serializedVersion: 5
@@ -1716,6 +1729,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Renderers>k__BackingField:
   - {fileID: 6984206866885531703}
+--- !u!114 &6259942536886293904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f963d3c9ebb57e4181ea71ba5805abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skyBoxChangeFadeDuration: 0.5
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public class ShardHolder : MonoBehaviour
         {
             if (entityStatusEffector.CurrentStatusEffects.Values.OfType<EliteVariantStatusEffectSO>().FirstOrDefault() == null) return finalShardDropCount;
             finalShardDropCount = Mathf.RoundToInt(shardDropCount * eliteShardDropCountMultiplier);
-            Debug.Log($"Elite holder, multiplying shard drop count by 1.5x: {shardDropCount} -> {finalShardDropCount}");
+            //Debug.Log($"Elite holder, multiplying shard drop count by 1.5x: {shardDropCount} -> {finalShardDropCount}");
         }
 
         return finalShardDropCount;
