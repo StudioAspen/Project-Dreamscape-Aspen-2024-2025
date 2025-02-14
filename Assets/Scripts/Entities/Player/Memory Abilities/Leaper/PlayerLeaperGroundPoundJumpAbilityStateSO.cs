@@ -46,7 +46,7 @@ public class PlayerLeaperGroundPoundJumpAbilityStateSO : PlayerAbilityStateSO
 
         if(midAirTimer >= MidAirPauseDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(GroundPoundState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(GroundPoundState, true);
             return;
         }
 

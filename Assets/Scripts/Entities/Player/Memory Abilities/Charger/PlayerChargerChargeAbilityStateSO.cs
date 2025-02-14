@@ -53,7 +53,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
         timer += player.LocalDeltaTime;
         if (timer > ChargeDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
         }
 
@@ -75,7 +75,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
             player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactPercentDamage), hit.point, false);
 
-            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
         }
     }

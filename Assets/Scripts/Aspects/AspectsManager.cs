@@ -1,13 +1,33 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AspectsManager : MonoBehaviour
 {
+    private LevelSystem levelSystem;
+
     [SerializeField] private List<AspectTree> aspectTrees = new List<AspectTree>();
 
     public AspectTree CurrentAspectTree { get; private set; }
-    [field: SerializeField] public int AspectTokens { get; private set; } = 10;
+    public int AspectTokens { get; private set; } = 0;
+
+    private void Awake()
+    {
+        levelSystem = GetComponent<LevelSystem>();
+
+        levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
+    }
+
+    private void OnDestroy()
+    {
+        levelSystem.OnLevelUp -= LevelSystem_OnLevelUp;
+    }
+
+    private void LevelSystem_OnLevelUp(int newLevel)
+    {
+        AspectTokens++;
+    }
 
     private void Update()
     {

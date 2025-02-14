@@ -50,7 +50,7 @@ MonoBehaviour:
   geyserVFX: {fileID: 1741678290090938814}
   eruptIntervalRange: {x: 3, y: 6}
   eruptDurationRange: {x: 3, y: 6}
-  eruptHeightRange: {x: 2, y: 4}
+  eruptHeightRange: {x: 4, y: 6}
   eruptDamageRange: {x: 10, y: 15}
   damageTickDuration: 1
 --- !u!136 &1939340573646255524
@@ -72,7 +72,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.45
+  m_Radius: 0.25
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
@@ -124,7 +124,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6856302741912383626}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -175,7 +175,7 @@ PrefabInstance:
     - target: {fileID: 4424769192715050195, guid: 5a52a29d5981ae14b8a790b42374e88b,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4424769192715050195, guid: 5a52a29d5981ae14b8a790b42374e88b,
         type: 3}
@@ -230,7 +230,7 @@ PrefabInstance:
     - target: {fileID: 5589184197360403474, guid: 5a52a29d5981ae14b8a790b42374e88b,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5589184197360403474, guid: 5a52a29d5981ae14b8a790b42374e88b,
         type: 3}
