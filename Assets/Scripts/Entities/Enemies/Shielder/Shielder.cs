@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Shielder : Enemy
 {
+    [field: SerializeField] public float ShielderStunTime { get; private set; } = 1f;
+
+
     #region States
     public ShielderQuickAttackState ShielderQuickAttackState { get; private set; }
     public ShielderPowerAttack ShielderPowerAttackState { get; private set; }

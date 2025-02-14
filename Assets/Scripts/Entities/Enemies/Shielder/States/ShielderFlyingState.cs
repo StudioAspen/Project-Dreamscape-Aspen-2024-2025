@@ -9,6 +9,8 @@ public class ShielderFlyingState : EntityLaunchState
 
     [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 500f;
 
+    private Entity rememberedTarget;
+    private Vector3 attackDirection;
 
     private Shielder shielder;
 
@@ -18,9 +20,21 @@ public class ShielderFlyingState : EntityLaunchState
         shielder = entity as Shielder;
     }
 
+    public void AssignCurrentRememberedTarget(Entity target)
+    {
+        rememberedTarget = target;
+    }
+
+    public void SetAttackDirection(Vector3 direction)
+    {
+        attackDirection = direction;
+    }
+
     public override void OnEnter()
     {
         base.OnEnter();
+
+        SetLaunchSettings(attackDirection, force, shielder.ShielderStunTime);
 
         entitiesHitByCurrentLeap.Clear();
     }
@@ -29,13 +43,6 @@ public class ShielderFlyingState : EntityLaunchState
     {
         Debug.Log("Collision Detectable");
         base.OnUpdate();
-
-        
-        if (shielder.IsGrounded)
-        {
-            shielder.ChangeState(shielder.ShielderIdleState);
-            return;
-        }
         
            
         shielder.ApplyGravity();

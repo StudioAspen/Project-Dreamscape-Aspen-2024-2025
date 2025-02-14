@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShielderPowerAttack : ShielderBaseState
 {
     [field: Header("Config")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 6f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 2f;
     [field: SerializeField] public float AttackPercentDamage { get; private set; } = 250f;
 
     public Weapon Weapon { get; protected set; }
