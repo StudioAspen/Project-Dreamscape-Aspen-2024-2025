@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MomentumSystem : MonoBehaviour
 {
@@ -12,6 +13,16 @@ public class MomentumSystem : MonoBehaviour
     [SerializeField] private float timeBetweenMultiplier = 0.975f;
     private float timer;
     private float timeBetween;
+
+    [SerializeField] private float percentDamageBonus;
+    private float currentDamageBonus = 1;
+    [SerializeField] private float maxDamageBonus;
+    [SerializeField] private float percentMoveSpeedBonus;
+    private float currentMoveSpeedBonus = 1;
+    [SerializeField] private float maxMoveSpeedBonus;
+    [SerializeField] private int healAmount;
+
+
 
     private int momentum;
     public int Momentum => momentum;
@@ -70,6 +81,34 @@ public class MomentumSystem : MonoBehaviour
         momentum++;
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
+
+
+        if(momentum % 10 == 0)
+        {
+            player.Heal(healAmount);
+            Debug.Log("momentum heal");
+        }
+        else if(momentum % 2 == 1)
+        {
+            if(currentDamageBonus < maxDamageBonus)
+            {
+                player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
+                currentDamageBonus += percentDamageBonus;
+                player.SetDamageModifier(player.DamageModifier * currentDamageBonus);
+            }
+            Debug.Log("damage mod = " + currentDamageBonus);
+        }
+        else
+        {
+            if(currentMoveSpeedBonus < maxMoveSpeedBonus)
+            {
+                player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
+                currentMoveSpeedBonus += percentMoveSpeedBonus;
+                player.SetSpeedModifier(player.SpeedModifier * currentMoveSpeedBonus);
+            }
+            Debug.Log("speed mod = " + currentMoveSpeedBonus);
+        }
+
     }
 
     private void Reset()
@@ -77,6 +116,10 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         momentum = 0;
+        player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
+        currentMoveSpeedBonus = 1;
+        player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
+        currentDamageBonus = 1;
     }
 
 }

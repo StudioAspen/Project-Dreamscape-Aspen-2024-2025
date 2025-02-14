@@ -1559,6 +1559,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseTimeBetween: 10
   timeBetweenMultiplier: 0.975
+  percentDamageBonus: 0.05
+  maxDamageBonus: 2
+  percentMoveSpeedBonus: 0.05
+  maxMoveSpeedBonus: 2
+  healAmount: 10
 --- !u!114 &3702187593430642151
 MonoBehaviour:
   m_ObjectHideFlags: 0
