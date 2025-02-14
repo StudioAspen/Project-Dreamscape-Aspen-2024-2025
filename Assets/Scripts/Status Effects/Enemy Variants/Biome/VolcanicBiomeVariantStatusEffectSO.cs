@@ -16,8 +16,9 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
     {
         base.OnApply();
 
-        // your logic for when the effect is applied
-        source.GetComponent<Entity>().OnEntityDealDamage += Entity_OnEntityDealDamage; // suscribe
+        // your logic for when the effect is applied 
+        //source.GetComponent<Entity>().OnEntityDealDamage += Entity_OnEntityDealDamage; // doesnt work as source is the spawner
+        entity.OnEntityDealDamage += Entity_OnEntityDealDamage;
     }
 
     public override void Cancel()
@@ -25,7 +26,8 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         base.Cancel();
 
         // your logic for when the effect is cancelled
-        source.GetComponent<Entity>().OnEntityDealDamage -= Entity_OnEntityDealDamage; // unsuscribe
+        //source.GetComponent<Entity>().OnEntityDealDamage -= Entity_OnEntityDealDamage; // doesnt work as source is the spawner
+        entity.OnEntityDealDamage -= Entity_OnEntityDealDamage;
     }
 
     private void Entity_OnEntityDealDamage(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
@@ -33,8 +35,6 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         //EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurnStatusEffect, attacker.gameObject);
         //victim.gameObject.GetComponent<EntityStatusEffector>().ApplyStatusEffect(BurnStatusEffect, source.gameObject);
 
-        // stack overflow exception
-        entity.OnEntityDealDamage(attacker, victim, hitPoint, damageValue);
         Debug.Log("player hit valconooooooooooooooooooooo");
     }
 }
