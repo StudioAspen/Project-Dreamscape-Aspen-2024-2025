@@ -32,7 +32,7 @@ public class VolcanicBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
 
     private void Entity_OnEntityDealDamage(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        //EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurnStatusEffect, attacker.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurnStatusEffect, attacker.gameObject);
         //victim.gameObject.GetComponent<EntityStatusEffector>().ApplyStatusEffect(BurnStatusEffect, source.gameObject);
 
         Debug.Log("player hit valconooooooooooooooooooooo");
