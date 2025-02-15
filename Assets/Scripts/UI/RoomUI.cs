@@ -1,22 +1,18 @@
-using DG.Tweening.Core.Easing;
-using Eflatun.SceneReference;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Eflatun.SceneReference;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TitleScreenManager : MonoBehaviour
+public class RoomUI : MonoBehaviour
 {
     private InputManager inputManager;
 
     [Header("Scenes")]
-    [SerializeField] private SceneReference bedroomScene;
+    [SerializeField] private SceneReference loadingScene;
 
     [Header("UI")]
-    [SerializeField] private Button playButton;
+    [SerializeField] private Button startButton;
 
     private void Awake()
     {
@@ -24,14 +20,14 @@ public class TitleScreenManager : MonoBehaviour
 
         inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
 
-        playButton.onClick.AddListener(PlayButton_OnClicked);
+        startButton.onClick.AddListener(StartButton_OnClicked);
     }
 
     private void OnDestroy()
     {
         inputManager.OnControlSchemeChanged -= InputManager_OnControlSchemeChanged;
 
-        playButton.onClick.RemoveListener(PlayButton_OnClicked);
+        startButton.onClick.RemoveListener(StartButton_OnClicked);
     }
 
     private void InputManager_OnControlSchemeChanged(InputManager.ControlScheme newControlScheme)
@@ -40,7 +36,7 @@ public class TitleScreenManager : MonoBehaviour
         {
             inputManager.LockCursor();
             // Set the play button as selected
-            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(startButton.gameObject);
         }
         else
         {
@@ -49,8 +45,8 @@ public class TitleScreenManager : MonoBehaviour
         }
     }
 
-    public void PlayButton_OnClicked()
+    public void StartButton_OnClicked()
     {
-        SceneManager.LoadScene(bedroomScene.Name);
+        SceneManager.LoadScene(loadingScene.Name);
     }
 }
