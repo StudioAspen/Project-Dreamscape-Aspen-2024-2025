@@ -10,6 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 9031331788138976030}
   - component: {fileID: 6425673086109278233}
+  - component: {fileID: 4044645664890216669}
+  - component: {fileID: 7595089212924619834}
+  - component: {fileID: 2356543993079865529}
+  - component: {fileID: 8602872760424198191}
   - component: {fileID: 1939340573646255524}
   m_Layer: 0
   m_Name: Geyser
@@ -47,12 +51,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5688bcfd9254c249a824c0504f778d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  geyserVFX: {fileID: 1741678290090938814}
-  eruptIntervalRange: {x: 3, y: 6}
-  eruptDurationRange: {x: 3, y: 6}
-  eruptHeightRange: {x: 4, y: 6}
-  eruptDamageRange: {x: 10, y: 15}
-  damageTickDuration: 1
+  <StartState>k__BackingField: {fileID: 4044645664890216669}
+  <DefaultState>k__BackingField: {fileID: 4044645664890216669}
+  <GeyserIdleState>k__BackingField: {fileID: 4044645664890216669}
+  <GeyserWarningState>k__BackingField: {fileID: 7595089212924619834}
+  <GeyserEruptingState>k__BackingField: {fileID: 2356543993079865529}
+  <GeyserCooldownState>k__BackingField: {fileID: 8602872760424198191}
+--- !u!114 &4044645664890216669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110658283149822555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e23ae04c546c4d47902bda51e430eff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <DurationRange>k__BackingField: {x: 3, y: 15}
+--- !u!114 &7595089212924619834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110658283149822555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270e75027f66a3f489236d63737d386b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 1
+--- !u!114 &2356543993079865529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110658283149822555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e22101f079ddff845b9f947c854f2ad2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GeyserVFX>k__BackingField: {fileID: 1741678290090938814}
+  <DurationRange>k__BackingField: {x: 3, y: 6}
+  <HeightRange>k__BackingField: {x: 3, y: 5}
+  <DamageRange>k__BackingField: {x: 10, y: 15}
+  <DamageTickDuration>k__BackingField: 1
+--- !u!114 &8602872760424198191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110658283149822555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3be9342c1032a4640a3924ef95d1e9ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Duration>k__BackingField: 1
 --- !u!136 &1939340573646255524
 CapsuleCollider:
   m_ObjectHideFlags: 0

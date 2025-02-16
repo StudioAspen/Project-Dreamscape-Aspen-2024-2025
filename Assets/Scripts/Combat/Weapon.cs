@@ -69,7 +69,7 @@ public class Weapon : MonoBehaviour
     private float impactFramesDuration;
     private float impactFramesRemainingTime;
     private Coroutine impactFramesCoroutine;
-    private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
+    private List<GameObject> objectsHitByCurrentAttack = new List<GameObject>();
 
     private void Awake()
     {
@@ -79,7 +79,7 @@ public class Weapon : MonoBehaviour
         trailParticle = GetComponentInChildren<ParticleSystem>();
         holderEntity = GetComponentInParent<Entity>();
 
-        hitLayerMask = LayerMask.GetMask("Damageable Entity");
+        hitLayerMask = LayerMask.GetMask("Damageable Entity", "Obstacle");
 
         PopulateColliderStartEndPositions();
     }
@@ -135,11 +135,31 @@ public class Weapon : MonoBehaviour
         if (!isCheckingCollisions) return;
         if ((hitLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
-        Entity enemy = other.GetComponentInParent<Entity>();
+        CheckEntityCollisionsWithTrigger(other);
+        CheckObstacleCollisionsWithTrigger(other);
+    }
 
+    /// <summary>
+    /// Handles entity hit detection with the triggers
+    /// </summary>
+    /// <param name="other">The collider hit by the trigger</param>
+    private void CheckEntityCollisionsWithTrigger(Collider other)
+    {
+        Entity enemy = other.GetComponentInParent<Entity>();
+        Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
+        AttemptToHitEnemy(enemy, hitPoint, true);
+    }
+
+    /// <summary>
+    /// Handles obstacle hit detection with the triggers
+    /// </summary>
+    /// <param name="other">The collider hit by the trigger</param>
+    private void CheckObstacleCollisionsWithTrigger(Collider other)
+    {
+        Obstacle obstacle = other.GetComponent<Obstacle>();
         Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
 
-        AttemptToHitEnemy(enemy, hitPoint, true);
+        AttemptToHitObstacle(obstacle, hitPoint, true);
     }
 
     /// <summary>
@@ -205,9 +225,27 @@ public class Weapon : MonoBehaviour
             if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds(transform.position);
 
             Entity enemy = hit.collider.GetComponentInParent<Entity>();
-
             AttemptToHitEnemy(enemy, hitPoint, false);
+
+            Obstacle obstacle = hit.collider.GetComponent<Obstacle>();
+            AttemptToHitObstacle(obstacle, hitPoint, false);
         }
+    }
+
+    /// <summary>
+    /// Attempts to hit an obstacle with the weapon.
+    /// </summary>
+    /// <param name="obstacle">The obstacle to hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
+    private void AttemptToHitObstacle(Obstacle obstacle, Vector3 hitPoint, bool fromTrigger)
+    {
+        if (obstacle == null) return;
+        if (holderEntity.Team != 0) return; // If not in player's team
+        if (objectsHitByCurrentAttack.Contains(obstacle.gameObject)) return;
+
+        objectsHitByCurrentAttack.Add(obstacle.gameObject);
+        obstacle.TakeDamage(hitPoint, holderEntity.gameObject);
     }
 
     /// <summary>
@@ -222,8 +260,8 @@ public class Weapon : MonoBehaviour
         if (victim.Team == holderEntity.Team) return;
         if (victim.CurrentState == victim.EntityDeathState) return;
 
-        if (entitiesHitByCurrentAttack.Contains(victim)) return;
-        entitiesHitByCurrentAttack.Add(victim);
+        if (objectsHitByCurrentAttack.Contains(victim.gameObject)) return;
+        objectsHitByCurrentAttack.Add(victim.gameObject);
 
         HitEnemy(victim, hitPoint, fromTrigger);
     }
@@ -303,7 +341,7 @@ public class Weapon : MonoBehaviour
     /// </summary>
     public void ClearEnemiesHitList()
     {
-        entitiesHitByCurrentAttack.Clear();
+        objectsHitByCurrentAttack.Clear();
     }
 
     /// <summary>

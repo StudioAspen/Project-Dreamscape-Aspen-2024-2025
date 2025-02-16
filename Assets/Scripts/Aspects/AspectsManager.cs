@@ -17,6 +17,8 @@ public class AspectsManager : MonoBehaviour
         levelSystem = GetComponent<LevelSystem>();
 
         levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
+
+        SetCurrentAspectTree(aspectTrees[0]);
     }
 
     private void OnDestroy()
@@ -31,9 +33,10 @@ public class AspectsManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && CurrentAspectTree == null)
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            SetCurrentAspectTree(aspectTrees[0]);
+            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
+            AspectTokens++;
         }
     }
 

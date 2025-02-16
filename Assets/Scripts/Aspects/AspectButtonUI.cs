@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,12 +5,14 @@ using UnityEngine.UI;
 public class AspectButtonUI : MonoBehaviour
 {
     private GameManager gameManager;
-    private Button button;
-    private TMP_Text text;
-
     private AspectsTreeUIPanel aspectsTreeUI;
     private AspectsManager aspectsManager;
     private AspectNodeNode aspectNode;
+
+    [Header("References")]
+    [SerializeField] private Button button;
+    [SerializeField] private Image buttonImage;
+    [SerializeField] private TMP_Text text;
 
     /// <summary>
     /// Initializes the AspectButtonUI with the given parameters.
@@ -26,7 +26,7 @@ public class AspectButtonUI : MonoBehaviour
         this.aspectsManager = aspectsManager;
         this.aspectNode = aspectNode;
 
-        ChangeButton(treeUI, aspectsManager, aspectNode);
+        UpdateDisplayContents();
     }
 
     private void Awake()
@@ -49,7 +49,7 @@ public class AspectButtonUI : MonoBehaviour
 
         aspectsManager.ConsumeAspectToken();
 
-        gameManager.ChangeState(GameState.PLAYING);
+        aspectsTreeUI.UpdateTree();
     }
 
     /// <summary>
@@ -58,25 +58,24 @@ public class AspectButtonUI : MonoBehaviour
     /// <param name="treeUI">The AspectsTreeUI instance.</param>
     /// <param name="aspectsManager">The AspectsManager instance.</param>
     /// <param name="aspectNode">The AspectNodeNode instance.</param>
-    private void ChangeButton(AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
+    public void UpdateDisplayContents()
     {
         // only the next possible nodes will be interactable and on the same level as the first applied multi-node level node
         button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);
         // make the button green if its been applied already
-        GetComponent<Image>().color = aspectNode.IsApplied ? Color.green : GetComponent<Image>().color;
+        buttonImage.color = aspectNode.IsApplied ? Color.green : buttonImage.color;
 
         if (aspectNode.GetType() == typeof(ComboAspectNodeNode))
         {
             ComboAspectNodeNode comboAspectNode = aspectNode as ComboAspectNodeNode;
-
-            text.text = comboAspectNode == null ? $"Empty combo" : $"{comboAspectNode.ComboData.name}";
+            text.text = comboAspectNode == null ? $"Combo missing" : $"{comboAspectNode.DisplayName}";
         }
 
         if (aspectNode.GetType() == typeof(StatusEffectAspectNodeNode))
         {
             StatusEffectAspectNodeNode statusEffectAspectNode = aspectNode as StatusEffectAspectNodeNode;
 
-            text.text = statusEffectAspectNode.StatusEffect == null ? $"Empty status effect" : $"{statusEffectAspectNode.StatusEffect.name}";
+            text.text = statusEffectAspectNode.StatusEffect == null ? $"Status effect missing" : $"{statusEffectAspectNode.DisplayName}";
         }
     }
 }

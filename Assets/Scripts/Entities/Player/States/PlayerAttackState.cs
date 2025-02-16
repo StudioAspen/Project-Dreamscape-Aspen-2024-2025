@@ -202,13 +202,13 @@ public class PlayerAttackState : PlayerBaseState
     }
 
     /// <summary>
-    /// Prevents the player from cancelling the animation for the first half of the animation.
+    /// Prevents the player from cancelling the animation for the first quater of the animation.
     /// Ensures that the player cant unexpectedly cancel the animation in a bug.
     /// </summary>
     private void HandleAnimationCancellingBuffer()
     {
         timer += player.LocalDeltaTime;
-        if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
+        if (timer > duration / 4) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
