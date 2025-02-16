@@ -9,7 +9,19 @@ using UnityEngine;
 public class VisitAllWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public int VisitAllEventDummyVariable { get; private set; }
+    // Previously named VisitAllEventDummyVarable, and previously declared as an int.
+
+    /// <summary>
+    /// Controls how many lands will be indicated for this event. The greater the value, the more lands will be indicated.
+    /// </summary>
+    [field: Range(1f, 15f)]
+    [field: SerializeField] public float CountModifier { get; private set; }
+
+    /// <summary>
+    /// Controls the radius of each Visit Indicator sphere.
+    /// </summary>
+    [field: Range(2.5f, 15f)]
+    [field: SerializeField] public float VisitIndicatorsRadius { get; private set; }
 
     private List<Player> players = new List<Player>();
 
@@ -30,14 +42,35 @@ public class VisitAllWorldEventSO : WorldEventSO
             return;
         }
 
-        // Start enemy spawners and create visit indicators on all lands
-        foreach (LandManager land in worldManager.SpawnedLands.Values)
-        {
-            StartEnemySpawnerWithCurrency(land);
+        // Equation returns a radical number <= the current spawned lands count. This is to balance the late game as the map gets larger.
+        int landCount = worldManager.SpawnedLands.Count;
+        int indicatorCount = Mathf.Clamp(Mathf.RoundToInt(Mathf.Sqrt(CountModifier * landCount)), 0, landCount);
 
-            visitIndicatorsDictionary.Add(land.GridPosition,
-                CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
+        // Activate random lands until the dictionary meets the indicator count for the current wave
+        while (visitIndicatorsDictionary.Count < indicatorCount) 
+        {
+          // Get a random index from worldManager.SpawnedLands
+          LandManager land = worldManager.GetRandomLand();
+
+          // If we already selected that land, try again
+          if (visitIndicatorsDictionary.ContainsKey(land.GridPosition))
+            continue;
+
+          StartEnemySpawnerWithCurrency(land);
+
+          visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, VisitIndicatorsRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
+
+        Debug.Log($"Land Count: {landCount} \nIndicator Count: {indicatorCount}");
+
+        // Start enemy spawners and create visit indicators on all lands
+        // foreach (LandManager land in worldManager.SpawnedLands.Values)
+        // {
+        //     StartEnemySpawnerWithCurrency(land);
+
+        //     visitIndicatorsDictionary.Add(land.GridPosition,
+        //         CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
+        // }
     }
 
     private protected override void OnCleared()
