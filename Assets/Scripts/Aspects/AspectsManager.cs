@@ -17,6 +17,8 @@ public class AspectsManager : MonoBehaviour
         levelSystem = GetComponent<LevelSystem>();
 
         levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
+
+        SetCurrentAspectTree(aspectTrees[0]);
     }
 
     private void OnDestroy()
@@ -31,10 +33,7 @@ public class AspectsManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && CurrentAspectTree == null)
-        {
-            SetCurrentAspectTree(aspectTrees[0]);
-        }
+
     }
 
     /// <summary>

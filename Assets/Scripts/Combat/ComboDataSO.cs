@@ -16,7 +16,11 @@ public class ComboDataSO : ScriptableObject
     // Serialize AnimatorController for validating animation states
     [SerializeField, HideInInspector] private AnimatorController _animatorController;
 #endif // UNITY_EDITOR
-    
+
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Combo";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Combo description";
+
     [field: Header("Combo Data")]
     [field: SerializeField] public List<ComboAction> ComboInputs { get; private set; } = new List<ComboAction>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
