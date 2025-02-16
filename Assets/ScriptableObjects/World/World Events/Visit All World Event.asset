@@ -17,5 +17,7 @@ MonoBehaviour:
     a land it will go away. All lands will spawn enemies. Once all the lands have
     been touched by the player, trigger EOW.
   <EventUIPrefab>k__BackingField: {fileID: 0}
-  <VisitIndicatorsCoefficient>k__BackingField: 6
-  <VisitIndicatorsRadius>k__BackingField: 8.75
+  <CountModifier>k__BackingField: 7.95
+  <LandLevel0Radius>k__BackingField: 9
+  <RadiusDecayRate>k__BackingField: 0.222
+  <MinimumRadius>k__BackingField: 3
