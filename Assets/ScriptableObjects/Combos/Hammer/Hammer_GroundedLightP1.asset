@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b253543ac71d7f14eaf5a73906075e12, type: 3}
-  m_Name: LongSword_GroundedHeavy
+  m_Name: Hammer_GroundedLightP1
   m_EditorClassIdentifier: 
   _animatorController: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
-  <ComboInputs>k__BackingField: 02000000
+  <ComboInputs>k__BackingField: 00000000
   <ComboClip>k__BackingField: {fileID: -1115183702260151492, guid: 3d21b82dff41d12438297e2cbeefb519,
     type: 3}
   _ComboClipChecChangeCheck: {fileID: -1115183702260151492, guid: 3d21b82dff41d12438297e2cbeefb519,
     type: 3}
   IsComboClipValid: 1
-  <ComboClipAnimationSpeed>k__BackingField: 1
+  <ComboClipAnimationSpeed>k__BackingField: 1.5
   <HasRootMotion>k__BackingField: 1
   <IsAirCombo>k__BackingField: 0
   <WillLaunchUpwards>k__BackingField: 0
-  <PercentDamage>k__BackingField: 150
+  <PercentDamage>k__BackingField: 70
+  <AirLaunchForce>k__BackingField: 7.5
   <ImpactFramesTimeScale>k__BackingField: 0.01
   <ImpactFramesDuration>k__BackingField: 0.15
-  <AirLaunchForce>k__BackingField: 7.5
