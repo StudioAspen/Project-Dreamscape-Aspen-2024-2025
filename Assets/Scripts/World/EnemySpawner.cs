@@ -40,10 +40,19 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Enemy spawnedEnemy</c>: The enemySpawned.</description></item>
+    /// <item><description><c>Enemy spawnedEnemy</c>: The enemy spawned.</description></item>
     /// </list>
     /// </remarks>
     public Action<Enemy> OnEnemySpawned = delegate { };
+    /// <summary>
+    /// Triggers when a spawned enemy dies.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Enemy killedEnemy</c>: The enemy killed.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Enemy> OnEnemyDeath = delegate { };
 
     private void Awake()
     {
@@ -235,6 +244,8 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="enemy">The enemy to remove.</param>
     public void RemoveEnemy(Enemy enemy)
     {
+        OnEnemyDeath.Invoke(enemy);
+
         enemiesSpawned.Remove(enemy);
 
         if (isUsingCurrency)

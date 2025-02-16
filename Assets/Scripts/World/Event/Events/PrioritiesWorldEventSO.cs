@@ -18,6 +18,27 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private List<GameObject> debugSpheres = new List<GameObject>();
     private List<GameObject> enemyDebugSpheres = new List<GameObject>();
 
+    /// <summary>
+    /// Triggers when a priorities enemy spawns.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
+    /// <item><description><c>Enemy spawnedEnemy</c>: The enemy spawned.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<EnemySpawner, Enemy> OnPrioritiesEnemySpawned = delegate { };
+    /// <summary>
+    /// Triggers when a priorities spawned enemy dies.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
+    /// <item><description><c>Enemy killedEnemy</c>: The enemy killed.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<EnemySpawner, Enemy> OnPrioritiesEnemyDeath = delegate { };
+
     private protected override void OnStarted()
     {
         activeLands = 0;
@@ -36,6 +57,8 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
             // Track when the enemy spawner spawns an enemy to add special indicators to them
             land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
+
+            land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
 
             activeLands++;
         }
@@ -62,6 +85,8 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
             // Unsubscribe from the OnEnemySpawned event for each of the affected lands
             land.EnemySpawner.OnEnemySpawned -= EnemySpawner_OnEnemySpawned;
+
+            land.EnemySpawner.OnEnemyDeath -= EnemySpawner_OnEnemyDeath;
         }
         affectedLands.Clear();
 
@@ -112,9 +137,16 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private void EnemySpawner_OnEnemySpawned(Enemy enemySpawned)
     {
+        OnPrioritiesEnemySpawned.Invoke(enemySpawned.Spawner, enemySpawned);
+
         GameObject enemyDebugSphere = CustomDebug.InstantiateTemporarySphere(enemySpawned.transform.position + 3f * Vector3.up, 0.5f, Mathf.Infinity, new Color(1, 0, 0, 0.25f));
         enemyDebugSphere.transform.SetParent(enemySpawned.transform);
 
         enemyDebugSpheres.Add(enemyDebugSphere);
+    }
+
+    private void EnemySpawner_OnEnemyDeath(Enemy enemy)
+    {
+        OnPrioritiesEnemyDeath.Invoke(enemy.Spawner, enemy);
     }
 }
