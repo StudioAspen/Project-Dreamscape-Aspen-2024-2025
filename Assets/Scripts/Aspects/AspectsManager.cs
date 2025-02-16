@@ -33,7 +33,11 @@ public class AspectsManager : MonoBehaviour
 
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
+            AspectTokens++;
+        }
     }
 
     /// <summary>

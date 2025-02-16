@@ -307,10 +307,25 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void FinishAnimation()
     {
+        Debug.Log("Cancel");
+
         if (!CanCancelAnimation) return;
+
+        Debug.Log("Can Cancelled");
 
         IsAnimationPlaying = false;
 
         StartDelayedComboListsReset(attackComboResetDelay);
+    }
+
+    public void FireAbility(AnimationEvent animationEvent)
+    {
+        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
+        if (spawner == null) return;
+
+        spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
+
+        Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
+        fireball.Fire(transform.forward, gameObject, player.Team, 100f);
     }
 }
