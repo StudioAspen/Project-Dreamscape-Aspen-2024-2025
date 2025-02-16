@@ -109,26 +109,32 @@ public class PlayerCombat : MonoBehaviour
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
-        if (IsAttackAction(incomingAction)) TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+        if (IsAttackAction(incomingAction))
+        {
+            bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+            if (!successfullyExecutedCombo && player.CurrentState == player.PlayerChargeState) player.ChangeState(player.DefaultState);
+        }
     }
 
     /// <summary>
     /// Tries to execute the given combo if it is not null and the player's current state allows it.
     /// </summary>
     /// <param name="combo">The combo to execute.</param>
-    private void TryExecuteCombo(ComboDataSO combo)
+    /// <returns>Whether a combo was executed</returns>
+    private bool TryExecuteCombo(ComboDataSO combo)
     {
         if (combo == null)
         {
             //Debug.LogWarning($"Executed combo is null with combo lists:\n{PrintComboLists(false)}");
-            return;
+            return false;
         }
 
-        if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityStaggeredState) return;
+        if (player.CurrentState == player.PlayerSlideState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
 
         player.PlayerAttackState.SetCombo(combo);
         player.ChangeState(player.PlayerAttackState, true);
+        return true;
     }   
 
     /// <summary>
