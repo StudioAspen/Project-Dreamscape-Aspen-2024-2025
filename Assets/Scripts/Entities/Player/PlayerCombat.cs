@@ -307,17 +307,17 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void FinishAnimation()
     {
-        Debug.Log("Cancel");
-
         if (!CanCancelAnimation) return;
-
-        Debug.Log("Can Cancelled");
 
         IsAnimationPlaying = false;
 
         StartDelayedComboListsReset(attackComboResetDelay);
     }
 
+    /// <summary>
+    /// Fires a fireball. (NEEDS TO BE GENERALIZED FOR ALL ABILTIES).
+    /// Called by animation through an event.
+    /// </summary>
     public void FireAbility(AnimationEvent animationEvent)
     {
         ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
