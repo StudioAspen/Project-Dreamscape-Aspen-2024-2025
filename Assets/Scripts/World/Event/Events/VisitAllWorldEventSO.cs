@@ -61,16 +61,18 @@ public class VisitAllWorldEventSO : WorldEventSO
           visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, VisitIndicatorsRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
 
-        Debug.Log($"Land Count: {landCount} \nIndicator Count: {indicatorCount}");
+        for (int i = 0; i < players.Count; i++)
+        {
+            Player player = players[i];
+            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
 
-        // Start enemy spawners and create visit indicators on all lands
-        // foreach (LandManager land in worldManager.SpawnedLands.Values)
-        // {
-        //     StartEnemySpawnerWithCurrency(land);
-
-        //     visitIndicatorsDictionary.Add(land.GridPosition,
-        //         CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
-        // }
+            // Automatically remove the visit Indicator of the land the player is standing on at the start of the event.
+            if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
+            {
+                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+                visitIndicatorsDictionary.Remove(playerGridPosition);
+            }   
+        }
     }
 
     private protected override void OnCleared()
@@ -98,16 +100,22 @@ public class VisitAllWorldEventSO : WorldEventSO
             return;
         }
 
-        // Check if any player is on a land and remove the visit indicator
         for (int i = 0; i < players.Count; i++)
         {
-            Vector2Int playerGridPosition = worldManager.GetGridPosition(players[i].transform.position);
+            Player player = players[i];
+            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
 
             if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
             {
-                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
-                visitIndicatorsDictionary.Remove(playerGridPosition);
-            }
+                GameObject visitIndicator = visitIndicatorsDictionary[playerGridPosition];
+
+                //Check if the player is within the visit indicator, and remove the visit indicator if so.
+                if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= VisitIndicatorsRadius)
+                {
+                  GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+                  visitIndicatorsDictionary.Remove(playerGridPosition);
+                }
+            } 
         }
     }
 }
