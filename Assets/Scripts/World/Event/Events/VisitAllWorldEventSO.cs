@@ -8,7 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Visit All World Event", menuName = "World Event/Visit All")]
 public class VisitAllWorldEventSO : WorldEventSO
 {
-    [field: Header("Config")]
+    [field: Header("Indicator Count Settings")]
     // Previously named VisitAllEventDummyVarable, and previously declared as an int.
 
     /// <summary>
@@ -17,11 +17,26 @@ public class VisitAllWorldEventSO : WorldEventSO
     [field: Range(1f, 15f)]
     [field: SerializeField] public float CountModifier { get; private set; }
 
+    [field: Space(5)]
+
+    [field: Header("Indicator Sphere Settings")]
     /// <summary>
-    /// Controls the radius of each Visit Indicator sphere.
+    /// Controls the scale of a land's visit indicator sphere at land level 0
     /// </summary>
-    [field: Range(2.5f, 15f)]
-    [field: SerializeField] public float VisitIndicatorsRadius { get; private set; }
+    [field: Range(3, 15)]
+    [field: SerializeField] public float LandLevel0Radius { get; private set; }
+    
+    /// <summary>
+    /// Controls a Indicator Sphere's rate of decaying scale as its land's level increases. 
+    /// </summary>
+    [field: Range(0f, 1f)]
+    [field: SerializeField] public float RadiusDecayRate { get; private set; }
+
+    /// <summary>
+    /// Controls the minimum radius of a land's visit indicator sphere. 
+    /// </summary>
+    [field: Range(0, 3)]
+    [field: SerializeField] public float MinimumRadius { get; private set; }
 
     private List<Player> players = new List<Player>();
 
@@ -58,7 +73,10 @@ public class VisitAllWorldEventSO : WorldEventSO
 
           StartEnemySpawnerWithCurrency(land);
 
-          visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, VisitIndicatorsRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
+          int landLevel = land.Level;
+          float sphereRadius = LandLevel0Radius * Mathf.Pow(1 - RadiusDecayRate, landLevel) + MinimumRadius;
+
+          visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, sphereRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
 
         for (int i = 0; i < players.Count; i++)
@@ -108,9 +126,12 @@ public class VisitAllWorldEventSO : WorldEventSO
             if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
             {
                 GameObject visitIndicator = visitIndicatorsDictionary[playerGridPosition];
+                float sphereRadius = visitIndicator.transform.localScale.x / 2;
+
+                Debug.Log($"Land Level: {worldManager.GetLandByGridPosition(playerGridPosition).Level} \n Radius: {sphereRadius}");
 
                 //Check if the player is within the visit indicator, and remove the visit indicator if so.
-                if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= VisitIndicatorsRadius)
+                if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= sphereRadius)
                 {
                   GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
                   visitIndicatorsDictionary.Remove(playerGridPosition);
