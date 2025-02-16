@@ -16,4 +16,6 @@ MonoBehaviour:
   <Description>k__BackingField: All lands will light up. When the player steps on
     a land it will go away. All lands will spawn enemies. Once all the lands have
     been touched by the player, trigger EOW.
-  <VisitAllEventDummyVariable>k__BackingField: 0
+  <EventUIPrefab>k__BackingField: {fileID: 0}
+  <VisitIndicatorsCoefficient>k__BackingField: 6
+  <VisitIndicatorsRadius>k__BackingField: 8.75

@@ -8,8 +8,35 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Visit All World Event", menuName = "World Event/Visit All")]
 public class VisitAllWorldEventSO : WorldEventSO
 {
-    [field: Header("Config")]
-    [field: SerializeField] public int VisitAllEventDummyVariable { get; private set; }
+    [field: Header("Indicator Count Settings")]
+    // Previously named VisitAllEventDummyVarable, and previously declared as an int.
+
+    /// <summary>
+    /// Controls how many lands will be indicated for this event. The greater the value, the more lands will be indicated.
+    /// </summary>
+    [field: Range(1f, 15f)]
+    [field: SerializeField] public float CountModifier { get; private set; }
+
+    [field: Space(5)]
+
+    [field: Header("Indicator Sphere Settings")]
+    /// <summary>
+    /// Controls the scale of a land's visit indicator sphere at land level 0
+    /// </summary>
+    [field: Range(3, 15)]
+    [field: SerializeField] public float LandLevel0Radius { get; private set; }
+    
+    /// <summary>
+    /// Controls a Indicator Sphere's rate of decaying scale as its land's level increases. 
+    /// </summary>
+    [field: Range(0f, 1f)]
+    [field: SerializeField] public float RadiusDecayRate { get; private set; }
+
+    /// <summary>
+    /// Controls the minimum radius of a land's visit indicator sphere. 
+    /// </summary>
+    [field: Range(0, 3)]
+    [field: SerializeField] public float MinimumRadius { get; private set; }
 
     private List<Player> players = new List<Player>();
 
@@ -30,13 +57,39 @@ public class VisitAllWorldEventSO : WorldEventSO
             return;
         }
 
-        // Start enemy spawners and create visit indicators on all lands
-        foreach (LandManager land in worldManager.SpawnedLands.Values)
-        {
-            StartEnemySpawnerWithCurrency(land);
+        // Equation returns a radical number <= the current spawned lands count. This is to balance the late game as the map gets larger.
+        int landCount = worldManager.SpawnedLands.Count;
+        int indicatorCount = Mathf.Clamp(Mathf.RoundToInt(Mathf.Sqrt(CountModifier * landCount)), 0, landCount);
 
-            visitIndicatorsDictionary.Add(land.GridPosition,
-                CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
+        // Activate random lands until the dictionary meets the indicator count for the current wave
+        while (visitIndicatorsDictionary.Count < indicatorCount) 
+        {
+          // Get a random index from worldManager.SpawnedLands
+          LandManager land = worldManager.GetRandomLand();
+
+          // If we already selected that land, try again
+          if (visitIndicatorsDictionary.ContainsKey(land.GridPosition))
+            continue;
+
+          StartEnemySpawnerWithCurrency(land);
+
+          int landLevel = land.Level;
+          float sphereRadius = LandLevel0Radius * Mathf.Pow(1 - RadiusDecayRate, landLevel) + MinimumRadius;
+
+          visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, sphereRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
+        }
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            Player player = players[i];
+            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
+
+            // Automatically remove the visit Indicator of the land the player is standing on at the start of the event.
+            if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
+            {
+                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+                visitIndicatorsDictionary.Remove(playerGridPosition);
+            }   
         }
     }
 
@@ -65,16 +118,25 @@ public class VisitAllWorldEventSO : WorldEventSO
             return;
         }
 
-        // Check if any player is on a land and remove the visit indicator
         for (int i = 0; i < players.Count; i++)
         {
-            Vector2Int playerGridPosition = worldManager.GetGridPosition(players[i].transform.position);
+            Player player = players[i];
+            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
 
             if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
             {
-                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
-                visitIndicatorsDictionary.Remove(playerGridPosition);
-            }
+                GameObject visitIndicator = visitIndicatorsDictionary[playerGridPosition];
+                float sphereRadius = visitIndicator.transform.localScale.x / 2;
+
+                Debug.Log($"Land Level: {worldManager.GetLandByGridPosition(playerGridPosition).Level} \n Radius: {sphereRadius}");
+
+                //Check if the player is within the visit indicator, and remove the visit indicator if so.
+                if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= sphereRadius)
+                {
+                  GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+                  visitIndicatorsDictionary.Remove(playerGridPosition);
+                }
+            } 
         }
     }
 }
