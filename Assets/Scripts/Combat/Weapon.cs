@@ -15,6 +15,10 @@ public class Weapon : MonoBehaviour
     private Entity holderEntity;
     private LayerMask hitLayerMask; // Assigned in awake
 
+    public Collider MainCollider => capsuleColliders.FirstOrDefault(); 
+    public Entity HolderEntity => holderEntity;
+
+
     #region Scale
     public float OriginalScale { get; private set; } = 1f;
     public void SetOriginalScale(float newScale) => OriginalScale = newScale;

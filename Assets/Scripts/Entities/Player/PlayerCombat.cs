@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
@@ -79,7 +80,26 @@ public class PlayerCombat : MonoBehaviour
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
+
+        Shielder shielder = victim as Shielder;
+
+        if (shielder != null && shielder.ShielderDefensiveState != null && shielder.ShielderDefensiveState.Shield != null)
+        {
+            Weapon shieldWeapon = shielder.ShielderDefensiveState.Shield;
+
+            if (shieldWeapon.MainCollider != null && shieldWeapon.MainCollider.bounds.Contains(hitPoint))
+            {
+                Debug.Log("Weapon hit the shield!");
+                attacker.ChangeState(attacker.EntityStaggeredState);
+
+                shielder.ChangeState(shielder.ShielderQuickAttackState);
+
+            }
+        }
+
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+
+
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)

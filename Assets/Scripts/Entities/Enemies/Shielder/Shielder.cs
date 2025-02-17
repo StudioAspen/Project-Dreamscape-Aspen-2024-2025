@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Shielder : Enemy
 {
+    [field: Space]
     [field: SerializeField] public float ShielderStunTime { get; private set; } = 1f;
-
-    [field: SerializeField] public Weapon LongSword { get; private set; }
-    [field: SerializeField] public Weapon Shield { get; private set; }
+    [field: Space]
+    [field: SerializeField] public float ShieldBashInterval { get; private set; } = 5f;
+    [field: SerializeField] public float ShieldBashPushForce { get; private set; } = 5f;
+    [field: SerializeField] public float ShieldBashStunTime { get; private set; } = 1f; 
 
     #region States
     public ShielderQuickAttackState ShielderQuickAttackState { get; private set; }
@@ -78,12 +81,14 @@ public class Shielder : Enemy
 
     public void StartHit()
     {
-        ShielderQuickAttackState.Weapon.EnableTriggers();
+        ShielderQuickAttackState.LongSword.EnableTriggers();
+        ShielderShieldBashState.Shield.EnableTriggers();
     }
 
     public void EndHit()
     {
-        ShielderQuickAttackState.Weapon.DisableTriggers();
+        ShielderQuickAttackState.LongSword.DisableTriggers();
+        ShielderShieldBashState.Shield.DisableTriggers();
     }
 
 
@@ -93,14 +98,34 @@ public class Shielder : Enemy
 
         foreach (Collider hit in hits)
         {
-            if (DidHitEnemyEntity(hit, out Entity enemyEntity))
+            if (CurrentState == ShielderFlyingState)
             {
-                if (hitEntities.Contains(enemyEntity)) continue;
-                hitEntities.Add(enemyEntity);
+                if (DidHitEnemyEntity(hit, out Entity enemyEntity))
+                {
+                    if (hitEntities.Contains(enemyEntity)) continue;
+                    hitEntities.Add(enemyEntity);
 
-                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
+                    DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
+                    return;
+                }
+            }
+
+            if (CurrentState == ShielderShieldBashState)
+            {
+                if (DidHitEnemyEntity(hit, out Entity enemyEntity))
+                {
+                    if (ShielderShieldBashState.Shield.MainCollider == null || hit != ShielderShieldBashState.Shield.MainCollider)
+                    {
+                        if (hitEntities.Contains(enemyEntity)) continue;
+                        hitEntities.Add(enemyEntity);
+
+                        Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - transform.position;
+                        enemyEntity.TryChangeToLaunchState(launchDirection, ShieldBashPushForce, ShieldBashStunTime);
+
+                        return;
+                    }
+                }
             }
         }
     }
-
 }

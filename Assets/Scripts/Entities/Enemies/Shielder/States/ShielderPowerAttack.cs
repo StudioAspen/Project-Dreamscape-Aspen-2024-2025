@@ -5,12 +5,12 @@ using UnityEngine;
 public class ShielderPowerAttack : ShielderBaseState
 {
     [field: Header("Config")]
-    [field: SerializeField] public float AttackRange { get; private set; } = 2f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 5f;
     [field: SerializeField] public float AttackPercentDamage { get; private set; } = 250f;
 
-    public Weapon Weapon { get; protected set; }
-    private Vector3 attackDirection;
+    [field: SerializeField] public Weapon LongSword { get; protected set; }
 
+    private Vector3 attackDirection;
     private Entity rememberedTarget;
 
     public void AssignCurrentRememberedTarget(Entity target)
@@ -18,12 +18,9 @@ public class ShielderPowerAttack : ShielderBaseState
         rememberedTarget = target;
     }
 
-
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
-
-        Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
     public void SetAttackDirection(Vector3 direction)
@@ -38,11 +35,11 @@ public class ShielderPowerAttack : ShielderBaseState
         shielder.SetSpeedModifier(0f);
 
         //NEW FUNCTION USED TO SCALE COLLIDER FOR THE POWER ATTACK TO HAVE MORE IMPACT.
-        Weapon.ColliderAdjustment(.4f, 1.663404f);
-        Weapon.OnWeaponStartSwing?.Invoke(shielder);
-        Weapon.ClearEnemiesHitList();
+        LongSword.ColliderAdjustment(.4f, 1.663404f);
 
-        Weapon.SetPercentDamage(AttackPercentDamage);
+        LongSword.OnWeaponStartSwing?.Invoke(shielder);
+        LongSword.ClearEnemiesHitList();
+        LongSword.SetPercentDamage(AttackPercentDamage);
 
         shielder.IsAttackAnimationPlaying = true;
         shielder.UseRootMotion = true;
@@ -51,10 +48,12 @@ public class ShielderPowerAttack : ShielderBaseState
 
     public override void OnExit()
     {
-        Weapon.ColliderAdjustment(.25f, 1.663404f);
-        Weapon.OnWeaponEndSwing?.Invoke(shielder);
+        LongSword.ColliderAdjustment(.25f, 1.663404f);
         shielder.IsAttackAnimationPlaying = false;
         shielder.UseRootMotion = false;
+
+        LongSword.OnWeaponEndSwing?.Invoke(shielder);
+
         shielder.EndHit();
     }
 
@@ -64,10 +63,17 @@ public class ShielderPowerAttack : ShielderBaseState
 
         shielder.LookAt(shielder.transform.position + attackDirection);
 
-        //After the Power Attack Animation is done changes to specified state.
         if (!shielder.IsAttackAnimationPlaying)
         {
-            shielder.ChangeState(shielder.ShielderIdleState);
+            if ((shielder.Distance(shielder.Target) < shielder.ShielderPowerAttackState.AttackRange) && (shielder.Target.CurrentState == shielder.Target.EntityLaunchState))
+            {
+                shielder.ShielderPowerAttackState.SetAttackDirection(attackDirection);
+                shielder.ChangeState(shielder.ShielderPowerAttackState);
+
+                return;
+            }
+
+            shielder.ChangeState(shielder.ShielderDefensiveState);
             return;
         }
     }

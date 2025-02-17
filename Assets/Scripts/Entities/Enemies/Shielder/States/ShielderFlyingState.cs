@@ -7,7 +7,7 @@ public class ShielderFlyingState : EntityLaunchState
     [field: SerializeField] public LayerMask ShielderFlyingLayerMask { get; private set; }  
     private List<Entity> entitiesHitByCurrentLeap = new List<Entity>();
 
-    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 500f;
+    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 100f;
 
     private Entity rememberedTarget;
     private Vector3 attackDirection;

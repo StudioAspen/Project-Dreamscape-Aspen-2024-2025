@@ -1425,4 +1425,10 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         return true;
     }
+
+    public void SetRotationModifier(float newModifier)
+    {
+        rotationSpeed = newModifier;
+    }
 }
+

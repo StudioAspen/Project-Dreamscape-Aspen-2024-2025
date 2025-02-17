@@ -19,7 +19,7 @@ public class ShielderPlayerDetectState : EnemyChaseState
     {
         base.OnEnter();
 
-        enemy.TransitionToAnimation("DefensiveWalk");
+        enemy.TransitionToAnimation("FlatMovement");
 
     }
 
@@ -31,7 +31,6 @@ public class ShielderPlayerDetectState : EnemyChaseState
     public override void OnUpdate()
     {
         base.OnUpdate();
-        Vector3 attackDir = shielder.Target.transform.position - shielder.transform.position;
 
         if (shielder.Target == null)
         {
@@ -39,13 +38,14 @@ public class ShielderPlayerDetectState : EnemyChaseState
             return;
         }
 
+        Vector3 attackDir = shielder.Target.transform.position - shielder.transform.position;
+
         shielder.ShielderFlyingState.SetAttackDirection(attackDir);
 
 
         //Attack Sequence.
         if ((shielder.Distance(shielder.Target) < shielder.ShielderPowerAttackState.AttackRange) && (shielder.Target.CurrentState == shielder.Target.EntityLaunchState))
         {
-            //Vector3 attackDir = shielder.Target.transform.position - shielder.transform.position;
             shielder.ShielderPowerAttackState.SetAttackDirection(attackDir);
             shielder.ChangeState(shielder.ShielderPowerAttackState);
             return;
@@ -53,7 +53,6 @@ public class ShielderPlayerDetectState : EnemyChaseState
         }
         else if (shielder.Distance(shielder.Target) < shielder.ShielderQuickAttackState.AttackRange)
         {
-            //Vector3 attackDir = shielder.Target.transform.position - shielder.transform.position;
             shielder.ShielderQuickAttackState.SetAttackDirection(attackDir);
             shielder.ChangeState(shielder.ShielderQuickAttackState);
             return;
