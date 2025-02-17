@@ -18,7 +18,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Health Variables
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public Stat MaxHealth { get; protected set; }
+    [field: SerializeField, Tooltip("Max health for entity. Set to 0 for invicibility.")] public Stat MaxHealth { get; protected set; }
     #endregion
 
     #region Speed Variables

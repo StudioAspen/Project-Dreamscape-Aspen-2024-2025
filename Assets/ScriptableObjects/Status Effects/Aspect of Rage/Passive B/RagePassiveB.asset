@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2972bcafc4279ab47af29a7728e5a172, type: 3}
   m_Name: RagePassiveB
   m_EditorClassIdentifier: 
+  <DisplayName>k__BackingField: Status Effect
+  <Description>k__BackingField: Status effect description
   <Stackable>k__BackingField: 1
   <ChargedAttackActivatedStatusEffect>k__BackingField: {fileID: 11400000, guid: b747af478b61f154a97eb22b4601a702,
     type: 2}
   <MaxChargeDuration>k__BackingField: 3
-  <ChargeDurationBonusPercentDamages>k__BackingField:
-  - 150
-  - 175
-  - 200
-  <ChargedOnHitExplosionPercentDamage>k__BackingField: 100
+  <ChargeDurationBonusDamageMultipliers>k__BackingField:
+  - 1.5
+  - 2
+  - 2.5
+  <ChargedOnHitExplosionDamageMultiplier>k__BackingField: 1
   <ChargedOnHitExplosionRadius>k__BackingField: 3
   <PerfectTimingWindowDuration>k__BackingField: 0
-  <PerfectTimingBonusPercentDamage>k__BackingField: 100
+  <PerfectTimingBonusDamageMultiplier>k__BackingField: 1
   <PerfectTimingOnHitExplosionRadiusMultiplier>k__BackingField: 1

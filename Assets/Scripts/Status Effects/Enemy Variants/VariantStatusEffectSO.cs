@@ -26,7 +26,7 @@ public class VariantStatusEffectSO : StatusEffectSO
         if (enemy == null)
         {
             Debug.LogError($"{GetType()} can only be applied to an Enemy entity.");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
+            entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, true);
             return;
         }
 

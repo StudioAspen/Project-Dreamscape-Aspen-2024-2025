@@ -18,6 +18,6 @@ public class VampiricEliteVariantStatusEffectSO: EliteVariantStatusEffectSO
     {
         base.Cancel();
 
-        entityStatusEffectorOwner.RemoveStatusEffect(LifeStealStatusEffect.GetType(), true);
+        entityStatusEffectorOwner.RemoveStatusEffect(LifeStealStatusEffect, true);
     }
 }
