@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
+    public StatusEffectSO OriginalCopy { get; private set; }
+
     /// <summary>
     /// The EntityStatusEffector that the status effect is applied to
     /// </summary>
@@ -31,8 +33,9 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     /// <param name="owner">The entity status effector owner.</param>
     /// <param name="source">The source game object that applied the effect.</param>
-    public void Init(EntityStatusEffector owner, GameObject source)
+    public void Init(StatusEffectSO originalCopy, EntityStatusEffector owner, GameObject source)
     {
+        OriginalCopy = originalCopy;
         entityStatusEffectorOwner = owner;
         entity = owner.GetComponent<Entity>();
         this.source = source;
@@ -66,7 +69,7 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     private protected virtual void OnExpire()
     {
-        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false);
+        entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, false);
 
         //Debug.Log($"{name} Expired");
     }

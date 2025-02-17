@@ -133,9 +133,14 @@ public class Enemy : Entity
     /// <returns>The list of positions representing the calculated path.</returns>
     public List<Vector3> GetPathToDestination(Vector3 dest)
     {
+        if(!IsValidPointOnNavMesh(dest, 100f, out Vector3 groundedPoint))
+        {
+            return null;
+        }
+
         NavMeshPath path = new NavMeshPath();
 
-        bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
+        bool hasPath = NavMesh.CalculatePath(transform.position, groundedPoint, NavMesh.AllAreas, path);
 
         if (!hasPath) return null;
         if (path.corners.Length == 0) return null;
@@ -196,37 +201,6 @@ public class Enemy : Entity
         if (path.Count < 2) return false;
 
         return true;
-    }
-
-    /// <summary>
-    /// Adjusts the movement direction to avoid obstacles in the specified direction using a CapsuleCast,
-    /// based on the CharacterController's capsule dimensions.
-    /// </summary>
-    /// <param name="direction">The original movement direction.</param>
-    /// <param name="avoidDistance">The distance to check for obstacles.</param>
-    /// <returns>The adjusted movement direction.</returns>
-    private Vector3 CalculateDirectionAwayFromObstacle(Vector3 direction, float avoidDistance = 0.5f)
-    {
-        // Get the height and radius from the CharacterController's properties
-        float height = CharacterController.height;
-        float radius = CharacterController.radius;
-        Vector3 center = CharacterController.center;
-        float offsetFromGround = 0.1f;
-
-        // Calculate the starting (point1) and ending (point2) points for the CapsuleCast
-        // point1 is the bottom of the capsule and point2 is the top of the capsule
-        Vector3 point1 = transform.position + center - (height * 0.5f - offsetFromGround) * Vector3.up; // The center of the bottom sphere
-        Vector3 point2 = transform.position + center + (height * 0.5f) * Vector3.up; // The center of the top sphere
-
-        // Perform the CapsuleCast to detect obstacles
-        if (Physics.CapsuleCast(point1, point2, radius, direction, out RaycastHit hit, avoidDistance, LayerMask.GetMask("Entity", "Ground")))
-        {
-            // Calculate a perpendicular vector to avoid the obstacle
-            Vector3 avoidDirection = Vector3.Cross(hit.normal, Vector3.up).normalized;
-            direction += avoidDirection * 0.5f; // Blend avoidance into the movement direction
-        }
-
-        return direction.normalized;
     }
 
     /// <summary>

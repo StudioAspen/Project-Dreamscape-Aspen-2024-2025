@@ -34,7 +34,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         if (playerCombat == null)
         {
             Debug.LogError($"{name}: PlayerCombat not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no PlayerCombat, remove this passive
+            entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, true); // If theres no PlayerCombat, remove this passive
             return;
         }
 
@@ -44,6 +44,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         ChargeAttackActivatedStatusEffectSO chargeAttackActivatedStatusEffectInstance =
             entityStatusEffectorOwner.ApplyStatusEffect(ChargedAttackActivatedStatusEffect, entity.gameObject) as ChargeAttackActivatedStatusEffectSO;
         chargeAttackActivatedStatusEffectInstance.SetMaxChargeDuration(MaxChargeDuration); // Set the new max charge duration
+        player.PlayerChargeState.SetChargeStatusEffect(chargeAttackActivatedStatusEffectInstance);
 
         playerCombat.OnChargeRelease += PlayerCombat_OnChargeRelease;
         playerCombat.Weapon.OnWeaponEndSwing += Weapon_OnWeaponEndSwing;
@@ -54,7 +55,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
     {
         base.Cancel();
 
-        entityStatusEffectorOwner.RemoveStatusEffect(ChargedAttackActivatedStatusEffect.GetType(), true);
+        entityStatusEffectorOwner.RemoveStatusEffect(ChargedAttackActivatedStatusEffect, true);
 
         playerCombat.OnChargeRelease -= PlayerCombat_OnChargeRelease;
         playerCombat.Weapon.OnWeaponEndSwing -= Weapon_OnWeaponEndSwing;
@@ -66,7 +67,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         AspectOfRagePassiveBStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfRagePassiveBStatusEffectSO;
 
         // Set new max charge duration
-        entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>()
+        entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(ChargedAttackActivatedStatusEffect)
             .SetMaxChargeDuration(overridingStatusEffect.MaxChargeDuration);
 
         // Set new damage bonus values
