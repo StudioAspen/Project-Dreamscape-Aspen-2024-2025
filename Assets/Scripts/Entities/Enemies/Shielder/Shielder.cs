@@ -6,6 +6,8 @@ public class Shielder : Enemy
 {
     [field: SerializeField] public float ShielderStunTime { get; private set; } = 1f;
 
+    [field: SerializeField] public Weapon LongSword { get; private set; }
+    [field: SerializeField] public Weapon Shield { get; private set; }
 
     #region States
     public ShielderQuickAttackState ShielderQuickAttackState { get; private set; }
@@ -13,6 +15,8 @@ public class Shielder : Enemy
     public ShielderIdleState ShielderIdleState { get; private set; }
     public ShielderPlayerDetectState ShielderPlayerDetectState { get; private set; }
     public ShielderFlyingState ShielderFlyingState { get; private set; }
+    public ShielderDefensiveState ShielderDefensiveState { get; private set; }
+    public ShielderShieldBashState ShielderShieldBashState { get; private set; }
 
 
     private protected override void InitializeStates()
@@ -24,6 +28,8 @@ public class Shielder : Enemy
         ShielderIdleState = EnemyBaseState.InitializeOrCreate<ShielderIdleState>(this);
         ShielderPlayerDetectState = EnemyBaseState.InitializeOrCreate<ShielderPlayerDetectState>(this);
         ShielderFlyingState = EnemyBaseState.InitializeOrCreate<ShielderFlyingState>(this);
+        ShielderDefensiveState = EnemyBaseState.InitializeOrCreate<ShielderDefensiveState>(this);
+        ShielderShieldBashState = EnemyBaseState.InitializeOrCreate<ShielderShieldBashState>(this);
     }
     #endregion
 
@@ -48,7 +54,6 @@ public class Shielder : Enemy
     {
         base.OnStart();
 
-        //for testing purposes, set the default state to the quick attack state.
         SetDefaultState(ShielderIdleState);
 
         FinishAnimation();

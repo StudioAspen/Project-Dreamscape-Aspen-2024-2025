@@ -51,7 +51,7 @@ public class ShielderIdleState : ShielderBaseState
 
         if (shielder.Target != null)
         {
-            shielder.ChangeState(shielder.ShielderPlayerDetectState);
+            shielder.ChangeState(shielder.ShielderDefensiveState);
             return;
         }
     }

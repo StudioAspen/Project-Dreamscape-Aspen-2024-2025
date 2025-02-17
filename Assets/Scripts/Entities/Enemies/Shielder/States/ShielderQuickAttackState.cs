@@ -11,19 +11,11 @@ public class ShielderQuickAttackState : ShielderBaseState
 
     private Entity rememberedTarget;
 
-    public Weapon Weapon { get; protected set; }
     private Vector3 attackDirection;
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
         rememberedTarget = target;
-    }
-
-    private protected override void Init(Entity entity)
-    {
-        base.Init(entity);
-
-        Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
     public void SetAttackDirection(Vector3 direction)
@@ -37,10 +29,10 @@ public class ShielderQuickAttackState : ShielderBaseState
         shielder.TransitionToAnimation("QuickAttack");
         shielder.SetSpeedModifier(0f);
 
-        Weapon.OnWeaponStartSwing?.Invoke(shielder);
-        Weapon.ClearEnemiesHitList();
+        shielder.LongSword.OnWeaponStartSwing?.Invoke(shielder);
+        shielder.LongSword.ClearEnemiesHitList();
 
-        Weapon.SetPercentDamage(AttackPercentDamage);
+        shielder.LongSword.SetPercentDamage(AttackPercentDamage);
 
         shielder.IsAttackAnimationPlaying = true;
         shielder.UseRootMotion = true;
@@ -48,7 +40,7 @@ public class ShielderQuickAttackState : ShielderBaseState
 
     public override void OnExit()
     {
-        Weapon.OnWeaponEndSwing?.Invoke(shielder);
+        shielder.LongSword.OnWeaponEndSwing?.Invoke(shielder);
         shielder.IsAttackAnimationPlaying = false;
         shielder.UseRootMotion = false;
         shielder.EndHit();

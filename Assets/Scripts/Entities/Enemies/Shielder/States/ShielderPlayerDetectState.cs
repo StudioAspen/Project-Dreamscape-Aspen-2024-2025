@@ -18,6 +18,9 @@ public class ShielderPlayerDetectState : EnemyChaseState
     public override void OnEnter()
     {
         base.OnEnter();
+
+        enemy.TransitionToAnimation("DefensiveWalk");
+
     }
 
     public override void OnExit()
