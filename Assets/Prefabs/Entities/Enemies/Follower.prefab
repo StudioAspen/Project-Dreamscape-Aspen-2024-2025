@@ -58,7 +58,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 50
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 50
+    multipliers: []
   baseSpeed: 2
   rotationSpeed: 5
   mass: 1
@@ -66,11 +68,17 @@ MonoBehaviour:
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField: 1
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
   UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
   <Cost>k__BackingField: 1
-  <EXPValue>k__BackingField: 20
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 0
+    multipliers: []
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
@@ -371,7 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AttackRange>k__BackingField: 1
-  <AttackPercentDamage>k__BackingField: 100
+  <AttackDamageMultiplier>k__BackingField: 1
 --- !u!114 &669082963684805819
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Hammer_GroundedLightP2
   m_EditorClassIdentifier: 
   _animatorController: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
+  <DisplayName>k__BackingField: Combo
+  <Description>k__BackingField: Combo description
   <ComboInputs>k__BackingField: 0000000000000000
   <ComboClip>k__BackingField: {fileID: 6799651534840860903, guid: b8075c9babebc1a4a877c916f1b2fb05,
     type: 3}
@@ -23,7 +25,9 @@ MonoBehaviour:
   <HasRootMotion>k__BackingField: 1
   <IsAirCombo>k__BackingField: 0
   <WillLaunchUpwards>k__BackingField: 0
-  <PercentDamage>k__BackingField: 70
+  <DamageMultiplier>k__BackingField: 1.25
   <AirLaunchForce>k__BackingField: 7.5
   <ImpactFramesTimeScale>k__BackingField: 0.01
   <ImpactFramesDuration>k__BackingField: 0.15
+  <WeaponScale>k__BackingField: 1
+  <WeaponScalingDuration>k__BackingField: 0.1

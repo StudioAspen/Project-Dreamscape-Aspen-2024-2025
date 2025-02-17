@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Hammer_GroundedChargedAttack1
   m_EditorClassIdentifier: 
   _animatorController: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
+  <DisplayName>k__BackingField: Combo
+  <Description>k__BackingField: Combo description
   <ComboInputs>k__BackingField: 01000000
   <ComboClip>k__BackingField: {fileID: 7400000, guid: 9a289e37796509b4e8b35c5dba78199a,
     type: 3}
@@ -23,7 +25,7 @@ MonoBehaviour:
   <HasRootMotion>k__BackingField: 1
   <IsAirCombo>k__BackingField: 0
   <WillLaunchUpwards>k__BackingField: 0
-  <PercentDamage>k__BackingField: 150
+  <DamageMultiplier>k__BackingField: 1.5
   <AirLaunchForce>k__BackingField: 0
   <ImpactFramesTimeScale>k__BackingField: 0.02
   <ImpactFramesDuration>k__BackingField: 0.75

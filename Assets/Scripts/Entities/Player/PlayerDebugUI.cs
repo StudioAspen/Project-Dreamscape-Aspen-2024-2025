@@ -44,7 +44,7 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void LateStart()
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth);
+        healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth.GetIntValue());
     }
 
     private IEnumerator LateStartCoroutine()
@@ -74,12 +74,12 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth);
+        healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth.GetIntValue());
     }
 
     private void Player_OnEntityHeal(Entity healedEntity, int healAmount)
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth + healAmount, player.MaxHealth);
+        healthBarUI.SetHealthBar(player.CurrentHealth + healAmount, player.MaxHealth.GetIntValue());
     }
 
     private void Weapon_OnWeaponStartSwing(Entity source)

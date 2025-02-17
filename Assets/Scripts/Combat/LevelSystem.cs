@@ -52,7 +52,7 @@ public class LevelSystem : MonoBehaviour
     private void Entity_OnKillEntity(Entity victim)
     {
         Enemy victimAsEnemy = victim as Enemy;
-        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue;
+        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
 
         AddEXP(expReward);
     }
