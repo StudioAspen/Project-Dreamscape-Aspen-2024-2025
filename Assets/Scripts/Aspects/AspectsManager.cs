@@ -48,7 +48,7 @@ public class AspectsManager : MonoBehaviour
     {
         CurrentAspectTree = aspectTree.CreateRuntimeInstance();
 
-        Debug.Log($"Set current aspect tree to {CurrentAspectTree.name}");
+        //Debug.Log($"Set current aspect tree to {CurrentAspectTree.name}");
     }
 
     public void ConsumeAspectToken()

@@ -58,7 +58,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 200
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 200
+    multipliers: []
   baseSpeed: 1
   rotationSpeed: 7.5
   mass: 1
@@ -66,11 +68,17 @@ MonoBehaviour:
   targetDetectionRadius: 2.25
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField: 1
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
   UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
   <Cost>k__BackingField: 2
-  <EXPValue>k__BackingField: 40
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 40
+    multipliers: []
   <CustomCollisionRadius>k__BackingField: 0.4
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0.25}
@@ -249,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1a3f5a30c5a9f74f9465c7dcd24b33d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ChargeContactPercentDamage>k__BackingField: 200
+  <ChargeContactDamageMultiplier>k__BackingField: 2
   <ChargeSpeedModifier>k__BackingField: 5
   <ChargeDuration>k__BackingField: 20
   <ChargeRotationSpeed>k__BackingField: 5
@@ -297,7 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <JabCount>k__BackingField: 5
-  <JabPercentDamage>k__BackingField: 100
+  <JabDamageMultiplier>k__BackingField: 1
   <JabStandStillRadius>k__BackingField: 1.5
   <JabRotationSpeed>k__BackingField: 25
   <LeftFistWeapon>k__BackingField: {fileID: 3805667188454913111}

@@ -123,6 +123,6 @@ public abstract class Obstacle : MonoBehaviour
     /// <param name="transitionDuration">The duration of the transition.</param>
     public void TransitionToAnimation(string animation, float transitionDuration = 0.1f)
     {
-        animator.CrossFade(animation, transitionDuration);
+        animator.CrossFadeInFixedTime(animation, transitionDuration);
     }
 }

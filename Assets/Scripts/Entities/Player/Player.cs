@@ -256,7 +256,7 @@ public class Player : Entity
 
     private protected override void EvaluateMovementSpeed()
     {
-        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
+        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
     }
 
     private protected override void TryChangeStaggeredState()

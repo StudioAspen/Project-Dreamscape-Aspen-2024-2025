@@ -8,20 +8,7 @@ public class Enemy : Entity
 {
     [field: Header("Enemy: Settings")]
     [field: SerializeField] public int Cost { get; protected set; }
-    [field: SerializeField] public int EXPValue { get; protected set; }
-    public float EXPValueMultiplier { get; protected set; } = 1f;
-    private float originalEXPValue;
-
-    /// <summary>
-    /// Sets the EXP value multiplier for the enemy.
-    /// Updates the EXP value based on the new multiplier.
-    /// </summary>
-    /// <param name="multiplier">The new EXP value multiplier.</param>
-    public void SetEXPValueMultiplier(float multiplier)
-    {
-        EXPValueMultiplier = multiplier;
-        EXPValue = Mathf.RoundToInt(EXPValueMultiplier * originalEXPValue);
-    }
+    [field: SerializeField] public Stat EXPValue { get; protected set; }
 
     [field: Header("Enemy: Custom Collider Settings")]
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }
@@ -67,8 +54,6 @@ public class Enemy : Entity
     private protected override void OnAwake()
     {
         base.OnAwake();
-
-        originalEXPValue = EXPValue;
     }
 
     private protected override void OnOnEnable()
@@ -85,8 +70,6 @@ public class Enemy : Entity
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
-
-        SetEXPValueMultiplier(1f);
 
         if (Ticker.Instance != null) Ticker.Instance.OnTick -= OnTick;
     }
