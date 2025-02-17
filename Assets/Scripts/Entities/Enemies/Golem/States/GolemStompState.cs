@@ -6,7 +6,7 @@ public class GolemStompState : GolemBaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public float AOEInitialRadius { get; private set; } = 1f;
-    [field: SerializeField] public float AOEPercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
     [field: SerializeField] public float ShockwaveGrowMaxSteps { get; private set; } = 8f;
@@ -79,7 +79,7 @@ public class GolemStompState : GolemBaseState
                 if (entityHit.Team == golem.Team) continue; // skip friendly entities, but still add them to hitEntities to launch them
 
                 golem.DealDamageToOtherEntity(entityHit,
-                        golem.CalculateDamage(AOEPercentDamage),
+                        golem.CalculateDamage(AOEDamageMultiplier),
                         entityHit.CharacterController.ClosestPointOnBounds(golem.transform.position),
                         true);
                 

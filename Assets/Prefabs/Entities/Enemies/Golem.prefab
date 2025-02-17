@@ -275,7 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AOERadius>k__BackingField: 5
-  <AOEPercentDamage>k__BackingField: 115
+  <AOEDamageMultiplier>k__BackingField: 1.25
   <AOELaunchForce>k__BackingField: 15
   <AOEStunDuration>k__BackingField: 3
 --- !u!114 &3593046390679252307
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AOEInitialRadius>k__BackingField: 1
-  <AOEPercentDamage>k__BackingField: 75
+  <AOEDamageMultiplier>k__BackingField: 0.75
   <AOELaunchForce>k__BackingField: 7.5
   <AOEStunDuration>k__BackingField: 1.5
   <ShockwaveGrowMaxSteps>k__BackingField: 16
