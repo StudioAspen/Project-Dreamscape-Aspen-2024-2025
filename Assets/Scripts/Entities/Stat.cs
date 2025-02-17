@@ -6,6 +6,7 @@ public class Stat
 {
     [field: SerializeField] public float BaseValue { get; private set; }
     [SerializeField] private List<float> multipliers = new List<float>();
+    [field: SerializeField] public float FlatIncrease { get; private set; }
 
     public Stat(float baseValue)
     {
@@ -27,6 +28,11 @@ public class Stat
         multipliers.Remove(multiplier);
     }
 
+    public void AddFlatAmount(float amount)
+    {
+        FlatIncrease += amount;
+    }
+
     public float GetFloatValue()
     {
         float finalValue = BaseValue;
@@ -34,6 +40,7 @@ public class Stat
         {
             finalValue *= multiplier;
         }
+        finalValue += FlatIncrease;
         return finalValue;
     }
 
