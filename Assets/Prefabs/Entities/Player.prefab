@@ -1513,7 +1513,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 200
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 200
+    multipliers: []
   baseSpeed: 3
   rotationSpeed: 10
   mass: 1
@@ -1539,7 +1541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthRegenAmount: 5
   healthRegenRate: 1
-  durationSinceLastHitToRegen: 5
+  durationOutOfCombatToRegen: 5
 --- !u!114 &5620550920081884860
 MonoBehaviour:
   m_ObjectHideFlags: 0

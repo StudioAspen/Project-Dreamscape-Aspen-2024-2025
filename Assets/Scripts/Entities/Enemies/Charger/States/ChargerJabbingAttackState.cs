@@ -4,7 +4,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public int JabCount { get; private set; } = 5;
-    [field: SerializeField] public float JabPercentDamage { get; private set; } = 100;
+    [field: SerializeField] public float JabDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
     [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
     [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
@@ -32,7 +32,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
             RightFistWeapon.ClearEnemiesHitList();
 
-            RightFistWeapon.SetPercentDamage(JabPercentDamage);
+            RightFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
         else
         {
@@ -42,7 +42,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
             LeftFistWeapon.ClearEnemiesHitList();
 
-            LeftFistWeapon.SetPercentDamage(JabPercentDamage);
+            LeftFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
 
         directionToTarget = rememberedTarget.transform.position - charger.transform.position;

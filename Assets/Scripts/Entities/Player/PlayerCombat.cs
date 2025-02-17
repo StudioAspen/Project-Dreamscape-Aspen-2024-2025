@@ -332,6 +332,6 @@ public class PlayerCombat : MonoBehaviour
         spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
 
         Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
-        fireball.Fire(transform.forward, gameObject, player.Team, 100f);
+        fireball.Fire(transform.forward, gameObject, player.Team, 1f);
     }
 }

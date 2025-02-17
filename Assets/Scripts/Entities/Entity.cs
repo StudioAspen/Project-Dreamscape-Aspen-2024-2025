@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UIElements;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
@@ -20,22 +18,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Health Variables
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public int MaxHealth { get; protected set; }
-    public float MaxHealthModifier { get; protected set; } = 1f;
-    private int originalMaxHealth;
-
-    /// <summary>
-    /// Sets the maximum health modifier for the entity.
-    /// </summary>
-    /// <param name="newModifier">The new maximum health modifier.</param>
-    /// <param name="willHealToFull">Whether the entity will be healed to full health after the modifier is applied.</param>
-    public void SetMaxHealthModifier(float newModifier, bool willHealToFull = true)
-    {
-        MaxHealthModifier = newModifier;
-
-        MaxHealth = Mathf.RoundToInt(originalMaxHealth * MaxHealthModifier);
-        if (willHealToFull) CurrentHealth = MaxHealth;
-    }
+    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public Stat MaxHealth { get; protected set; }
     #endregion
 
     #region Speed Variables
@@ -46,7 +29,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
-    public float StatusSpeedModifier { get; protected set; } = 1f;
+    public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
     public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion
@@ -166,27 +149,18 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Attack Variables
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
-    [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
-    /// Sets the damage modifier for the entity.
+    /// Calculates the damage based on the given multiplier.
     /// </summary>
-    /// <param name="newModifier">The new damage modifier value.</param>
-    public void SetDamageModifier(float newModifier)
-    {
-        DamageModifier = newModifier;
-    }
-
-    /// <summary>
-    /// Calculates the damage based on the given percentage.
-    /// </summary>
-    /// <param name="percent">The percentage of the damage range to calculate.</param>
+    /// <param name="multiplier">The multiplier of the damage range to calculate.</param>
     /// <returns>The calculated damage value.</returns>
-    public int CalculateDamage(float percent)
+    public int CalculateDamage(float multiplier)
     {
         Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
-                (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+                multiplier * DamageModifier.GetFloatValue() * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
             );
 
         return UnityEngine.Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
@@ -301,55 +275,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Local Time Scale
     [field: Header("Local Time Scale")]
-    [field: SerializeField] public float LocalTimeScale { get; protected set; } = 1f;
-    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale;
-    public float LocalTimeScaleModifier { get; private set; } = 1f;
-
-    /// <summary>
-    /// Sets the local time scale for the entity.
-    /// Cant set time scale if entity is dead.
-    /// </summary>
-    /// <param name="newTimeScale">The new time scale value.</param>
-    public void SetLocalTimeScale(float newTimeScale)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        LocalTimeScale = newTimeScale;
-    }
-
-    /// <summary>
-    /// Sets the local time scale of the entity.
-    /// </summary>
-    /// <param name="newTimeScaleModifier">The new scale value.</param>
-    public void SetLocalTimeScaleModifier(float newTimeScaleModifier)
-    {
-        LocalTimeScaleModifier = newTimeScaleModifier;
-        SetLocalTimeScale(LocalTimeScale * LocalTimeScaleModifier);
-    }
+    [field: SerializeField] public Stat LocalTimeScale { get; protected set; } = new Stat(1f);
+    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale.GetFloatValue();
     #endregion
 
     #region Scale
-    public float SizeScaleModifier { get; private set; } = 1f;
-    private protected float originalSizeScale;
-
-    /// <summary>
-    /// Sets the local scale of the entity's model.
-    /// </summary>
-    /// <param name="newSizeScaleModifier">The new scale value.</param>
-    public void SetSizeScaleModifier(float newSizeScaleModifier)
-    {
-        SizeScaleModifier = newSizeScaleModifier;
-        transform.localScale = SizeScaleModifier * originalSizeScale * Vector3.one;
-    }
-
-    /// <summary>
-    /// Resets the local scale of the entity to its original scale.
-    /// </summary>
-    public void ResetScaleSize()
-    {
-        SizeScaleModifier = 1f;
-        transform.localScale = originalSizeScale * Vector3.one;
-    }
+    public Stat SizeScale { get; protected set; } = new Stat(1f);
     #endregion
 
     #region Pooling Variables
@@ -443,9 +374,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         CharacterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
-        originalSizeScale = transform.localScale.x;
-        originalMaxHealth = MaxHealth;
-
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
         //using inheritance
@@ -483,22 +411,15 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         lastHitSource = null;
 
-        CurrentHealth = MaxHealth;
+        CurrentHealth = MaxHealth.GetIntValue();
 
         IgnoreOtherEntityCollisions(false);
 
         SetStartState(EntityEmptyState);
-        SetLocalTimeScale(1f);
     }
 
     private void OnDisable()
     {
-        SetDamageModifier(1f);
-        SetMaxHealthModifier(1f, false);
-        SetStatusSpeedModifier(1f);
-        SetSizeScaleModifier(1f);
-        SetLocalTimeScaleModifier(1f);
-
         OnOnDisable();
     }
 
@@ -853,7 +774,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
         animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
-        animator.speed = LocalTimeScale;
+        animator.speed = LocalTimeScale.GetFloatValue();
     }
 
     /// <summary>
@@ -908,19 +829,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private void HandleHealth()
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth.GetIntValue());
     }
 
     /// <summary>
-    /// Sets the maximum health of the entity and optionally heals it to full health.
+    /// Sets the base maximum health of the entity and optionally heals it to full health. Do not use this for buffs.
     /// </summary>
     /// <param name="newMaxHealth">The new maximum health value.</param>
     /// <param name="willHealToFull">Whether the entity will be healed to full health.</param>
-    public void SetMaxHealth(int newMaxHealth, bool willHealToFull)
+    public void SetBaseMaxHealth(int newMaxHealth, bool willHealToFull)
     {
-        MaxHealth = newMaxHealth;
+        MaxHealth.SetBaseValue(newMaxHealth);
 
-        if (willHealToFull) CurrentHealth = MaxHealth;
+        if (willHealToFull) CurrentHealth = MaxHealth.GetIntValue();
     }
 
     /// <summary>
@@ -949,7 +870,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
+        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
             OnDeath();
         }
@@ -976,7 +897,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity will die, false otherwise.</returns>
     public virtual bool WillDieFromDamage(int damage)
     {
-        return MaxHealth > 0 && CurrentHealth - damage <= 0;
+        return MaxHealth.GetIntValue() > 0 && CurrentHealth - damage <= 0;
     }
 
     /// <summary>
@@ -1020,7 +941,20 @@ public class Entity : MonoBehaviour, IPoolableObject
         OnEntityHeal?.Invoke(this, health);
 
         CurrentHealth += health;
+        if(CurrentHealth > MaxHealth.GetIntValue()) CurrentHealth = MaxHealth.GetIntValue();
+
         AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
+    }
+
+    /// <summary>
+    /// Heals the entity to full.
+    /// </summary>
+    /// <param name="willSpawnHitNumbers">Whether to spawn hit numbers or not.</param>
+    public void HealToFull(bool willSpawnHitNumbers = true)
+    {
+        if(willSpawnHitNumbers) AttemptToSpawnHitNumbers(MaxHealth.GetIntValue() - CurrentHealth, gameObject.transform.position + Vector3.up, Color.green);
+
+        CurrentHealth = MaxHealth.GetIntValue();
     }
 
     /// <summary>
@@ -1059,7 +993,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="transitionDuration">The duration of the transition.</param>
     public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
     {
-        animator.CrossFade(animation, transitionDuration, layer);
+        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>
@@ -1077,7 +1011,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void EvaluateMovementSpeed()
     {
-        MovementSpeed = StatusSpeedModifier * SpeedModifier * baseSpeed;
+        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
     }
 
     /// <summary>
@@ -1280,15 +1214,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         ChangeState(EntityLaunchState, true);
     }
 
-    /// <summary>
-    /// Sets the status speed modifier for the entity.
-    /// </summary>
-    /// <param name="newModifer">The new status speed modifier.</param>
-    public void SetStatusSpeedModifier(float newModifer)
-    {
-        StatusSpeedModifier = newModifer;
-    }
-
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
     /// List is sorted from closest to farthest entity from the hit position.
     /// By default, the list will include dead entities.
@@ -1323,10 +1248,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="attacker">The entity causing the damage.</param>
     /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius within which entities will be damaged.</param>
-    /// <param name="percentDamage">The percentage of damage to apply to each entity.</param>
+    /// <param name="damageMultiplier">The multiplier of damage to apply to each entity.</param>
     /// <param name="willTryStagger">Whether to try to stagger the entites hit.</param>
     /// <returns>A list of entities that were damaged.</returns>
-    public static List<Entity> DamageEnemyEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float percentDamage, bool willTryStagger = true)
+    public static List<Entity> DamageEnemyEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float damageMultiplier, bool willTryStagger = true)
     {
         List<Entity> entitiesInRadius = GetEntitiesThroughAOE(center, radius, false);
         List<Entity> entitiesDamaged = new List<Entity>();
@@ -1336,7 +1261,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if (entityHit.Team == attacker.Team) continue; // skip friendly entities
 
             attacker.DealDamageToOtherEntity(entityHit,
-                attacker.CalculateDamage(percentDamage),
+                attacker.CalculateDamage(damageMultiplier),
                 entityHit.CharacterController.ClosestPointOnBounds(center),
                 willTryStagger);
 
@@ -1352,12 +1277,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="attacker">The entity initiating the AOE damage.</param>
     /// /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius of the AOE.</param>
-    /// <param name="percentDamage">The percentage of damage to apply to the entities within the AOE.</param>
+    /// <param name="damageMultiplier">The multiplier of damage to apply to the entities within the AOE.</param>
     /// <param name="launchForce">The force with which to launch the entities within the AOE.</param>
     /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
-    public static void DamageEnemyEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration)
+    public static void DamageEnemyEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float damageMultiplier, float launchForce, float stunDuration)
     {
-        List<Entity> entitiesHit = DamageEnemyEntitiesWithAOE(attacker, center, radius, percentDamage, false);
+        List<Entity> entitiesHit = DamageEnemyEntitiesWithAOE(attacker, center, radius, damageMultiplier, false);
 
         foreach (Entity entityHit in entitiesHit)
         {

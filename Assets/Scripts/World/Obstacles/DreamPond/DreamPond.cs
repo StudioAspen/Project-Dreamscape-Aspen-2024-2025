@@ -13,7 +13,7 @@ public class DreamPond : MonoBehaviour
         if (other.TryGetComponent(out Entity entity))
         {
             if (slowedEntities.Contains(entity)) return;
-            entity.SetStatusSpeedModifier(entity.StatusSpeedModifier * speedMultiplier);
+            entity.StatusSpeedModifier.AddMultiplier(speedMultiplier);
             slowedEntities.Add(entity);
         }
     }
@@ -23,7 +23,7 @@ public class DreamPond : MonoBehaviour
         if (other.TryGetComponent(out Entity entity))
         {
             if (!slowedEntities.Contains(entity)) return;
-            entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / speedMultiplier);
+            entity.StatusSpeedModifier.RemoveMultiplier(speedMultiplier);
             slowedEntities.Remove(entity);
         }
     }

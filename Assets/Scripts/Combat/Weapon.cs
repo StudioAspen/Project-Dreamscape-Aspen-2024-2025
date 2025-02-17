@@ -64,7 +64,7 @@ public class Weapon : MonoBehaviour
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
-    private float percentDamage;
+    private float damageMultiplier;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
     private float impactFramesRemainingTime;
@@ -147,7 +147,7 @@ public class Weapon : MonoBehaviour
     {
         Entity enemy = other.GetComponentInParent<Entity>();
         Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
-        AttemptToHitEnemy(enemy, hitPoint, true);
+        AttemptToHitEntity(enemy, hitPoint, true);
     }
 
     /// <summary>
@@ -225,7 +225,7 @@ public class Weapon : MonoBehaviour
             if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds(transform.position);
 
             Entity enemy = hit.collider.GetComponentInParent<Entity>();
-            AttemptToHitEnemy(enemy, hitPoint, false);
+            AttemptToHitEntity(enemy, hitPoint, false);
 
             Obstacle obstacle = hit.collider.GetComponent<Obstacle>();
             AttemptToHitObstacle(obstacle, hitPoint, false);
@@ -254,7 +254,7 @@ public class Weapon : MonoBehaviour
     /// <param name="victim">The enemy to hit.</param>
     /// <param name="hitPoint">The point of impact.</param>
     /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
-    private void AttemptToHitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    private void AttemptToHitEntity(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         if (victim == null) return;
         if (victim.Team == holderEntity.Team) return;
@@ -263,22 +263,22 @@ public class Weapon : MonoBehaviour
         if (objectsHitByCurrentAttack.Contains(victim.gameObject)) return;
         objectsHitByCurrentAttack.Add(victim.gameObject);
 
-        HitEnemy(victim, hitPoint, fromTrigger);
+        HitEntity(victim, hitPoint, fromTrigger);
     }
 
     /// <summary>
-    /// Hits an enemy with the weapon, triggering impact frames, camera shake, and damage calculation.
+    /// Hits an entity with the weapon, triggering impact frames, camera shake, and damage calculation.
     /// </summary>
     /// <param name="victim">The enemy to hit.</param>
     /// <param name="hitPoint">The point of impact.</param>
     /// <param name="fromTrigger">Flag indicating if the hit is from the trigger.</param>
-    private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    private void HitEntity(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
 
         // CustomGizmos.InstantiateTemporarySphere(hitPoint, 0.1f, 1.5f, fromTrigger ? Color.green : Color.red);
 
-        int damageValue = holderEntity.CalculateDamage(percentDamage);
+        int damageValue = holderEntity.CalculateDamage(damageMultiplier);
 
         OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
 
@@ -377,12 +377,12 @@ public class Weapon : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the percentage of damage for the weapon.
+    /// Sets the damage multiplier for the weapon.
     /// </summary>
-    /// <param name="newPercent">The new percentage of damage.</param>
-    public void SetPercentDamage(float newPercent)
+    /// <param name="newDamageMultiplier">The new damage multiplier.</param>
+    public void SetDamageMultiplier(float newDamageMultiplier)
     {
-        percentDamage = newPercent;
+        damageMultiplier = newDamageMultiplier;
     }
 
     public void AddCombo(ComboDataSO comboData)

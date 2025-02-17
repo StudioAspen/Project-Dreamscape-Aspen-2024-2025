@@ -23,7 +23,7 @@ public class EscortWorldEventSO : WorldEventSO
 
         // Spawn the escort entity on the random land
         EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position, Quaternion.identity, eventManager.transform);
-        EscortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
+        EscortEventEntity.SetBaseMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
         randomLand.EnemySpawner.MaterializeEntity(EscortEventEntity);

@@ -37,7 +37,7 @@ public class ComboDataSO : ScriptableObject
     //[field: SerializeField] public bool CanChangeDirection { get; private set; } = true;
 
     [field: Header("Hit Options")]
-    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1f;
     [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float ImpactFramesTimeScale { get; private set; } = 0.05f;

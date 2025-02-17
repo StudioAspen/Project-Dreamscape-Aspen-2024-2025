@@ -14,6 +14,8 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     private float elapsedTimeSinceLastHit;
     private float healthRegenTimer;
 
+    private bool healingEnabled = false;
+
     private void Awake()
     {
         entity = GetComponent<Entity>();
@@ -43,6 +45,13 @@ public class EntityOutOfCombatRegen : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            healingEnabled = !healingEnabled;
+            Debug.LogWarning($"Turning OOO Healing {(healingEnabled ? "On" : "Off")}");
+        }
+
+        if (!healingEnabled) return;
         HandleHealthRegen();
     }
 
@@ -53,8 +62,8 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     private void HandleHealthRegen()
     {
         if (entity.CurrentState == entity.EntityDeathState) return; // If dead
-        if (entity.CurrentHealth == entity.MaxHealth) return; // If full
-        if (entity.MaxHealth <= 0) return; // If invincible
+        if (entity.CurrentHealth == entity.MaxHealth.GetIntValue()) return; // If full
+        if (entity.MaxHealth.GetIntValue() <= 0) return; // If invincible
 
         if (elapsedTimeSinceLastHit > durationOutOfCombatToRegen)
         {
