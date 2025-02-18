@@ -151,6 +151,24 @@ public class WorldManager : MonoBehaviour
         int randomIndex = Random.Range(0, SpawnedLands.Count);
         return SpawnedLands.Values.ElementAt(randomIndex);
     }
+
+    /// <summary>
+    /// Distributes random weights to all LandManager objects based on their land levels, then randomly selects one.
+    /// </summary>
+    /// <returns>A random LandManager object</returns>
+    public LandManager GetRandomLandByWeight()
+    {
+      float random = Random.Range(0f, SpawnedLands.Values.Sum(land => land.Weight));
+      float current = 0;
+
+      foreach (LandManager land in SpawnedLands.Values)
+      {
+        current += land.Weight;
+        if (random <= current) return land;
+      }
+      
+      return SpawnedLands.Values.First();
+    }
     #endregion
 
     /// <summary>

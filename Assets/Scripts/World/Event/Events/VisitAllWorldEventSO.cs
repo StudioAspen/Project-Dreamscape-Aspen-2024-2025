@@ -21,10 +21,10 @@ public class VisitAllWorldEventSO : WorldEventSO
 
     [field: Header("Indicator Sphere Settings")]
     /// <summary>
-    /// Controls the scale of a land's visit indicator sphere at land level 0
+    /// Controls the scale of a land's visit indicator sphere at land level -5
     /// </summary>
     [field: Range(3, 15)]
-    [field: SerializeField] public float LandLevel0Radius { get; private set; }
+    [field: SerializeField] public float YIntercept { get; private set; }
     
     /// <summary>
     /// Controls a Indicator Sphere's rate of decaying scale as its land's level increases. 
@@ -73,8 +73,9 @@ public class VisitAllWorldEventSO : WorldEventSO
 
           StartEnemySpawnerWithCurrency(land);
 
-          int landLevel = land.Level;
-          float sphereRadius = LandLevel0Radius * Mathf.Pow(1 - RadiusDecayRate, landLevel) + MinimumRadius;
+          // Since we're using the land level as a power, we need to ensure it's always >= 0
+          int absLandLevel = land.Level + 5;
+          float sphereRadius = YIntercept * Mathf.Pow(1 - RadiusDecayRate, absLandLevel) + MinimumRadius;
 
           visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, sphereRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
