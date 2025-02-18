@@ -9,23 +9,19 @@ public class GolemStompState : GolemBaseState
     [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
-    [field: SerializeField] public float ShockwaveGrowMaxSteps { get; private set; } = 8f;
+    [field: SerializeField] public int ShockwaveGrowMaxSteps { get; private set; } = 8;
     [field: SerializeField] public float ShockwaveGrowStepDuration { get; private set; } = .05f;
-    [field: SerializeField] public float ShockwaveGrowStepIncrement { get; private set; } = .25f;
-    public Weapon Weapon { get; protected set; }
+    [field: SerializeField] public float ShockwaveRadiusGrowStepIncrement { get; private set; } = .25f;
 
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
-        Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
     public override void OnEnter()
     {
         golem.TransitionToAnimation("Stomp");
         golem.SetSpeedModifier(0f);
-        Weapon.OnWeaponStartSwing?.Invoke(golem);
-        Weapon.ClearEnemiesHitList();
         
         golem.IsAttackAnimationPlaying = true;
         golem.UseRootMotion = false;
@@ -33,10 +29,8 @@ public class GolemStompState : GolemBaseState
 
     public override void OnExit()
     {
-        Weapon.OnWeaponEndSwing?.Invoke(golem);
         golem.IsAttackAnimationPlaying = false;
         golem.UseRootMotion = false;
-        golem.EndHit();
     }
 
     public override void OnUpdate()
@@ -64,8 +58,8 @@ public class GolemStompState : GolemBaseState
         {
             // For each step, get hit entities within AOE
             List<Entity> entitiesInRadius = Entity.GetEntitiesThroughAOE(golem.transform.position, AOEInitialRadius +
-                (i * ShockwaveGrowStepIncrement), false);
-            CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOEInitialRadius + (i * ShockwaveGrowStepIncrement), 0.25f, new Color(1f, 0, 0, 0.2f));
+                (i * ShockwaveRadiusGrowStepIncrement), false);
+            CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOEInitialRadius + (i * ShockwaveRadiusGrowStepIncrement), 0.25f, new Color(1f, 0, 0, 0.2f));
 
             foreach (Entity entityHit in entitiesInRadius)
             {
@@ -84,11 +78,8 @@ public class GolemStompState : GolemBaseState
                         true);
                 
             }
-            yield return new WaitForSeconds(ShockwaveGrowStepDuration * golem.LocalTimeScale);
+            yield return new WaitForSeconds(ShockwaveGrowStepDuration / golem.LocalTimeScale.GetFloatValue());
         }
         yield return null;
     }
-    
-    
-    
 }

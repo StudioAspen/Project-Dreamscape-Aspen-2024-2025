@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GolemChaseState : EnemyChaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public float AttackRange { get; private set; } = 5f;
-    [field: SerializeField] public float ChaseSpeed { get; private set; } = 1f;
+    [field: SerializeField] public float ChaseSpeedModifier { get; private set; } = 1f;
     
     private Golem golem;
 
@@ -19,7 +17,7 @@ public class GolemChaseState : EnemyChaseState
 
     public override void OnEnter()
     {
-        golem.SetSpeedModifier(ChaseSpeed);
+        golem.SetSpeedModifier(ChaseSpeedModifier);
     }
 
     public override void OnExit()
@@ -42,7 +40,5 @@ public class GolemChaseState : EnemyChaseState
             golem.ChangeState(golem.GolemReadyAttackState);
             return;
         }
-        
     }
-    
 }

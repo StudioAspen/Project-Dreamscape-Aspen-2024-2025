@@ -34,7 +34,7 @@ public class GolemReadyAttackState : GolemBaseState
 
     public override void OnUpdate()
     {
-        if (golem.Target ==null) 
+        if (golem.Target == null) 
         {
             golem.ChangeState(golem.GolemWanderState);
             return;
@@ -43,7 +43,6 @@ public class GolemReadyAttackState : GolemBaseState
         closeRange = targetDistance <= CloseRangeCutoff;
         
         golem.ApplyGravity();
-        golem.LookAt(golem.Target.transform.position);
         
         readyTimer += golem.LocalDeltaTime;
 
@@ -59,7 +58,4 @@ public class GolemReadyAttackState : GolemBaseState
     {
         return attackDirection;
     }
-    
-    
-    
 }

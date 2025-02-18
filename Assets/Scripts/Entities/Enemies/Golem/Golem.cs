@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class Golem : Enemy
 {
-    
-    [Header("Charger: Armor Settings")]
+    [Header("Golem: Armor Settings")]
     [SerializeField] private int dazeDamageThreshold = 40; // Damage needed to take while staggered in order to become dazed
-
     [SerializeField] private int staggerDamageThreshold = 15; // Minimum damage needed to take in order to become staggered
     
     private Coroutine camShakeCoroutine;
     private int damageTakenWhileStaggered = 0;
     private int damageTakenSinceLastStagger = 0;
-    
     
     #region States
     public GolemGroundSmashState GolemGroundSmashState { get; private set; }
@@ -25,7 +22,6 @@ public class Golem : Enemy
     public GolemStaggeredState GolemStaggeredState {get; private set;}
     public GolemDazedState GolemDazedState {get; private set;}
     
-
     private protected override void InitializeStates()
     {
         base.InitializeStates();
@@ -49,8 +45,6 @@ public class Golem : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -63,8 +57,6 @@ public class Golem : Enemy
         base.OnStart();
 
         SetDefaultState(GolemWanderState);
-        
-        FinishAnimation();
     }
 
     private protected override void OnUpdate()
@@ -80,27 +72,23 @@ public class Golem : Enemy
     public void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
-        EndHit();
     }
 
-    public void StartHit() // Called via Animation Event
+    // Called via GroundSmash Animation Event
+    public void GroundSmashImpact() 
     { 
         GolemGroundSmashState.GroundImpact();
     }
 
-    public void StompImpact() // Called via Animation Event
+    // Called via Stomp Animation Event
+    public void StompImpact() 
     { 
         GolemStompState.GroundImpactShockwave();
     }
 
     public void ShakeCam()
     {
-        camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale));
-    }
-
-    public void EndHit()
-    {
-        GolemGroundSmashState.Weapon.DisableTriggers();
+        camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale.GetFloatValue()));
     }
 
     private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay)
@@ -111,7 +99,6 @@ public class Golem : Enemy
             yield return new WaitForSeconds(shakeDelay);
         }
     }
-    
     
     /// <summary>
     /// Determines if the Charger can be staggered based on its current state.
@@ -124,7 +111,6 @@ public class Golem : Enemy
                || CurrentState == GolemAttackRecoverState;
     }
    
-    
     public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
@@ -144,7 +130,7 @@ public class Golem : Enemy
         if (CurrentState == GolemStaggeredState)
         {
             damageTakenWhileStaggered += newDamage;
-            print("Damage taken while staggered now " + damageTakenWhileStaggered);
+            //print("Damage taken while staggered now " + damageTakenWhileStaggered);
             if (damageTakenWhileStaggered > dazeDamageThreshold)
             {
                 ResetDamageTakenWhileStaggered();
@@ -158,7 +144,7 @@ public class Golem : Enemy
         lastHitSource = source;
         
         //after calculating current health, check if the entity has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
+        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
             OnDeath();
         }
@@ -173,6 +159,4 @@ public class Golem : Enemy
     {
         damageTakenSinceLastStagger = 0;
     }
-    
-    
 }

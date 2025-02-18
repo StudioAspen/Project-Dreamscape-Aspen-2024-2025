@@ -47,7 +47,7 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
             return;
         }
 
-        player.ApplyRotationToNextMovement();
-        player.RotateToTargetRotation();
+        //player.ApplyRotationToNextMovement();
+        //player.RotateToTargetRotation();
     }
 }

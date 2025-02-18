@@ -8,21 +8,11 @@ public class GolemGroundSmashState : GolemBaseState
     [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
-    public Weapon Weapon { get; protected set; }
-
-    private protected override void Init(Entity entity)
-    {
-        base.Init(entity);
-
-        Weapon = entity.GetComponentInChildren<Weapon>();
-    }
 
     public override void OnEnter()
     {
         golem.TransitionToAnimation("GroundSmash");
         golem.SetSpeedModifier(0f);
-        Weapon.OnWeaponStartSwing?.Invoke(golem);
-        Weapon.ClearEnemiesHitList();
         
         golem.IsAttackAnimationPlaying = true;
         golem.UseRootMotion = false;
@@ -30,16 +20,14 @@ public class GolemGroundSmashState : GolemBaseState
 
     public override void OnExit()
     {
-        Weapon.OnWeaponEndSwing?.Invoke(golem);
         golem.IsAttackAnimationPlaying = false;
         golem.UseRootMotion = false;
-        golem.EndHit();
     }
 
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-        golem.LookAt(golem.GolemReadyAttackState.GetAttackDirection());
+        golem.LookAt(golem.transform.position + golem.GolemReadyAttackState.GetAttackDirection());
 
         if (!golem.IsAttackAnimationPlaying)
         {
@@ -54,7 +42,6 @@ public class GolemGroundSmashState : GolemBaseState
         GolemHitEntitiesWithAOEIgnoreTeam(golem, golem.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
         CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
-    
     
     /// <summary>
     /// Applies area of effect damage to enemy entities within a given radius. The AOE ignores the attacker.
@@ -77,7 +64,7 @@ public class GolemGroundSmashState : GolemBaseState
 
         foreach (Entity entityHit in entitiesInRadius)
         {
-            if (entityHit == attacker) continue;
+            if (entityHit == attacker) continue; // ignore self
             entitiesHit.Add(entityHit);
             Vector3 direction = (entityHit.GetColliderCenterPosition() - center).normalized;
             entityHit.TryChangeToLaunchState(direction, launchForce, stunDuration);
@@ -88,7 +75,5 @@ public class GolemGroundSmashState : GolemBaseState
                 willTryStagger);
         }
         return entitiesHit;
-    }
-    
-    
+    } 
 }
