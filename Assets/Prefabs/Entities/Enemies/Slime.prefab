@@ -161,7 +161,10 @@ MonoBehaviour:
   IsAttackAnimationPlaying: 0
   <DetectionDistance>k__BackingField: 10
   <DetectionConeHalfAngle>k__BackingField: 20
-  <isSplit>k__BackingField: 0
+  <SplitCount>k__BackingField: 2
+  grew: 0
+  hasAttacked: 0
+  startScale: 0
 --- !u!114 &6764650017304162668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +294,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3666914600907076981}
   - component: {fileID: 74157946886590567}
+  - component: {fileID: 770797970627563926}
+  - component: {fileID: 5750105145494702149}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -322,9 +327,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 7488334897341966185}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d0bd92955ceedd4eaea02707a998c4f, type: 3}
+  m_Script: {fileID: 11500000, guid: 297c5ea8453526749b7a38d1cd521c10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+  <WanderHopHeight>k__BackingField: 2
+--- !u!114 &770797970627563926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488334897341966185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ee7184a2e546d4fa166353557f4d9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ChaseHopHeight>k__BackingField: 1.25
+  <ChaseHopDistance>k__BackingField: 2
+  <StartReadyAttackDistance>k__BackingField: 2
+--- !u!114 &5750105145494702149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488334897341966185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac9e4edba0a16a47bfd36edb3e390de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <SlimeAttackLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 320
+  <AttackContactDamageMultiplier>k__BackingField: 1.5
+  <RegularContactDamagePercent>k__BackingField: 100
+  <scaleIncrement>k__BackingField: 0.01
+  <attackCooldown>k__BackingField: 2
+  <shrinkCoolDown>k__BackingField: 2
 --- !u!1001 &3231396680522412267
 PrefabInstance:
   m_ObjectHideFlags: 0

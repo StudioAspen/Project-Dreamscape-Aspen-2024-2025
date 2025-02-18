@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Slime : Enemy
 {
@@ -12,19 +13,34 @@ public class Slime : Enemy
     // if true is small else false
     // [field: SerializeField] public bool isSplit { get; private set; }
     [field: SerializeField] public int SplitCount { get; private set; } = 2;
+    
+    
+    
     private Enemy slimeEnemyPrefab;
+    private bool isSplit = false;
+    public bool grew = false;
+    public bool hasAttacked = false;
+    public float startScale = 0;
 
-    public bool isSplit = false;
 
 
     #region States
-    public SlimeIdleState SlimeIdleState {get; private set;}
+    public SlimeWanderState SlimeWanderState {get; private set;}
+    public SlimeChaseState SlimeChaseState  {get; private set;}
+    public SlimeAttackState SlimeAttackState {get; private set;}
+    public SlimeGrowthState SlimeGrowthState {get; private set;}
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        SlimeIdleState = EntityBaseState.InitializeOrCreate<SlimeIdleState>(this);
+        SlimeAttackState = EntityBaseState.InitializeOrCreate<SlimeAttackState>(this);
+        SlimeGrowthState = EntityBaseState.InitializeOrCreate<SlimeGrowthState>(this);
+
+        SlimeWanderState = EntityBaseState.InitializeOrCreate<SlimeWanderState>(this);
+        EnemyChaseState = EntityBaseState.InitializeOrCreate<SlimeChaseState>(this);
+        SlimeChaseState = EnemyChaseState as SlimeChaseState;
+
 
     }
 
@@ -51,10 +67,19 @@ public class Slime : Enemy
     private protected override void OnStart()
     {
         base.OnStart();
-        Debug.Log(isSplit);
         slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
         OnEntityDeath += Entity_OnEntityDeath;
-        SetDefaultState(SlimeIdleState);
+        if(isSplit)
+        {
+            startScale = 1f;
+            SetDefaultState(SlimeGrowthState);
+        }
+        else
+        {
+            startScale = transform.localScale.x;
+            SetDefaultState(SlimeWanderState);
+        }
+
     }
 
     private protected override void OnUpdate()
@@ -92,7 +117,35 @@ public class Slime : Enemy
     private void Entity_OnEntityDeath(GameObject entityGameObject)
     {
         // Debug.Log("pimp down, pimp in distress");
-        onDuplicate();
+        // onDuplicate();
+        // returns without doing anything if already "died"
+       if(isSplit == true)
+        {
+            return;
+        }
+            
+        for (int i = 0; i < SplitCount; i++ )
+        {
+            // if you suspect this is crashing game uncomment bellow
+            // Debug.Break();
+            float angle = i * (360f / SplitCount);
+            
+            Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)) * 1f;
+        
+            Vector3 spawnPos = this.transform.position + offset;
+
+            // similar to previous code except this time it changes isSplit to true
+            // so the duplicate cant split once it has already done so 
+            Slime duplicateSlime = this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
+            if (isSplit == false)
+            {
+                duplicateSlime.isSplit = true;
+                duplicateSlime.ChangeState(duplicateSlime.SlimeGrowthState);
+                duplicateSlime.transform.localScale = Vector3.one * 0.75f;
+            }
+
+    
+        }
         OnEntityDeath -= Entity_OnEntityDeath;
     }
 
@@ -102,32 +155,30 @@ public class Slime : Enemy
     // </summary>
     // <param name="damagePercent">The percentage damage to apply.</param>
     // <param name="hitEntities">A reference to the list of hit entities.</param>
-    // public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
-    // {
-    //     // List<Collider> hits = GetCustomCollisionHits(LeaperAttackState.LeapAttackLayerMask);
+    public void CheckCollisions(float damageMultiplier, ref List<Entity> hitEntities)
+    {
 
-    //     foreach (Collider hit in hits)
-    //     {
-    //         if (DidHitEnemyEntity(hit, out Entity enemyEntity))
-    //         {
-    //             if (hitEntities.Contains(enemyEntity)) continue;
-    //             hitEntities.Add(enemyEntity);
+        List<Collider> hits = GetCustomCollisionHits(SlimeAttackState.SlimeAttackLayerMask);
+        Debug.Log("Number of hits: " + hits.Count);
+        
+        
+        foreach (Collider hit in hits)
+        {
+            if (DidHitEnemyEntity(hit, out Entity enemyEntity))
+            {
+                if (hitEntities.Contains(enemyEntity)) continue;
+                hitEntities.Add(enemyEntity);
 
-    //             DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
-    //         }
-    //     }
-    // }
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damageMultiplier), hit.ClosestPoint(GetColliderCenterPosition()));
+            }
+        }
+    }
 
 
 
-
+    // nothing changed from the duplicate elite variant script
     private Enemy GetEnemyPrefabFromCurrentType()
     {
-        if(this.Spawner == null)
-        {
-            Debug.Log("spawner = null ");
-        }
-        
         foreach (Enemy enemyPrefab in this.Spawner.NeutralEnemyPrefabs)
         {
             if (enemyPrefab.GetType() == this.GetType())
@@ -141,40 +192,88 @@ public class Slime : Enemy
         return null;
     }
 
-    // method for duplicate but the code in it should work in Entity_OnEntityDeath without it
-    // only here for debugging 
-    private void onDuplicate()
+
+
+
+
+
+    private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
-            
-            if(isSplit == true)
-            {
-                Debug.Log("cancel");
-                return;
-            }
-            
-            for (int i = 0; i < SplitCount; i++ )
-            {
-                // if you suspect this is crashing game uncomment bellow
-                // Debug.Break();
-                float angle = i * (360f / SplitCount);
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
 
-            
-                Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)) * 1f;
-            
-            
-                Vector3 spawnPos = this.transform.position + offset;
-                // this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos);
+        Vector3 startPosition = transform.position;
 
-                // similar to previous code except this time it changes isSplit to true
-                // so the duplicate cant split
-                Slime duplicateSlime = this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
-                if (isSplit == false)
-                {
-                    duplicateSlime.isSplit = true;
-                    
-                }
+        Vector3 horizontalDisplacement = new Vector3 (
+            endPosition.x - startPosition.x,
+            0,
+            endPosition.y - startPosition.y
+        );
 
+        float horizontalDistance = horizontalDisplacement.magnitude;
+
+        float verticalDisplacement = endPosition.y - startPosition.y;
+
+        float totalFlightTime;
+
+        float initialVerticalVelocity;
+
+        if (hopDuration == 0f)
+        {
+            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
+
+            totalFlightTime = CalculateHopDuration(endPosition, hopHeight);
+        }
+        else
+        {
+            totalFlightTime = hopDuration;
+
+            initialVerticalVelocity = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(totalFlightTime, 2)) / totalFlightTime;
+            if(float.IsNaN(initialVerticalVelocity)) initialVerticalVelocity = 0f;            
+        }
+
+        Vector3 horizontalVelocity = horizontalDisplacement /totalFlightTime;
+        if(totalFlightTime == 0f) horizontalVelocity = Vector3.zero;
+
+        Vector3 hopVelocity = horizontalVelocity + Vector3.up * initialVerticalVelocity;
         
-            }
+        return hopVelocity;
     }
+
+    public float CalculateHopDuration(Vector3 endPosition, float hopHeight)
+    {
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
+
+        Vector3 startPosition = transform.position;
+
+        float verticalDisplacement = endPosition.y - startPosition.y;
+        float initialVerticalVelocity = Mathf.Sqrt(2* gravity * Mathf.Abs(hopHeight));
+        float timeToApex = initialVerticalVelocity / gravity;
+        float timeToDescend = Mathf.Sqrt(2* (hopHeight - verticalDisplacement) / gravity);
+
+        if(float.IsNaN(timeToDescend)) timeToDescend = 0f;
+
+        float totalFlightTime = timeToApex + timeToDescend;
+
+        return totalFlightTime;
+    }
+
+    public void Hop(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
+    {
+        Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight, hopDuration);
+
+        if(hopVelocity== Vector3.zero) return;
+
+        Launch(hopVelocity.normalized, hopVelocity.magnitude);
+    }
+
+    private void Slime_OnGrounded(Vector3 groundedPosition)
+    {
+        if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntitySpawnState) return;
+        if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStaggeredState) return;
+
+        TransitionToAnimation("FlatMovement");
+    }
+    
 }
