@@ -16,7 +16,11 @@ public class ComboDataSO : ScriptableObject
     // Serialize AnimatorController for validating animation states
     [SerializeField, HideInInspector] private AnimatorController _animatorController;
 #endif // UNITY_EDITOR
-    
+
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Combo";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Combo description";
+
     [field: Header("Combo Data")]
     [field: SerializeField] public List<ComboAction> ComboInputs { get; private set; } = new List<ComboAction>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
@@ -33,7 +37,7 @@ public class ComboDataSO : ScriptableObject
     //[field: SerializeField] public bool CanChangeDirection { get; private set; } = true;
 
     [field: Header("Hit Options")]
-    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1f;
     [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float ImpactFramesTimeScale { get; private set; } = 0.05f;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 // An NPC will run around the map for X minutes.
 // Only land the NPC stands on spawn enemies,if they survive trigger EOW
-[CreateAssetMenu(fileName = "Escort World Event", menuName = "World Event/Escort")]
+[CreateAssetMenu(fileName = "Escort World Event", menuName = "World/World Event/Escort")]
 public class EscortWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
@@ -22,8 +22,8 @@ public class EscortWorldEventSO : WorldEventSO
         LandManager randomLand = worldManager.GetRandomLand();
 
         // Spawn the escort entity on the random land
-        EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        EscortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
+        EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position, Quaternion.identity, eventManager.transform);
+        EscortEventEntity.SetBaseMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
         randomLand.EnemySpawner.MaterializeEntity(EscortEventEntity);

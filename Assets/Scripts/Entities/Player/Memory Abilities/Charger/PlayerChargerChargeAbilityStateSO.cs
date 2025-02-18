@@ -7,7 +7,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
     [field: Header("Config")]
     [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
     [field: SerializeField] public PlayerChargerWindDownAbilityStateSO WindDownState { get; private set; }
-    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
+    [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 3f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
@@ -53,7 +53,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
         timer += player.LocalDeltaTime;
         if (timer > ChargeDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
         }
 
@@ -73,9 +73,9 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
             Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - player.transform.position;
             enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
-            player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactPercentDamage), hit.point, false);
+            player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactDamageMultiplier), hit.point, false);
 
-            player.PlayerAbilityState.ChangeAbilityState(WindDownState, true);
+            //player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
         }
     }

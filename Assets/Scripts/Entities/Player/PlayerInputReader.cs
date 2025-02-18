@@ -13,6 +13,14 @@ public class PlayerInputReader : MonoBehaviour
     private Player player;
     private MemorySystem memorySystem;
 
+    /// <summary>
+    /// Action that is invoked when the player fires a combo action.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>ComboAction incomingAction</c>: The combo action that was just fired.</description></item>
+    /// </list>
+    /// </remarks>
     public Action<ComboAction> OnComboAction = delegate { };
 
     public Vector3 MoveDirection { get; private set; }

@@ -26,7 +26,7 @@ public class VariantStatusEffectSO : StatusEffectSO
         if (enemy == null)
         {
             Debug.LogError($"{GetType()} can only be applied to an Enemy entity.");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
+            RemoveSelf();
             return;
         }
 
@@ -37,10 +37,12 @@ public class VariantStatusEffectSO : StatusEffectSO
             entityRendererManager.AddMaterial(VariantMaterial);
         }
 
-        enemy.SetMaxHealthModifier(enemy.MaxHealthModifier * MaxHealthMultiplier);
-        enemy.SetEXPValueMultiplier(enemy.EXPValueMultiplier * EXPValueMultiplier);
-        enemy.SetSizeScaleModifier(enemy.SizeScaleModifier * SizeMultiplier);
-        enemy.SetDamageModifier(enemy.DamageModifier * DamageMultiplier);
+        enemy.MaxHealth.AddMultiplier(MaxHealthMultiplier);
+        enemy.HealToFull(false); // Heal to full after setting max health without spawning numbers
+
+        enemy.EXPValue.AddMultiplier(EXPValueMultiplier);
+        enemy.SizeScale.AddMultiplier(SizeMultiplier);
+        enemy.DamageModifier.AddMultiplier(DamageMultiplier);
     }
 
     public override void Cancel()
@@ -49,9 +51,10 @@ public class VariantStatusEffectSO : StatusEffectSO
 
         if (entityRendererManager != null) entityRendererManager.RestoreOriginalMaterials();
 
-        enemy.SetMaxHealthModifier(enemy.MaxHealthModifier / MaxHealthMultiplier, false);
-        enemy.SetEXPValueMultiplier(enemy.EXPValueMultiplier / EXPValueMultiplier);
-        enemy.SetSizeScaleModifier(enemy.SizeScaleModifier / SizeMultiplier);
-        enemy.SetDamageModifier(enemy.DamageModifier / DamageMultiplier);
+        enemy.MaxHealth.RemoveMultiplier(MaxHealthMultiplier);
+
+        enemy.EXPValue.RemoveMultiplier(EXPValueMultiplier);
+        enemy.SizeScale.RemoveMultiplier(SizeMultiplier);
+        enemy.DamageModifier.RemoveMultiplier(DamageMultiplier);
     }
 }

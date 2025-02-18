@@ -7,7 +7,7 @@ using UnityEngine;
 
 // A stationary object will placed at the center of the land for 1 minute, Every 30 seconds it will go to a neighboring land.
 // All lands will spawn enemies, if the object survives, trigger EOW
-[CreateAssetMenu(fileName = "Defend World Event", menuName = "World Event/Defend")]
+[CreateAssetMenu(fileName = "Defend World Event", menuName = "World/World Event/Defend")]
 public class DefendWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
@@ -25,8 +25,8 @@ public class DefendWorldEventSO : WorldEventSO
 
         // Select a random land and spawn the defend event entity in the center of the land
         LandManager randomLand = worldManager.GetRandomLand();
-        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        DefendEventEntity.SetMaxHealth(DefendEventMaxHealth, true);
+        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position, Quaternion.identity, eventManager.transform);
+        DefendEventEntity.SetBaseMaxHealth(DefendEventMaxHealth, true);
 
         randomLand.EnemySpawner.MaterializeEntity(DefendEventEntity);
 

@@ -57,7 +57,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 100
+    multipliers: []
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1

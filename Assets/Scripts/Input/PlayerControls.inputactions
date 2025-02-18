@@ -94,15 +94,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "OpenAspects",
-                    "type": "Button",
-                    "id": "2560052c-a633-4121-ac25-282b39b94311",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -356,28 +347,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "MemoryAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f6f9e8e0-5088-4978-b5e7-9f7bad100f0f",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "OpenAspects",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f642572d-7f87-41e9-9f12-9694f626810a",
-                    "path": "<Gamepad>/dpad/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "OpenAspects",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

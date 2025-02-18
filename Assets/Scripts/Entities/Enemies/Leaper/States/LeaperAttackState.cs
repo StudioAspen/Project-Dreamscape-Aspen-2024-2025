@@ -7,8 +7,8 @@ public class LeaperAttackState : LeaperBaseState
     [field: Header("Config")]
     [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
     [field: SerializeField] public float LeapAttackHeightToDistanceRatio { get; private set; } = 0.2f;
-    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
-    [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
+    [field: SerializeField] public float AttackContactDamageMultiplier { get; private set; } = 1.5f;
+    [field: SerializeField] public float RegularContactDamageMultiplier { get; private set; } = 1f;
 
     private Entity rememberedTarget;
     private Vector3 hopDestination;
@@ -36,7 +36,7 @@ public class LeaperAttackState : LeaperBaseState
 
         // Calculate the predicted movement of the remembered target (Speed * Time * Direction)
         Vector3 predictedMovement = 
-            rememberedTarget.LocalTimeScale * rememberedTarget.MovementSpeed // speed of the target
+            rememberedTarget.LocalTimeScale.GetFloatValue() * rememberedTarget.MovementSpeed // speed of the target
             * leaper.CalculateHopDuration(rememberedTarget.transform.position, hopHeight) // time it takes to get to target
             * rememberedTarget.transform.forward; // direction of the target
 
@@ -70,7 +70,7 @@ public class LeaperAttackState : LeaperBaseState
         {
             leaper.ApplyHorizontalVelocity();
 
-            leaper.CheckCollisions(AttackContactDamagePercent, ref entitiesHitByCurrentLeap);
+            leaper.CheckCollisions(AttackContactDamageMultiplier, ref entitiesHitByCurrentLeap);
         }
     }
 }

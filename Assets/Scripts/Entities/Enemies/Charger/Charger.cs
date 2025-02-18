@@ -131,7 +131,7 @@ public class Charger : Enemy
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
+        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
             OnDeath();
         }
@@ -146,7 +146,7 @@ public class Charger : Enemy
             if (damage < staggerDamageThreshold) newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
         }
 
-        return MaxHealth > 0 && CurrentHealth - newDamage <= 0;
+        return MaxHealth.GetIntValue() > 0 && CurrentHealth - newDamage <= 0;
     }
 
     /// <summary>
