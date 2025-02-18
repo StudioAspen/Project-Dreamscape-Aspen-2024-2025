@@ -17,7 +17,7 @@ public class HammerFlamingAuraStatusEffectSO : StatusEffectSO
         if (hammerHeadCollider == null)
         {
             Debug.LogError($"{name}: Hammer head capsule collider not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, true); // If theres no Weapon, remove this passive
+            RemoveSelf(); // If theres no Weapon, remove this passive
             return;
         }
 

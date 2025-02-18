@@ -75,7 +75,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
             player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactDamageMultiplier), hit.point, false);
 
-            player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
+            //player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
         }
     }

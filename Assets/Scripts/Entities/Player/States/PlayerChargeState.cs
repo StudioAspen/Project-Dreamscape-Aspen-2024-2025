@@ -47,9 +47,7 @@ public class PlayerChargeState : PlayerBaseState
 
         playerCombat.OnChargeStart?.Invoke(attackInputNumber);
 
-        ChargeAttackActivatedStatusEffectSO chargeAttackActivatedStatusEffect =
-            EntityStatusEffector.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject, ChargeActivatedStatusEffect);
-        duration = chargeAttackActivatedStatusEffect == null ? Mathf.Infinity : chargeAttackActivatedStatusEffect.MaxChargeDuration;
+        duration = ChargeActivatedStatusEffect == null ? Mathf.Infinity : ChargeActivatedStatusEffect.MaxChargeDuration;
     }
 
     public override void OnExit()
@@ -89,7 +87,7 @@ public class PlayerChargeState : PlayerBaseState
     /// <returns>True if the player can perform a charged attack, false otherwise.</returns>
     public bool CanChargedAttack()
     {
-        if (!EntityStatusEffector.HasStatusEffectOfType<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
+        if (!EntityStatusEffector.HasStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
@@ -102,7 +100,7 @@ public class PlayerChargeState : PlayerBaseState
     /// <returns>True if the player can charge, false otherwise.</returns>
     public bool CanCharge()
     {
-        if (!EntityStatusEffector.HasStatusEffectOfType<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
+        if (!EntityStatusEffector.HasStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
         if (player.CurrentState == player.PlayerChargeState) return false;
         if (player.CurrentState == player.PlayerAttackState) return false;
         if (player.CurrentState == player.PlayerDashState) return false;
