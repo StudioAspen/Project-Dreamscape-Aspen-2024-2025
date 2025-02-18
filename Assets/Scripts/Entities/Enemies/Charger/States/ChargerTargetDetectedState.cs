@@ -43,8 +43,6 @@ public class ChargerTargetDetectedState : ChargerBaseState
             return;
         }
 
-        charger.LookAt(rememberedTarget.transform.position);
-
         timer += charger.LocalDeltaTime;
         
         if(timer > TargetDetectedDuration)
