@@ -6,6 +6,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 {
     [field: Header("Aspect of Fear Passive B: Settings")]
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
+    [field: SerializeField] public float SpeedModifierBuff { get; private set; } = 5;
     private int currentStacks;
 
     private void OnValidate()
@@ -21,14 +22,22 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     public override void Update()
     {
         base.Update();
+
+        // cheat to add stacks
         if (Input.GetKeyDown(KeyCode.P))
         {
             ApplyStack();
         }
 
+        // functionality for when max stacks are reached
         if (currentStacks == MaxStacks)
         {
             Debug.Log("max stacks");
+            // apply buffs for player
+            entity.SetSpeedModifier(SpeedModifierBuff);
+
+            // reset stacks
+            currentStacks = 0;
         }
     }
 
