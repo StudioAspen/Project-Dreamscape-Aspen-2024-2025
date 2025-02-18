@@ -453,6 +453,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
         OnUpdate();
     }
 
