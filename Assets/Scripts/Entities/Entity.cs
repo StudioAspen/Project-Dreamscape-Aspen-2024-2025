@@ -994,7 +994,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="transitionDuration">The duration of the transition.</param>
     public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
     {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
+        //animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>

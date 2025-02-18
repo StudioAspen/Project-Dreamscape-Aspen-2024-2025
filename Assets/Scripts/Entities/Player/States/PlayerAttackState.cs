@@ -79,7 +79,11 @@ public class PlayerAttackState : PlayerBaseState
 
         //player.ReplaceOneShotAnimationClip(ComboData.ComboClip, "AbilityPlaceholder");
         //player.TransitionToAnimation("Ability");
-        player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
+        UPlayable.AnimationMixer.AnimationClipOutput oneShotPlayer = player.GetComponent<UPlayable.AnimationMixer.AnimationClipOutput>();
+        oneShotPlayer.ToClip = ComboData.ComboClip;
+        oneShotPlayer.SetSpeed(ComboData.ComboClipAnimationSpeed);
+        oneShotPlayer.Play();
+        //player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
 
         playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
         playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
