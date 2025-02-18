@@ -83,15 +83,18 @@ public class Golem : Enemy
         EndHit();
     }
 
-    public void StartHit() { // Called via Animation Event
+    public void StartHit() // Called via Animation Event
+    { 
         GolemGroundSmashState.GroundImpact();
     }
 
-    public void StompImpact() { // called via Animation Event
+    public void StompImpact() // Called via Animation Event
+    { 
         GolemStompState.GroundImpactShockwave();
     }
 
-    public void ShakeCam() {
+    public void ShakeCam()
+    {
         camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale));
     }
 
@@ -100,8 +103,10 @@ public class Golem : Enemy
         GolemGroundSmashState.Weapon.DisableTriggers();
     }
 
-    private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay) {
-        for (int i = 0; i < numShakes; i++) {
+    private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay)
+    {
+        for (int i = 0; i < numShakes; i++)
+        {
             CameraShakeManager.Instance.ShakeCamera(Random.Range(4f,8f), shakeDelay);    
             yield return new WaitForSeconds(shakeDelay);
         }
@@ -112,7 +117,8 @@ public class Golem : Enemy
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
     /// <returns>True if the Charger can be staggered, false otherwise.</returns>
-    private bool CanBeStaggered() {
+    private bool CanBeStaggered()
+    {
         return CurrentState == GolemReadyAttackState
                || CurrentState == GolemStaggeredState
                || CurrentState == GolemAttackRecoverState;
@@ -125,31 +131,31 @@ public class Golem : Enemy
 
         int newDamage = dmg;
         
-        if(CanBeStaggered()) {
+        if(CanBeStaggered())
+        {
             damageTakenSinceLastStagger += newDamage;
-            if (damageTakenSinceLastStagger > staggerDamageThreshold) {
+            if (damageTakenSinceLastStagger > staggerDamageThreshold)
+            {
                 ResetDamageTakenSinceLastStagger();
                 ChangeState(GolemStaggeredState, true);    
             }
         }
         
-        if (CurrentState == GolemStaggeredState) {
+        if (CurrentState == GolemStaggeredState)
+        {
             damageTakenWhileStaggered += newDamage;
             print("Damage taken while staggered now " + damageTakenWhileStaggered);
-            if (damageTakenWhileStaggered > dazeDamageThreshold) {
+            if (damageTakenWhileStaggered > dazeDamageThreshold)
+            {
                 ResetDamageTakenWhileStaggered();
                 ChangeState(GolemDazedState, true);
             }
         }
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-
         CurrentHealth -= newDamage;
-
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
-
         lastHitSource = source;
-        
         
         //after calculating current health, check if the entity has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth > 0)
@@ -158,11 +164,13 @@ public class Golem : Enemy
         }
     }
 
-    public void ResetDamageTakenWhileStaggered() {
+    public void ResetDamageTakenWhileStaggered()
+    {
         damageTakenWhileStaggered = 0;
     }
 
-    public void ResetDamageTakenSinceLastStagger() {
+    public void ResetDamageTakenSinceLastStagger()
+    {
         damageTakenSinceLastStagger = 0;
     }
     

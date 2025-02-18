@@ -12,21 +12,17 @@ public class GolemDazedState : GolemBaseState
     public override void OnEnter()
     {
         golem.TransitionToAnimation("Daze");
-
         golem.SetSpeedModifier(0f);
-
         timer = 0f;
     }
 
     public override void OnExit()
     {
-
     }
 
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-
         timer += golem.LocalDeltaTime;
 
         if(timer > DazedDuration)

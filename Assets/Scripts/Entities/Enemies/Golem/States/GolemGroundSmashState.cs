@@ -20,9 +20,7 @@ public class GolemGroundSmashState : GolemBaseState
     public override void OnEnter()
     {
         golem.TransitionToAnimation("GroundSmash");
-
         golem.SetSpeedModifier(0f);
-
         Weapon.OnWeaponStartSwing?.Invoke(golem);
         Weapon.ClearEnemiesHitList();
         
@@ -41,7 +39,6 @@ public class GolemGroundSmashState : GolemBaseState
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-
         golem.LookAt(golem.GolemReadyAttackState.GetAttackDirection());
 
         if (!golem.IsAttackAnimationPlaying)
@@ -51,7 +48,8 @@ public class GolemGroundSmashState : GolemBaseState
         }
     }
 
-    public void GroundImpact() {
+    public void GroundImpact()
+    {
         golem.ShakeCam();
         GolemHitEntitiesWithAOEIgnoreTeam(golem, golem.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
         CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
@@ -67,7 +65,7 @@ public class GolemGroundSmashState : GolemBaseState
     /// <param name="attacker">The entity causing the damage.</param>
     /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius within which entities will be damaged.</param>
-    /// <param name="percentDamage">The percentage of damage to apply to each entity.</param>
+    /// <param name="damageMultiplier">The damage multiplier to apply to each entity.</param>
     /// <param name="launchForce">The force with which to launch the entities within the AOE.</param>
     /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
     /// <param name="willTryStagger">Whether to try to stagger the entities hit.</param>
@@ -77,7 +75,8 @@ public class GolemGroundSmashState : GolemBaseState
         List<Entity> entitiesInRadius = Entity.GetEntitiesThroughAOE(center, radius, false);
         List<Entity> entitiesHit = new List<Entity>();
 
-        foreach (Entity entityHit in entitiesInRadius) {
+        foreach (Entity entityHit in entitiesInRadius)
+        {
             if (entityHit == attacker) continue;
             entitiesHit.Add(entityHit);
             Vector3 direction = (entityHit.GetColliderCenterPosition() - center).normalized;

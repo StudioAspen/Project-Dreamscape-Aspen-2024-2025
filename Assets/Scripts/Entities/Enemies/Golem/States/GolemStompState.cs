@@ -17,11 +17,11 @@ public class GolemStompState : GolemBaseState
     private protected override void Init(Entity entity)
     {
         base.Init(entity);
-
         Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
-    public override void OnEnter() {
+    public override void OnEnter()
+    {
         golem.TransitionToAnimation("Stomp");
         golem.SetSpeedModifier(0f);
         Weapon.OnWeaponStartSwing?.Invoke(golem);
@@ -42,7 +42,6 @@ public class GolemStompState : GolemBaseState
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-
         golem.LookAt(golem.transform.position + golem.GolemReadyAttackState.GetAttackDirection());
 
         if (!golem.IsAttackAnimationPlaying)
@@ -68,7 +67,8 @@ public class GolemStompState : GolemBaseState
                 (i * ShockwaveGrowStepIncrement), false);
             CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOEInitialRadius + (i * ShockwaveGrowStepIncrement), 0.25f, new Color(1f, 0, 0, 0.2f));
 
-            foreach (Entity entityHit in entitiesInRadius) {
+            foreach (Entity entityHit in entitiesInRadius)
+            {
                 if (entityHit == golem) continue;
                 
                 // To prevent damaging and launching the same target multiple times in a single shockwave, check if target has already been hit
@@ -84,19 +84,10 @@ public class GolemStompState : GolemBaseState
                         true);
                 
             }
-            
             yield return new WaitForSeconds(ShockwaveGrowStepDuration * golem.LocalTimeScale);
-
-
         }
-        
-       
-      
-        
         yield return null;
     }
-    
-    
     
     
     

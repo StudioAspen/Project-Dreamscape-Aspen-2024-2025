@@ -11,20 +11,16 @@ public class GolemAttackRecoverState : GolemBaseState
     {
         golem.TransitionToAnimation("FlatMovement");
         golem.SetSpeedModifier(0f);
-        
-
         recoverTimer = 0f;
     }
 
     public override void OnExit()
     {
-
     }
 
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-
         recoverTimer += golem.LocalDeltaTime;
 
         if (recoverTimer > AttackRecoverDuration)

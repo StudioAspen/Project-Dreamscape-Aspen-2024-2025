@@ -31,19 +31,18 @@ public class GolemChaseState : EnemyChaseState
     {
         base.OnUpdate();
 
-        if(golem.Target == null)
+        if (golem.Target == null)
         {
             golem.ChangeState(golem.GolemWanderState);
             return;
         }
 
-        if(golem.Distance(golem.Target) < AttackRange)
+        if (golem.Distance(golem.Target) < AttackRange)
         {
             golem.ChangeState(golem.GolemReadyAttackState);
             return;
         }
         
-     
     }
     
 }

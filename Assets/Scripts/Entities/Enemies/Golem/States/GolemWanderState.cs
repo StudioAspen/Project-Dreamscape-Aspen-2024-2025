@@ -14,9 +14,7 @@ public class GolemWanderState : GolemBaseState
     public override void OnEnter()
     {
         enemy.TransitionToAnimation("FlatMovement");
-
         golem.SetSpeedModifier(WanderSpeed);
-
         wanderTimeElapsed = Mathf.Infinity;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
@@ -29,11 +27,9 @@ public class GolemWanderState : GolemBaseState
     public override void OnUpdate()
     {
         golem.ApplyGravity();
-
         wanderTimeElapsed += golem.LocalDeltaTime;
 
         if(!golem.IsCurrentPathValid()) SetNewWanderDestination();
-
         if (wanderTimeElapsed > randomWanderIntervalDuration) SetNewWanderDestination();
 
         golem.MoveTowardsDestination();
