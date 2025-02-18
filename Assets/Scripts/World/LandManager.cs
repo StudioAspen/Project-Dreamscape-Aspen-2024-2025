@@ -27,6 +27,9 @@ public class LandManager : MonoBehaviour
     [SerializeField] private int minLevel = -5;
     [SerializeField] private int maxLevel = 10;
     
+    /// <summary>
+    /// Used for random selections.
+    /// </summary>
     public float Weight => 1f/(1f + maxLevel - Level);
 
     /// <summary>

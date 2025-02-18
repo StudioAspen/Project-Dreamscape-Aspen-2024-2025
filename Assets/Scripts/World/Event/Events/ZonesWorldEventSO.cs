@@ -20,7 +20,7 @@ public class ZonesWorldEventSO : WorldEventSO
         activeLands = 0;
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
-        affectedLands = GetRandom3x3Land();
+        affectedLands = AffectLandsFromEpicenter();
         foreach(LandManager land in affectedLands)
         {
             if (land.Level <= 0) continue;
@@ -95,6 +95,27 @@ public class ZonesWorldEventSO : WorldEventSO
         }
 
         return resultingLands;
+    }
+
+    private List<LandManager> AffectLandsFromEpicenter() {
+      List<LandManager> resultingLands = new List<LandManager>();
+
+      // Returns the largest integer that, when squared, will be <= the number of spawned lands
+      int outbreakSize = Mathf.FloorToInt(Mathf.Pow(Mathf.Sqrt(worldManager.SpawnedLands.Count), 2));
+      Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
+
+      // Gets a land by its weight, which increases proportionally with its land level.
+      LandManager epicenter = worldManager.GetRandomLandByWeight();
+      Debug.Log($"Epicenter Level: {epicenter.Level}");
+
+      // Vector2Int gridPos = epicenter.GridPosition;
+      // int layer = 1;
+      // while (resultingLands.Count < outbreakSize - 1)
+      // {
+      //   for(gridPos.y; )
+      // }
+
+      return resultingLands;
     }
 
     private void EnemySpawner_OnSpawnerDepleted()
