@@ -8,11 +8,7 @@ public class EntityStatusEffector : MonoBehaviour
 {
     private Entity entity;
 
-    /// <summary>
-    /// Stores the entities status effects
-    /// Key: Original Copy, Value: Runtime copy
-    /// </summary>
-    public Dictionary<StatusEffectSO, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<StatusEffectSO, StatusEffectSO>();
+    public Dictionary<Type, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<Type, StatusEffectSO>();
 
     private void Awake()
     {
@@ -37,7 +33,7 @@ public class EntityStatusEffector : MonoBehaviour
     private void UpdateStatusEffects()
     {
         foreach (StatusEffectSO statusEffect in new List<StatusEffectSO>(CurrentStatusEffects.Values))
-        {   
+        {
             statusEffect.Update();
         }
     }
@@ -53,12 +49,12 @@ public class EntityStatusEffector : MonoBehaviour
     {
         if (newStatusEffect.Stackable)
         {
-            if (!CurrentStatusEffects.ContainsKey(newStatusEffect))
+            if (!CurrentStatusEffects.ContainsKey(newStatusEffect.GetType()))
             {
                 return ApplyNotStackedStatusEffect(newStatusEffect, source);
             }
 
-            StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect];
+            StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
             currentStatusEffect.Stack(newStatusEffect); // extend and override
 
             return currentStatusEffect;
@@ -77,12 +73,12 @@ public class EntityStatusEffector : MonoBehaviour
     /// <param name="source">The source GameObject that applies the status effect.</param>
     private StatusEffectSO ApplyNotStackedStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
-        RemoveStatusEffect(newStatusEffect, true);
+        RemoveStatusEffect(newStatusEffect.GetType(), true);
 
         StatusEffectSO newStatusEffectRuntimeCopy = Instantiate(newStatusEffect);
-        newStatusEffectRuntimeCopy.Init(newStatusEffect, this, source);
+        newStatusEffectRuntimeCopy.Init(this, source);
 
-        CurrentStatusEffects.Add(newStatusEffect, newStatusEffectRuntimeCopy);
+        CurrentStatusEffects.Add(newStatusEffect.GetType(), newStatusEffectRuntimeCopy);
 
         return newStatusEffectRuntimeCopy;
     }
@@ -91,17 +87,17 @@ public class EntityStatusEffector : MonoBehaviour
     /// Removes the specified status effect from the entity.
     /// Cancelling the status effect will not trigger OnExpire.
     /// </summary>
-    /// <param name="originalStatusEffect">The status effect to remove.</param>
+    /// <param name="statusEffectType">The status effect type to remove.</param>
     /// <param name="cancel">Indicates whether to cancel the status effect.</param>
-    public void RemoveStatusEffect(StatusEffectSO originalStatusEffect, bool cancel)
+    public void RemoveStatusEffect(Type statusEffectType, bool cancel)
     {
-        if (CurrentStatusEffects.ContainsKey(originalStatusEffect))
+        if (CurrentStatusEffects.ContainsKey(statusEffectType))
         {
-            if (cancel) CurrentStatusEffects[originalStatusEffect].Cancel();
+            if (cancel) CurrentStatusEffects[statusEffectType].Cancel();
 
-            Destroy(CurrentStatusEffects[originalStatusEffect]);
+            Destroy(CurrentStatusEffects[statusEffectType]);
 
-            CurrentStatusEffects.Remove(originalStatusEffect);
+            CurrentStatusEffects.Remove(statusEffectType);
         }
     }
 
@@ -118,71 +114,56 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
-    /// Tries to get the status effect of the specified type from the entity using the original copy.
+    /// Tries to get the status effect of the specified type from the target object.
     /// </summary>
-    /// <param name="target">The gameObject to get the status effect from.</param>
-    /// <param name="originalCopy">The original copy of the status effect.</param>
-    /// <typeparam name="T">The type of the status effect you want to get.</typeparam>
+    /// <param name="statusEffectType">The type of the status effect.</param>
     /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
-    public static T TryGetStatusEffect<T>(GameObject target, StatusEffectSO originalCopy) where T : StatusEffectSO
+    public static T TryGetStatusEffect<T>(GameObject target) where T : StatusEffectSO
     {
         EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
         if (statusEffector == null) return null;
 
-        return statusEffector.TryGetStatusEffect<T>(originalCopy);
+        return statusEffector.TryGetStatusEffect<T>();
     }
 
     /// <summary>
-    /// Tries to get the status effect of the specified type from the entity using the original copy.
+    /// Tries to get the status effect of the specified type from the entity.
     /// </summary>
-    /// <param name="originalCopy">The original copy of the status effect.</param>
-    /// <typeparam name="T">The type of the status effect you want to get.</typeparam>
+    /// <param name="statusEffectType">The type of the status effect.</param>
     /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
-    public T TryGetStatusEffect<T>(StatusEffectSO originalCopy) where T : StatusEffectSO
+    public T TryGetStatusEffect<T>() where T : StatusEffectSO
     {
-        if(originalCopy.GetType() != typeof(T))
+        if (CurrentStatusEffects.ContainsKey(typeof(T)))
         {
-            Debug.LogError("TryGetStatusEffect: Original copy and type don't match");
-            return null;
-        }
-
-        if (CurrentStatusEffects.ContainsKey(originalCopy))
-        {
-            return CurrentStatusEffects[originalCopy] as T;
+            return CurrentStatusEffects[typeof(T)] as T;
         }
 
         return null;
     }
 
     /// <summary>
-    /// Detects whether the status effect of the specified type is applied to the entity.
+    /// Checks whether the entity has a status effect of type T
     /// </summary>
-    /// <param name="target">The target gameObject to search for.</param>
-    /// <typeparam name="T">The type of the status effect to search for</typeparam>
-    /// <returns>Whether the type exists.</returns>
-    public static bool HasStatusEffectOfType<T>(GameObject target) where T : StatusEffectSO
+    /// <param name="target">The object to check into.</param>
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public static bool HasStatusEffect<T>(GameObject target) where T : StatusEffectSO
     {
         EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
         if (statusEffector == null) return false;
 
-        return statusEffector.HasStatusEffectOfType<T>();
+        return statusEffector.HasStatusEffect<T>();
     }
 
     /// <summary>
-    /// Detects whether the status effect of the specified type is applied to the entity.
+    /// Checks whether the entity has a status effect of type T
     /// </summary>
-    /// <typeparam name="T">The type of the status effect to search for</typeparam>
-    /// <returns>Whether the type exists.</returns>
-    public bool HasStatusEffectOfType<T>() where T : StatusEffectSO
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public bool HasStatusEffect<T>() where T : StatusEffectSO
     {
-        foreach(StatusEffectSO originalCopy in CurrentStatusEffects.Keys)
-        {
-            if(originalCopy.GetType() == typeof(T))
-            {
-                return true;
-            }
-        }
-        return false;
+
+        return CurrentStatusEffects.ContainsKey(typeof(T));
     }
 
     /// <summary>

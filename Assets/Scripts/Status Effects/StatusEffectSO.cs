@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
-    public StatusEffectSO OriginalCopy { get; private set; }
-
     /// <summary>
     /// The EntityStatusEffector that the status effect is applied to
     /// </summary>
@@ -33,9 +31,8 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     /// <param name="owner">The entity status effector owner.</param>
     /// <param name="source">The source game object that applied the effect.</param>
-    public void Init(StatusEffectSO originalCopy, EntityStatusEffector owner, GameObject source)
+    public void Init(EntityStatusEffector owner, GameObject source)
     {
-        OriginalCopy = originalCopy;
         entityStatusEffectorOwner = owner;
         entity = owner.GetComponent<Entity>();
         this.source = source;
@@ -69,7 +66,7 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     private protected virtual void OnExpire()
     {
-        entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, false);
+        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), false);
 
         //Debug.Log($"{name} Expired");
     }
@@ -107,5 +104,14 @@ public class StatusEffectSO : ScriptableObject
     private protected virtual void OnStack(StatusEffectSO newStatusEffect)
     {
 
+    }
+
+    /// <summary>
+    /// Removes the status effect from the owner entity status effector.
+    /// Calls the cancel method.
+    /// </summary>
+    public void RemoveSelf()
+    {
+        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
     }
 }

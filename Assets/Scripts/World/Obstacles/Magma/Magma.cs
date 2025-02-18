@@ -13,7 +13,7 @@ public class Magma : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        BurnStatusEffectSO currentBurnStatus = EntityStatusEffector.TryGetStatusEffect<BurnStatusEffectSO>(other.gameObject, burnStatusEffect);
+        BurnStatusEffectSO currentBurnStatus = EntityStatusEffector.TryGetStatusEffect<BurnStatusEffectSO>(other.gameObject);
         if (currentBurnStatus == null)
         {
             EntityStatusEffector.TryApplyStatusEffect(other.gameObject, burnStatusEffect, gameObject);
@@ -26,7 +26,7 @@ public class Magma : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        BurnStatusEffectSO currentBurnStatus = EntityStatusEffector.TryGetStatusEffect<BurnStatusEffectSO>(other.gameObject, burnStatusEffect);
+        BurnStatusEffectSO currentBurnStatus = EntityStatusEffector.TryGetStatusEffect<BurnStatusEffectSO>(other.gameObject);
         if (currentBurnStatus == null)
         {
             EntityStatusEffector.TryApplyStatusEffect(other.gameObject, burnStatusEffect, gameObject);

@@ -34,7 +34,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         if (playerCombat == null)
         {
             Debug.LogError($"{name}: PlayerCombat not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(OriginalCopy, true); // If theres no PlayerCombat, remove this passive
+            RemoveSelf(); // If theres no PlayerCombat, remove this passive
             return;
         }
 
@@ -55,7 +55,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
     {
         base.Cancel();
 
-        entityStatusEffectorOwner.RemoveStatusEffect(ChargedAttackActivatedStatusEffect, true);
+        entityStatusEffectorOwner.RemoveStatusEffect(ChargedAttackActivatedStatusEffect.GetType(), true);
 
         playerCombat.OnChargeRelease -= PlayerCombat_OnChargeRelease;
         playerCombat.Weapon.OnWeaponEndSwing -= Weapon_OnWeaponEndSwing;
@@ -67,7 +67,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         AspectOfRagePassiveBStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfRagePassiveBStatusEffectSO;
 
         // Set new max charge duration
-        entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>(ChargedAttackActivatedStatusEffect)
+        entityStatusEffectorOwner.TryGetStatusEffect<ChargeAttackActivatedStatusEffectSO>()
             .SetMaxChargeDuration(overridingStatusEffect.MaxChargeDuration);
 
         // Set new damage bonus values
