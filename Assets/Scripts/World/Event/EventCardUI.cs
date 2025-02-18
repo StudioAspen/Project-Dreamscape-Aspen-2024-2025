@@ -8,9 +8,9 @@ using UnityEngine.UI;
 public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private EventManager eventManager;
-    private Button button;
 
     [Header("References")]
+    [SerializeField] private Button button;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text selectText;
@@ -18,6 +18,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject frontFaceObject;
     [SerializeField] private GameObject backFaceObject;
 
+    public bool IsReady => eventManager != null;
     private bool isFrontFacing;
     private bool isSelected;
 
@@ -37,7 +38,6 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
-        button = GetComponent<Button>();
 
         button.onClick.AddListener(Button_OnClick);
 

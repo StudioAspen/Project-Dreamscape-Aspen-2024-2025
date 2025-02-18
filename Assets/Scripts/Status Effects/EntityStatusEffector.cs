@@ -33,7 +33,7 @@ public class EntityStatusEffector : MonoBehaviour
     private void UpdateStatusEffects()
     {
         foreach (StatusEffectSO statusEffect in new List<StatusEffectSO>(CurrentStatusEffects.Values))
-        {   
+        {
             statusEffect.Update();
         }
     }
@@ -139,6 +139,31 @@ public class EntityStatusEffector : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Checks whether the entity has a status effect of type T
+    /// </summary>
+    /// <param name="target">The object to check into.</param>
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public static bool HasStatusEffect<T>(GameObject target) where T : StatusEffectSO
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return false;
+
+        return statusEffector.HasStatusEffect<T>();
+    }
+
+    /// <summary>
+    /// Checks whether the entity has a status effect of type T
+    /// </summary>
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public bool HasStatusEffect<T>() where T : StatusEffectSO
+    {
+
+        return CurrentStatusEffects.ContainsKey(typeof(T));
     }
 
     /// <summary>

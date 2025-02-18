@@ -4,7 +4,7 @@ public class FollowerAttackState : FollowerBaseState
 {
     [field: Header("Config")]
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 1f;
     public Weapon Weapon { get; protected set; }
 
     private Vector3 attackDirection;
@@ -30,7 +30,7 @@ public class FollowerAttackState : FollowerBaseState
         Weapon.OnWeaponStartSwing?.Invoke(follower);
         Weapon.ClearEnemiesHitList();
 
-        Weapon.SetPercentDamage(AttackPercentDamage);
+        Weapon.SetDamageMultiplier(AttackDamageMultiplier);
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b253543ac71d7f14eaf5a73906075e12, type: 3}
+  m_Name: Hammer_MidairLightP3
+  m_EditorClassIdentifier: 
+  _animatorController: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
+  <DisplayName>k__BackingField: Combo
+  <Description>k__BackingField: Combo description
+  <ComboInputs>k__BackingField: 000000000000000000000000
+  <ComboClip>k__BackingField: {fileID: 7400000, guid: 89d35761eaaf9d849a6fec057e537f45,
+    type: 3}
+  _ComboClipChecChangeCheck: {fileID: 7400000, guid: 89d35761eaaf9d849a6fec057e537f45,
+    type: 3}
+  IsComboClipValid: 1
+  <ComboClipAnimationSpeed>k__BackingField: 1.5
+  <HasRootMotion>k__BackingField: 0
+  <IsAirCombo>k__BackingField: 1
+  <WillLaunchUpwards>k__BackingField: 0
+  <DamageMultiplier>k__BackingField: 1.5
+  <AirLaunchForce>k__BackingField: -30
+  <ImpactFramesTimeScale>k__BackingField: 0.02
+  <ImpactFramesDuration>k__BackingField: 0.75
+  <WeaponScale>k__BackingField: 3
+  <WeaponScalingDuration>k__BackingField: 0.1

@@ -56,7 +56,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 0
+    multipliers: []
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1
@@ -68,7 +70,9 @@ MonoBehaviour:
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
   <Cost>k__BackingField: 0
-  <EXPValue>k__BackingField: 0
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 20
+    multipliers: []
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}

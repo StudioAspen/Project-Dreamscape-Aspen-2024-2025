@@ -129,7 +129,7 @@ public class EventManager : MonoBehaviour
         CurrentEvent.Start();
         OnEventChanged?.Invoke(CurrentEvent);
 
-        gameManager.ChangeState(GameState.PLAYING);
+        gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
     /// <summary>
@@ -151,6 +151,8 @@ public class EventManager : MonoBehaviour
         InitializeEvents();
 
         Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
+
+        SetDefaultEvent<SurvivalWorldEventSO>();
     }
 
     private void OnDestroy()
@@ -163,11 +165,6 @@ public class EventManager : MonoBehaviour
         // If the player is destroyed, fail the event. Keeps track of players before failing if this is multiplayer.
 
         FailEvent();
-    }
-
-    private void Start()
-    {
-        SetDefaultEvent<SurvivalWorldEventSO>();
     }
 
     private void Update()

@@ -17,7 +17,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public ComboDataSO ComboData { get; private set; }
 
-    private float extraPercentDamage = 100f;
+    private float extraDamageMultiplier = 1f;
 
     private float duration;
     private float timer;
@@ -58,12 +58,12 @@ public class PlayerAttackState : PlayerBaseState
     }
 
     /// <summary>
-    /// Sets the extra percent damage for this swing.
+    /// Sets the extra damage multiplier for this swing.
     /// </summary>
-    /// <param name="extraPercentDamage">The extra percent damage to set.</param>
-    public void SetBonusPercentDamage(float extraPercentDamage)
+    /// <param name="extraDamageMultiplier">The extra damage multiplier to set.</param>
+    public void SetBonusDamageMultiplier(float extraDamageMultiplier)
     {
-        this.extraPercentDamage = extraPercentDamage;
+        this.extraDamageMultiplier = extraDamageMultiplier;
     }
 
     public override void OnEnter()
@@ -72,7 +72,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
 
-        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage * extraPercentDamage/100f); // set the damage percent for this combo
+        playerCombat.Weapon.SetDamageMultiplier(ComboData.DamageMultiplier * extraDamageMultiplier); // set the damage mult for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
         playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
@@ -109,7 +109,7 @@ public class PlayerAttackState : PlayerBaseState
 
         player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
-        extraPercentDamage = 100f; // reset the extra damage percentage
+        extraDamageMultiplier = 1f; // reset the extra damage multiplier
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
@@ -202,13 +202,13 @@ public class PlayerAttackState : PlayerBaseState
     }
 
     /// <summary>
-    /// Prevents the player from cancelling the animation for the first half of the animation.
+    /// Prevents the player from cancelling the animation for the first quater of the animation.
     /// Ensures that the player cant unexpectedly cancel the animation in a bug.
     /// </summary>
     private void HandleAnimationCancellingBuffer()
     {
         timer += player.LocalDeltaTime;
-        if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
+        if (timer > duration / 4) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)

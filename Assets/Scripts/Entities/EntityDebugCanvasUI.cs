@@ -32,12 +32,13 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void OnEnable()
     {
+        // Need to delay OnEnable for a frame because of potential race condition as entity hp is also set in OnEnable.
         StartCoroutine(LateOnEnableCoroutine());
     }
 
     private void LateOnEnable()
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
 
         EliteVariantStatusEffectSO eliteStatus = null;
         if (entityStatusEffector != null)
@@ -68,8 +69,8 @@ public class EntityDebugCanvasUI : MonoBehaviour
         }
 
         if (entityNameText != null) entityNameText.text = 
-                $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name}")} " +
-                $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name}")} " +
+                $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name} ")}" +
+                $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name} ")}" +
                 $"{entity.GetType()}";
     }
 
@@ -89,11 +90,11 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth.GetIntValue());
     }
 
     private void Entity_OnEntityHeal(Entity healedEntity, int healValue)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth.GetIntValue());
     }
 }

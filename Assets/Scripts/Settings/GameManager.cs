@@ -41,23 +41,16 @@ public class GameManager : MonoBehaviour
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
-        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
     }
 
     private void OnDestroy()
     {
         playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
-        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
     }
 
     private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
     {
         ChangeState(GameState.PAUSED);
-    }
-
-    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
-    {
-        ChangeState(GameState.ASPECT_SELECTION);
     }
 
     private void Start()

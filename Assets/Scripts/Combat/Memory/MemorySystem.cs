@@ -2,7 +2,6 @@ using AYellowpaper.SerializedCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Playables;
 using UnityEngine;
 
 public class MemorySystem : MonoBehaviour
@@ -12,14 +11,12 @@ public class MemorySystem : MonoBehaviour
     [Serializable]
     public class ShardDictionaryData
     {
-        public int Level;
         public int Count;
         public Color Color;
         public PlayerAbilityStateSO MemoryAbility;
 
         public ShardDictionaryData(int count, Color color, PlayerAbilityStateSO memoryAbility)
         {
-            Level = 0;
             Count = count;
             Color = color;
             MemoryAbility = memoryAbility;
@@ -115,12 +112,12 @@ public class MemorySystem : MonoBehaviour
             return;
         }
 
-        OnMemoryAbilityActivated.Invoke(largestShardType);
-
-        // Activate ability
-        player.PlayerAbilityState.ChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false);
-
-        ShardDictionary.Clear();
+        // Try to activate ability
+        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        {
+            OnMemoryAbilityActivated.Invoke(largestShardType);
+            ShardDictionary.Clear();
+        }
     }
 
     /// <summary>
