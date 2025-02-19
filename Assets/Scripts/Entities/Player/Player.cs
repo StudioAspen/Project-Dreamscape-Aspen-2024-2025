@@ -133,6 +133,10 @@ public class Player : Entity
 
         PlayerDashState.HandleDashCooldown();
         PlayerDashState.HandleDashTrail();
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Z))
+        {
+            Heal(10);
+        }
     }
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)

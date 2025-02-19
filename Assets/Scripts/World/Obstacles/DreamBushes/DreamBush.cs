@@ -12,7 +12,8 @@ public class DreamBush : Obstacle
     [field: SerializeField] public DreamBushFriendlyState DreamBushFriendlyState { get; private set; }
     [field: SerializeField] public DreamBushHostileState DreamBushHostileState { get; private set; }
 
-
+    [field: Header("DreamBush: Config")]
+    [field: SerializeField] public Renderer Renderer { get; private set; }
 
     private protected override void OnAwake()
     {

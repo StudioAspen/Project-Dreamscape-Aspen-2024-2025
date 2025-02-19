@@ -4,18 +4,28 @@ using UnityEngine;
 
 public class DreamBushFriendlyState : DreamBushBaseState
 {
+    [field: Header("Config")]
+    [field: SerializeField] public float Duration { get; private set; } = 1f;
+    private float timer;
+
     public override void OnEnter()
     {
-        throw new System.NotImplementedException();
+        timer = 0;
+        dreamBush.Renderer.material.color = Color.green;
     }
 
     public override void OnExit()
     {
-        throw new System.NotImplementedException();
+        dreamBush.Renderer.material.color = Color.white;
     }
 
     public override void OnUpdate()
     {
-        throw new System.NotImplementedException();
+        timer += Time.deltaTime;
+        if (timer > Duration)
+        {
+            dreamBush.ChangeState(dreamBush.DreamBushNeutralState);
+            return;
+        }
     }
 }
