@@ -5,7 +5,7 @@ public class EnemyChaseState : EnemyBaseState
 {
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         enemy.SetSpeedModifier(1f);
     }

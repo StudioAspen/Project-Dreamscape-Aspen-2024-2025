@@ -24,7 +24,7 @@ public class PlayerSprintState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("FlatMovement");
+        player.PlayDefaultAnimation();
 
         player.SetSpeedModifier(SprintSpeedModifier);
     }

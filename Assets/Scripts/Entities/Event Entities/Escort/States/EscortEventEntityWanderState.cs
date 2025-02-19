@@ -26,7 +26,7 @@ public class EscortEventEntityWanderState : EntityBaseState
 
     public override void OnEnter()
     {
-        escortEventEntity.TransitionToAnimation("FlatMovement");
+        escortEventEntity.PlayDefaultAnimation();
 
         escortEventEntity.SetSpeedModifier(1f);
 

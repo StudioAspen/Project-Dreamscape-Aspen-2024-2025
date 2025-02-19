@@ -4,13 +4,14 @@ using UnityEngine;
 public class EntityStaggeredState : EntityBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; protected set; }
     [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
 
     private protected float timer = 0f;
 
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("Hit");
+        entity.PlayOneShotAnimation(AnimationClip);
 
         timer = 0f;
 
@@ -19,7 +20,7 @@ public class EntityStaggeredState : EntityBaseState
 
     public override void OnExit()
     {
-        
+        entity.PlayDefaultAnimation();
     }
 
     public override void OnUpdate()

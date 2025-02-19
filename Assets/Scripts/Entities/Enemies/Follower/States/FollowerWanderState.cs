@@ -12,7 +12,7 @@ public class FollowerWanderState : FollowerBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         follower.SetSpeedModifier(1f);
 

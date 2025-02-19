@@ -2,7 +2,7 @@
 {
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         enemy.SetSpeedModifier(0f);
     }

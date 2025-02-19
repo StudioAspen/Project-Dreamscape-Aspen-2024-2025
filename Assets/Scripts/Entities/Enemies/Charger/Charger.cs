@@ -74,11 +74,6 @@ public class Charger : Enemy
         // dont inherit base to leave target assignment to certain states
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnOnDrawGizmos()
     {
         base.OnOnDrawGizmos();

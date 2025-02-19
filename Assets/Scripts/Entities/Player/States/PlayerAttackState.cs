@@ -75,21 +75,12 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.SetDamageMultiplier(ComboData.DamageMultiplier * extraDamageMultiplier); // set the damage mult for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
-        playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
+        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed;
+        timer = 0f; // reset the timer
 
-        //player.ReplaceOneShotAnimationClip(ComboData.ComboClip, "AbilityPlaceholder");
-        //player.TransitionToAnimation("Ability");
-        UPlayable.AnimationMixer.AnimationClipOutput oneShotPlayer = player.GetComponent<UPlayable.AnimationMixer.AnimationClipOutput>();
-        oneShotPlayer.ToClip = ComboData.ComboClip;
-        oneShotPlayer.SetSpeed(ComboData.ComboClipAnimationSpeed);
-        oneShotPlayer.Play();
-        //player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
+        player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
         playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
-        playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
-
-        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
-        timer = 0f; // reset the timer
 
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
@@ -105,7 +96,6 @@ public class PlayerAttackState : PlayerBaseState
     {
         playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
 
-        playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
         player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
@@ -125,7 +115,7 @@ public class PlayerAttackState : PlayerBaseState
     {
         player.ApplyGravity();
 
-        if (!playerCombat.IsAnimationPlaying) // if the animation is done playing, go back to the default state
+        if (timer > duration) // if the animation is done playing, go back to the default state
         {
             player.ChangeState(player.DefaultState);
             return;

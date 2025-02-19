@@ -3,6 +3,7 @@
 public class GolemReadyAttackState : GolemBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float StompReadyDuration { get; private set; } = 2f;
     [field: SerializeField] public float GroundSmashReadyDuration { get; private set; } = 1f;
     [field: SerializeField] public float CloseRangeCutoff { get; private set; } = 2f;
@@ -15,7 +16,7 @@ public class GolemReadyAttackState : GolemBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("AttackWarning");
+        enemy.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
 
         if (golem.Target != null)

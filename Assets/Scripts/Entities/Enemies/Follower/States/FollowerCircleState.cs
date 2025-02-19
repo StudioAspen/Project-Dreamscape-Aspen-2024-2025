@@ -20,7 +20,7 @@ public class FollowerCircleState : FollowerBaseState
 
     public override void OnEnter()
     {
-        follower.TransitionToAnimation("FlatMovement");
+        follower.PlayDefaultAnimation();
 
         follower.SetSpeedModifier(0.5f);
 

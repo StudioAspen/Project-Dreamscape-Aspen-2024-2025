@@ -2,7 +2,7 @@
 {
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("FlatMovement");
+        entity.PlayDefaultAnimation();
     }
 
     public override void OnExit()

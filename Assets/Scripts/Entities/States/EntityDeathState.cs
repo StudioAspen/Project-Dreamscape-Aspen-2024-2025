@@ -2,9 +2,11 @@
 
 public class EntityDeathState : EntityBaseState
 {
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("Death");
+        entity.PlayOneShotAnimation(AnimationClip);
 
         entity.SetSpeedModifier(0f);
 

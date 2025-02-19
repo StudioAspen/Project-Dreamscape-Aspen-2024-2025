@@ -4,6 +4,7 @@ using UnityEngine;
 public class EntitySpawnState : EntityBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float SpawnDuration { get; protected set; } = 1.5f;
 
     private protected float timer = 0f;
@@ -20,7 +21,7 @@ public class EntitySpawnState : EntityBaseState
 
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("Spawn");
+        entity.PlayOneShotAnimation(AnimationClip);
 
         timer = 0f;
 

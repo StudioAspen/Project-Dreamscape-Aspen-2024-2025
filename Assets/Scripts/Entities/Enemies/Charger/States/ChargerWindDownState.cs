@@ -14,7 +14,7 @@ public class ChargerWindDownState : ChargerBaseState
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
 
         timer = 0f;
         halfWindDownDuration = WindDownDuration / 2f;

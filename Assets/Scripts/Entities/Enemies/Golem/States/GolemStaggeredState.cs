@@ -12,7 +12,7 @@ public class GolemStaggeredState : EntityStaggeredState
 
     public override void OnEnter()
     {
-        golem.TransitionToAnimation("GetUp");
+        golem.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
         timer = 0f;
         golem.UseRootMotion = true;

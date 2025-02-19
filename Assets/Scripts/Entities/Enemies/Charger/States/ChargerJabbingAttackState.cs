@@ -3,6 +3,8 @@
 public class ChargerJabbingAttackState : ChargerBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip RightJabAnimationClip { get; protected set; }
+    [field: SerializeField] public AnimationClip LeftJabAnimationClip { get; protected set; }
     [field: SerializeField] public int JabCount { get; private set; } = 5;
     [field: SerializeField] public float JabDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
@@ -26,7 +28,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
         if (RemainingJabs % 2 == 1)
         {
-            charger.TransitionToAnimation("RightJab");
+            charger.PlayOneShotAnimation(RightJabAnimationClip);
 
             RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
@@ -36,7 +38,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         }
         else
         {
-            charger.TransitionToAnimation("LeftJab");
+            charger.PlayOneShotAnimation(LeftJabAnimationClip);
 
             LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 

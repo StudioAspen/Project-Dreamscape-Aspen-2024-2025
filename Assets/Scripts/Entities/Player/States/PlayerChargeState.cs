@@ -2,6 +2,8 @@
 
 public class PlayerChargeState : PlayerBaseState
 {
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+
     private PlayerCombat playerCombat;
 
     public ChargeAttackActivatedStatusEffectSO ChargeActivatedStatusEffect { get; private set; }
@@ -39,7 +41,7 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Charge");
+        player.PlayOneShotAnimation(AnimationClip);
 
         player.SetSpeedModifier(0);
 
@@ -62,8 +64,6 @@ public class PlayerChargeState : PlayerBaseState
         Timer += player.LocalDeltaTime;
 
         player.ApplyGravity();
-
-        player.TransitionToAnimation("Charge");
 
         if (player.MoveDirection != Vector3.zero)
         {

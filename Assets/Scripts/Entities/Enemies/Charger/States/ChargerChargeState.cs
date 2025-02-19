@@ -27,7 +27,7 @@ public class ChargerChargeState : ChargerBaseState
 
     public override void OnEnter() 
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
         
         charger.SetSpeedModifier(ChargeSpeedModifier);
 

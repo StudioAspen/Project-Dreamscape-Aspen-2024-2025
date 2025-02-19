@@ -220,6 +220,6 @@ public class Leaper : Enemy
         if (CurrentState == EntityLaunchState) return;
         if (CurrentState == EntityStaggeredState) return;
 
-        TransitionToAnimation("FlatMovement");
+        PlayDefaultAnimation();
     }
 }

@@ -10,7 +10,7 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Falling");
+        player.PlayOneShotAnimation(player.PlayerFallState.AnimationClip);
     }
 
     public override void OnExit()

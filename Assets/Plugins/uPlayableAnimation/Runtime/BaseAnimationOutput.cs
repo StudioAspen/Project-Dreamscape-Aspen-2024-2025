@@ -75,6 +75,16 @@ namespace UPlayable.AnimationMixer
             }
         }
 
+        public void SetTransitionDuration(float transitionDuration)
+        {
+            TransitionSetting.FadeInTime = transitionDuration;
+            ParseSettingToModel();
+            if (m_Id != -1 && IsStatic)
+            {
+                m_manager.UpdateInputModel(m_Id, m_model, LayerIndex);
+            }
+        }
+
         protected virtual void ParseSettingToModel()
         {
             m_model = new AnimationOutputModel
@@ -116,6 +126,11 @@ namespace UPlayable.AnimationMixer
                 m_manager.SetLayerAdditive((uint)LayerIndex, false);
                 m_manager.SetLayerAvatarMask((uint)LayerIndex, AvatarMask);
             }
+        }
+
+        public bool IsReady()
+        {
+            return m_manager != null;
         }
     }
 }

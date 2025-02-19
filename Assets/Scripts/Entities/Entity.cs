@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
+using UPlayable.AnimationMixer;
 
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     public CharacterController CharacterController { get; protected set; }
-    private protected Animator animator;
+    private protected Animator blendTreeAnimator;
+    private protected AnimationClipOutput playablesOneShotClipManager;
+    private protected AnimatorOutput blendTreeAnimatorManager;
 
     [field: Header("Entity: References")]
     [field: SerializeField] public GlobalPhysicsConfigSO PhysicsConfig { get; private set; }
@@ -372,7 +375,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        blendTreeAnimator = GetComponent<Animator>();
+        playablesOneShotClipManager = GetComponent<AnimationClipOutput>();
+        blendTreeAnimatorManager = GetComponent<AnimatorOutput>();
 
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
@@ -506,26 +511,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
         CurrentState?.OnOnControllerColliderHit(hit);
-    }
-
-    private void OnAnimatorMove()
-    {
-        OnOnAnimatorMove();
-    }
-
-    /// <summary>
-    /// Handles the OnAnimatorMove event to apply root motion to the character controller.
-    /// Override this function if you want to add custom root motion logic.
-    /// </summary>
-    private protected virtual void OnOnAnimatorMove()
-    {
-        if (!UseRootMotion) return;
-
-        float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
-        desiredAnimationMovement.y = 0f;
-
-        CharacterController.Move(desiredAnimationMovement);
     }
 
     private void OnDrawGizmos()
@@ -774,8 +759,51 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
-        animator.speed = LocalTimeScale.GetFloatValue();
+        blendTreeAnimator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        blendTreeAnimator.speed = LocalTimeScale.GetFloatValue();
+    }
+
+    /// <summary>
+    /// Plays a one shot animation using Playables API. If you want to return to the default blend tree, you must call PlayDefaultAnimation().
+    /// </summary>
+    /// <param name="animationClip">The clip to play.</param>
+    /// <param name="clipDuration">The duration you want to force the clip into. The default is the regular clip length.</param>
+    /// <param name="transitionDuration">The fade duration.</param>
+    public void PlayOneShotAnimation(AnimationClip animationClip, float clipDuration = 0f, float transitionDuration = 0.1f)
+    {
+        if(animationClip == null)
+        {
+            Debug.LogWarning("Cant play null one shot animation");
+            return;
+        }
+
+        if(playablesOneShotClipManager == null)
+        {
+            return;
+        }
+
+        if (!playablesOneShotClipManager.IsReady()) return;
+
+        playablesOneShotClipManager.ToClip = animationClip;
+
+        float speed = (clipDuration <= 0f) ? 1f : animationClip.length / clipDuration;
+        playablesOneShotClipManager.SetSpeed(speed);
+
+        playablesOneShotClipManager.SetTransitionDuration(transitionDuration);
+
+        playablesOneShotClipManager.Play();
+    }
+
+    /// <summary>
+    /// Plays the default blend tree animation
+    /// </summary>
+    public void PlayDefaultAnimation()
+    {
+        if (blendTreeAnimatorManager == null) return;
+        if (blendTreeAnimatorManager.AnimationControll == null) return;
+        if (!blendTreeAnimatorManager.IsReady()) return;
+
+        blendTreeAnimatorManager.Play();
     }
 
     /// <summary>
@@ -985,16 +1013,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetSpeedModifier(float speed)
     {
         SpeedModifier = speed;
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using the specified transition duration and layer.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    /// <param name="transitionDuration">The duration of the transition.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
-    {
-        //animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>

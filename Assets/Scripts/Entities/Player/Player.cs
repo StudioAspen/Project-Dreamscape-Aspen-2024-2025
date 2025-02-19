@@ -295,7 +295,7 @@ public class Player : Entity
     /// <param name="replacementClipName">The name of the clip to replace.</param>
     public void ReplaceOneShotAnimationClip(AnimationClip oneShotClip, string replacementClipName)
     {
-        if (animator == null)
+        if (blendTreeAnimator == null)
         {
             Debug.LogError("Animator is not assigned!");
             return;
@@ -308,7 +308,7 @@ public class Player : Entity
         }
 
         // Get the runtime animator controller
-        var runtimeAnimatorController = animator.runtimeAnimatorController;
+        var runtimeAnimatorController = blendTreeAnimator.runtimeAnimatorController;
         if (runtimeAnimatorController == null)
         {
             Debug.LogError("Animator has no RuntimeAnimatorController assigned!");
@@ -339,6 +339,6 @@ public class Player : Entity
         overrideController[replacementClip] = oneShotClip;
 
         // Assign the override controller to the animator
-        animator.runtimeAnimatorController = overrideController;
+        blendTreeAnimator.runtimeAnimatorController = overrideController;
     }
 }

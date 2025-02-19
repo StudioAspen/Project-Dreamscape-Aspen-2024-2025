@@ -3,6 +3,7 @@
 public class FollowerAttackState : FollowerBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 1f;
     public Weapon Weapon { get; protected set; }
@@ -23,7 +24,7 @@ public class FollowerAttackState : FollowerBaseState
 
     public override void OnEnter()
     {
-        follower.TransitionToAnimation("Attack");
+        follower.PlayOneShotAnimation(AnimationClip);
 
         follower.SetSpeedModifier(0f);
 

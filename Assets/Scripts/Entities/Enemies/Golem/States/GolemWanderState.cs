@@ -13,7 +13,7 @@ public class GolemWanderState : GolemBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
         golem.SetSpeedModifier(WanderSpeedModifer);
         wanderTimeElapsed = Mathf.Infinity;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);

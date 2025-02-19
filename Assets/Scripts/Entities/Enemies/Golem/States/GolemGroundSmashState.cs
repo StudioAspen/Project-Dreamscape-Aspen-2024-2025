@@ -4,6 +4,7 @@ using UnityEngine;
 public class GolemGroundSmashState : GolemBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AOERadius { get; private set; } = 1f;
     [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
@@ -11,7 +12,7 @@ public class GolemGroundSmashState : GolemBaseState
 
     public override void OnEnter()
     {
-        golem.TransitionToAnimation("GroundSmash");
+        golem.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
         
         golem.IsAttackAnimationPlaying = true;

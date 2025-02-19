@@ -42,28 +42,21 @@ public class EntityBaseState : MonoBehaviour
             return existingState;
         }
 
-        // Check if a base state exists for T and remove it if found.
+        // Check if a base state exists for T and warn if found.
         var baseStateType = typeof(T).BaseType;
         if (baseStateType != null && !baseStateType.ToString().EndsWith("BaseState"))
         {
             var baseState = statesTransform.GetComponent(baseStateType);
             if (baseState != null)
             {
-                // Remove the base state.
-                //Debug.Log($"{entity.name}: Base state, {baseStateType.ToString()}, of {typeof(T).ToString()} exists, removing {baseStateType.ToString()}.");
-
-                GameObject.Destroy(baseState);
+                Debug.LogError($"{entity.GetType()}: Redundant state {baseState.GetType()}");
+                return null;
             }
         }
 
-        // Add the new state of type T to the "States" GameObject.
-        T newState = statesTransform.gameObject.AddComponent<T>();
-        newState.Init(entity);
+        Debug.LogError($"{entity.GetType()}: Missing state {typeof(T)}");
 
-        //Debug.Log($"{entity.name}: Adding {newState.GetType().ToString()}.");
-
-        // Return the newly created state.
-        return newState;
+        return null;
     }
 
     /// <summary>

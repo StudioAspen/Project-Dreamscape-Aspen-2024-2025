@@ -5,13 +5,14 @@ using UnityEngine;
 public class GolemDazedState : GolemBaseState
 {
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     private float timer;
 
     public override void OnEnter()
     {
-        golem.TransitionToAnimation("Daze");
+        golem.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
         timer = 0f;
     }

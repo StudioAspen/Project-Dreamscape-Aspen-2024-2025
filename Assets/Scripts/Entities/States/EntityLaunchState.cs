@@ -2,6 +2,9 @@
 
 public class EntityLaunchState : EntityBaseState
 {
+    [field: SerializeField] public AnimationClip LaunchAnimationClip { get; private set; }
+    [field: SerializeField] public AnimationClip GroundImpactAnimationClip { get; private set; }
+
     private protected float timer;
     private protected float stunDuration;
 
@@ -19,7 +22,7 @@ public class EntityLaunchState : EntityBaseState
 
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("FlatFall");
+        entity.PlayOneShotAnimation(LaunchAnimationClip);
 
         timer = 0f;
         touchedGround = false;
@@ -56,7 +59,7 @@ public class EntityLaunchState : EntityBaseState
 
             entity.SetVelocity(Vector3.zero);
 
-            entity.TransitionToAnimation("FlatFallImpact");
+            entity.PlayOneShotAnimation(GroundImpactAnimationClip);
         }
     }
 

@@ -16,7 +16,7 @@ public class ChargerWanderState : ChargerBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         charger.SetSpeedModifier(1f);
 

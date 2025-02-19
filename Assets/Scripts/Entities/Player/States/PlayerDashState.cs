@@ -7,6 +7,7 @@ public class PlayerDashState : PlayerBaseState
     [SerializeField] private ParticleSystem dashTrailParticle;
 
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DashDuration { get; private set; } = 0.25f;
     [field: SerializeField] public float InitialDashVelocity { get; private set; } = 75f;
     [field: SerializeField] public float SprintDurationAfterDash { get; private set; } = 2f;
@@ -28,7 +29,7 @@ public class PlayerDashState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Dash");
+        player.PlayOneShotAnimation(AnimationClip);
 
         dashCooldownTimer = 0f; // Reset the dash cooldown timer when you start dashing
         
