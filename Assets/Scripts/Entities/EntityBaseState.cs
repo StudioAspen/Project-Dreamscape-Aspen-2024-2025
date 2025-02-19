@@ -38,4 +38,9 @@ public abstract class EntityBaseState
     /// </summary>
     /// <param name="hit">The collision information.</param>
     public virtual void OnOnControllerColliderHit(ControllerColliderHit hit) { }
+
+    /// <summary>
+    /// Called by the entity to draw the gizmos during the state
+    /// </summary>
+    public virtual void OnDrawGizmos() { }
 }

@@ -30,22 +30,22 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 
-/*    private void OnDrawGizmos()
+    public override void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, AttackNearbyRadius);
+        Gizmos.DrawWireSphere(entity.transform.position, AttackNearbyRadius);
 
         if (player == null) return;
         if (!player.IsMoving) return;
 
-        Gizmos.DrawLine(transform.position, transform.position + player.TargetForwardDirection * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + player.TargetForwardDirection * AttackNearbyRadius);
 
         Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
         Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
 
-        Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
-        Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
-    }*/
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + leftPoint * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + rightPoint * AttackNearbyRadius);
+    }
 
     /// <summary>
     /// Sets the combo data for the player.

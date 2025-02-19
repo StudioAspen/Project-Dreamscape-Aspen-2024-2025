@@ -534,6 +534,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
     private void OnDrawGizmos()
     {
+        CurrentState?.OnDrawGizmos();
+
         OnOnDrawGizmos();
     }
 
