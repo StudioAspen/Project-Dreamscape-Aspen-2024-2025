@@ -29,7 +29,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
-    public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
+    [field: SerializeField]public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
     public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion

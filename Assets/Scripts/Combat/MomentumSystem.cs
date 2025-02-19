@@ -95,9 +95,10 @@ public class MomentumSystem : MonoBehaviour
             if(currentDamageBonus < maxDamageBonus)
             {
                 //if damage bonus isnt maxed out already, add percent bonus
-                player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
+                player.DamageModifier.RemoveMultiplier(currentDamageBonus);
                 currentDamageBonus += percentDamageBonus;
-                player.SetDamageModifier(player.DamageModifier * currentDamageBonus);
+                player.DamageModifier.AddMultiplier(currentDamageBonus);
+
             }
         }
         else
@@ -106,9 +107,9 @@ public class MomentumSystem : MonoBehaviour
             if(currentMoveSpeedBonus < maxMoveSpeedBonus)
             {
                 //if speed bonus hasnt maxed out add percent bonus
-                player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
+                player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
                 currentMoveSpeedBonus += percentMoveSpeedBonus;
-                player.SetSpeedModifier(player.SpeedModifier * currentMoveSpeedBonus);
+                player.StatusSpeedModifier.AddMultiplier(currentMoveSpeedBonus);
             }
         }
 
@@ -120,9 +121,9 @@ public class MomentumSystem : MonoBehaviour
         timeBetween = baseTimeBetween;
         momentum = 0;
         //resets modifiers yay
-        player.SetSpeedModifier(player.SpeedModifier / currentMoveSpeedBonus);
+        player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
         currentMoveSpeedBonus = 1;
-        player.SetDamageModifier(player.DamageModifier / currentDamageBonus);
+        player.DamageModifier.RemoveMultiplier(currentDamageBonus);
         currentDamageBonus = 1;
     }
 
