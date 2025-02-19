@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerFallState : PlayerBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }

@@ -10,7 +10,7 @@ public class FollowerAttackState : FollowerBaseState
 
     private Vector3 attackDirection;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

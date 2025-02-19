@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
+[System.Serializable]
 public class PlayerDashState : PlayerBaseState
 {
     [Header("References")]
@@ -20,7 +21,7 @@ public class PlayerDashState : PlayerBaseState
     private float currDashSpeed;
     private float maxSpeed;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

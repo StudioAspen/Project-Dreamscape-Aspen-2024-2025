@@ -7,11 +7,11 @@ using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerAttackState : PlayerBaseState
 {
     private PlayerCombat playerCombat;
 
-    [field: Header("Config")]
     [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
     [field: SerializeField] public float AttackNearbyInFrontHalfAngle { get; private set; } = 25f;
 
@@ -24,13 +24,13 @@ public class PlayerAttackState : PlayerBaseState
 
     private Coroutine weaponScaleCoroutine;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 
-    private void OnDrawGizmos()
+/*    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, AttackNearbyRadius);
@@ -45,7 +45,7 @@ public class PlayerAttackState : PlayerBaseState
 
         Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
         Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
-    }
+    }*/
 
     /// <summary>
     /// Sets the combo data for the player.
@@ -88,7 +88,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
-        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
     }
 
@@ -107,7 +107,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
-        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 

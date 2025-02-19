@@ -14,11 +14,6 @@ public class GolemStompState : GolemBaseState
     [field: SerializeField] public float ShockwaveGrowStepDuration { get; private set; } = .05f;
     [field: SerializeField] public float ShockwaveRadiusGrowStepIncrement { get; private set; } = .25f;
 
-    private protected override void Init(Entity entity)
-    {
-        base.Init(entity);
-    }
-
     public override void OnEnter()
     {
         golem.PlayOneShotAnimation(AnimationClip);
@@ -49,7 +44,7 @@ public class GolemStompState : GolemBaseState
     public void GroundImpactShockwave() 
     {
         golem.ShakeCam();
-        StartCoroutine(ShockwaveCoroutine());
+        golem.StartCoroutine(ShockwaveCoroutine());
     }
 
     private IEnumerator ShockwaveCoroutine() 

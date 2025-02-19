@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerWalkState : PlayerBaseState
 {
     public override void OnEnter()

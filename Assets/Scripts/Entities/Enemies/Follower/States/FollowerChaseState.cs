@@ -6,7 +6,7 @@ public class FollowerChaseState : EnemyChaseState
 {
     private Follower follower;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

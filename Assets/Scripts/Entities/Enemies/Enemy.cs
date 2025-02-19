@@ -29,15 +29,16 @@ public class Enemy : Entity
     [HideInInspector] public bool IsAttackAnimationPlaying;
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; protected set; }
-    public EnemyChaseState EnemyChaseState { get; protected set; }
+    [field: Header("Enemy: States")]
+    [field: SerializeField] public EnemyIdleState EnemyIdleState { get; protected set; }
+    [field: SerializeField] public EnemyChaseState EnemyChaseState { get; protected set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyIdleState = EntityBaseState.InitializeOrCreate<EnemyIdleState>(this);
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<EnemyChaseState>(this);
+        EnemyIdleState.Init(this);
+        EnemyChaseState.Init(this);
     }
     #endregion
 

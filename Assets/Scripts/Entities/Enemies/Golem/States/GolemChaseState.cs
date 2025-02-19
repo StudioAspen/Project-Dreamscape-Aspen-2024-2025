@@ -8,7 +8,7 @@ public class GolemChaseState : EnemyChaseState
     
     private Golem golem;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

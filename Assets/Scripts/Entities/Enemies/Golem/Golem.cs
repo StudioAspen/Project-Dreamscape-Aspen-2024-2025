@@ -11,29 +11,30 @@ public class Golem : Enemy
     private Coroutine camShakeCoroutine;
     private int damageTakenWhileStaggered = 0;
     private int damageTakenSinceLastStagger = 0;
-    
+
     #region States
-    public GolemGroundSmashState GolemGroundSmashState { get; private set; }
-    public GolemWanderState GolemWanderState { get; private set; }
-    public GolemChaseState GolemChaseState { get; private set; }
-    public GolemReadyAttackState GolemReadyAttackState {get; private set;}
-    public GolemAttackRecoverState GolemAttackRecoverState {get; private set;}
-    public GolemStompState GolemStompState {get; private set;}
-    public GolemStaggeredState GolemStaggeredState {get; private set;}
-    public GolemDazedState GolemDazedState {get; private set;}
+    [field: Header("Golem: States")]
+    [field: SerializeField] public GolemGroundSmashState GolemGroundSmashState { get; private set; }
+    [field: SerializeField] public GolemWanderState GolemWanderState { get; private set; }
+    [field: SerializeField] public GolemChaseState GolemChaseState { get; private set; }
+    [field: SerializeField] public GolemReadyAttackState GolemReadyAttackState {get; private set;}
+    [field: SerializeField] public GolemAttackRecoverState GolemAttackRecoverState {get; private set;}
+    [field: SerializeField] public GolemStompState GolemStompState {get; private set;}
+    [field: SerializeField] public GolemStaggeredState GolemStaggeredState {get; private set;}
+    [field: SerializeField] public GolemDazedState GolemDazedState {get; private set;}
     
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        GolemGroundSmashState = EntityBaseState.InitializeOrCreate<GolemGroundSmashState>(this);
-        GolemWanderState = EntityBaseState.InitializeOrCreate<GolemWanderState>(this);
-        GolemAttackRecoverState = EntityBaseState.InitializeOrCreate<GolemAttackRecoverState>(this);
-        GolemChaseState = EntityBaseState.InitializeOrCreate<GolemChaseState>(this);
-        GolemReadyAttackState = EntityBaseState.InitializeOrCreate<GolemReadyAttackState>(this);
-        GolemStompState = EntityBaseState.InitializeOrCreate<GolemStompState>(this);
-        GolemStaggeredState = EntityBaseState.InitializeOrCreate<GolemStaggeredState>(this);
-        GolemDazedState = EntityBaseState.InitializeOrCreate<GolemDazedState>(this);
+        GolemGroundSmashState.Init(this);
+        GolemWanderState.Init(this);
+        GolemAttackRecoverState.Init(this);
+        GolemChaseState.Init(this);
+        GolemReadyAttackState.Init(this);
+        GolemStompState.Init(this);
+        GolemStaggeredState.Init(this);
+        GolemDazedState.Init(this);
     }
     #endregion
 

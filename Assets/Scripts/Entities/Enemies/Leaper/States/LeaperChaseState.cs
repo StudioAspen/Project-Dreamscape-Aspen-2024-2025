@@ -18,7 +18,7 @@ public class LeaperChaseState : EnemyChaseState
     private Vector3 currentHopDestination;
     private Vector3 directionToHopDestination;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

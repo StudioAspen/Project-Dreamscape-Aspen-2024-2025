@@ -16,7 +16,7 @@ public class EscortEventEntityWanderState : EntityBaseState
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

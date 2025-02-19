@@ -12,26 +12,29 @@ public class Charger : Enemy
     [SerializeField] private float superArmorDamageReduction = 0.5f; // takes (100 - superArmorDamageReduction)% of damage when hit
 
     #region States
-    public ChargerWanderState ChargerWanderState { get; private set; }
-    public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
-    public ChargerChargeState ChargerChargeState { get; private set; }
-    public ChargerWindDownState ChargerWindDownState { get; private set; }
-    public ChargerDazedState ChargerDazedState { get; private set; }
-    public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
-    public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: Header("Charger: States")]
+    [field: SerializeField] public ChargerWanderState ChargerWanderState { get; private set; }
+    [field: SerializeField] public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
+    [field: SerializeField] public ChargerChargeState ChargerChargeState { get; private set; }
+    [field: SerializeField] public ChargerWindDownState ChargerWindDownState { get; private set; }
+    [field: SerializeField] public ChargerDazedState ChargerDazedState { get; private set; }
+    [field: SerializeField] public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
+    [field: SerializeField] public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: SerializeField] public ChargerStaggeredState ChargerStaggeredState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        ChargerWanderState = EntityBaseState.InitializeOrCreate<ChargerWanderState>(this);
-        ChargerTargetDetectedState = EntityBaseState.InitializeOrCreate<ChargerTargetDetectedState>(this);
-        ChargerChargeState = EntityBaseState.InitializeOrCreate<ChargerChargeState>(this);
-        ChargerDazedState = EntityBaseState.InitializeOrCreate<ChargerDazedState>(this);
-        ChargerWindDownState = EntityBaseState.InitializeOrCreate<ChargerWindDownState>(this);
-        ChargerJabbingAttackState = EntityBaseState.InitializeOrCreate<ChargerJabbingAttackState>(this);
-        ChargerJabRecoverState = EntityBaseState.InitializeOrCreate<ChargerJabRecoverState>(this);
-        EntityStaggeredState = EntityBaseState.InitializeOrCreate<ChargerStaggeredState>(this);
+        ChargerWanderState.Init(this);
+        ChargerTargetDetectedState.Init(this);
+        ChargerChargeState.Init(this);
+        ChargerDazedState.Init(this);
+        ChargerWindDownState.Init(this);
+        ChargerJabbingAttackState.Init(this);
+        ChargerJabRecoverState.Init(this);
+        ChargerStaggeredState.Init(this);
+        EntityStaggeredState = ChargerStaggeredState;
     }
     #endregion
 

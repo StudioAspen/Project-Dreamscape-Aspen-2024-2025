@@ -5,22 +5,25 @@ using UnityEngine;
 public class Follower : Enemy
 {
     #region States
-    public FollowerAttackState FollowerAttackState { get; private set; }
-    public FollowerWanderState FollowerWanderState { get; private set; }
-    public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
-    public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
-    public FollowerCircleState FollowerCircleState { get; private set; }
+    [field: Header("Follower: States")]
+    [field: SerializeField] public FollowerChaseState FollowerChaseState { get; private set; }
+    [field: SerializeField] public FollowerAttackState FollowerAttackState { get; private set; }
+    [field: SerializeField] public FollowerWanderState FollowerWanderState { get; private set; }
+    [field: SerializeField] public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
+    [field: SerializeField] public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
+    [field: SerializeField] public FollowerCircleState FollowerCircleState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<FollowerChaseState>(this);
-        FollowerWanderState = EntityBaseState.InitializeOrCreate<FollowerWanderState>(this);
-        FollowerCircleState = EntityBaseState.InitializeOrCreate<FollowerCircleState>(this);
-        FollowerAttackState = EntityBaseState.InitializeOrCreate<FollowerAttackState>(this);
-        FollowerReadyAttackState = EntityBaseState.InitializeOrCreate<FollowerReadyAttackState>(this);
-        FollowerAttackRecoverState = EntityBaseState.InitializeOrCreate<FollowerAttackRecoverState>(this);
+        FollowerChaseState.Init(this);
+        EnemyChaseState = FollowerChaseState;
+        FollowerWanderState.Init(this);
+        FollowerCircleState.Init(this);
+        FollowerAttackState.Init(this);
+        FollowerReadyAttackState.Init(this);
+        FollowerAttackRecoverState.Init(this);
     }
     #endregion
 

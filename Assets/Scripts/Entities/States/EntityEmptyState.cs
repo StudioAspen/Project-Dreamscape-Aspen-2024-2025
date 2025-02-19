@@ -1,4 +1,5 @@
-﻿public class EntityEmptyState : EntityBaseState
+﻿[System.Serializable]
+public class EntityEmptyState : EntityBaseState
 {
     public override void OnEnter()
     {

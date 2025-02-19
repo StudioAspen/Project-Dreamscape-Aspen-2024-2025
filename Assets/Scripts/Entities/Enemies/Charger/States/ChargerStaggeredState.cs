@@ -4,7 +4,7 @@ public class ChargerStaggeredState : EntityStaggeredState
 {
     private Charger charger;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

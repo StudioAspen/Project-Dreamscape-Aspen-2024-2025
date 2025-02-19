@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class EntityDeathState : EntityBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }

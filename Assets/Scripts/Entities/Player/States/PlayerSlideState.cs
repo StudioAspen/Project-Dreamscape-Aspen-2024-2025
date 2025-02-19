@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerSlideState : PlayerBaseState
 {
     private RaycastHit hitBelow;

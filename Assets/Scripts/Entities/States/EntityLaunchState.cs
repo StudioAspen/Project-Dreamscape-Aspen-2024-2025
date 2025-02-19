@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class EntityLaunchState : EntityBaseState
 {
     [field: SerializeField] public AnimationClip LaunchAnimationClip { get; private set; }

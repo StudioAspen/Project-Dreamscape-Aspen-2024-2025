@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerIdleState : PlayerBaseState
 {
     public override void OnEnter()

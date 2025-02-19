@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerChargeState : PlayerBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
@@ -13,7 +14,7 @@ public class PlayerChargeState : PlayerBaseState
     public float Timer { get; private set; }
     private float duration;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

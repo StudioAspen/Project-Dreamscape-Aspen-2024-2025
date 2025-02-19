@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerAbilityState : PlayerBaseState
 {
     public PlayerAbilityStateSO AbilityState { get; private set; }

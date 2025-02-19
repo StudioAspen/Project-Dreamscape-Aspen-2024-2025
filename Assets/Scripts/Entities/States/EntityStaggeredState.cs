@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
 public class EntityStaggeredState : EntityBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; protected set; }
     [field: SerializeField] public float StaggerDuration { get; protected set; } = 0.5f;
 
