@@ -85,6 +85,11 @@ public class Slime : Enemy
     private protected override void OnUpdate()
     {
         base.OnUpdate();
+
+        if (CurrentState == EntityLaunchState) 
+        {
+            this.CurrentHealth = 0;
+        }
     }
 
     private protected override void OnFixedUpdate()

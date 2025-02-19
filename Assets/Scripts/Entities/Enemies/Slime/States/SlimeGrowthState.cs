@@ -29,9 +29,9 @@ public class SlimeGrowthState : SlimeBaseState
     public override void OnUpdate()
     {
         currentTime += Time.deltaTime;
-
-        if (currentTime > growthTimer && slime.isSplit == true)
+       if (currentTime > growthTimer && slime.isSplit == true)
         {
+
             StartCoroutine(scaleToOriginal());
         }
         else if (slime.isSplit == false)

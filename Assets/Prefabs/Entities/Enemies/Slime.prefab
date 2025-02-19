@@ -162,7 +162,7 @@ MonoBehaviour:
   <DetectionDistance>k__BackingField: 10
   <DetectionConeHalfAngle>k__BackingField: 20
   <SplitCount>k__BackingField: 2
-  grew: 0
+  isSplit: 0
   hasAttacked: 0
   startScale: 0
 --- !u!114 &6764650017304162668
@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 74157946886590567}
   - component: {fileID: 770797970627563926}
   - component: {fileID: 5750105145494702149}
+  - component: {fileID: 6858467558299828234}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -368,6 +369,20 @@ MonoBehaviour:
   <scaleIncrement>k__BackingField: 0.01
   <attackCooldown>k__BackingField: 2
   <shrinkCoolDown>k__BackingField: 2
+--- !u!114 &6858467558299828234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488334897341966185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7719cedc3d1194c90a06e6600acdb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <growthTimer>k__BackingField: 3
+  <scaleIncrement>k__BackingField: 0.01
 --- !u!1001 &3231396680522412267
 PrefabInstance:
   m_ObjectHideFlags: 0

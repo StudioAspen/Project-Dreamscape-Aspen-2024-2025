@@ -49,6 +49,7 @@ public class SlimeChaseState : EnemyChaseState
 
     public override void OnUpdate()
     {
+        
         slime.ApplyGravity();
 
         if(slime.IsGrounded)
