@@ -513,6 +513,25 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState?.OnOnControllerColliderHit(hit);
     }
 
+    private void OnAnimatorMove()
+    {
+        OnOnAnimatorMove();
+    }
+
+    /// <summary>
+    /// Handles the OnAnimatorMove event to apply root motion to the character controller.
+    /// Override this function if you want to add custom root motion logic.
+    /// </summary>
+    private protected virtual void OnOnAnimatorMove()
+    {
+        if (!UseRootMotion) return;
+
+        float modelScale = model.localScale.x;
+        Vector3 desiredAnimationMovement = modelScale * blendTreeAnimator.deltaPosition;
+        desiredAnimationMovement.y = 0f;
+
+        CharacterController.Move(desiredAnimationMovement);
+    }
     private void OnDrawGizmos()
     {
         OnOnDrawGizmos();
