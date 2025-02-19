@@ -1,7 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class EntityBaseState
+public abstract class EntityBaseState : BaseState
 {
     /// <summary>
     /// The entity that this state belongs to.
@@ -17,21 +17,6 @@ public abstract class EntityBaseState
     {
         this.entity = entity;
     }
-
-    /// <summary>
-    /// Called once when entering the state.
-    /// </summary>
-    public abstract void OnEnter();
-
-    /// <summary>
-    /// Called once when exiting the state.
-    /// </summary>
-    public abstract void OnExit();
-
-    /// <summary>
-    /// Called every frame to update the state.
-    /// </summary>
-    public abstract void OnUpdate();
 
     /// <summary>
     /// Called when the character controller hits a collider.
