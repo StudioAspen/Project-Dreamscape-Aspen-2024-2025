@@ -105,4 +105,13 @@ public class StatusEffectSO : ScriptableObject
     {
 
     }
+
+    /// <summary>
+    /// Removes the status effect from the owner entity status effector.
+    /// Calls the cancel method.
+    /// </summary>
+    public void RemoveSelf()
+    {
+        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
+    }
 }

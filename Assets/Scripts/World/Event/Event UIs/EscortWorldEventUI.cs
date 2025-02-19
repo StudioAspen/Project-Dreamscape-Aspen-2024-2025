@@ -26,6 +26,6 @@ public class EscortWorldEventUI : WorldEventUI
             return;
         }
 
-        displayText.text = $"({Mathf.Max(escortWorldEvent.EscortEventEntity.CurrentHealth, 0)}/{escortWorldEvent.EscortEventEntity.MaxHealth}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
+        displayText.text = $"({Mathf.Max(escortWorldEvent.EscortEventEntity.CurrentHealth, 0)}/{escortWorldEvent.EscortEventEntity.MaxHealth.GetIntValue()}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
     }
 }

@@ -34,7 +34,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         if (playerCombat == null)
         {
             Debug.LogError($"{name}: PlayerCombat not found on player: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no PlayerCombat, remove this passive
+            RemoveSelf(); // If theres no PlayerCombat, remove this passive
             return;
         }
 
@@ -44,6 +44,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         ChargeAttackActivatedStatusEffectSO chargeAttackActivatedStatusEffectInstance =
             entityStatusEffectorOwner.ApplyStatusEffect(ChargedAttackActivatedStatusEffect, entity.gameObject) as ChargeAttackActivatedStatusEffectSO;
         chargeAttackActivatedStatusEffectInstance.SetMaxChargeDuration(MaxChargeDuration); // Set the new max charge duration
+        player.PlayerChargeState.SetChargeStatusEffect(chargeAttackActivatedStatusEffectInstance);
 
         playerCombat.OnChargeRelease += PlayerCombat_OnChargeRelease;
         playerCombat.Weapon.OnWeaponEndSwing += Weapon_OnWeaponEndSwing;
