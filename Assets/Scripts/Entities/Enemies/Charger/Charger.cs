@@ -46,8 +46,6 @@ public class Charger : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -84,7 +82,7 @@ public class Charger : Enemy
 #if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomDebug.DrawWireCircle(transform.position, GetComponentInChildren<ChargerTargetDetectedState>().NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCircle(transform.position, ChargerTargetDetectedState.NearbyAttackRadiusThreshold);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
 #endif
     }
@@ -168,12 +166,6 @@ public class Charger : Enemy
             || CurrentState == ChargerDazedState
             || CurrentState == ChargerWindDownState
             || CurrentState == ChargerJabRecoverState;
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        EndHit();
     }
 
     public void StartHit()

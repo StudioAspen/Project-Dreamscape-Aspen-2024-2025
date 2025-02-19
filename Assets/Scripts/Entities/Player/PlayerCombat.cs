@@ -13,13 +13,11 @@ public class PlayerCombat : MonoBehaviour
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
-    [HideInInspector] public bool IsAnimationPlaying;
     [HideInInspector] public bool CanCombo;
-    [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
     [SerializeField] private float nonAttackComboResetDelay = 1f;
-    [SerializeField] private float attackComboResetDelay = 0.1f;
+    [field: SerializeField] public float AttackComboResetDelay { get; private set; } = 0.1f;
     private Coroutine delayedComboResetCoroutine;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
@@ -222,7 +220,7 @@ public class PlayerCombat : MonoBehaviour
     /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
     /// </summary>
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
-    private void StartDelayedComboListsReset(float delay)
+    public void StartDelayedComboListsReset(float delay)
     {
         if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
         delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
@@ -304,20 +302,6 @@ public class PlayerCombat : MonoBehaviour
         CanCombo = false;
 
         ResetCombos();
-    }
-
-    /// <summary>
-    /// Finish the animation and clear the combo lists if animation cancellation is allowed.
-    /// Animation cancelling is disabled for the first half of the attack animation to prevent premature cancelling bug.
-    /// Called at the end of an attack animation through an event.
-    /// </summary>
-    public void FinishAnimation()
-    {
-        if (!CanCancelAnimation) return;
-
-        IsAnimationPlaying = false;
-
-        StartDelayedComboListsReset(attackComboResetDelay);
     }
 
     /// <summary>

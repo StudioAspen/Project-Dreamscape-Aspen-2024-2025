@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class FollowerWanderState : FollowerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
@@ -40,7 +40,7 @@ public class FollowerWanderState : FollowerBaseState
 
         if (follower.Target != null)
         {
-            follower.ChangeState(follower.EnemyChaseState);
+            follower.ChangeState(follower.FollowerChaseState);
             return;
         }
     }

@@ -18,7 +18,6 @@ public class Follower : Enemy
         base.InitializeStates();
 
         FollowerChaseState.Init(this);
-        EnemyChaseState = FollowerChaseState;
         FollowerWanderState.Init(this);
         FollowerCircleState.Init(this);
         FollowerAttackState.Init(this);
@@ -35,8 +34,6 @@ public class Follower : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -49,8 +46,6 @@ public class Follower : Enemy
         base.OnStart();
 
         SetDefaultState(FollowerWanderState);
-
-        FinishAnimation();
     }
 
     private protected override void OnUpdate()
@@ -61,12 +56,6 @@ public class Follower : Enemy
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        EndHit();
     }
 
     public void StartHit()

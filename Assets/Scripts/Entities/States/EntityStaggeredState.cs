@@ -11,7 +11,7 @@ public class EntityStaggeredState : EntityBaseState
 
     public override void OnEnter()
     {
-        entity.PlayOneShotAnimation(AnimationClip);
+        entity.PlayOneShotAnimation(AnimationClip, StaggerDuration);
 
         timer = 0f;
 

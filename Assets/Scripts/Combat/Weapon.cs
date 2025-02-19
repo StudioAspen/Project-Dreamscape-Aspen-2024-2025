@@ -125,6 +125,11 @@ public class Weapon : MonoBehaviour
         DisableTriggers();
     }
 
+    private void OnEnable()
+    {
+        DisableTriggers();
+    }
+
     private void Update()
     {
         HandleHitDetectionBetweenFrames();

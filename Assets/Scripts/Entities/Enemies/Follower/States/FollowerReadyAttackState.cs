@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class FollowerReadyAttackState : FollowerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
 

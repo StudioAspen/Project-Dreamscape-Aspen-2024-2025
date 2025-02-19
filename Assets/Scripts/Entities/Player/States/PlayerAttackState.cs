@@ -80,8 +80,6 @@ public class PlayerAttackState : PlayerBaseState
 
         player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
-        playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
-
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
         if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
@@ -101,6 +99,8 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
 
+        playerCombat.StartDelayedComboListsReset(playerCombat.AttackComboResetDelay);
+
         player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
         extraDamageMultiplier = 1f; // reset the extra damage multiplier
@@ -115,13 +115,15 @@ public class PlayerAttackState : PlayerBaseState
     {
         player.ApplyGravity();
 
+        timer += player.LocalDeltaTime;
+
         if (timer > duration) // if the animation is done playing, go back to the default state
         {
             player.ChangeState(player.DefaultState);
             return;
         }
 
-        HandleAnimationCancellingBuffer();
+        //HandleAnimationCancellingBuffer();
 
         TryLookAtClosestTarget();
 
@@ -193,16 +195,6 @@ public class PlayerAttackState : PlayerBaseState
         if (entitiesInPieCutout.Count == 0) return null;
 
         return entitiesInPieCutout[0];
-    }
-
-    /// <summary>
-    /// Prevents the player from cancelling the animation for the first quater of the animation.
-    /// Ensures that the player cant unexpectedly cancel the animation in a bug.
-    /// </summary>
-    private void HandleAnimationCancellingBuffer()
-    {
-        timer += player.LocalDeltaTime;
-        if (timer > duration / 4) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)

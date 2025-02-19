@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class FollowerAttackState : FollowerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float AttackDuration { get; private set; } = 1f;
     [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 1f;
     public Weapon Weapon { get; protected set; }
 
     private Vector3 attackDirection;
+
+    private float timer;
 
     public override void Init(Entity entity)
     {
@@ -24,7 +27,7 @@ public class FollowerAttackState : FollowerBaseState
 
     public override void OnEnter()
     {
-        follower.PlayOneShotAnimation(AnimationClip);
+        follower.PlayOneShotAnimation(AnimationClip, AttackDuration);
 
         follower.SetSpeedModifier(0f);
 
@@ -33,14 +36,14 @@ public class FollowerAttackState : FollowerBaseState
 
         Weapon.SetDamageMultiplier(AttackDamageMultiplier);
 
-        follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;
+
+        timer = 0f;
     }
 
     public override void OnExit()
     {
         Weapon.OnWeaponEndSwing?.Invoke(follower);
-        follower.IsAttackAnimationPlaying = false;
         follower.UseRootMotion = false;
         follower.EndHit();
     }
@@ -51,7 +54,8 @@ public class FollowerAttackState : FollowerBaseState
 
         follower.LookAt(follower.transform.position + attackDirection);
 
-        if (!follower.IsAttackAnimationPlaying)
+        timer += follower.LocalDeltaTime;
+        if (timer > AttackDuration)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);
             return;

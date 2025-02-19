@@ -2,9 +2,9 @@
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class ChargerJabRecoverState : ChargerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
 
@@ -12,7 +12,7 @@ public class ChargerJabRecoverState : ChargerBaseState
 
     public override void OnEnter()
     {
-        charger.PlayOneShotAnimation(AnimationClip);
+        charger.PlayOneShotAnimation(AnimationClip, JabRecoverDuration);
 
         timer = 0f;
     }
@@ -33,7 +33,5 @@ public class ChargerJabRecoverState : ChargerBaseState
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
-
-        charger.PlayOneShotAnimation(AnimationClip);
     }
 }

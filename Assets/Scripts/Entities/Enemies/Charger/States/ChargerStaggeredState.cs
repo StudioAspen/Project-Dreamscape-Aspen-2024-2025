@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class ChargerStaggeredState : EntityStaggeredState
 {
     private Charger charger;
@@ -13,7 +14,7 @@ public class ChargerStaggeredState : EntityStaggeredState
 
     public override void OnEnter()
     {
-        charger.PlayOneShotAnimation(AnimationClip);
+        charger.PlayOneShotAnimation(AnimationClip, StaggerDuration);
 
         charger.SetSpeedModifier(0f);
 

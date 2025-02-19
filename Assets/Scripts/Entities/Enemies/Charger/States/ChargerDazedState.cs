@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ChargerDazedState : ChargerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 

@@ -808,9 +808,10 @@ public class Entity : MonoBehaviour, IPoolableObject
         playablesOneShotClipManager.ToClip = animationClip;
 
         float speed = (clipDuration <= 0f) ? 1f : animationClip.length / clipDuration;
+        speed = speed * LocalTimeScale.GetFloatValue();
         playablesOneShotClipManager.SetSpeed(speed);
 
-        playablesOneShotClipManager.SetTransitionDuration(transitionDuration);
+        playablesOneShotClipManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
 
         playablesOneShotClipManager.Play();
     }
@@ -818,12 +819,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Plays the default blend tree animation
     /// </summary>
-    public void PlayDefaultAnimation()
+    /// <param name="transitionDuration">The fade duration to the animation</param>
+    public void PlayDefaultAnimation(float transitionDuration = 0.1f)
     {
         if (blendTreeAnimatorManager == null) return;
         if (blendTreeAnimatorManager.AnimationControll == null) return;
         if (!blendTreeAnimatorManager.IsReady()) return;
 
+        blendTreeAnimatorManager.SetSpeed(LocalTimeScale.GetFloatValue());
+        blendTreeAnimatorManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
         blendTreeAnimatorManager.Play();
     }
 
