@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class LeaperAttackState : LeaperBaseState
 {
-    [field: Header("Config")]
-    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
     [field: SerializeField] public float LeapAttackHeightToDistanceRatio { get; private set; } = 0.2f;
     [field: SerializeField] public float AttackContactDamageMultiplier { get; private set; } = 1.5f;
@@ -29,7 +28,7 @@ public class LeaperAttackState : LeaperBaseState
 
     public override void OnEnter()
     {
-        leaper.PlayOneShotAnimation(AnimationClip);
+        leaper.PlayOneShotAnimation(leaper.JumpAnimationClip);
 
         leaper.SetSpeedModifier(0f);
 

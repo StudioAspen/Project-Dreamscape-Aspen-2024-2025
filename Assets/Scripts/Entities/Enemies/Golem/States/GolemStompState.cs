@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class GolemStompState : GolemBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AOEInitialRadius { get; private set; } = 1f;
     [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
@@ -14,18 +14,22 @@ public class GolemStompState : GolemBaseState
     [field: SerializeField] public float ShockwaveGrowStepDuration { get; private set; } = .05f;
     [field: SerializeField] public float ShockwaveRadiusGrowStepIncrement { get; private set; } = .25f;
 
+    private float timer;
+    private float duration;
+
     public override void OnEnter()
     {
         golem.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
         
-        golem.IsAttackAnimationPlaying = true;
         golem.UseRootMotion = false;
+
+        timer = 0f;
+        duration = AnimationClip.length;
     }
 
     public override void OnExit()
     {
-        golem.IsAttackAnimationPlaying = false;
         golem.UseRootMotion = false;
     }
 
@@ -34,7 +38,8 @@ public class GolemStompState : GolemBaseState
         golem.ApplyGravity();
         golem.LookAt(golem.transform.position + golem.GolemReadyAttackState.GetAttackDirection());
 
-        if (!golem.IsAttackAnimationPlaying)
+        timer += golem.LocalDeltaTime;
+        if (timer > duration)
         {
             golem.ChangeState(golem.GolemAttackRecoverState);
             return;

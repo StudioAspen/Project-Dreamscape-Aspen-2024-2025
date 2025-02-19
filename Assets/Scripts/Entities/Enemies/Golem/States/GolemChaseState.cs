@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class GolemChaseState : EnemyChaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public float AttackRange { get; private set; } = 5f;
     [field: SerializeField] public float ChaseSpeedModifier { get; private set; } = 1f;
     

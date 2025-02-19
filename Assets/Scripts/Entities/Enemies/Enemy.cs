@@ -26,8 +26,6 @@ public class Enemy : Entity
 
     public EnemySpawner Spawner { get; private set; }
 
-    [HideInInspector] public bool IsAttackAnimationPlaying;
-
     #region States
     [field: Header("Enemy: States")]
     [field: SerializeField] public EnemyIdleState EnemyIdleState { get; protected set; }

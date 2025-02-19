@@ -70,11 +70,6 @@ public class Golem : Enemy
         base.OnFixedUpdate();
     }
 
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-    }
-
     // Called via GroundSmash Animation Event
     public void GroundSmashImpact() 
     { 
@@ -89,6 +84,7 @@ public class Golem : Enemy
 
     public void ShakeCam()
     {
+        if(camShakeCoroutine != null) StopCoroutine(camShakeCoroutine);
         camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale.GetFloatValue()));
     }
 
@@ -99,6 +95,7 @@ public class Golem : Enemy
             CameraShakeManager.Instance.ShakeCamera(Random.Range(4f,8f), shakeDelay);    
             yield return new WaitForSeconds(shakeDelay);
         }
+        camShakeCoroutine = null;
     }
     
     /// <summary>

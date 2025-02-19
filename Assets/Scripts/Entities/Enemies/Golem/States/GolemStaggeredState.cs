@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class GolemStaggeredState : EntityStaggeredState
 {
     private Golem golem;
@@ -12,7 +13,7 @@ public class GolemStaggeredState : EntityStaggeredState
 
     public override void OnEnter()
     {
-        golem.PlayOneShotAnimation(AnimationClip);
+        golem.PlayOneShotAnimation(AnimationClip, StaggerDuration);
         golem.SetSpeedModifier(0f);
         timer = 0f;
         golem.UseRootMotion = true;

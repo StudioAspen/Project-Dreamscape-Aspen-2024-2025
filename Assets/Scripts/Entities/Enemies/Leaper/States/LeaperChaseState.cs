@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[System.Serializable]
 public class LeaperChaseState : EnemyChaseState
 {
-    [field: Header("Config")]
-    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
     [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
     [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 2f;
@@ -73,7 +72,7 @@ public class LeaperChaseState : EnemyChaseState
 
             leaper.Hop(currentHopDestination, ChaseHopHeight);
 
-            leaper.PlayOneShotAnimation(AnimationClip);
+            leaper.PlayOneShotAnimation(leaper.JumpAnimationClip);
         }
 
         leaper.LookAt(leaper.transform.position + directionToHopDestination);

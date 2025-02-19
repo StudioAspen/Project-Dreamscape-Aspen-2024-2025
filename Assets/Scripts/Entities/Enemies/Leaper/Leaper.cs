@@ -8,6 +8,9 @@ public class Leaper : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
+    [field: Header("Leaper: Animation")]
+    [field:SerializeField] public AnimationClip JumpAnimationClip { get; private set; }
+
     #region States
     [field: Header("Leaper: States")]
     [field: SerializeField] public LeaperWanderState LeaperWanderState { get; private set; }

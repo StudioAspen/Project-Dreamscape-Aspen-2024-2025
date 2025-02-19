@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
 
+[RequireComponent(typeof(Animator), typeof(AnimationClipOutput), typeof(AnimatorOutput)),
+RequireComponent(typeof(CharacterController))]
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
@@ -473,7 +475,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.OnUpdate();
 
-        HandleAnimations();
+        HandleBlendTreeAnimation();
         EvaluateMovementSpeed();
 
         HandleGrounded();
@@ -773,10 +775,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Handles the animations of the entity.
+    /// Handles the blend tree animation of the entity.
     /// Sets the MovementSpeed parameter for the FlatMovement blend tree
     /// </summary>
-    private protected virtual void HandleAnimations()
+    private protected virtual void HandleBlendTreeAnimation()
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 

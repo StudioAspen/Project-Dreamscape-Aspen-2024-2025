@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class GolemAttackRecoverState : GolemBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 
     private float recoverTimer;
