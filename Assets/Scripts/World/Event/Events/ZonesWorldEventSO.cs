@@ -8,7 +8,11 @@ using UnityEngine;
 public class ZonesWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public int ZonesEventDummyVariable { get; private set; }
+    /// <summary>
+    /// Controls the max search distance used for finding lands in an outbreak.
+    /// </summary>
+    [field: Range(1, 29)]
+    [field: SerializeField] private int MaxSearchLayer;
 
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
@@ -23,7 +27,7 @@ public class ZonesWorldEventSO : WorldEventSO
         affectedLands = AffectLandsFromEpicenter();
         foreach(LandManager land in affectedLands)
         {
-            if (land.Level <= 0) continue;
+            // if (land.Level <= 0) continue;
 
             StartEnemySpawnerWithCurrency(land);
 
@@ -97,26 +101,92 @@ public class ZonesWorldEventSO : WorldEventSO
         return resultingLands;
     }
 
-    private List<LandManager> AffectLandsFromEpicenter() {
-      List<LandManager> resultingLands = new List<LandManager>();
+  /// <summary>
+  /// Creates a square-shaped outbreak pattern starting from a randomly selected land,
+  /// then spiraling outward layer by layer in a clockwise direction.
+  /// </summary>
+  /// <returns>List of affected lands in order of infection</returns>
+  private List<LandManager> AffectLandsFromEpicenter() {
+    List<LandManager> outbreakLands = new List<LandManager>();
 
-      // Returns the largest integer that, when squared, will be <= the number of spawned lands
-      int outbreakSize = Mathf.FloorToInt(Mathf.Pow(Mathf.Sqrt(worldManager.SpawnedLands.Count), 2));
-      Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
+    // Get the highest possible floored integer from a square root
+    int s = Mathf.FloorToInt(Mathf.Sqrt(worldManager.SpawnedLands.Count));
+    // Returns the largest integer that, when squared, will be <= the number of spawned lands
+    int outbreakSize = Mathf.FloorToInt(Mathf.Pow(s, 2));
+    Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
 
-      // Gets a land by its weight, which increases proportionally with its land level.
-      LandManager epicenter = worldManager.GetRandomLandByWeight();
-      Debug.Log($"Epicenter Level: {epicenter.Level}");
+    // Gets a land by its weight, which increases proportionally with its land level.
+    LandManager epicenter = worldManager.GetRandomLandByWeight();
+    Debug.Log($"Epicenter Level: {epicenter.Level}");
+    outbreakLands.Add(epicenter);
 
-      // Vector2Int gridPos = epicenter.GridPosition;
-      // int layer = 1;
-      // while (resultingLands.Count < outbreakSize - 1)
-      // {
-      //   for(gridPos.y; )
-      // }
+    debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(epicenter.transform.position + 10f * Vector3.up, 3f, Mathf.Infinity, Color.red));
 
-      return resultingLands;
+    int layer = 1;
+    while (outbreakLands.Count < outbreakSize - 1 && layer <= MaxSearchLayer)
+    {
+      Vector2Int gridPos;
+
+      // Top row 
+      for (int x = -layer; x <= layer; x++)
+      {
+        gridPos = epicenter.GridPosition + new Vector2Int(x, layer);
+        if (TryAddLand(gridPos, outbreakLands) && ShouldReturn(outbreakLands, outbreakSize)) 
+          return outbreakLands;
+      }
+
+      // Right side 
+      for (int y = layer - 1; y >= -layer; y--)
+      {
+        gridPos = epicenter.GridPosition + new Vector2Int(layer, y);
+        if (TryAddLand(gridPos, outbreakLands) && ShouldReturn(outbreakLands, outbreakSize)) 
+          return outbreakLands;
+      }
+
+      // Bottom row 
+      for (int x = layer; x >= -layer; x--)
+      {
+        gridPos = epicenter.GridPosition + new Vector2Int(x, -layer);
+        if (TryAddLand(gridPos, outbreakLands) && ShouldReturn(outbreakLands, outbreakSize)) 
+          return outbreakLands;
+      }
+
+      // Left side
+      for (int y = -layer; y < layer; y++)
+      {
+        gridPos = epicenter.GridPosition + new Vector2Int(-layer, y);
+        if (TryAddLand(gridPos, outbreakLands) && ShouldReturn(outbreakLands, outbreakSize)) 
+          return outbreakLands;
+      }
+
+      layer++;
     }
+    
+    Debug.Log($"Outbreak Lands: {outbreakLands.Count}\nLast Layer Searched: {layer}");
+    return outbreakLands;
+  }
+
+  private bool TryAddLand(Vector2Int pos, List<LandManager> outbreakLands)
+  {
+    if (worldManager.TryGetLandByGridPosition(pos, out LandManager land))
+      if (!outbreakLands.Contains(land))
+      {
+        outbreakLands.Add(land);
+        debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(
+          land.transform.position + 10f * Vector3.up, 
+          3f, 
+          Mathf.Infinity, 
+          new Color(1, 0, 0, 0.25f)));
+        return true;
+      }
+    return false;
+  }
+
+  private bool ShouldReturn(List<LandManager> outbreakLands, int outbreakSize)
+  {
+    return outbreakLands.Count >= outbreakSize || 
+      outbreakLands.Count >= worldManager.SpawnedLands.Count;
+  }
 
     private void EnemySpawner_OnSpawnerDepleted()
     {
