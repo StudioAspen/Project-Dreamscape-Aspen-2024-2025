@@ -21,6 +21,7 @@ public class SlimeWanderState : SlimeBaseState
 
         wanderTimeElapsed = 0;
 
+        // slime.OnEntityDeath += slime.Entity_OnEntityDeath;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 

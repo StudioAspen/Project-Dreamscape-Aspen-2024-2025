@@ -10,7 +10,6 @@ public class SlimeGrowthState : SlimeBaseState
     [field: SerializeField] public float growthTimer { get; private set; } = 3f;
     [field: SerializeField] public float scaleIncrement {get; private set;} = 0.01f;
 
-    private bool grew = false;
     private float currentScale = 0f;
 
     private float currentTime = 0f;
@@ -31,13 +30,12 @@ public class SlimeGrowthState : SlimeBaseState
     {
         currentTime += Time.deltaTime;
 
-        if (currentTime > growthTimer && grew == false)
+        if (currentTime > growthTimer && slime.isSplit == true)
         {
             StartCoroutine(scaleToOriginal());
         }
-        else if (grew == true)
+        else if (slime.isSplit == false)
         {
-            grew = false;
             slime.ChangeState(slime.SlimeWanderState);
         }
     }
@@ -50,7 +48,7 @@ public class SlimeGrowthState : SlimeBaseState
             slime.transform.localScale = Vector3.one * currentScale;
             yield return null;
         }
-        grew = true;
+        slime.isSplit = false;
         slime.ChangeState(slime.SlimeWanderState);
     }
 }

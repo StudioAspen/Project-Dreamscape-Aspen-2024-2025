@@ -17,8 +17,7 @@ public class Slime : Enemy
     
     
     private Enemy slimeEnemyPrefab;
-    private bool isSplit = false;
-    public bool grew = false;
+    public bool isSplit = false;
     public bool hasAttacked = false;
     public float startScale = 0;
 
@@ -55,6 +54,19 @@ public class Slime : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
+        OnEntityDeath += Entity_OnEntityDeath;
+        if(isSplit)
+        {
+            this.MaxHealth = 20;
+            startScale = 1f;
+            SetDefaultState(SlimeGrowthState);
+        }
+        else
+        {
+            this.MaxHealth = 40;
+            startScale = transform.localScale.x;
+            SetDefaultState(SlimeWanderState);
+        }
 
     }
 
@@ -67,18 +79,6 @@ public class Slime : Enemy
     private protected override void OnStart()
     {
         base.OnStart();
-        slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
-        OnEntityDeath += Entity_OnEntityDeath;
-        if(isSplit)
-        {
-            startScale = 1f;
-            SetDefaultState(SlimeGrowthState);
-        }
-        else
-        {
-            startScale = transform.localScale.x;
-            SetDefaultState(SlimeWanderState);
-        }
 
     }
 
@@ -116,6 +116,8 @@ public class Slime : Enemy
 
     private void Entity_OnEntityDeath(GameObject entityGameObject)
     {
+        
+        slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
         // Debug.Log("pimp down, pimp in distress");
         // onDuplicate();
         // returns without doing anything if already "died"
