@@ -541,6 +541,7 @@ MonoBehaviour:
   - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
   - {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376, type: 3}
   - {fileID: -397280236229411759, guid: 89d66779686439e469b5b81a13e3d1ff, type: 3}
+  - {fileID: 6783651500108301844, guid: f3b920511701efa4ab708b534bf17f95, type: 3}
   enemySpawnPoints:
   - {fileID: 8661195311268004729}
   - {fileID: 262600604663446260}
@@ -551,7 +552,7 @@ MonoBehaviour:
   baseCurrency: 2
   growthFactor: 1
   polynomialDegree: 1
-  eliteChance: 0.1
+  eliteChance: 0.25
 --- !u!114 &8171416551064500414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1232,7 +1233,7 @@ PrefabInstance:
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1446,7 +1447,7 @@ PrefabInstance:
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1655,7 +1656,7 @@ PrefabInstance:
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
@@ -1939,7 +1940,7 @@ PrefabInstance:
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
         type: 3}

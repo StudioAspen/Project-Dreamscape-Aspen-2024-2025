@@ -1442,6 +1442,7 @@ GameObject:
   - component: {fileID: 7536978621657743438}
   - component: {fileID: 6714409095086020908}
   - component: {fileID: 8852926688546275590}
+  - component: {fileID: 1559805801182106771}
   - component: {fileID: 5620550920081884860}
   - component: {fileID: 2191053302705418715}
   - component: {fileID: 3702187593430642151}
@@ -1512,7 +1513,9 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 8214223060932716130}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 200
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 200
+    multipliers: []
   baseSpeed: 3
   rotationSpeed: 10
   mass: 1
@@ -1523,10 +1526,22 @@ MonoBehaviour:
   <DamageModifier>k__BackingField: 1
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField: 1
-  healthRegenAmount: 1
-  healthRegenRate: 0.25
-  durationSinceLastHitToRegen: 5
   groundedAcceleration: 4
+--- !u!114 &1559805801182106771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3994e165571b624590722e7e6e5ffee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthRegenAmount: 5
+  healthRegenRate: 1
+  durationOutOfCombatToRegen: 5
 --- !u!114 &5620550920081884860
 MonoBehaviour:
   m_ObjectHideFlags: 0

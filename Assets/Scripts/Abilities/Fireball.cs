@@ -15,7 +15,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
     private Vector3 direction;
     private GameObject caster;
     private int team;
-    private float damagePercent;
+    private float damageMultiplier;
     private Vector2Int damageRange;
 
     private ObjectPool<GameObject> pool;
@@ -40,7 +40,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
         direction = Vector3.zero;
         caster = null;
         team = 0;
-        damagePercent = 0f;
+        damageMultiplier = 0f;
         damageRange = Vector2Int.zero;
     }
 
@@ -62,13 +62,13 @@ public class Fireball : MonoBehaviour, IPoolableObject
     /// <param name="direction">The direction in which to fire the fireball.</param>
     /// <param name="caster">The GameObject that casted the fireball.</param>
     /// <param name="team">The team of the fireball.</param>
-    /// <param name="damagePercent">The percentage of damage to apply to the entities hit by the fireball.</param>
-    public void Fire(Vector3 direction, GameObject caster, int team, float damagePercent)
+    /// <param name="damageMultplier">The multiplier of damage to apply to the entities hit by the fireball.</param>
+    public void Fire(Vector3 direction, GameObject caster, int team, float damageMultplier)
     {
         this.direction = direction;
         this.caster = caster;
         this.team = team;
-        this.damagePercent = damagePercent;
+        this.damageMultiplier = damageMultplier;
 
         StartCoroutine(FireballMove());
     }
@@ -80,14 +80,14 @@ public class Fireball : MonoBehaviour, IPoolableObject
     /// <param name="direction">The direction in which to fire the fireball.</param>
     /// <param name="caster">The GameObject that casted the fireball.</param>
     /// <param name="team">The team of the fireball.</param>
-    /// <param name="damagePercent">The percentage of damage to apply to the entities hit by the fireball.</param>
+    /// <param name="damageMultiplier">The multiplier of damage to apply to the entities hit by the fireball.</param>
     /// <param name="damageRange">The damage range to calculate the damage for entities hit by the fireball.</param>
-    public void Fire(Vector3 direction, GameObject caster, int team, float damagePercent, Vector2Int damageRange)
+    public void Fire(Vector3 direction, GameObject caster, int team, float damageMultiplier, Vector2Int damageRange)
     {
         this.direction = direction;
         this.caster = caster;
         this.team = team;
-        this.damagePercent = damagePercent;
+        this.damageMultiplier = damageMultiplier;
         this.damageRange = damageRange;
 
         StartCoroutine(FireballMove());
@@ -133,7 +133,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
                 // if caster is an entity, calculate damage based on entity stats
                 if(caster.TryGetComponent(out Entity casterEntity))
                 {
-                    casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damagePercent), transform.position);
+                    casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damageMultiplier), transform.position);
                 }
                 else
                 {

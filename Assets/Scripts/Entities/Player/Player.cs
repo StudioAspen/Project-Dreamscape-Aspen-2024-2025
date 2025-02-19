@@ -30,13 +30,6 @@ public class Player : Entity
     /// </remarks>
     public static Action<Player> OnPlayerDestroyed = delegate { };
 
-    [field: Header("Player: Health Regen Config")]
-    [SerializeField] private int healthRegenAmount = 1;
-    [SerializeField] private float healthRegenRate = 0.25f;
-    [SerializeField] private float durationSinceLastHitToRegen = 5f;
-    private float elapsedTimeSinceLastHit;
-    private float healthRegenTimer;
-
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
@@ -140,14 +133,10 @@ public class Player : Entity
 
         PlayerDashState.HandleDashCooldown();
         PlayerDashState.HandleDashTrail();
-
-        HandleHealthRegen();
     }
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
     {
-        elapsedTimeSinceLastHit = 0f;
-
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
     }
 
@@ -156,30 +145,6 @@ public class Player : Entity
         OnEntityDestroyed -= Player_OnEntityDestroyed;
 
         OnPlayerDestroyed?.Invoke(this);
-    }
-
-    /// <summary>
-    /// Handles out of combat health regen for player.
-    /// If the player has not been hit for durationSinceLastHitToRegen seconds, heal for healthRegenAmount every healthRegenRate seconds.
-    /// </summary>
-    private void HandleHealthRegen()
-    {
-        if (CurrentHealth == MaxHealth) return;
-
-        if(elapsedTimeSinceLastHit > durationSinceLastHitToRegen)
-        {
-            healthRegenTimer += LocalDeltaTime;
-            if(healthRegenTimer > healthRegenRate)
-            {
-                healthRegenTimer = 0f;
-                Heal(healthRegenAmount);
-            }
-        }
-        else
-        {
-            elapsedTimeSinceLastHit += LocalDeltaTime;
-            healthRegenTimer = 0f;
-        }
     }
 
     /// <summary>
@@ -291,7 +256,7 @@ public class Player : Entity
 
     private protected override void EvaluateMovementSpeed()
     {
-        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier * SpeedModifier * baseSpeed;
+        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
     }
 
     private protected override void TryChangeStaggeredState()
