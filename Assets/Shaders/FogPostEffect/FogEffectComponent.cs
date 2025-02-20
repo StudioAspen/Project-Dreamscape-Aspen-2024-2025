@@ -15,7 +15,8 @@ public class FogEffectComponent : VolumeComponent, IPostProcessComponent
     public ColorParameter secondaryFogColor = new ColorParameter(Color.gray, true, true, true);
     public MinFloatParameter gradientStrength = new MinFloatParameter(0.0f, 0.0f);
     public FloatParameter fogOffset = new FloatParameter(5.0f);
-    public FloatParameter secondaryFogOffset = new FloatParameter(10.0f);
+    public FloatParameter primaryFogColorOffset = new FloatParameter(10.0f);
+    public FloatParameter secondaryFogColorOffset = new FloatParameter(10.0f);
     public MinFloatParameter fogDensity = new MinFloatParameter(0.0f, 0.0f);
     public FloatParameter fogScattering = new FloatParameter(0.0f);
 

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60aad13350c08ac458666a61ea5ae678, type: 3}
+  m_Name: Biome Database
+  m_EditorClassIdentifier: 
+  <DefaultLandPrefab>k__BackingField: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
+    type: 3}
+  <BiomesDictionary>k__BackingField:
+    _serializedList:
+    - Key: 0
+      Value:
+        <BiomeName>k__BackingField: Dream Forest
+        <Description>k__BackingField: Description of biome.
+        <BiomeColor>k__BackingField: {r: 0.85098046, g: 0.8235295, b: 0.91372555,
+          a: 1}
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 84f5487d103e0ed41913fa09e986aca4, type: 3}
+    - Key: 1
+      Value:
+        <BiomeName>k__BackingField: Volcanic
+        <Description>k__BackingField: Description of biome.
+        <BiomeColor>k__BackingField: {r: 0.9568628, g: 0.8000001, b: 0.8000001, a: 1}
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 1c648dc8b09af594891c9968c44bee10, type: 3}
+    - Key: 2
+      Value:
+        <BiomeName>k__BackingField: Food
+        <Description>k__BackingField: Description of biome.
+        <BiomeColor>k__BackingField: {r: 1, g: 0.8313726, b: 0.9568628, a: 1}
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 7ea2171c6d75cc34589a2d7db4df99be, type: 3}
+    - Key: 3
+      Value:
+        <BiomeName>k__BackingField: Other
+        <Description>k__BackingField: Description of biome.
+        <BiomeColor>k__BackingField: {r: 0.6431373, g: 0.8117648, b: 0.8745099, a: 1}
+        <PossibleLands>k__BackingField: []
+  checkForAnyErrors: 0

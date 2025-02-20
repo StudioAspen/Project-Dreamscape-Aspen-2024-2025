@@ -78,6 +78,5 @@ namespace Dreamscape
             return null;
         }
     }
-
-    #endif // UNITY_EDITOR
 }
+#endif // UNITY_EDITOR

@@ -6,9 +6,11 @@ public class FollowerChaseState : EnemyChaseState
 {
     private Follower follower;
 
-    public FollowerChaseState(Follower enemy) : base(enemy)
+    private protected override void Init(Entity entity)
     {
-        follower = enemy;
+        base.Init(entity);
+
+        follower = entity as Follower;
     }
 
     public override void OnEnter()
@@ -21,17 +23,17 @@ public class FollowerChaseState : EnemyChaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        base.Update();
+        base.OnUpdate();
 
         if(follower.Target == null)
         {
-            follower.ChangeState(follower.EnemyIdleState);
+            follower.ChangeState(follower.FollowerWanderState);
             return;
         }
 
-        if(follower.Distance(follower.Target) < follower.AttackRange)
+        if(follower.Distance(follower.Target) < follower.FollowerAttackState.AttackRange)
         {
             Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
             follower.FollowerAttackState.SetAttackDirection(attackDir);
@@ -39,7 +41,12 @@ public class FollowerChaseState : EnemyChaseState
             return;
         }
 
-        if(follower.Distance(follower.Target) < follower.CircleRadius)
+        if (!follower.IsCurrentPathValid())
+        {
+            return;
+        }
+
+        if(follower.Distance(follower.Target) < follower.FollowerCircleState.CircleRadius)
         {
             CheckCanCircle();
         }
@@ -49,23 +56,13 @@ public class FollowerChaseState : EnemyChaseState
     {
         if (follower.Target.TryGetComponent(out Player player))
         {
-            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.CircleRadius + 1f);
+            List<Follower> playerNearbyFollowers = player.GetNearbyHostileEntitiesByType<Follower>(follower.FollowerCircleState.CircleRadius + 1f, false);
 
-            foreach (Follower f in new List<Follower>(playerNearbyFollowers)) // filter so that we only look for followers that are alive
-            {
-                if (f.CurrentState == f.EntityDeathState) playerNearbyFollowers.Remove(f);
-            }
-
-            playerNearbyFollowers = playerNearbyFollowers.Take(follower.CircleFollowerCountThreshold).ToList();
+            playerNearbyFollowers = playerNearbyFollowers.Take(follower.FollowerCircleState.CircleFollowerCountThreshold).ToList();
 
             if (playerNearbyFollowers.Contains(follower)) return;
 
             follower.ChangeState(follower.FollowerCircleState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

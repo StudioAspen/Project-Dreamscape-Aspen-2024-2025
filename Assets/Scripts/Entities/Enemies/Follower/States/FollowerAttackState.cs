@@ -1,19 +1,24 @@
 ﻿using UnityEngine;
 
-public class FollowerAttackState : EnemyBaseState
+public class FollowerAttackState : FollowerBaseState
 {
-    private Follower follower;
+    [field: Header("Config")]
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 1f;
+    public Weapon Weapon { get; protected set; }
 
-    private Vector3 attackDir;
+    private Vector3 attackDirection;
 
-    public FollowerAttackState(Follower enemy) : base(enemy)
+    private protected override void Init(Entity entity)
     {
-        follower = enemy;
+        base.Init(entity);
+
+        Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
-    public void SetAttackDirection(Vector3 dir)
+    public void SetAttackDirection(Vector3 direction)
     {
-        attackDir = dir;
+        attackDirection = direction;
     }
 
     public override void OnEnter()
@@ -22,10 +27,10 @@ public class FollowerAttackState : EnemyBaseState
 
         follower.SetSpeedModifier(0f);
 
-        follower.Weapon.OnWeaponStartSwing?.Invoke(follower);
-        follower.Weapon.ClearEnemiesHitList();
+        Weapon.OnWeaponStartSwing?.Invoke(follower);
+        Weapon.ClearEnemiesHitList();
 
-        follower.Weapon.SetPercentDamage(follower.AttackPercentDamage);
+        Weapon.SetDamageMultiplier(AttackDamageMultiplier);
 
         follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;
@@ -33,25 +38,22 @@ public class FollowerAttackState : EnemyBaseState
 
     public override void OnExit()
     {
-        follower.Weapon.OnWeaponEndSwing?.Invoke(follower);
+        Weapon.OnWeaponEndSwing?.Invoke(follower);
         follower.IsAttackAnimationPlaying = false;
         follower.UseRootMotion = false;
-        follower.DisableWeaponTriggers();
+        follower.EndHit();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        follower.LookAt(follower.transform.position + attackDir);
+        follower.ApplyGravity();
+
+        follower.LookAt(follower.transform.position + attackDirection);
 
         if (!follower.IsAttackAnimationPlaying)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

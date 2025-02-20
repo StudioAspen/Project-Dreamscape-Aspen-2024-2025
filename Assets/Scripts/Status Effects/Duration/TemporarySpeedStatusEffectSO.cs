@@ -10,31 +10,31 @@ public class TemporarySpeedStatusEffectSO : DurationStatusEffectSO
     {
         base.OnApply();
 
-        entity.SetStatusSpeedModifier(entity.StatusSpeedModifier * SpeedMultiplier);
+        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier);
     }
 
     private protected override void OnExpire()
     {
         base.OnExpire();
 
-        entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / SpeedMultiplier);
+        entity.StatusSpeedModifier.RemoveMultiplier(SpeedMultiplier);
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / SpeedMultiplier);
+        entity.StatusSpeedModifier.RemoveMultiplier(SpeedMultiplier);
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        base.OnStack(newStatusEffect);
 
-        entity.SetStatusSpeedModifier(entity.StatusSpeedModifier / SpeedMultiplier);
-        SpeedMultiplier *= (newStatusEffect as TemporarySpeedStatusEffectSO).SpeedMultiplier;
-        entity.SetStatusSpeedModifier(entity.StatusSpeedModifier * SpeedMultiplier);
+        TemporarySpeedStatusEffectSO overridingStatusEffect = newStatusEffect as TemporarySpeedStatusEffectSO;
 
-        return true;
+        entity.StatusSpeedModifier.RemoveMultiplier(SpeedMultiplier);
+        SpeedMultiplier *= overridingStatusEffect.SpeedMultiplier;
+        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier);
     }
 }

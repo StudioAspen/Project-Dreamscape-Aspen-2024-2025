@@ -1,12 +1,26 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EntityStatusEffector : MonoBehaviour
 {
+    private Entity entity;
+
     public Dictionary<Type, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<Type, StatusEffectSO>();
+
+    private void Awake()
+    {
+        entity = GetComponent<Entity>();
+
+        entity.OnEntityDestroyed += Entity_OnEntityDestroyed;
+    }
+
+    private void OnDestroy()
+    {
+        entity.OnEntityDestroyed -= Entity_OnEntityDestroyed;
+    }
 
     private void Update()
     {
@@ -31,22 +45,23 @@ public class EntityStatusEffector : MonoBehaviour
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override or apply.</param>
     /// <param name="source">The source GameObject that applies the status effect.</param>
-    public void ApplyStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    public StatusEffectSO ApplyStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
         if (newStatusEffect.Stackable)
         {
             if (!CurrentStatusEffects.ContainsKey(newStatusEffect.GetType()))
             {
-                ApplyNotStackedStatusEffect(newStatusEffect, source);
-                return;
+                return ApplyNotStackedStatusEffect(newStatusEffect, source);
             }
 
             StatusEffectSO currentStatusEffect = CurrentStatusEffects[newStatusEffect.GetType()];
-            currentStatusEffect.Override(newStatusEffect); // extend and override
+            currentStatusEffect.Stack(newStatusEffect); // extend and override
+
+            return currentStatusEffect;
         }
         else
         {
-            ApplyNotStackedStatusEffect(newStatusEffect, source);
+            return ApplyNotStackedStatusEffect(newStatusEffect, source);
         }
     }
 
@@ -56,7 +71,7 @@ public class EntityStatusEffector : MonoBehaviour
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to apply.</param>
     /// <param name="source">The source GameObject that applies the status effect.</param>
-    private void ApplyNotStackedStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
+    private StatusEffectSO ApplyNotStackedStatusEffect(StatusEffectSO newStatusEffect, GameObject source)
     {
         RemoveStatusEffect(newStatusEffect.GetType(), true);
 
@@ -64,6 +79,8 @@ public class EntityStatusEffector : MonoBehaviour
         newStatusEffectRuntimeCopy.Init(this, source);
 
         CurrentStatusEffects.Add(newStatusEffect.GetType(), newStatusEffectRuntimeCopy);
+
+        return newStatusEffectRuntimeCopy;
     }
 
     /// <summary>
@@ -85,12 +102,78 @@ public class EntityStatusEffector : MonoBehaviour
     }
 
     /// <summary>
-    /// Cancels and removes all current status effects from the entity when it is disabled.
+    /// Tries to apply a status effect to the target GameObject.
+    /// If the target has an EntityStatusEffector component, the status effect will be applied.
     /// </summary>
-    private void OnDisable()
+    public static void TryApplyStatusEffect(GameObject target, StatusEffectSO statusEffect, GameObject source)
     {
-        foreach (StatusEffectSO statusEffect in CurrentStatusEffects.Values)
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return;
+
+        statusEffector.ApplyStatusEffect(statusEffect, source);
+    }
+
+    /// <summary>
+    /// Tries to get the status effect of the specified type from the target object.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public static T TryGetStatusEffect<T>(GameObject target) where T : StatusEffectSO
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return null;
+
+        return statusEffector.TryGetStatusEffect<T>();
+    }
+
+    /// <summary>
+    /// Tries to get the status effect of the specified type from the entity.
+    /// </summary>
+    /// <param name="statusEffectType">The type of the status effect.</param>
+    /// <returns>The status effect of the specified type, or null if it doesn't exist.</returns>
+    public T TryGetStatusEffect<T>() where T : StatusEffectSO
+    {
+        if (CurrentStatusEffects.ContainsKey(typeof(T)))
         {
+            return CurrentStatusEffects[typeof(T)] as T;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Checks whether the entity has a status effect of type T
+    /// </summary>
+    /// <param name="target">The object to check into.</param>
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public static bool HasStatusEffect<T>(GameObject target) where T : StatusEffectSO
+    {
+        EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
+        if (statusEffector == null) return false;
+
+        return statusEffector.HasStatusEffect<T>();
+    }
+
+    /// <summary>
+    /// Checks whether the entity has a status effect of type T
+    /// </summary>
+    /// <typeparam name="T">The type of the status effect you're searching for</typeparam>
+    /// <returns></returns>
+    public bool HasStatusEffect<T>() where T : StatusEffectSO
+    {
+
+        return CurrentStatusEffects.ContainsKey(typeof(T));
+    }
+
+    /// <summary>
+    /// Cancels and removes all current status effects from the entity when it destroyed.
+    /// </summary>
+    private void Entity_OnEntityDestroyed(Entity entity, GameObject @object)
+    {
+        for (int i = 0; i < CurrentStatusEffects.Count; i++)
+        {
+            StatusEffectSO statusEffect = CurrentStatusEffects.Values.ElementAt(i);
             statusEffect.Cancel();
             Destroy(statusEffect);
         }

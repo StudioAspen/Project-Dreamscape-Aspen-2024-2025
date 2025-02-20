@@ -1,30 +1,27 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Follower : Enemy
 {
-    [field: Header("Follower: Attack Settings")]
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
-    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
-    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
-
-
-    [field: Header("Follower: Circle Settings")]
-    [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
-    [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
-    [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
-    [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
-    [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
-
     #region States
     public FollowerAttackState FollowerAttackState { get; private set; }
+    public FollowerWanderState FollowerWanderState { get; private set; }
     public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
     public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
     public FollowerCircleState FollowerCircleState { get; private set; }
+
+    private protected override void InitializeStates()
+    {
+        base.InitializeStates();
+
+        EnemyChaseState = EntityBaseState.InitializeOrCreate<FollowerChaseState>(this);
+        FollowerWanderState = EntityBaseState.InitializeOrCreate<FollowerWanderState>(this);
+        FollowerCircleState = EntityBaseState.InitializeOrCreate<FollowerCircleState>(this);
+        FollowerAttackState = EntityBaseState.InitializeOrCreate<FollowerAttackState>(this);
+        FollowerReadyAttackState = EntityBaseState.InitializeOrCreate<FollowerReadyAttackState>(this);
+        FollowerAttackRecoverState = EntityBaseState.InitializeOrCreate<FollowerAttackRecoverState>(this);
+    }
     #endregion
 
     private protected override void OnAwake()
@@ -36,8 +33,6 @@ public class Follower : Enemy
     {
         base.OnOnEnable();
 
-        // SetStartState(EnemyIdleState);
-
         FinishAnimation();
     }
 
@@ -46,14 +41,11 @@ public class Follower : Enemy
         base.OnOnDisable();
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnStart()
     {
         base.OnStart();
+
+        SetDefaultState(FollowerWanderState);
 
         FinishAnimation();
     }
@@ -68,30 +60,19 @@ public class Follower : Enemy
         base.OnFixedUpdate();
     }
 
-    private protected override void InitializeStates()
-    {
-        base.InitializeStates();
-
-        EnemyChaseState = new FollowerChaseState(this);
-        FollowerCircleState = new FollowerCircleState(this);
-        FollowerAttackState = new FollowerAttackState(this);
-        FollowerReadyAttackState = new FollowerReadyAttackState(this);
-        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
-    }
-
     public void FinishAnimation()
     {
         IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
+        EndHit();
     }
 
-    public void EnableWeaponTriggers()
+    public void StartHit()
     {
-        Weapon.EnableTriggers();
+        FollowerAttackState.Weapon.EnableTriggers();
     }
 
-    public void DisableWeaponTriggers()
+    public void EndHit()
     {
-        Weapon.DisableTriggers();
+        FollowerAttackState.Weapon.DisableTriggers();
     }
 }

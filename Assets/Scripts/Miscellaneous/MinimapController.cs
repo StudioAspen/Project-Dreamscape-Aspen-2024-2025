@@ -6,12 +6,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
-using KBCore.Refs;
 using UnityEngine.InputSystem.LowLevel;
-
+using System;
 
 public class MinimapController : MonoBehaviour
 {
+    private GameManager gameManager;
+    private PlayerControls playerControls;
+
     [SerializeField] private RectTransform minimapRectTransform; // Raw Image Render Texture
     private Vector2 normalSize;
     private Vector2 normalPosition;
@@ -30,14 +32,11 @@ public class MinimapController : MonoBehaviour
     private RawImage image;
     private Transform border;
     [SerializeField] private Canvas minimap_canvas;
-    [SerializeField, Scene] GameManager gameManager;
 
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         // Cache Components
@@ -53,10 +52,21 @@ public class MinimapController : MonoBehaviour
         thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
         image = mask.GetComponentInChildren<RawImage>();
         border = transform.GetChild(0).Find("Border");
+
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+        playerControls.Gameplay.ToggleMinimap.performed += PlayerControls_OnToggleMinimapPerformed;
     }
+
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+
+        playerControls.Gameplay.ToggleMinimap.performed -= PlayerControls_OnToggleMinimapPerformed;
+    }
+
+    private void PlayerControls_OnToggleMinimapPerformed(InputAction.CallbackContext context)
+    {
+        ToggleMinimap();
     }
 
     public void ToggleMinimap()

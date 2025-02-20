@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using UnityEditor;
 #endif
 
-namespace Dreamscapes.TileEditor
+namespace Dreamscape.TileEditor
 {
     ///-/////////////////////////////////////////////////////////////////////////
     /// 
@@ -90,15 +90,18 @@ namespace Dreamscapes.TileEditor
             
             Vector2 tileSize = biomeManager.tileSize;
             Vector2 tilePosition = tileSize / 2;
-            Vector2 tileSpawnOrigin = new Vector2(-(tilePosition.x * (_gridSize.x - 1)), -(tilePosition.y * (_gridSize.y - 1)));
+            Vector2 tileSpawnOrigin = new Vector2(-(tilePosition.x * (_gridSize.x * _biomeManager.tileCountMultiplier - 1)), 
+                                                -(tilePosition.y * (_gridSize.y * _biomeManager.tileCountMultiplier - 1)));
             
-            for (int x = 0; x < _gridSize.x; x++)
+            for (int x = 0; x < _gridSize.x * _biomeManager.tileCountMultiplier; x++)
             {
-                for (int y = 0; y < _gridSize.y; y++)
+                for (int y = 0; y < _gridSize.y * _biomeManager.tileCountMultiplier; y++)
                 {
                     // Get random tile prefab
                     GameObject randomTilePrefab = tiles[Random.Range(0, tiles.Length)];
                     GameObject newTile = (GameObject)PrefabUtility.InstantiatePrefab(randomTilePrefab, tilesContainer.transform);
+
+                    newTile.AddComponent<DTETile>();
 
                     // Set the tile's position
                     float xPos = tileSpawnOrigin.x + x * tileSize.x;

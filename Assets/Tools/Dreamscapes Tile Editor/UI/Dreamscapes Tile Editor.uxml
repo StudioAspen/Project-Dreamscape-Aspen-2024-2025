@@ -5,7 +5,7 @@
         <ui:Label tabindex="-1" text="Tilemap Properties" display-tooltip-when-elided="true" name="TileMapPropertiesLabel" class="header" />
         <ui:VisualElement name="BiomeTypeContainer" class="container" style="flex-direction: row;">
             <ui:Label tabindex="-1" text="Biome Type" display-tooltip-when-elided="true" name="BiomeTypeLabel" style="width: 25%; -unity-text-align: middle-left;" />
-            <ui:EnumField type="Dreamscapes.TileEditor.BiomeType, Assembly-CSharp" name="BiomeTypeField" style="transform-origin: center; align-self: auto; width: 75%;" />
+            <ui:EnumField type="Dreamscape.TileEditor.BiomeType, Assembly-CSharp" name="BiomeTypeField" style="transform-origin: center; align-self: auto; width: 75%;" />
         </ui:VisualElement>
         <ui:SliderInt picking-mode="Ignore" label="Biome Seed" value="0" high-value="100" name="BiomeSeedSlider" show-input-field="true" direction="Horizontal" inverted="false" usage-hints="None" tabindex="0" class="container" style="visibility: visible;" />
         <ui:Vector2IntField label="Grid Size" name="GridSizeField" class="container" style="max-height: 35px;" />

@@ -6,9 +6,22 @@ using UnityEngine;
 
 public class StatusEffectSO : ScriptableObject
 {
-    private EntityStatusEffector entityStatusEffectorOwner;
+    /// <summary>
+    /// The EntityStatusEffector that the status effect is applied to
+    /// </summary>
+    private protected EntityStatusEffector entityStatusEffectorOwner;
+    /// <summary>
+    /// The entity that the status effect is applied to
+    /// </summary>
     private protected Entity entity;
+    /// <summary>
+    /// The source game object that applied the status effect
+    /// </summary>
     private protected GameObject source;
+
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Status Effect";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Status effect description";
 
     [field: Header("Status Effect: Settings")]
     [field: SerializeField] public bool Stackable { get; protected set; } // if the status effect can stack with itself (all augments should be stackable)
@@ -17,11 +30,12 @@ public class StatusEffectSO : ScriptableObject
     /// Initializes the status effect with the specified owner and source.
     /// </summary>
     /// <param name="owner">The entity status effector owner.</param>
-    /// <param name="source">The source game object.</param>
+    /// <param name="source">The source game object that applied the effect.</param>
     public void Init(EntityStatusEffector owner, GameObject source)
     {
         entityStatusEffectorOwner = owner;
         entity = owner.GetComponent<Entity>();
+        this.source = source;
 
         OnApply();
     }
@@ -68,18 +82,36 @@ public class StatusEffectSO : ScriptableObject
 
     /// <summary>
     /// Overrides the current status effect with a new status effect of the specified type.
-    /// Override if you want to add custom behavior when overriding the status effect.
+    /// Called once when a status effect is stackable and a new status effect of the same type is applied.
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
-    /// <returns>True if the override is successful, false otherwise.</returns>
-    public virtual bool Override(StatusEffectSO newStatusEffect)
+    public void Stack(StatusEffectSO newStatusEffect)
     {
         if (newStatusEffect.GetType() != GetType())
         {
             Debug.LogError($"Cannot override {name} with a different status effect type.");
-            return false;
+            return;
         }
 
-        return true;
+        OnStack(newStatusEffect);
+    }
+
+    /// <summary>
+    /// Called when the status effect is stacked with a new status effect of the same type.
+    /// Override if you want to add custom behavior when overriding the status effect.
+    /// </summary>
+    /// <param name="newStatusEffect">The new status effect to override with.</param>
+    private protected virtual void OnStack(StatusEffectSO newStatusEffect)
+    {
+
+    }
+
+    /// <summary>
+    /// Removes the status effect from the owner entity status effector.
+    /// Calls the cancel method.
+    /// </summary>
+    public void RemoveSelf()
+    {
+        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
     }
 }

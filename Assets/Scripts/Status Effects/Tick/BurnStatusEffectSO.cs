@@ -1,19 +1,25 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burn")]
 public class BurnStatusEffectSO : TickStatusEffectSO
 {
+    EntityRendererManager entityRendererManager;
+
     [field: Header("Burn: Settings")]
     [field: SerializeField] public int DamagePerTick { get; private set; } = 1;
+    [field: SerializeField] public bool HasExtraTickOnApply { get; private set; }
 
     private protected override void OnApply()
     {
         base.OnApply();
 
-        entity.TweenTintEntity(Color.red);
+        entityRendererManager = entity.GetComponent<EntityRendererManager>();
+
+        if(entityRendererManager) entityRendererManager.TweenTint(Color.red);
+
+        if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false);
     }
 
     private protected override void OnTick()
@@ -25,24 +31,25 @@ public class BurnStatusEffectSO : TickStatusEffectSO
 
     private protected override void OnExpire()
     {
-        entity.TweenUnTintEntity();
+        if (entityRendererManager) entityRendererManager.TweenUnTint();
 
         base.OnExpire();
     }
 
     public override void Cancel()
     {
-        entity.ResetTint();
+        if (entityRendererManager) entityRendererManager.ResetTint();
 
         base.Cancel();
     }
 
-    public override bool Override(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        base.OnStack(newStatusEffect);
 
-        DamagePerTick = (newStatusEffect as BurnStatusEffectSO).DamagePerTick;
+        BurnStatusEffectSO overridingStatusEffect = newStatusEffect as BurnStatusEffectSO;
 
-        return true;
+        DamagePerTick = overridingStatusEffect.DamagePerTick;
+        HasExtraTickOnApply = overridingStatusEffect.HasExtraTickOnApply;
     }
 }

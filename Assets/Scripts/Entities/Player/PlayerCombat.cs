@@ -1,19 +1,15 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Self] private PlayerInputReader input;
-    [SerializeField, Self] private Player player;
-    [SerializeField, Self] private Animator animator;
+    private Player player;
+    private PlayerInputReader playerInputReader;
+    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -22,44 +18,58 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
-    [SerializeField] private float comboResetDelay = 1f;
-    public List<PlayerActions> CurrentInputsList { get; private set; } = new List<PlayerActions>();
+    [SerializeField] private float nonAttackComboResetDelay = 1f;
+    [SerializeField] private float attackComboResetDelay = 0.1f;
+    private Coroutine delayedComboResetCoroutine;
+    public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
 
-    private void OnValidate()
+    /// <summary>
+    /// Action that is invoked when the player starts charging.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int attackInputNumber</c>: The attack input that is being charged. (1 or 2)</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int> OnChargeStart = delegate { }; // parameter is which attack is charging
+    /// <summary>
+    /// Action that is invoked when the player releases the charge.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>int attackInputNumber</c>: The attack input that was charged. (1 or 2)</description></item>
+    /// <item><description><c>float chargeDuration</c>: The charge duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<int, float> OnChargeRelease = delegate { };
+
+    private void Awake()
     {
-        this.ValidateRefs();
+        player = GetComponent<Player>();
+        playerInputReader = GetComponent<PlayerInputReader>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
     {
-        input.Attack1.AddListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.AddListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.AddListener(Input_HandleAttackChargingInput);
-        input.Attack2.AddListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.AddListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.AddListener(Input_HandleAttackChargingInput);
+        playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
-        input.OnPlayerActionInput.AddListener(Input_HandleOnPlayerActionInput);
+        player.OnGrounded += Player_OnGrounded;
+        player.OnAirborne += Player_OnAirborne;
 
-        player.OnGrounded.AddListener(Player_OnGrounded);
-        player.OnAirborne.AddListener(Player_OnAirborne);
+        Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
     private void OnDisable()
     {
-        input.Attack1.RemoveListener(Input_HandleAttack1Input);
-        //input.Attack1Charged.RemoveListener(Input_HandleAttack1ChargedInput);
-        //input.Attack1Charging.RemoveListener(Input_HandleAttackChargingInput);
-        input.Attack2.RemoveListener(Input_HandleAttack2Input);
-        //input.Attack2Charged.RemoveListener(Input_HandleAttack2ChargedInput);
-        //input.Attack2Charging.RemoveListener(Input_HandleAttackChargingInput);
+        playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
-        input.OnPlayerActionInput.RemoveListener(Input_HandleOnPlayerActionInput);
+        player.OnGrounded -= Player_OnGrounded;
+        player.OnAirborne -= Player_OnAirborne;
 
-        player.OnGrounded.RemoveListener(Player_OnGrounded);
-        player.OnAirborne.RemoveListener(Player_OnAirborne);
+        Weapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
     private void Update()
@@ -67,53 +77,9 @@ public class PlayerCombat : MonoBehaviour
         HandleWeaponTriggers();
     }
 
-    private void Input_HandleAttack1Input()
+    private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK1);
-    }
-
-    private void Input_HandleAttack1ChargedInput()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK1);
-    }
-
-    private void Input_HandleAttackChargingInput()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.PlayerDashState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-
-        player.ChangeState(player.PlayerChargeState);
-    }
-
-    private void Input_HandleAttack2Input()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerChargeState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-        if (player.CurrentState == player.PlayerAttackState && !CanCombo) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.ATTACK2);
-    }
-
-    private void Input_HandleAttack2ChargedInput()
-    {
-        if (!player.CanAttack) return;
-        if (player.CurrentState == player.PlayerAttackState) return;
-        if (player.CurrentState == player.EntityLaunchState) return;
-
-        input.OnPlayerActionInput?.Invoke(PlayerActions.CHARGED_ATTACK2);
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
@@ -126,14 +92,14 @@ public class PlayerCombat : MonoBehaviour
         ResetCombos();
     }
 
-    private void Input_HandleOnPlayerActionInput(PlayerActions incomingAction)
+    private void PlayerInputReader_OnComboAction(ComboAction incomingAction)
     {
         CurrentInputsList.Add(incomingAction);
 
         GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
-        if (!IsAttackAction(incomingAction)) StartDelayedComboReset();
+        if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
 
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
@@ -143,27 +109,33 @@ public class PlayerCombat : MonoBehaviour
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
-        if (IsAttackAction(incomingAction)) TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+        if (IsAttackAction(incomingAction))
+        {
+            bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+            if (!successfullyExecutedCombo && player.CurrentState == player.PlayerChargeState) player.ChangeState(player.DefaultState);
+        }
     }
 
     /// <summary>
     /// Tries to execute the given combo if it is not null and the player's current state allows it.
     /// </summary>
     /// <param name="combo">The combo to execute.</param>
-    private void TryExecuteCombo(ComboDataSO combo)
+    /// <returns>Whether a combo was executed</returns>
+    private bool TryExecuteCombo(ComboDataSO combo)
     {
         if (combo == null)
         {
             //Debug.LogWarning($"Executed combo is null with combo lists:\n{PrintComboLists(false)}");
-            return;
+            return false;
         }
 
-        if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityStaggeredState) return;
+        if (player.CurrentState == player.PlayerSlideState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
 
         player.PlayerAttackState.SetCombo(combo);
-        player.ForceChangeState(player.PlayerAttackState);
-    }
+        player.ChangeState(player.PlayerAttackState, true);
+        return true;
+    }   
 
     /// <summary>
     /// Generates the combo lists based on the valid combos and the current inputs.
@@ -185,7 +157,7 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void ResetCombos()
     {
-        DOTween.Kill("DelayedComboReset");
+        if (delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
 
         CurrentInputsList.Clear();
         potentialCombos.Clear();
@@ -238,21 +210,56 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     /// <param name="action">The player action to check.</param>
     /// <returns>True if the action is an attack action, false otherwise.</returns>
-    private bool IsAttackAction(PlayerActions action)
+    private bool IsAttackAction(ComboAction action)
     {
-        return action == PlayerActions.ATTACK1
-            || action == PlayerActions.ATTACK2
-            || action == PlayerActions.CHARGED_ATTACK1
-            || action == PlayerActions.CHARGED_ATTACK2;
+        return action == ComboAction.ATTACK1
+            || action == ComboAction.ATTACK2
+            || action == ComboAction.CHARGED_ATTACK1
+            || action == ComboAction.CHARGED_ATTACK2;
     }
 
     /// <summary>
     /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
     /// </summary>
-    private void StartDelayedComboReset()
+    /// /// <param name="delay">The delay until the combo lists are reset.</param>
+    private void StartDelayedComboListsReset(float delay)
     {
-        DOTween.Kill("DelayedComboReset");
-        DOVirtual.DelayedCall(comboResetDelay, ResetCombos).SetId("DelayedComboReset");
+        if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
+        delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
+    }
+
+    private IEnumerator DelayedComboResetCoroutine(float delay)
+    {
+        float elapsedTime = 0;
+        while(elapsedTime < delay)
+        {
+            elapsedTime += player.LocalDeltaTime;
+            yield return null;
+
+            if (player.CurrentState == player.PlayerAttackState)
+            {
+                delayedComboResetCoroutine = null;
+                yield break;
+            }
+            if (player.CurrentState == player.PlayerChargeState)
+            {
+                delayedComboResetCoroutine = null;
+                yield break;
+            }
+        }
+
+        ResetCombos();
+
+        delayedComboResetCoroutine = null;
+    }
+
+    /// <summary>
+    /// Sets the speed of the combo animation.
+    /// </summary>
+    /// <param name="speed">The speed value to set.</param>
+    public void SetComboAnimationSpeed(float speed)
+    {
+        animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     /// <summary>
@@ -310,7 +317,21 @@ public class PlayerCombat : MonoBehaviour
 
         IsAnimationPlaying = false;
 
-        ResetCombos();
+        StartDelayedComboListsReset(attackComboResetDelay);
+    }
+
+    /// <summary>
+    /// Fires a fireball. (NEEDS TO BE GENERALIZED FOR ALL ABILTIES).
+    /// Called by animation through an event.
+    /// </summary>
+    public void FireAbility(AnimationEvent animationEvent)
+    {
+        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
+        if (spawner == null) return;
+
+        spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
+
+        Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
+        fireball.Fire(transform.forward, gameObject, player.Team, 1f);
     }
 }
-

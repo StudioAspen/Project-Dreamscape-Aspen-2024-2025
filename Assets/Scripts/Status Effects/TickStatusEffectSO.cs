@@ -47,13 +47,21 @@ public class TickStatusEffectSO : StatusEffectSO
     /// </summary>
     /// <param name="newStatusEffect">The new status effect to override with.</param>
     /// <returns>True if the override is successful, false otherwise.</returns>
-    public override bool Override(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.Override(newStatusEffect)) return false;
+        TickStatusEffectSO overridingStatusEffect = newStatusEffect as TickStatusEffectSO;
 
-        Ticks += (newStatusEffect as TickStatusEffectSO).Ticks;
-        TickDuration = (newStatusEffect as TickStatusEffectSO).TickDuration;
-        return true;
+        Ticks += overridingStatusEffect.Ticks;
+        TickDuration = overridingStatusEffect.TickDuration;
+    }
+
+    /// <summary>
+    /// Overrides the number of active ticks
+    /// </summary>
+    /// <param name="newTicks">The new ticks to override with.</param>
+    public void OverrideTicks(int newTicks)
+    {
+        Ticks = newTicks;
     }
 }
 

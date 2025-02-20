@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-public class EntityLaunchState : BaseState
+public class EntityLaunchState : EntityBaseState
 {
-    private Entity entity;
-
     private protected float timer;
     private protected float stunDuration;
 
@@ -11,11 +9,6 @@ public class EntityLaunchState : BaseState
     private protected float force;
 
     private protected bool touchedGround;
-
-    public EntityLaunchState(Entity entity)
-    {
-        this.entity = entity;
-    }
 
     public virtual void SetLaunchSettings(Vector3 direction, float force, float stunDuration)
     {
@@ -34,16 +27,22 @@ public class EntityLaunchState : BaseState
         entity.SetSpeedModifier(0);
 
         entity.Launch(direction, force);
+
+        entity.IgnoreOtherEntityCollisions();
     }
 
     public override void OnExit()
     {
-
+        entity.IgnoreOtherEntityCollisions(false);
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
-        timer += Time.deltaTime;
+        entity.ApplyGravity();
+
+        entity.ApplyHorizontalVelocity();
+
+        timer += entity.LocalDeltaTime;
 
         if (timer > stunDuration)
         {
@@ -51,15 +50,23 @@ public class EntityLaunchState : BaseState
             return;
         }
 
-        if (timer > 0.05f && entity.IsGrounded && !touchedGround)
+        if (entity.IsGrounded && !touchedGround)
         {
             touchedGround = true;
+
+            entity.SetVelocity(Vector3.zero);
+
             entity.TransitionToAnimation("FlatFallImpact");
         }
     }
 
-    public override void FixedUpdate()
+    public override void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
+        if(hit.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
 
+        Vector3 bounceVelocity = Vector3.Reflect(entity.GetHorizontalVelocity(), hit.normal);
+        bounceVelocity.y = entity.Velocity.y;
+
+        entity.SetVelocity(bounceVelocity);
     }
 }
