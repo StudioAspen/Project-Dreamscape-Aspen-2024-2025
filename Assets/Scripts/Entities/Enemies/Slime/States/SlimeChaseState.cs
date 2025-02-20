@@ -59,9 +59,6 @@ public class SlimeChaseState : EnemyChaseState
 
             if (slime.Distance(rememberedTarget) < StartReadyAttackDistance)
             {
-                // set this to attack state
-
-                Debug.Log("current target:" + rememberedTarget);
                 slime.SlimeAttackState.AssignCurrentRememberedTarget(rememberedTarget);
                 slime.ChangeState(slime.SlimeAttackState);
                 return;

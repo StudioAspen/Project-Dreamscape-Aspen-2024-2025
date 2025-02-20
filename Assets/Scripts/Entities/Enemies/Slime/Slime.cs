@@ -122,8 +122,7 @@ public class Slime : Enemy
     {
         
         slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
-        // Debug.Log("pimp down, pimp in distress");
-        // onDuplicate();
+        
         // returns without doing anything if already "died"
        if(isSplit == true)
         {
@@ -165,9 +164,7 @@ public class Slime : Enemy
     {
 
         List<Collider> hits = GetCustomCollisionHits(SlimeAttackState.SlimeAttackLayerMask);
-        // Debug.Log("Number of hits: " + hits.Count);
-        
-        
+                
         foreach (Collider hit in hits)
         {
             if (DidHitEnemyEntity(hit, out Entity enemyEntity))

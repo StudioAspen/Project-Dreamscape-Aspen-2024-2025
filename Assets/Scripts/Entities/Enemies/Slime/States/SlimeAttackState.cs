@@ -10,11 +10,10 @@ public class SlimeAttackState : SlimeBaseState
     [field: SerializeField] public float RegularContactDamagePercent {get; private set;} = 100f;
     
 
-    // CHANGE SCALE INCREMENT TO CHANGE GROWTH SPEED 
+    [field: Header("Scale Settings")] 
     [field: SerializeField] public float scaleIncrement {get; private set;} = 0.1f;
     [field: SerializeField] public float attackCooldown {get; private set;} = 2f;
     [field: SerializeField] public float shrinkCoolDown {get; private set;} = 2f;
-    // [field: SerializeField] public float postAttackCooldown { get; private set; } = 5f; // New cooldown after scaling down    
 
     private float maxRadius = 0f;
     private float currentScale = 0f;
@@ -23,13 +22,7 @@ public class SlimeAttackState : SlimeBaseState
 
     private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
     
-
-    // private bool isScalingUp = true;
-    // private bool isWaitingAtMaxSize = false;
-    // private bool isScalingDown = false;
-    // private bool isInCooldown = false;
-
-    // private float timer = 0f;
+    
 
 
 
@@ -50,13 +43,6 @@ public class SlimeAttackState : SlimeBaseState
         
         StartCoroutine(ScaleSlime());
         
-        
-        // isScalingUp = true;
-        // isWaitingAtMaxSize = false;
-        // isScalingDown = false;
-        // isInCooldown = false;
-        // timer = 0f;
-
         
     }
 
@@ -115,70 +101,6 @@ public class SlimeAttackState : SlimeBaseState
     public override void OnUpdate()
     {
         base.OnUpdate();
-
-
-
-
-        // ADDED BELLOW FOR DEBUGGING COLLISIONS BUT IT DOESNT SEEM
-        // TO CHANGE ANYTHING
-
-
-        // if (isInCooldown)
-        // {
-        //     // Handle cooldown
-        //     timer += Time.deltaTime;
-        //     if (timer >= postAttackCooldown)
-        //     {
-        //         timer = 0f;
-        //         isInCooldown = false;
-        //         slime.ChangeState(slime.SlimeWanderState);
-        //     }
-        // }
-        // else if (isWaitingAtMaxSize)
-        // {
-        //     timer += Time.deltaTime;
-        //     if (timer >= shrinkCoolDown)
-        //     {
-        //         timer = 0f;
-        //         isWaitingAtMaxSize = false;
-        //         isScalingDown = true;
-        //     }
-        // }
-        // else if (isScalingUp)
-        // {
-        //     // Scale up
-        //     currentScale += scaleIncrement ;
-        //     slime.transform.localScale = Vector3.one * currentScale;
-
-        //     // Check collisions while scaling up
-        //     slime.CheckCollisions(AttackContactDamageMultiplier, ref entitiesHitByCurrentAttack);
-
-        //     // Check if reached max scale
-        //     if (currentScale >= maxRadius)
-        //     {
-        //         currentScale = maxRadius;
-        //         slime.transform.localScale = Vector3.one * maxRadius;
-        //         isScalingUp = false;
-        //         isWaitingAtMaxSize = true;
-        //     }
-        // }
-        // else if (isScalingDown)
-        // {
-        //     // Scale down
-        //     currentScale -= scaleIncrement ;
-        //     slime.transform.localScale = Vector3.one * currentScale;
-
-        //     // Check if returned to original scale
-        //     if (currentScale <= slime.startScale)
-        //     {
-        //         currentScale = slime.startScale;
-        //         slime.transform.localScale = Vector3.one * slime.startScale;
-        //         isScalingDown = false;
-        //         isInCooldown = true;
-
-        //         entitiesHitByCurrentAttack.Clear();
-        //     }
-        // }
         
     }
 }
