@@ -62,7 +62,7 @@ public class ShielderShieldBashState : ShielderBaseState
 
     private void Shielder_Shield_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        Vector3 pushDirection = victim.transform.position - attacker.transform.position;
+        Vector3 pushDirection = victim.GetColliderCenterPosition() - attacker.transform.position;
         victim.TryChangeToLaunchState(pushDirection.normalized, ShieldBashPushForce, ShieldBashStunTime);
     }
 }

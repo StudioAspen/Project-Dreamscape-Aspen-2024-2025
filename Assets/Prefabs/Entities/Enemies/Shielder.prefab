@@ -201,6 +201,7 @@ MonoBehaviour:
   <ShielderDefensiveState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 003eb1b1103fb4ab18e037db04e99b55,
       type: 3}
+    <AnimationSpeed>k__BackingField: 0.75
     <SpeedModifier>k__BackingField: 0.5
   <ShielderQuickAttackState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 58b1d455cd3471545a4b26b0498aa21a,
@@ -230,8 +231,8 @@ MonoBehaviour:
     <Duration>k__BackingField: 1
     <AttackRange>k__BackingField: 1
     <AttackDamageMultiplier>k__BackingField: 0.5
-    <ShieldBashPushForce>k__BackingField: 10
-    <ShieldBashStunTime>k__BackingField: 2
+    <ShieldBashPushForce>k__BackingField: 8
+    <ShieldBashStunTime>k__BackingField: 1.5
 --- !u!114 &8565747311887671494
 MonoBehaviour:
   m_ObjectHideFlags: 0

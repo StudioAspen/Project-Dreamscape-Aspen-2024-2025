@@ -7,11 +7,12 @@ using UnityEngine;
 public class ShielderDefensiveState : ShielderBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float AnimationSpeed { get; private set; } = 0.75f;
     [field: SerializeField] public float SpeedModifier { get; private set; } = 0.5f;
 
     public override void OnEnter()
     {
-        enemy.PlayOneShotAnimation(AnimationClip);
+        enemy.PlayOneShotAnimation(AnimationClip, AnimationClip.length / AnimationSpeed);
 
         shielder.SetSpeedModifier(SpeedModifier);
 
