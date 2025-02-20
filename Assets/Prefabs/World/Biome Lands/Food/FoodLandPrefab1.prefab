@@ -496,6 +496,7 @@ Transform:
   - {fileID: 964402423074326289}
   - {fileID: 7939472311611165943}
   - {fileID: 2011804285991382876}
+  - {fileID: 1029883377880212314}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6052383663745716427
@@ -1733,6 +1734,80 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7751898225427380936, guid: 3295228de6079d446840c9d27811512e,
     type: 3}
   m_PrefabInstance: {fileID: 2011691201383354006}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2033758728474581771
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3999374681703134211}
+    m_Modifications:
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.299999
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464788523205959657, guid: f4da8243004176d4d986083ff603d659,
+        type: 3}
+      propertyPath: m_Name
+      value: VenusFlyTrap
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f4da8243004176d4d986083ff603d659, type: 3}
+--- !u!4 &1029883377880212314 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1329614878804211793, guid: f4da8243004176d4d986083ff603d659,
+    type: 3}
+  m_PrefabInstance: {fileID: 2033758728474581771}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3499723874049642061
 PrefabInstance:
