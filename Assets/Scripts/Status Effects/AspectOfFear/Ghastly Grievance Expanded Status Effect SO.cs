@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GhastlyGrievanceExpandedStatusEffectSO : StatusEffectSO
 {
-    [field: SerializeField] private float defaultGrievanceRadius = 5f;
+    [field: SerializeField] public float defaultGrievanceRadius { get; private set; } = 5f;
 
     private protected override void OnApply()
     {
