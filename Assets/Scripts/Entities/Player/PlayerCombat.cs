@@ -264,14 +264,14 @@ public class PlayerCombat : MonoBehaviour
         if (CurrentInputsList.Count < 2) return;
 
         // Getting the last two inputs from the list
-        string lastAction = CurrentInputsList[CurrentInputsList.Count - 1].ToString();
-        string secondLastAction = CurrentInputsList[CurrentInputsList.Count - 2].ToString();
+        ComboAction lastAction = CurrentInputsList[CurrentInputsList.Count - 1];
+        ComboAction secondLastAction = CurrentInputsList[CurrentInputsList.Count - 2];
         
-        if (lastAction == "ATTACK1" && secondLastAction == "ATTACK2")
+        if (lastAction == ComboAction.ATTACK1 && secondLastAction == ComboAction.ATTACK2)
         {
             Debug.Log("Detected switch: Y-> X");
         }
-        else if (lastAction == "ATTACK2" && secondLastAction == "ATTACK1")
+        else if (lastAction == ComboAction.ATTACK2 && secondLastAction == ComboAction.ATTACK1)
         {
             Debug.Log("Detected switch: X -> Y");
         }
