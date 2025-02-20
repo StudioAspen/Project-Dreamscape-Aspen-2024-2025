@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SlimeWanderState : SlimeBaseState
 {
+    // Similar to leaper wander state just adjusted for slime
+
+
     [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange {get;private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange {get;private set;} = new Vector2(3f, 5f);

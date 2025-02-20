@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SlimeChaseState : EnemyChaseState
 {
-
+    // the same as leaperchasestate with tweaks for slime variables
     [field: Header("Config")]
 
     [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
@@ -13,11 +13,8 @@ public class SlimeChaseState : EnemyChaseState
 
 
     private Slime slime;
-
     private Entity rememberedTarget;
-
     private Vector3 currentHopDestination;
-
     private Vector3 directionToHopDestination;
 
     private protected override void Init(Entity entity)
@@ -64,6 +61,7 @@ public class SlimeChaseState : EnemyChaseState
             {
                 // set this to attack state
 
+                Debug.Log("current target:" + rememberedTarget);
                 slime.SlimeAttackState.AssignCurrentRememberedTarget(rememberedTarget);
                 slime.ChangeState(slime.SlimeAttackState);
                 return;

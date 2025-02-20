@@ -9,7 +9,6 @@ public class Slime : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
-
     // if true is small else false
     // [field: SerializeField] public bool isSplit { get; private set; }
     [field: SerializeField] public int SplitCount { get; private set; } = 2;
@@ -166,7 +165,7 @@ public class Slime : Enemy
     {
 
         List<Collider> hits = GetCustomCollisionHits(SlimeAttackState.SlimeAttackLayerMask);
-        Debug.Log("Number of hits: " + hits.Count);
+        // Debug.Log("Number of hits: " + hits.Count);
         
         
         foreach (Collider hit in hits)
@@ -180,8 +179,6 @@ public class Slime : Enemy
             }
         }
     }
-
-
 
     // nothing changed from the duplicate elite variant script
     private Enemy GetEnemyPrefabFromCurrentType()
@@ -198,11 +195,6 @@ public class Slime : Enemy
 
         return null;
     }
-
-
-
-
-
 
     private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {

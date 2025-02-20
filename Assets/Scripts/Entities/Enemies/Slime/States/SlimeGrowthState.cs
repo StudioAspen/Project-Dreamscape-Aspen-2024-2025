@@ -6,8 +6,9 @@ public class SlimeGrowthState : SlimeBaseState
 {
     [field: Header("Config")]
 
-    // set to how long it take for the slime to grow
+    // set to how long it takes for the slime to grow
     [field: SerializeField] public float growthTimer { get; private set; } = 3f;
+    
     [field: SerializeField] public float scaleIncrement {get; private set;} = 0.01f;
 
     private float currentScale = 0f;
