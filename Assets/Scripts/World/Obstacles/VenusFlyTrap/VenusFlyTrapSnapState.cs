@@ -52,7 +52,8 @@ public class VenusFlyTrapSnapState : VenusFlyTrapBaseState
         timer += Time.deltaTime;
         if (timer >= ReleaseDuration)
         {
-            venusFlyTrap.ChangeState(venusFlyTrap.VenusFlyTrapIdleState);
+            Debug.Log("Venus Fly Trap is releasing the target!");
+                venusFlyTrap.ChangeState(venusFlyTrap.VenusFlyTrapIdleState);
         }
     }
 }

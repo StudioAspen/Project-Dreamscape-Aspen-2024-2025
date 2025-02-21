@@ -16,6 +16,7 @@ public class VenusFlyTrapIdleState : VenusFlyTrapBaseState
         List<Entity> nearbyEntities = GetNearbyTargets();
         if (nearbyEntities.Count > 0)
         {
+            Debug.Log("Venus Fly Trap found a target!");
             venusFlyTrap.ChangeState(venusFlyTrap.VenusFlyTrapWindupState);
         }
     }
@@ -27,7 +28,7 @@ public class VenusFlyTrapIdleState : VenusFlyTrapBaseState
 
     private List<Entity> GetNearbyTargets()
     {
-        Collider[] hits = Physics.OverlapSphere(venusFlyTrap.transform.position, DetectionRadius, LayerMask.GetMask("Player"));
+        Collider[] hits = Physics.OverlapSphere(venusFlyTrap.transform.position, DetectionRadius, LayerMask.GetMask("Entity"));
 
         List<Entity> targets = new List<Entity>();
         foreach (Collider hit in hits)

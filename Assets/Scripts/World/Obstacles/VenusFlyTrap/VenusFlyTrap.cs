@@ -22,6 +22,8 @@ public class VenusFlyTrap : Obstacle
     {
         // Handles state updates
     }
+
+ 
 }
 
 

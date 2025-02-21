@@ -20,6 +20,7 @@ public class VenusFlyTrapWindupState : VenusFlyTrapBaseState
         timer += Time.deltaTime;
         if (timer >= WindupDuration)
         {
+            Debug.Log("Venus Fly Trap is ready to snap!");
             venusFlyTrap.ChangeState(venusFlyTrap.VenusFlyTrapSnapState);
         }
     }
