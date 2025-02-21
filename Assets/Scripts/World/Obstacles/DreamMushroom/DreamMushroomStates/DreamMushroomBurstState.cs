@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class DreamMushroomBurstState : DreamMushroomBaseState
 {
-    private protected override void Init()
-    {
-
-    }
+    
     public override void OnEnter()
     {
+        // NAUSEOUS AND SCREEN SHAKE
+        dreamMushroom.ChangeState(dreamMushroom.DreamMushroomSplotchState);
 
     }
 
@@ -20,6 +19,6 @@ public class DreamMushroomBurstState : DreamMushroomBaseState
 
     public override void OnUpdate()
     {
-
+        
     }
 }

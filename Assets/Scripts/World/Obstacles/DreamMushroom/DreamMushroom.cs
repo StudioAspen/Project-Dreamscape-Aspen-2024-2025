@@ -5,10 +5,11 @@ using UnityEngine;
 public class DreamMushroom : Obstacle
 {
     [field: Header("DreamMushroom : States")]
-    [field: SerializeField] public DreamMushroomIdleState DreamMushroomIdleState { get; set; }
-    [field: SerializeField] public DreamMushroomBurstState DreamMushroomBurstState { get; set; }
-    [field: SerializeField] public DreamMushroomHitState DreamMushroomHitState { get; set; }
-    [field: SerializeField] public DreamMushroomStepOnState DreamMushroomStepOnState { get; set; }
+    [field: SerializeField] public DreamMushroomIdleState DreamMushroomIdleState { get; private set; }
+    [field: SerializeField] public DreamMushroomBurstState DreamMushroomBurstState { get; private set; }
+
+    [field: SerializeField] public DreamMushroomSplotchState DreamMushroomSplotchState { get; private set; }
+
 
     private protected override void OnAwake()
     {
