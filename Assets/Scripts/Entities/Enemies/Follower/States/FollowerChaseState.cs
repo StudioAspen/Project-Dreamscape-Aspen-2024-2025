@@ -2,11 +2,12 @@
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class FollowerChaseState : EnemyChaseState
 {
     private Follower follower;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 
@@ -37,7 +38,7 @@ public class FollowerChaseState : EnemyChaseState
         {
             Vector3 attackDir = follower.Target.transform.position - follower.transform.position;
             follower.FollowerAttackState.SetAttackDirection(attackDir);
-            follower.ChangeState(follower.FollowerAttackState);
+            follower.ChangeState(follower.FollowerReadyAttackState);
             return;
         }
 

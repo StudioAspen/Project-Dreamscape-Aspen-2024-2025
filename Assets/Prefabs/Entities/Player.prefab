@@ -809,101 +809,6 @@ Transform:
   - {fileID: 5052742238683515475}
   m_Father: {fileID: 250988998986911998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2127634089947603198
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8030061778473114720}
-  - component: {fileID: 6209910466675979633}
-  - component: {fileID: 884838979891709249}
-  - component: {fileID: 8108423357529683183}
-  - component: {fileID: 8086656832044896764}
-  m_Layer: 16
-  m_Name: States
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8030061778473114720
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127634089947603198}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7536978621657743438}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6209910466675979633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127634089947603198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5623318dcdc7a874eac1982559cef993, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <SprintSpeedModifier>k__BackingField: 1.66
-  IsSprinting: 0
---- !u!114 &884838979891709249
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127634089947603198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 083dae9553cf6ae4695f96945e7fcc7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dashTrailParticle: {fileID: 8508715176541134875}
-  <DashDuration>k__BackingField: 0.25
-  <InitialDashVelocity>k__BackingField: 75
-  <SprintDurationAfterDash>k__BackingField: 2
-  <DashCooldown>k__BackingField: 1
---- !u!114 &8108423357529683183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127634089947603198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb012093d843eb8408bf363fb08abf50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <JumpHeight>k__BackingField: 2
-  <MaxJumpCount>k__BackingField: 1
-  IsJumping: 0
---- !u!114 &8086656832044896764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127634089947603198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d0f242dfb9ec3a47ad00179a49e928f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackNearbyRadius>k__BackingField: 5
-  <AttackNearbyInFrontHalfAngle>k__BackingField: 25
 --- !u!1 &2183081733502869962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1450,11 +1355,14 @@ GameObject:
   - component: {fileID: 3859803993434958765}
   - component: {fileID: 6950320168933061115}
   - component: {fileID: 4562688828567907799}
-  - component: {fileID: 2171180168782530629}
   - component: {fileID: 7237775664649881152}
   - component: {fileID: 5104155415629920173}
   - component: {fileID: 3554812273690287485}
   - component: {fileID: 6259942536886293904}
+  - component: {fileID: 2171180168782530629}
+  - component: {fileID: 2411606197987123092}
+  - component: {fileID: 4149513394303482825}
+  - component: {fileID: 3934613862195641431}
   m_Layer: 16
   m_Name: Player
   m_TagString: Untagged
@@ -1475,7 +1383,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8030061778473114720}
   - {fileID: 8214223060932716130}
   - {fileID: 4608920070975825999}
   - {fileID: 3522864665790043268}
@@ -1516,6 +1423,7 @@ MonoBehaviour:
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
     multipliers: []
+    <FlatIncrease>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 10
   mass: 1
@@ -1523,10 +1431,57 @@ MonoBehaviour:
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField: 1
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
+    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+    multipliers: []
+    <FlatIncrease>k__BackingField: 0
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -6959607903234413826, guid: 7042460e2d1c99249818b6e9e3b741e3,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 36ffa4ca123b8cf48ace032eaac641f9,
+      type: 3}
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
+      type: 3}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+    <SpawnDuration>k__BackingField: 1.5
   groundedAcceleration: 4
+  <PlayerSprintState>k__BackingField:
+    <SprintSpeedModifier>k__BackingField: 1.66
+    IsSprinting: 0
+  <PlayerDashState>k__BackingField:
+    dashTrailParticle: {fileID: 8508715176541134875}
+    <AnimationClip>k__BackingField: {fileID: 7400000, guid: ab69ca9e285bf8b4aa58270be79beed0,
+      type: 2}
+    <DashDuration>k__BackingField: 0.25
+    <InitialDashVelocity>k__BackingField: 75
+    <SprintDurationAfterDash>k__BackingField: 2
+    <DashCooldown>k__BackingField: 1
+  <PlayerJumpState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
+      type: 3}
+    <JumpHeight>k__BackingField: 2
+    <MaxJumpCount>k__BackingField: 1
+    IsJumping: 0
+  <PlayerFallState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 7400000, guid: 8164d5f25ce079442917b5582dfdbf2b,
+      type: 3}
+  <PlayerAttackState>k__BackingField:
+    <AttackNearbyRadius>k__BackingField: 5
+    <AttackNearbyInFrontHalfAngle>k__BackingField: 25
+  <PlayerChargeState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 7400000, guid: 27132927d460295409a8e98c70ef17b3,
+      type: 3}
 --- !u!114 &1559805801182106771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1653,30 +1608,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aspectTrees:
   - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
---- !u!95 &2171180168782530629
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3617256968821117999}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 97ada40f57d401540b8eafeeba1f0e9c, type: 3}
-  m_Controller: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'Spine'\n\tTransform 'Spine'\n\tFrom animation
-    clip 'Dash'"
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!143 &7237775664649881152
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1757,6 +1688,87 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skyBoxChangeFadeDuration: 0.5
+--- !u!95 &2171180168782530629
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 97ada40f57d401540b8eafeeba1f0e9c, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2411606197987123092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18498f4614684d14b942ac9d7ad80b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_useCustomFrameRate: 0
+  m_customFrameRate: 60
+--- !u!114 &4149513394303482825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b7252b345e69f9439e871e0102cb078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 0
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  ToClip: {fileID: 0}
+--- !u!114 &3934613862195641431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cfb5fb47b7a7143b09b60466a3830e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 1
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  AnimationControll: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0

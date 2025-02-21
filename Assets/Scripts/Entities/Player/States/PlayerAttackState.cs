@@ -7,11 +7,11 @@ using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerAttackState : PlayerBaseState
 {
     private PlayerCombat playerCombat;
 
-    [field: Header("Config")]
     [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
     [field: SerializeField] public float AttackNearbyInFrontHalfAngle { get; private set; } = 25f;
 
@@ -24,27 +24,27 @@ public class PlayerAttackState : PlayerBaseState
 
     private Coroutine weaponScaleCoroutine;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
     }
 
-    private void OnDrawGizmos()
+    public override void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, AttackNearbyRadius);
+        Gizmos.DrawWireSphere(entity.transform.position, AttackNearbyRadius);
 
         if (player == null) return;
         if (!player.IsMoving) return;
 
-        Gizmos.DrawLine(transform.position, transform.position + player.TargetForwardDirection * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + player.TargetForwardDirection * AttackNearbyRadius);
 
         Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
         Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
 
-        Gizmos.DrawLine(transform.position, transform.position + leftPoint * AttackNearbyRadius);
-        Gizmos.DrawLine(transform.position, transform.position + rightPoint * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + leftPoint * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + rightPoint * AttackNearbyRadius);
     }
 
     /// <summary>
@@ -70,22 +70,15 @@ public class PlayerAttackState : PlayerBaseState
     {
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
 
-        playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
+        playerCombat.Weapon.ClearObjectHitList(); // allows all enemies to get hit again
 
         playerCombat.Weapon.SetDamageMultiplier(ComboData.DamageMultiplier * extraDamageMultiplier); // set the damage mult for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
-        playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
-
-        //player.ReplaceOneShotAnimationClip(ComboData.ComboClip, "AbilityPlaceholder");
-        //player.TransitionToAnimation("Ability");
-        player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
-
-        playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
-        playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
-
-        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
+        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed;
         timer = 0f; // reset the timer
+
+        player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
 
@@ -93,7 +86,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
-        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
     }
 
@@ -101,11 +94,12 @@ public class PlayerAttackState : PlayerBaseState
     {
         playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
 
-        playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
         player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
+
+        playerCombat.StartDelayedComboListsReset(playerCombat.AttackComboResetDelay);
 
         player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
@@ -113,7 +107,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
-        if (weaponScaleCoroutine != null) StopCoroutine(weaponScaleCoroutine);
+        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
@@ -121,13 +115,15 @@ public class PlayerAttackState : PlayerBaseState
     {
         player.ApplyGravity();
 
-        if (!playerCombat.IsAnimationPlaying) // if the animation is done playing, go back to the default state
+        timer += player.LocalDeltaTime;
+
+        if (timer > duration) // if the animation is done playing, go back to the default state
         {
             player.ChangeState(player.DefaultState);
             return;
         }
 
-        HandleAnimationCancellingBuffer();
+        //HandleAnimationCancellingBuffer();
 
         TryLookAtClosestTarget();
 
@@ -199,16 +195,6 @@ public class PlayerAttackState : PlayerBaseState
         if (entitiesInPieCutout.Count == 0) return null;
 
         return entitiesInPieCutout[0];
-    }
-
-    /// <summary>
-    /// Prevents the player from cancelling the animation for the first quater of the animation.
-    /// Ensures that the player cant unexpectedly cancel the animation in a bug.
-    /// </summary>
-    private void HandleAnimationCancellingBuffer()
-    {
-        timer += player.LocalDeltaTime;
-        if (timer > duration / 4) playerCombat.CanCancelAnimation = true;
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)

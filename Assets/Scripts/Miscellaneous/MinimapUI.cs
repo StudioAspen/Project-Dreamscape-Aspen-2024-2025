@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class MinimapUI : MonoBehaviour
 {
-    private PlayerControls playerControls;
+/*    private PlayerControls playerControls;
 
     [Header("References")]
     [SerializeField] private GameObject shrunkMinimapObject;
@@ -43,5 +43,5 @@ public class MinimapUI : MonoBehaviour
     private void ShrinkMinimap()
     {
         isExpanded = false;
-    }
+    }*/
 }

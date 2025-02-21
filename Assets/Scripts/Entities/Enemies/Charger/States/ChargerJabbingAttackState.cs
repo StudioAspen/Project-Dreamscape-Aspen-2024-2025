@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class ChargerJabbingAttackState : ChargerBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip RightJabAnimationClip { get; protected set; }
+    [field: SerializeField] public AnimationClip LeftJabAnimationClip { get; protected set; }
     [field: SerializeField] public int JabCount { get; private set; } = 5;
+    [field: SerializeField] public float JabDuration { get; private set; } = 0.45f;
     [field: SerializeField] public float JabDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
     [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
@@ -13,6 +16,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
     private Entity rememberedTarget;
     private Vector3 directionToTarget;
+    private float timer;
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
@@ -21,26 +25,27 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
     public override void OnEnter()
     {
-        charger.IsAttackAnimationPlaying = true;
+        timer = 0f;
+
         charger.UseRootMotion = true;
 
         if (RemainingJabs % 2 == 1)
         {
-            charger.TransitionToAnimation("RightJab");
+            charger.PlayOneShotAnimation(RightJabAnimationClip, JabDuration);
 
             RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
-            RightFistWeapon.ClearEnemiesHitList();
+            RightFistWeapon.ClearObjectHitList();
 
             RightFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
         else
         {
-            charger.TransitionToAnimation("LeftJab");
+            charger.PlayOneShotAnimation(LeftJabAnimationClip, JabDuration);
 
             LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
-            LeftFistWeapon.ClearEnemiesHitList();
+            LeftFistWeapon.ClearObjectHitList();
 
             LeftFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
@@ -50,7 +55,6 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
     public override void OnExit()
     {
-        charger.IsAttackAnimationPlaying = false;
         charger.UseRootMotion = false;
 
         if (RemainingJabs % 2 == 1)
@@ -69,6 +73,8 @@ public class ChargerJabbingAttackState : ChargerBaseState
     {
         charger.ApplyGravity();
 
+        timer += charger.LocalDeltaTime;
+
         if (rememberedTarget == null)
         {
             charger.ChangeState(charger.ChargerJabRecoverState);
@@ -78,7 +84,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         charger.LookAt(charger.transform.position + directionToTarget, JabRotationSpeed);
 
         // blocks update until attack animation is done
-        if (charger.IsAttackAnimationPlaying) return;
+        if (timer < JabDuration) return;
 
         if (RemainingJabs <= 0)
         {

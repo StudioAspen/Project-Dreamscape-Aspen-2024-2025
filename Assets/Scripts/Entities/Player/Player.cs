@@ -45,31 +45,31 @@ public class Player : Entity
 
     #region States 
     [field: Header("Player: States")]
-    public PlayerIdleState PlayerIdleState { get; private set; }
-    public PlayerWalkState PlayerWalkState { get; private set; }
-    public PlayerSprintState PlayerSprintState { get; private set; }
-    public PlayerDashState PlayerDashState { get; private set; }
-    public PlayerJumpState PlayerJumpState { get; private set; }
-    public PlayerFallState PlayerFallState { get; private set; }
-    public PlayerSlideState PlayerSlideState { get; private set; }
-    public PlayerAttackState PlayerAttackState { get; private set; }
-    public PlayerChargeState PlayerChargeState { get; private set; }
-    public PlayerAbilityState PlayerAbilityState { get; private set; }
+    [field: SerializeField] public PlayerIdleState PlayerIdleState { get; private set; }
+    [field: SerializeField] public PlayerWalkState PlayerWalkState { get; private set; }
+    [field: SerializeField] public PlayerSprintState PlayerSprintState { get; private set; }
+    [field: SerializeField] public PlayerDashState PlayerDashState { get; private set; }
+    [field: SerializeField] public PlayerJumpState PlayerJumpState { get; private set; }
+    [field: SerializeField] public PlayerFallState PlayerFallState { get; private set; }
+    [field: SerializeField] public PlayerSlideState PlayerSlideState { get; private set; }
+    [field: SerializeField] public PlayerAttackState PlayerAttackState { get; private set; }
+    [field: SerializeField] public PlayerChargeState PlayerChargeState { get; private set; }
+    [field: SerializeField] public PlayerAbilityState PlayerAbilityState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        PlayerIdleState = EntityBaseState.InitializeOrCreate<PlayerIdleState>(this);
-        PlayerWalkState = EntityBaseState.InitializeOrCreate<PlayerWalkState>(this);
-        PlayerSprintState = EntityBaseState.InitializeOrCreate<PlayerSprintState>(this);
-        PlayerDashState = EntityBaseState.InitializeOrCreate<PlayerDashState>(this);
-        PlayerJumpState = EntityBaseState.InitializeOrCreate<PlayerJumpState>(this);
-        PlayerFallState = EntityBaseState.InitializeOrCreate<PlayerFallState>(this);
-        PlayerSlideState = EntityBaseState.InitializeOrCreate<PlayerSlideState>(this);
-        PlayerAttackState = EntityBaseState.InitializeOrCreate<PlayerAttackState>(this);
-        PlayerChargeState = EntityBaseState.InitializeOrCreate<PlayerChargeState>(this);
-        PlayerAbilityState = EntityBaseState.InitializeOrCreate<PlayerAbilityState>(this);
+        PlayerIdleState.Init(this);
+        PlayerWalkState.Init(this);
+        PlayerSprintState.Init(this);
+        PlayerDashState.Init(this);
+        PlayerJumpState.Init(this);
+        PlayerFallState.Init(this);
+        PlayerSlideState.Init(this);
+        PlayerAttackState.Init(this);
+        PlayerChargeState.Init(this);
+        PlayerAbilityState.Init(this);
     }
 
     public override void ChangeState(EntityBaseState state, bool willForceChange = false)
@@ -295,7 +295,7 @@ public class Player : Entity
     /// <param name="replacementClipName">The name of the clip to replace.</param>
     public void ReplaceOneShotAnimationClip(AnimationClip oneShotClip, string replacementClipName)
     {
-        if (animator == null)
+        if (blendTreeAnimator == null)
         {
             Debug.LogError("Animator is not assigned!");
             return;
@@ -308,7 +308,7 @@ public class Player : Entity
         }
 
         // Get the runtime animator controller
-        var runtimeAnimatorController = animator.runtimeAnimatorController;
+        var runtimeAnimatorController = blendTreeAnimator.runtimeAnimatorController;
         if (runtimeAnimatorController == null)
         {
             Debug.LogError("Animator has no RuntimeAnimatorController assigned!");
@@ -339,6 +339,6 @@ public class Player : Entity
         overrideController[replacementClip] = oneShotClip;
 
         // Assign the override controller to the animator
-        animator.runtimeAnimatorController = overrideController;
+        blendTreeAnimator.runtimeAnimatorController = overrideController;
     }
 }

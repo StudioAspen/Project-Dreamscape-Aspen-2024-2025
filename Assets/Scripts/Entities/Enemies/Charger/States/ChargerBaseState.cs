@@ -1,8 +1,8 @@
-﻿public class ChargerBaseState : EnemyBaseState
+﻿public abstract class ChargerBaseState : EnemyBaseState
 {
     private protected Charger charger;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

@@ -4,9 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public class ChargerWanderState : ChargerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
@@ -16,7 +16,7 @@ public class ChargerWanderState : ChargerBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         charger.SetSpeedModifier(1f);
 
