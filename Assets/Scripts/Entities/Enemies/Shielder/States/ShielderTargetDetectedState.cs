@@ -14,7 +14,7 @@ public class ShielderTargetDetectedState : ShielderBaseState
 
     public override void OnEnter()
     {
-        shielder.PlayOneShotAnimation(AnimationClip, Duration);
+        shielder.PlayOneShotAnimation(AnimationClip);
 
         shielder.SetSpeedModifier(0f);
 
@@ -24,7 +24,7 @@ public class ShielderTargetDetectedState : ShielderBaseState
 
     public override void OnExit()
     {
-
+        shielder.transform.DOKill();
     }
 
     public override void OnUpdate()

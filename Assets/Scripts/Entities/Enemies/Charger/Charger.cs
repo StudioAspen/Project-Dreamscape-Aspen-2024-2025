@@ -93,32 +93,27 @@ public class Charger : Enemy
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
-        int newDamage = dmg;
+        int newDamage = damage;
 
         if(HasSuperArmorActive())
         {
-            if(dmg >= staggerDamageThreshold)
+            if(damage >= staggerDamageThreshold)
             {
-                ChangeState(EntityStaggeredState, true);
+                if(willTryStagger) ChangeState(EntityStaggeredState, true);
             }
             else
             {
-                newDamage = Mathf.RoundToInt(superArmorDamageReduction * dmg);
-            }
-        }
-        else
-        {
-            if(CanBeStaggered())
-            {
-                ChangeState(EntityStaggeredState, true);
+                newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
             }
         }
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
+
+        if (willTryStagger) TryChangeStaggeredState();
 
         CurrentHealth -= newDamage;
 
@@ -160,8 +155,10 @@ public class Charger : Enemy
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
     /// <returns>True if the Charger can be staggered, false otherwise.</returns>
-    private bool CanBeStaggered()
+    public override bool CanBeStaggered()
     {
+        if (HasSuperArmorActive()) return false;
+
         return CurrentState == ChargerWanderState
             || CurrentState == ChargerDazedState
             || CurrentState == ChargerWindDownState

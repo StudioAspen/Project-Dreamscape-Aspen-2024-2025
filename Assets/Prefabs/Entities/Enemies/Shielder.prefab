@@ -186,8 +186,8 @@ MonoBehaviour:
     <BaseValue>k__BackingField: 50
     multipliers: []
     <FlatIncrease>k__BackingField: 0
-  <CustomCollisionRadius>k__BackingField: 0.5
-  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
+  <CustomCollisionRadius>k__BackingField: 0.72
+  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   <LongSword>k__BackingField: {fileID: 997610203423221595}
   <Shield>k__BackingField: {fileID: 747417986364129213}
@@ -203,17 +203,18 @@ MonoBehaviour:
       type: 3}
     <AnimationSpeed>k__BackingField: 0.75
     <SpeedModifier>k__BackingField: 0.5
+    <StaggerDamageThreshold>k__BackingField: 40
   <ShielderQuickAttackState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 58b1d455cd3471545a4b26b0498aa21a,
       type: 3}
     <AttackDuration>k__BackingField: 1.75
-    <AttackRange>k__BackingField: 2
+    <AttackRange>k__BackingField: 1
     <AttackDamageMultiplier>k__BackingField: 1
   <ShielderPowerAttackState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 05eb21e9e36ac4adab0afa9f7c278bf1,
       type: 3}
     <AttackDuration>k__BackingField: 2.5
-    <AttackRange>k__BackingField: 5
+    <AttackRange>k__BackingField: 2
     <AttackDamageMultiplier>k__BackingField: 2.5
   <ShielderFlyingState>k__BackingField:
     <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,

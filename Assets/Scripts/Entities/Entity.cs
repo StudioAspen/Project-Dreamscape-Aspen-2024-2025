@@ -963,8 +963,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);
+    }
+
+    /// <summary>
+    /// Determines if the entity can get staggered.
+    /// Override this method to prevent stagger depending on current state.
+    /// </summary>
+    /// <returns>Whether the entity can be staggered</returns>
+    public virtual bool CanBeStaggered()
+    {
+        return true;
     }
 
     /// <summary>

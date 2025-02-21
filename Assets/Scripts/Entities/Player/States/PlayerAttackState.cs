@@ -70,7 +70,7 @@ public class PlayerAttackState : PlayerBaseState
     {
         playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
 
-        playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
+        playerCombat.Weapon.ClearObjectHitList(); // allows all enemies to get hit again
 
         playerCombat.Weapon.SetDamageMultiplier(ComboData.DamageMultiplier * extraDamageMultiplier); // set the damage mult for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo

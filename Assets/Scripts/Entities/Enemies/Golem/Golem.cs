@@ -102,7 +102,7 @@ public class Golem : Enemy
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
     /// <returns>True if the Charger can be staggered, false otherwise.</returns>
-    private bool CanBeStaggered()
+    public override bool CanBeStaggered()
     {
         return CurrentState == GolemReadyAttackState
                || CurrentState == GolemStaggeredState
@@ -114,8 +114,10 @@ public class Golem : Enemy
         if (CurrentState == EntityDeathState) return;
 
         int newDamage = dmg;
-        
-        if(CanBeStaggered())
+
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
+
+        if (CanBeStaggered())
         {
             damageTakenSinceLastStagger += newDamage;
             if (damageTakenSinceLastStagger > staggerDamageThreshold)
@@ -136,7 +138,6 @@ public class Golem : Enemy
             }
         }
 
-        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
         CurrentHealth -= newDamage;
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
         lastHitSource = source;

@@ -105,7 +105,6 @@ MonoBehaviour:
   <CustomCollisionRadius>k__BackingField: 0.4
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0.25}
-  IsAttackAnimationPlaying: 0
   <DetectionDistance>k__BackingField: 15
   <DetectionConeHalfAngle>k__BackingField: 20
   staggerDamageThreshold: 40
@@ -131,7 +130,7 @@ MonoBehaviour:
   <ChargerWindDownState>k__BackingField:
     <WindDownDuration>k__BackingField: 2
   <ChargerDazedState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -6959607903234413826, guid: 7042460e2d1c99249818b6e9e3b741e3,
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: ef714b2ac14fdcd48b56888fc4dcf23e,
       type: 3}
     <DazedDuration>k__BackingField: 5
   <ChargerJabbingAttackState>k__BackingField:

@@ -7,16 +7,10 @@ public class ShielderPowerAttack : ShielderBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AttackDuration { get; private set; } = 2.5f;
-    [field: SerializeField] public float AttackRange { get; private set; } = 5f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 2f;
     [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 2.5f;
 
-    private Vector3 attackDirection;
     private float timer;
-
-    public void SetAttackDirection(Vector3 direction)
-    {
-        attackDirection = direction;
-    }
 
     public override void OnEnter()
     {
@@ -24,7 +18,7 @@ public class ShielderPowerAttack : ShielderBaseState
         shielder.SetSpeedModifier(0f);
 
         shielder.LongSword.OnWeaponStartSwing?.Invoke(shielder);
-        shielder.LongSword.ClearEnemiesHitList();
+        shielder.LongSword.ClearObjectHitList();
         shielder.LongSword.SetDamageMultiplier(AttackDamageMultiplier);
 
         shielder.UseRootMotion = true;
@@ -36,11 +30,18 @@ public class ShielderPowerAttack : ShielderBaseState
     {
         shielder.UseRootMotion = false;
         shielder.LongSword.OnWeaponEndSwing?.Invoke(shielder);
+        shielder.LongSword.DisableTriggers();
     }
 
     public override void OnUpdate()
     {
         shielder.ApplyGravity();
+
+        if(shielder.Target == null)
+        {
+            shielder.ChangeState(shielder.ShielderWanderState);
+            return;
+        }
 
         timer += shielder.LocalDeltaTime;
         if(timer > AttackDuration)
@@ -49,6 +50,6 @@ public class ShielderPowerAttack : ShielderBaseState
             return;
         }
 
-        shielder.LookAt(shielder.transform.position + attackDirection);
+        shielder.LookAt(shielder.Target.transform.position);
     }
 }

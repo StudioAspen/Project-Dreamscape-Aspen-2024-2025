@@ -8,7 +8,6 @@ public class ShielderShieldBashState : ShielderBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float Duration { get; private set; } = 1f;
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
     [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 0.5f;
     [field: SerializeField] public float ShieldBashPushForce { get; private set; } = 5f;
     [field: SerializeField] public float ShieldBashStunTime { get; private set; } = 1f;
@@ -27,14 +26,12 @@ public class ShielderShieldBashState : ShielderBaseState
         shielder.SetSpeedModifier(0f);
 
         shielder.Shield.OnWeaponStartSwing?.Invoke(shielder);
-        shielder.Shield.ClearEnemiesHitList();
+        shielder.Shield.ClearObjectHitList();
         shielder.Shield.SetDamageMultiplier(AttackDamageMultiplier);
 
         shielder.UseRootMotion = true;
 
         timer = 0f;
-
-        shielder.Shield.OnWeaponHit += Shielder_Shield_OnWeaponHit;
     }
 
     public override void OnExit()
@@ -42,8 +39,8 @@ public class ShielderShieldBashState : ShielderBaseState
         shielder.Shield.OnWeaponHit -= Shielder_Shield_OnWeaponHit;
 
         shielder.UseRootMotion = false;
-
         shielder.Shield.OnWeaponEndSwing?.Invoke(shielder);
+        shielder.Shield.DisableTriggers();
     }
 
     public override void OnUpdate()
@@ -62,8 +59,8 @@ public class ShielderShieldBashState : ShielderBaseState
 
     private void Shielder_Shield_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        Vector3 pushDirection = victim.GetColliderCenterPosition() - attacker.transform.position;
-        victim.TryChangeToLaunchState(pushDirection.normalized, ShieldBashPushForce, ShieldBashStunTime);
+        Vector3 pushDirection = (victim.transform.position + 1f/4f * victim.GetColliderCenterPosition()) - attacker.transform.position; // Slightly upwards direction
+        victim.ForceChangeToLaunchState(pushDirection.normalized, ShieldBashPushForce, ShieldBashStunTime);
     }
 }
 

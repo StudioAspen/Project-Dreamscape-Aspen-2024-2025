@@ -51,7 +51,7 @@ public class ShielderWanderState : ShielderBaseState
 
         if (shielder.Target != null)
         {
-            shielder.ChangeState(shielder.ShielderTargetDetectedState);
+            shielder.ChangeState(shielder.ShielderDefensiveState);
             return;
         }
     }

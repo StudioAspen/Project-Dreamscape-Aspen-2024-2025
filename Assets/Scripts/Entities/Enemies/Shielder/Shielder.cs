@@ -36,11 +36,13 @@ public class Shielder : Enemy
     private protected override void OnAwake()
     {
         base.OnAwake();
+
     }
 
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
+
     }
 
     private protected override void OnOnDisable()
@@ -65,35 +67,45 @@ public class Shielder : Enemy
         base.OnFixedUpdate();
     }
 
-    public void StartHit()
+    public override bool CanBeStaggered()
+    {
+        bool isImmuneToStagger = CurrentState == ShielderDefensiveState
+            || CurrentState == ShielderPowerAttackState
+            || CurrentState == ShielderQuickAttackState
+            || CurrentState == ShielderShieldBashState;
+
+        return !isImmuneToStagger;
+    }
+
+    /// <summary>
+    /// Called via animation events with shielder sword attacks
+    /// </summary>
+    public void StartSwordHit()
     {
         LongSword.EnableTriggers();
+    }
+
+    /// <summary>
+    /// Called via animation events with shielder sword attacks
+    /// </summary>
+    public void EndSwordHit()
+    {
+        LongSword.DisableTriggers();
+    }
+
+    /// <summary>
+    /// Called via animation events with shielder shield attacks
+    /// </summary>
+    public void StartShieldHit()
+    {
         Shield.EnableTriggers();
     }
 
-    public void EndHit()
+    /// <summary>
+    /// Called via animation events with shielder shield attacks
+    /// </summary>
+    public void EndShieldHit()
     {
-        LongSword.DisableTriggers();
         Shield.DisableTriggers();
-    }
-
-    public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
-    {
-        List<Collider> hits = GetCustomCollisionHits(ShielderFlyingState.ShielderFlyingLayerMask);
-
-        foreach (Collider hit in hits)
-        {
-            if (CurrentState == ShielderFlyingState)
-            {
-                if (DidHitEnemyEntity(hit, out Entity enemyEntity))
-                {
-                    if (hitEntities.Contains(enemyEntity)) continue;
-                    hitEntities.Add(enemyEntity);
-
-                    DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
-                    return;
-                }
-            }
-        }
     }
 }

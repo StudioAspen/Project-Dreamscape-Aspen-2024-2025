@@ -35,7 +35,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
             RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
-            RightFistWeapon.ClearEnemiesHitList();
+            RightFistWeapon.ClearObjectHitList();
 
             RightFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
@@ -45,7 +45,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
             LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
 
-            LeftFistWeapon.ClearEnemiesHitList();
+            LeftFistWeapon.ClearObjectHitList();
 
             LeftFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }

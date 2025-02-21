@@ -32,7 +32,7 @@ public class FollowerAttackState : FollowerBaseState
         follower.SetSpeedModifier(0f);
 
         Weapon.OnWeaponStartSwing?.Invoke(follower);
-        Weapon.ClearEnemiesHitList();
+        Weapon.ClearObjectHitList();
 
         Weapon.SetDamageMultiplier(AttackDamageMultiplier);
 
