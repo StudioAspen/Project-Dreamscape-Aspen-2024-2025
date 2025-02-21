@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 4285370221129053171}
   - component: {fileID: 347352571113040777}
   - component: {fileID: 2746523879392982161}
-  m_Layer: 0
+  - component: {fileID: 8823760726863166375}
+  m_Layer: 23
   m_Name: DreamMushroom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,6 +90,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6de4a3e4ec70bb4cb9a9d34e56ba4ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnDuration: 5
+--- !u!65 &8823760726863166375
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110658283149822555}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6856302741912383626
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,7 +123,7 @@ GameObject:
   - component: {fileID: 7254973796288522432}
   - component: {fileID: 4799104711579094455}
   - component: {fileID: 7488980641507609954}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +160,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6856302741912383626}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

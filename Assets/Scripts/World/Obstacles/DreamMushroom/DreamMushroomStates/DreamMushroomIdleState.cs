@@ -7,6 +7,7 @@ public class DreamMushroomIdleState : DreamMushroomBaseState
 {
     public override void OnEnter()
     {
+        Debug.Log("Idle");
         dreamMushroom.OnDamaged += DreamMushroom_OnDamage;
     }
 
