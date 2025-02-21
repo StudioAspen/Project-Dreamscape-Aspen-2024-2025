@@ -208,7 +208,7 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 58b1d455cd3471545a4b26b0498aa21a,
       type: 3}
     <AttackDuration>k__BackingField: 1.75
-    <AttackRange>k__BackingField: 1
+    <AttackRange>k__BackingField: 1.5
     <AttackDamageMultiplier>k__BackingField: 1
   <ShielderPowerAttackState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 05eb21e9e36ac4adab0afa9f7c278bf1,
@@ -230,7 +230,6 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 14a6fe874fb04412eb47367f69d03bae,
       type: 3}
     <Duration>k__BackingField: 1
-    <AttackRange>k__BackingField: 1
     <AttackDamageMultiplier>k__BackingField: 0.5
     <ShieldBashPushForce>k__BackingField: 8
     <ShieldBashStunTime>k__BackingField: 1.5
@@ -260,7 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShardPrefab>k__BackingField: {fileID: 4789584422821504724, guid: aab5c2308ea333d468003485129cd32a,
     type: 3}
-  color: {r: 0.6542239, g: 0, b: 1, a: 1}
+  color: {r: 0, g: 0.9077401, b: 1, a: 1}
   memoryAbility: {fileID: 11400000, guid: a92cebb90948222499cdebf9bf54c8a8, type: 2}
   shardDropCount: 5
   eliteShardDropCountMultiplier: 1.5
