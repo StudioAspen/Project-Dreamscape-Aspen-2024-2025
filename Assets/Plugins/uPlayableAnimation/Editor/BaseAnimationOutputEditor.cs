@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+#if UNITY_EDITOR
 using UPlayable.AnimationMixer;
 
 [CanEditMultipleObjects]
@@ -15,3 +16,4 @@ public class BaseAnimationOutputEditor : Editor
         }
     }
 }
+#endif
