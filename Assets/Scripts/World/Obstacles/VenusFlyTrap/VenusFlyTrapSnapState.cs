@@ -60,7 +60,7 @@ public class VenusFlyTrapSnapState : VenusFlyTrapBaseState
 
     public void OnTriggerStay(Collider other)
     {
-        Entity hitEntity = other.gameObject.GetComponent<Entity>();
+        Entity hitEntity = other.gameObject.GetComponent<Player>();
         if (hitEntity == null) return;
 
         if (!trappedEntities.ContainsKey(hitEntity))
@@ -71,7 +71,7 @@ public class VenusFlyTrapSnapState : VenusFlyTrapBaseState
 
     public void OnTriggerExit(Collider other)
     {
-        Entity hitEntity = other.gameObject.GetComponent<Entity>();
+        Entity hitEntity = other.gameObject.GetComponent<Player>();
         if (hitEntity == null) return;
 
         if (trappedEntities.ContainsKey(hitEntity))
