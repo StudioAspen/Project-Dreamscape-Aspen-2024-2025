@@ -238,12 +238,12 @@ PrefabInstance:
     - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
-      value: 0.3
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Value
-      value: 40
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4977976460878136548, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -268,12 +268,12 @@ PrefabInstance:
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
-      value: 0.3
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Value
-      value: 40
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -438,17 +438,17 @@ PrefabInstance:
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Gradient.m_Array.Array.data[1].m_Value.key2.b
-      value: 0.5568628
+      value: 0.1792453
       objectReference: {fileID: 0}
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Gradient.m_Array.Array.data[1].m_Value.key2.g
-      value: 0.48235294
+      value: 0.1792453
       objectReference: {fileID: 0}
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Gradient.m_Array.Array.data[1].m_Value.key2.r
-      value: 0.5176471
+      value: 0.1792453
       objectReference: {fileID: 0}
     - target: {fileID: 7957333978815448127, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -483,12 +483,12 @@ PrefabInstance:
     - target: {fileID: 8830919539358834859, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
-      value: 0.3
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 8830919539358834859, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Value
-      value: 40
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8830919539358834859, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -558,12 +558,12 @@ PrefabInstance:
     - target: {fileID: 8974300655420870486, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
-      value: 0.3
+      value: 0.125
       objectReference: {fileID: 0}
     - target: {fileID: 8974300655420870486, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[4].m_Value
-      value: 40
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8974300655420870486, guid: 7e9449c6a8e69744db25aff9cece0927,
         type: 3}
@@ -1431,8 +1431,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
