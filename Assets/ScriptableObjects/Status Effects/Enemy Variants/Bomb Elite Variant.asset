@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74dbd012d41892446b9748696f03d9b3, type: 3}
   m_Name: Bomb Elite Variant
   m_EditorClassIdentifier: 
+  <DisplayName>k__BackingField: Status Effect
+  <Description>k__BackingField: Status effect description
   <Stackable>k__BackingField: 0
   <Name>k__BackingField: Bomb
-  <VariantMaterial>k__BackingField: {fileID: 2100000, guid: 29a5e056ffced1d4a894b9b037698663,
-    type: 2}
   <MaxHealthMultiplier>k__BackingField: 1.2
   <EXPValueMultiplier>k__BackingField: 1.5
   <SizeMultiplier>k__BackingField: 1.2
   <DamageMultiplier>k__BackingField: 1.25
+  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 29a5e056ffced1d4a894b9b037698663,
+    type: 2}
   <ExplosionDelay>k__BackingField: 1
   <ExplosionRadius>k__BackingField: 5
-  <ExplosionPercentDamage>k__BackingField: 150
+  <ExplosionDamageMultiplier>k__BackingField: 1.5
   <ExplosionLaunchForce>k__BackingField: 15
   <ExplosionStunDuration>k__BackingField: 2
   <CameraShakeDuration>k__BackingField: 1
