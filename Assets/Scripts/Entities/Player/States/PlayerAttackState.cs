@@ -269,5 +269,22 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
     }
+
+    /// <summary>
+    /// Called from playerCombat's FireAbility() method. That method is called from an animation event.
+    /// </summary>
+    public void FireAbility()
+    {
+        AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
+        if (abilityComboData == null) return;
+
+        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
+        if (spawner == null) return;
+
+        Debug.Log("Fire Ability");
+
+        CastedAbility spawnedAbility = spawner.SpawnObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        spawnedAbility.Init(player);
+    }
 }
 

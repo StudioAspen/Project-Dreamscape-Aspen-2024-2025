@@ -305,17 +305,12 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
-    /// Fires a fireball. (NEEDS TO BE GENERALIZED FOR ALL ABILTIES).
     /// Called by animation through an event.
     /// </summary>
-    public void FireAbility(AnimationEvent animationEvent)
+    public void FireAbility()
     {
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
+        if (player.CurrentState != player.PlayerAttackState) return;
 
-        spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
-
-        Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
-        fireball.Fire(transform.forward, gameObject, player.Team, 1f);
+        player.PlayerAttackState.FireAbility();
     }
 }

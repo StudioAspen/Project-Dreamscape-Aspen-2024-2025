@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Dreamscape;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ComboData", order = 1)]
+[CreateAssetMenu(fileName = "Data", menuName = "Combo/Default", order = 1)]
 public class ComboDataSO : ScriptableObject
 {
 

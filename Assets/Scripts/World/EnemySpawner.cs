@@ -155,9 +155,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
     public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
     {
-        enemyPooler.ChangePrefab(enemyPrefab.gameObject);
-
-        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(spawnPosition);
+        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(enemyPrefab.gameObject, spawnPosition);
         spawnedEnemy.Init(this);
 
         OnEnemySpawned?.Invoke(spawnedEnemy);
