@@ -281,8 +281,6 @@ public class PlayerAttackState : PlayerBaseState
         ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
         if (spawner == null) return;
 
-        Debug.Log("Fire Ability");
-
         CastedAbility spawnedAbility = spawner.SpawnObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
         spawnedAbility.Init(player);
     }
