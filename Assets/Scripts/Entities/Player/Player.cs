@@ -265,6 +265,7 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
 
         ChangeState(EntityStaggeredState, true);
     }

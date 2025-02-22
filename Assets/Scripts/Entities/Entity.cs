@@ -312,6 +312,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: SerializeField] public EntityStaggeredState EntityStaggeredState { get; protected set; }
     [field: SerializeField] public EntityDeathState EntityDeathState { get; protected set; }
     [field: SerializeField] public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: SerializeField] public EntityStunnedState EntityStunnedState { get; protected set; }
     [field: SerializeField] public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
@@ -326,6 +327,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityDeathState.Init(this);
         EntityLaunchState.Init(this);
         EntityStaggeredState.Init(this);
+        EntityStunnedState.Init(this);
         EntitySpawnState.Init(this);
     }
 
@@ -963,6 +965,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
         if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);

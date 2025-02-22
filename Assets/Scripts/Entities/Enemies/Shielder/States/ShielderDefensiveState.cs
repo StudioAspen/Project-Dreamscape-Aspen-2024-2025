@@ -41,7 +41,7 @@ public class ShielderDefensiveState : ShielderBaseState
 
         if(shielder.Distance(shielder.Target) < shielder.ShielderQuickAttackState.AttackRange)
         {
-            if (shielder.Target.CurrentState == shielder.Target.EntityLaunchState)
+            if (shielder.Target.CurrentState == shielder.Target.EntityLaunchState || shielder.Target.CurrentState == shielder.Target.EntityStunnedState)
             {
                 shielder.ChangeState(shielder.ShielderPowerAttackState);
                 return;

@@ -123,8 +123,6 @@ public class PlayerAttackState : PlayerBaseState
             return;
         }
 
-        //HandleAnimationCancellingBuffer();
-
         TryLookAtClosestTarget();
 
         player.AccelerateToHorizontalSpeed(0f);
@@ -199,6 +197,8 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
+        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(ComboData.StunDuration);
+
         TryLaunchVictim(victim, damage);
         TryAirComboVictim(victim, damage);
     }
@@ -243,6 +243,8 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (player.CurrentState == player.PlayerChargeState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
         return true;
