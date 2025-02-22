@@ -22,8 +22,6 @@ public class MomentumSystem : MonoBehaviour
     [SerializeField] private float maxMoveSpeedBonus;
     [SerializeField] private int healAmount;
 
-
-
     private int momentum;
     public int Momentum => momentum;
 
@@ -82,12 +80,10 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
 
-
         if(momentum % 10 == 0)
         {
             //if momentum reaches mutliple of 10 you get healed yay
             player.Heal(healAmount);
-            Debug.Log("momentum heal!");
         }
         else if(momentum % 2 == 1)
         {
@@ -95,9 +91,9 @@ public class MomentumSystem : MonoBehaviour
             if(currentDamageBonus < maxDamageBonus)
             {
                 //if damage bonus isnt maxed out already, add percent bonus
-                player.DamageModifier.RemoveMultiplier(currentDamageBonus);
+                player.DamageModifier.RemoveMultiplier(currentDamageBonus, this);
                 currentDamageBonus += percentDamageBonus;
-                player.DamageModifier.AddMultiplier(currentDamageBonus);
+                player.DamageModifier.AddMultiplier(currentDamageBonus, this);
 
             }
         }
@@ -107,12 +103,11 @@ public class MomentumSystem : MonoBehaviour
             if(currentMoveSpeedBonus < maxMoveSpeedBonus)
             {
                 //if speed bonus hasnt maxed out add percent bonus
-                player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
+                player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus, this);
                 currentMoveSpeedBonus += percentMoveSpeedBonus;
-                player.StatusSpeedModifier.AddMultiplier(currentMoveSpeedBonus);
+                player.StatusSpeedModifier.AddMultiplier(currentMoveSpeedBonus, this);
             }
         }
-
     }
 
     private void Reset()
@@ -121,10 +116,9 @@ public class MomentumSystem : MonoBehaviour
         timeBetween = baseTimeBetween;
         momentum = 0;
         //resets modifiers yay
-        player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
+        player.StatusSpeedModifier.ClearBuffsFromSource(this);
         currentMoveSpeedBonus = 1;
-        player.DamageModifier.RemoveMultiplier(currentDamageBonus);
+        player.DamageModifier.ClearBuffsFromSource(this);
         currentDamageBonus = 1;
     }
-
 }
