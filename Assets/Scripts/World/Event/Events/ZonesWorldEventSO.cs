@@ -63,44 +63,6 @@ public class ZonesWorldEventSO : WorldEventSO
         debugSpheres.Clear();
     }
 
-    /// <summary>
-    /// Generates a list of 3x3 lands centered around a random land.
-    /// </summary>
-    /// <returns>The list of 3x3 lands.</returns>
-    private List<LandManager> GetRandom3x3Land()
-    {
-        List<LandManager> resultingLands = new List<LandManager>();
-
-        LandManager centerLand = worldManager.GetRandomLand();
-        resultingLands.Add(centerLand);
-
-        debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(centerLand.transform.position + 10f * Vector3.up, 3f, Mathf.Infinity, Color.red));
-
-        List<Vector2Int> offsets = new List<Vector2Int>() {
-            new Vector2Int(1, 0),  // Right
-            new Vector2Int(-1, 0), // Left
-            new Vector2Int(0, 1),  // Top
-            new Vector2Int(0, -1), // Bottom
-            new Vector2Int(1, 1),  // Top-right
-            new Vector2Int(1, -1), // Bottom-right
-            new Vector2Int(-1, 1), // Top-left
-            new Vector2Int(-1, -1) // Bottom-left
-        };
-
-        // Add neighboring lands using the offsets
-        foreach (Vector2Int offset in offsets)
-        {
-            if (worldManager.TryGetLandByGridPosition(centerLand.GridPosition + offset, out LandManager neighborLand))
-            {
-                resultingLands.Add(neighborLand);
-
-                debugSpheres.Add(CustomDebug.InstantiateTemporarySphere(neighborLand.transform.position + 10f * Vector3.up, 3f, Mathf.Infinity, new Color(1, 0, 0, 0.25f)));
-            }
-        }
-
-        return resultingLands;
-    }
-
   /// <summary>
   /// Creates a square-shaped outbreak pattern starting from a randomly selected land,
   /// then spiraling outward layer by layer in a clockwise direction.
