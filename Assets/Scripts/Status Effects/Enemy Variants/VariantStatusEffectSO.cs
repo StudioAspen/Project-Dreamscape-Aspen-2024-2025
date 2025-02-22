@@ -37,12 +37,12 @@ public class VariantStatusEffectSO : StatusEffectSO
             entityRendererManager.AddMaterial(VariantMaterial);
         }
 
-        enemy.MaxHealth.AddMultiplier(MaxHealthMultiplier);
+        enemy.MaxHealth.AddMultiplier(MaxHealthMultiplier, this);
         enemy.HealToFull(false); // Heal to full after setting max health without spawning numbers
 
-        enemy.EXPValue.AddMultiplier(EXPValueMultiplier);
-        enemy.SizeScale.AddMultiplier(SizeMultiplier);
-        enemy.DamageModifier.AddMultiplier(DamageMultiplier);
+        enemy.EXPValue.AddMultiplier(EXPValueMultiplier, this);
+        enemy.SizeScale.AddMultiplier(SizeMultiplier, this);
+        enemy.DamageModifier.AddMultiplier(DamageMultiplier, this);
     }
 
     public override void Cancel()
@@ -51,10 +51,10 @@ public class VariantStatusEffectSO : StatusEffectSO
 
         if (entityRendererManager != null) entityRendererManager.RestoreOriginalMaterials();
 
-        enemy.MaxHealth.RemoveMultiplier(MaxHealthMultiplier);
+        enemy.MaxHealth.ClearBuffsFromSource(this);
 
-        enemy.EXPValue.RemoveMultiplier(EXPValueMultiplier);
-        enemy.SizeScale.RemoveMultiplier(SizeMultiplier);
-        enemy.DamageModifier.RemoveMultiplier(DamageMultiplier);
+        enemy.EXPValue.ClearBuffsFromSource(this);
+        enemy.SizeScale.ClearBuffsFromSource(this);
+        enemy.DamageModifier.ClearBuffsFromSource(this);
     }
 }

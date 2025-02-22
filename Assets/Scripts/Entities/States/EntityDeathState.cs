@@ -15,7 +15,7 @@ public class EntityDeathState : EntityBaseState
 
         entity.SetSpeedModifier(0f);
 
-        entity.LocalTimeScale.ClearMultipliers();
+        entity.LocalTimeScale.ClearAllBuffs();
 
         entity.IgnoreOtherEntityCollisions(true);
 
