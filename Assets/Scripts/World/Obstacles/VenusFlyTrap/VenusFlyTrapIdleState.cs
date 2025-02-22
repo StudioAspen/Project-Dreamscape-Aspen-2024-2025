@@ -33,7 +33,7 @@ public class VenusFlyTrapIdleState : VenusFlyTrapBaseState
         List<Entity> targets = new List<Entity>();
         foreach (Collider hit in hits)
         {
-            Entity entity = hit.GetComponent<Entity>();
+            Entity entity = hit.GetComponent<Player>();
             if (entity != null)
             {
                 targets.Add(entity);
