@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MomentumSystem : MonoBehaviour
 {
@@ -12,6 +13,16 @@ public class MomentumSystem : MonoBehaviour
     [SerializeField] private float timeBetweenMultiplier = 0.975f;
     private float timer;
     private float timeBetween;
+
+    [SerializeField] private float percentDamageBonus;
+    private float currentDamageBonus = 1;
+    [SerializeField] private float maxDamageBonus;
+    [SerializeField] private float percentMoveSpeedBonus;
+    private float currentMoveSpeedBonus = 1;
+    [SerializeField] private float maxMoveSpeedBonus;
+    [SerializeField] private int healAmount;
+
+
 
     private int momentum;
     public int Momentum => momentum;
@@ -70,6 +81,38 @@ public class MomentumSystem : MonoBehaviour
         momentum++;
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
+
+
+        if(momentum % 10 == 0)
+        {
+            //if momentum reaches mutliple of 10 you get healed yay
+            player.Heal(healAmount);
+            Debug.Log("momentum heal!");
+        }
+        else if(momentum % 2 == 1)
+        {
+            //activates every odd increment of momentum (1,3,5..)
+            if(currentDamageBonus < maxDamageBonus)
+            {
+                //if damage bonus isnt maxed out already, add percent bonus
+                player.DamageModifier.RemoveMultiplier(currentDamageBonus);
+                currentDamageBonus += percentDamageBonus;
+                player.DamageModifier.AddMultiplier(currentDamageBonus);
+
+            }
+        }
+        else
+        {
+            //activates every even increment (2,4,6..)
+            if(currentMoveSpeedBonus < maxMoveSpeedBonus)
+            {
+                //if speed bonus hasnt maxed out add percent bonus
+                player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
+                currentMoveSpeedBonus += percentMoveSpeedBonus;
+                player.StatusSpeedModifier.AddMultiplier(currentMoveSpeedBonus);
+            }
+        }
+
     }
 
     private void Reset()
@@ -77,6 +120,11 @@ public class MomentumSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         momentum = 0;
+        //resets modifiers yay
+        player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus);
+        currentMoveSpeedBonus = 1;
+        player.DamageModifier.RemoveMultiplier(currentDamageBonus);
+        currentDamageBonus = 1;
     }
 
 }
