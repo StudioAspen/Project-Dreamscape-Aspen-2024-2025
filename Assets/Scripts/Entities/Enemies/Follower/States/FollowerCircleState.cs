@@ -2,9 +2,9 @@
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class FollowerCircleState : FollowerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
     [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
     [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
@@ -20,7 +20,7 @@ public class FollowerCircleState : FollowerBaseState
 
     public override void OnEnter()
     {
-        follower.TransitionToAnimation("FlatMovement");
+        follower.PlayDefaultAnimation();
 
         follower.SetSpeedModifier(0.5f);
 
@@ -42,7 +42,7 @@ public class FollowerCircleState : FollowerBaseState
 
         if(follower.Distance(follower.Target) > MaxCircleRadius)
         {
-            follower.ChangeState(follower.EnemyChaseState);
+            follower.ChangeState(follower.FollowerChaseState);
             return;
         }
 
@@ -69,7 +69,7 @@ public class FollowerCircleState : FollowerBaseState
 
         if (follower.IsBlockedFromEntity(follower.Target))
         {
-            follower.ChangeState(follower.EnemyChaseState);
+            follower.ChangeState(follower.FollowerChaseState);
             return;
         }
 
@@ -100,7 +100,7 @@ public class FollowerCircleState : FollowerBaseState
 
             if (!playerNearbyFollowers.Contains(follower)) return;
 
-            follower.ChangeState(follower.EnemyChaseState);
+            follower.ChangeState(follower.FollowerChaseState);
         }
     }
 

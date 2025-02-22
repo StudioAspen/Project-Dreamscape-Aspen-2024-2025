@@ -36,7 +36,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(GroundPoundAnimationClip);
+        player.PlayOneShotAnimation(GroundPoundAnimationClip);
 
         player.Launch(Vector3.down, GroundPoundForce);
 
@@ -69,7 +69,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
         {
             hasRecoveredStarted = true;
 
-            TransitionToAbilityAnimation(GroundImpactAnimationClip);
+            player.PlayOneShotAnimation(GroundImpactAnimationClip);
 
             Entity.DamageEnemyEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
 

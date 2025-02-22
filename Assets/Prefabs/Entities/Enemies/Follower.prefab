@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: 8702003990657789017}
   - component: {fileID: 3915645929625153338}
   - component: {fileID: 1618065953251082522}
+  - component: {fileID: 4328534957648732963}
+  - component: {fileID: 3486295499383915700}
+  - component: {fileID: 88390753607719405}
   m_Layer: 16
   m_Name: Follower
   m_TagString: Untagged
@@ -36,7 +39,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1758412578857670352}
   - {fileID: 41544952237181766}
   - {fileID: 4150967214179094889}
   - {fileID: 2996173690986891309}
@@ -61,6 +63,7 @@ MonoBehaviour:
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 50
     multipliers: []
+    <FlatIncrease>k__BackingField: 0
   baseSpeed: 2
   rotationSpeed: 5
   mass: 1
@@ -71,18 +74,59 @@ MonoBehaviour:
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
     multipliers: []
+    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
     multipliers: []
+    <FlatIncrease>k__BackingField: 0
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a15e742835b4fff4f9fdf88f94096009,
+      type: 3}
+    <DeathDuration>k__BackingField: 1
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
+      type: 3}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
+      type: 3}
+    <SpawnDuration>k__BackingField: 1.5
   <Cost>k__BackingField: 1
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 0
     multipliers: []
+    <FlatIncrease>k__BackingField: 0
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   IsAttackAnimationPlaying: 0
+  <FollowerAttackState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 9df1da0ce407d0641a89278cc6022e15,
+      type: 3}
+    <AttackDuration>k__BackingField: 1.25
+    <AttackRange>k__BackingField: 1
+    <AttackDamageMultiplier>k__BackingField: 1
+  <FollowerWanderState>k__BackingField:
+    <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+    <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+  <FollowerReadyAttackState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 3e4cdbfcdc769104eaf456cc771093ae,
+      type: 3}
+    <AttackReadyDuration>k__BackingField: 0.5
+  <FollowerAttackRecoverState>k__BackingField:
+    <AttackRecoverDuration>k__BackingField: 1
+  <FollowerCircleState>k__BackingField:
+    <CircleFollowerCountThreshold>k__BackingField: 2
+    <ChangeDirectionInterval>k__BackingField: 0.5
+    <ChangeDirectionReciprocal>k__BackingField: 50
+    <CircleRadius>k__BackingField: 5
+    <MaxCircleRadius>k__BackingField: 8
 --- !u!114 &364766872975019307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,7 +167,7 @@ Animator:
   m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2be0c0643d1b0f54e92d2c57b2545ce5, type: 3}
-  m_Controller: {fileID: 9100000, guid: ed2923fa380b2924ba16b71f7b29aa70, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -202,6 +246,66 @@ MonoBehaviour:
   <Renderers>k__BackingField:
   - {fileID: 7989203739341791905}
   - {fileID: 3278909593834522684}
+--- !u!114 &4328534957648732963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18498f4614684d14b942ac9d7ad80b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_useCustomFrameRate: 0
+  m_customFrameRate: 60
+--- !u!114 &3486295499383915700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b7252b345e69f9439e871e0102cb078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 0
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  ToClip: {fileID: 0}
+--- !u!114 &88390753607719405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cfb5fb47b7a7143b09b60466a3830e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 1
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  AnimationControll: {fileID: 9100000, guid: ed2923fa380b2924ba16b71f7b29aa70, type: 2}
 --- !u!1 &2299435363706797073
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,113 +390,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &3175070344943597489
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1758412578857670352}
-  - component: {fileID: 2567039591467770534}
-  - component: {fileID: 3028459021111895572}
-  - component: {fileID: 2507164707712732670}
-  - component: {fileID: 1855712893180958913}
-  - component: {fileID: 669082963684805819}
-  m_Layer: 0
-  m_Name: States
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1758412578857670352
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3490398193883977143}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2567039591467770534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff3b8b3a5194ace40b22dba07d42e489, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
-  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
---- !u!114 &3028459021111895572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423e064946ee0f048877d0ede16c302e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <CircleFollowerCountThreshold>k__BackingField: 2
-  <ChangeDirectionInterval>k__BackingField: 0.5
-  <ChangeDirectionReciprocal>k__BackingField: 50
-  <CircleRadius>k__BackingField: 5
-  <MaxCircleRadius>k__BackingField: 8
---- !u!114 &2507164707712732670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d92fb50fe6f7584f82dbc2218038d78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackRecoverDuration>k__BackingField: 1
---- !u!114 &1855712893180958913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b92f8d54a89a034ab7375cd8299c461, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackRange>k__BackingField: 1
-  <AttackDamageMultiplier>k__BackingField: 1
---- !u!114 &669082963684805819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3175070344943597489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a202a20108b5e294686878b77e3f1181, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackReadyDuration>k__BackingField: 0.5
 --- !u!1001 &4472509618577045122
 PrefabInstance:
   m_ObjectHideFlags: 0

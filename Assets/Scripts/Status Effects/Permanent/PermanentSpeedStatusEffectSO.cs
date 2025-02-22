@@ -10,23 +10,23 @@ public class PermanentSpeedStatusEffectSO : StatusEffectSO
     {
         base.OnApply();
 
-        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier); // apply the new speed multiplier
+        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // apply the new speed multiplier
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        entity.StatusSpeedModifier.RemoveMultiplier(SpeedMultiplier); // undo the speed multiplier
+        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // undo the speed multiplier
     }
 
     private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
         PermanentSpeedStatusEffectSO overridingStatusEffect = newStatusEffect as PermanentSpeedStatusEffectSO;
 
-        entity.StatusSpeedModifier.RemoveMultiplier(SpeedMultiplier); // undo the speed multiplier
+        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // undo the speed multiplier
         SpeedMultiplier *= overridingStatusEffect.SpeedMultiplier; // update the speed multiplier
-        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier); // reapply the new updated speed multiplier
+        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier, this); // reapply the new updated speed multiplier
     }
 }
 
