@@ -202,7 +202,7 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <param name="radius">The radius around the spawn point transform.</param>
     /// <returns>The position of the random spawn point.</returns>
-    private Vector3 GetRandomEnemySpawnPoint(float radius)
+    public Vector3 GetRandomEnemySpawnPoint(float radius)
     {
         int randomIndex = UnityEngine.Random.Range(0, enemySpawnPoints.Count);
         Transform baseSpawnPoint = enemySpawnPoints[randomIndex];

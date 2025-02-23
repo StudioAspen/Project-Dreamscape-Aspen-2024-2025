@@ -25,7 +25,7 @@ public class DefendWorldEventSO : WorldEventSO
 
         // Select a random land and spawn the defend event entity in the center of the land
         LandManager randomLand = worldManager.GetRandomLand();
-        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position, Quaternion.identity, eventManager.transform);
+        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 5f * Vector3.up, Quaternion.identity, eventManager.transform);
         DefendEventEntity.SetBaseMaxHealth(DefendEventMaxHealth, true);
 
         randomLand.EnemySpawner.MaterializeEntity(DefendEventEntity);
