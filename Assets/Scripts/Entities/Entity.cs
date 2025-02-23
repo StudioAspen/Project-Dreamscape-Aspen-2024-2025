@@ -463,7 +463,9 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
-        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+        HandleSize();
+        HandleHealth();
+
         OnUpdate();
     }
 
@@ -884,6 +886,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Changes the entity's scale based on the SizeScale value
+    /// </summary>
+    private void HandleSize()
+    {
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+    }
+
+    /// <summary>
     /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
     /// </summary>
     private void HandleHealth()
@@ -1200,6 +1210,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     public Vector3 GetColliderCenterPosition()
     {
         return CharacterController.bounds.center;
+    }
+
+    /// <summary>
+    /// Gets the top point of the entity.
+    /// </summary>
+    /// <returns>The the top point of the entity.</returns>
+    public Vector3 GetEntityTopPosition()
+    {
+        return transform.position + 2f * (GetColliderCenterPosition() - transform.position);
     }
 
     /// <summary>
