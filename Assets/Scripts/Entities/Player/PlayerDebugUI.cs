@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerDebugUI : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class PlayerDebugUI : MonoBehaviour
     private ChainingSystem chainingSystem;
     private MomentumSystem momentumSystem;
     private LevelSystem levelSystem;
-    private HealthBarUI healthBarUI;
 
     [SerializeField] private TMP_Text stateText;
     [SerializeField] private TMP_Text inputsText;
@@ -28,10 +26,6 @@ public class PlayerDebugUI : MonoBehaviour
         chainingSystem = player.GetComponent<ChainingSystem>();
         momentumSystem = player.GetComponent<MomentumSystem>();
         levelSystem = player.GetComponent<LevelSystem>();
-        healthBarUI = GetComponentInChildren<HealthBarUI>();
-
-        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        player.OnEntityHeal += Player_OnEntityHeal;
 
         if (playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
@@ -44,7 +38,6 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void LateStart()
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth.GetIntValue());
     }
 
     private IEnumerator LateStartCoroutine()
@@ -56,11 +49,7 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
-        player.OnEntityHeal -= Player_OnEntityHeal;
-
         if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
-
     }
 
     private void LateUpdate()
@@ -70,16 +59,6 @@ public class PlayerDebugUI : MonoBehaviour
         chainText.text = chainingSystem == null ? "Missing ChainingSystem component." : $"Chain: {chainingSystem.ChainCount}";
         momentumText.text = momentumSystem == null ? "Missing MomentumSystem component." : $"Momentum: {momentumSystem.Momentum}";
         levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
-    }
-
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth.GetIntValue());
-    }
-
-    private void Player_OnEntityHeal(Entity healedEntity, int healAmount)
-    {
-        healthBarUI.SetHealthBar(player.CurrentHealth + healAmount, player.MaxHealth.GetIntValue());
     }
 
     private void Weapon_OnWeaponStartSwing(Entity source)
