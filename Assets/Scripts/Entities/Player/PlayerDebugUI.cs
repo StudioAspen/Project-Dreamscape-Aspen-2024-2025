@@ -19,7 +19,7 @@ public class PlayerDebugUI : MonoBehaviour
     [SerializeField] private TMP_Text momentumText;
     [SerializeField] private TMP_Text levelText;
 
-    private void Awake()
+    private void Start()
     {
         player = GetComponentInParent<Player>();
         playerCombat = player.GetComponent<PlayerCombat>();
@@ -28,11 +28,7 @@ public class PlayerDebugUI : MonoBehaviour
         levelSystem = player.GetComponent<LevelSystem>();
 
         if (playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
-    }
 
-    private void Start()
-    {
-        // Need to delay start for a frame because of potential race condition as Player hp is also set in start.
         StartCoroutine(LateStartCoroutine());
     }
 

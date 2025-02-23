@@ -22,7 +22,7 @@ public class AspectsManager : MonoBehaviour
     /// </remarks>
     public Action<AspectTree> OnAspectTreeAdded = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         levelSystem = GetComponent<LevelSystem>();
 

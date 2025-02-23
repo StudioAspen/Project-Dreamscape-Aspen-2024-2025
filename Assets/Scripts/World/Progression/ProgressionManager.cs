@@ -20,7 +20,7 @@ public class ProgressionManager : MonoBehaviour
     public ProgressionQuestSO[] CurrentQuests { get; private set; } = new ProgressionQuestSO[QUEST_COUNT];
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         worldManager = GetComponent<WorldManager>();

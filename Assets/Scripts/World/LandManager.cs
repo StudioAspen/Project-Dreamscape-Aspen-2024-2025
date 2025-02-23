@@ -38,7 +38,7 @@ public class LandManager : MonoBehaviour
         Biome = biomeType;
     }
 
-    private void Awake()
+    private void Start()
     {
         worldManager = FindObjectOfType<WorldManager>();
         EnemySpawner = GetComponent<EnemySpawner>();
@@ -46,10 +46,7 @@ public class LandManager : MonoBehaviour
 
         // Give the body a random 90 degree rotation
         bodyContentTransform.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 4) * 90f, 0);
-    }
 
-    void Start()
-    {
         Level = 1;
 
         levelText.text = $"{Level}";

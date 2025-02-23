@@ -38,16 +38,13 @@ public class WorldManager : MonoBehaviour
     [field: Header("Possible Elites")]
     [field: SerializeField] public List<EliteVariantStatusEffectSO> EliteVariantStatusEffects { get; private set; } = new List<EliteVariantStatusEffectSO>();
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         navMeshSurface = GetComponent<NavMeshSurface>();
 
         SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
-    }
 
-    void Start()
-    {
         BuildNavMesh();
 
         DisableGhostLand();

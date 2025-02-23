@@ -43,15 +43,12 @@ public class PlayerCombat : MonoBehaviour
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
         animator = GetComponent<Animator>();
-    }
 
-    private void OnEnable()
-    {
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
         player.OnGrounded += Player_OnGrounded;
@@ -60,7 +57,7 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 

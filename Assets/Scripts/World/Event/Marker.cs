@@ -6,7 +6,7 @@ public class Marker : MonoBehaviour
 {
     private Camera mainCamera;
 
-    private void Awake()
+    private void Start()
     {
         mainCamera = Camera.main;
     }

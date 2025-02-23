@@ -14,7 +14,7 @@ public class EntityDebugCanvasUI : MonoBehaviour
     [SerializeField] private TMP_Text entityStateText;
     [SerializeField] private TMP_Text entityNameText;
 
-    private void Awake()
+    private void Start()
     {
         entity = GetComponentInParent<Entity>();
         entityStatusEffector = entity.GetComponent<EntityStatusEffector>();

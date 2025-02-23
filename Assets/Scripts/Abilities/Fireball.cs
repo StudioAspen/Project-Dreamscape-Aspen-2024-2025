@@ -15,7 +15,7 @@ public class Fireball : CastedAbility, IPoolableObject
 
     private Coroutine moveCoroutine;
 
-    private void Awake()
+    private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
     }

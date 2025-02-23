@@ -34,15 +34,12 @@ public class PlayerInputReader : MonoBehaviour
     [SerializeField] private float bufferDuration = 0.3f; // Time in seconds to keep inputs in the buffer
     public Queue<(ComboAction, float timestamp)> InputBuffer = new Queue<(ComboAction, float)>();
 
-    private void Awake()
+    private void Start()
     {
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
         memorySystem = player.GetComponent<MemorySystem>();
-    }
 
-    private void OnEnable()
-    {
         playerControls.Gameplay.Movement.performed += PlayerControls_OnMovementPerformed;
         playerControls.Gameplay.Movement.canceled += PlayerControls_OnMovementCanceled;
 
@@ -56,7 +53,7 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         MoveDirection = Vector3.zero;
 

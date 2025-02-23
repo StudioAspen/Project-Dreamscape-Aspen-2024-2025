@@ -13,7 +13,7 @@ public class ProgressionUIPanel : UIPanel
     [SerializeField] private TMP_Text weakenTokensText;
     [SerializeField] private TMP_Text continueText;
 
-    private void Awake()
+    private void Start()
     {
         progressionManager = FindObjectOfType<ProgressionManager>();
     }

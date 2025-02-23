@@ -11,25 +11,6 @@ public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
-    /// <summary>
-    /// Action that is invoked when the player is first instantiated.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The instantiated player</description></item>
-    /// </list>
-    /// </remarks>
-    public static Action<Player> OnPlayerInstantiated = delegate { };
-    /// <summary>
-    /// Action that is invoked when the player is destroyed.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The destroyed player</description></item>
-    /// </list>
-    /// </remarks>
-    public static Action<Player> OnPlayerDestroyed = delegate { };
-
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
@@ -102,8 +83,6 @@ public class Player : Entity
 
         playerInputReader = GetComponent<PlayerInputReader>();
 
-        OnPlayerInstantiated?.Invoke(this);
-
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
         OnEntityDestroyed += Player_OnEntityDestroyed;
     }
@@ -143,8 +122,6 @@ public class Player : Entity
     private void Player_OnEntityDestroyed(Entity destroyedEntity, GameObject killer)
     {
         OnEntityDestroyed -= Player_OnEntityDestroyed;
-
-        OnPlayerDestroyed?.Invoke(this);
     }
 
     /// <summary>

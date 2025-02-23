@@ -17,7 +17,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private bool isSelected;
 
-    private void Awake()
+    private void Start()
     {
         pauseUI = GetComponentInParent<PauseUIPanel>();
         button = GetComponent<Button>();

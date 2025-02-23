@@ -25,34 +25,9 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private TMP_Text memoryText;
     private Dictionary<string, RectTransform> shardBarTransforms = new();
 
-    private void Awake()
+    private void Start()
     {
-        Player.OnPlayerInstantiated += Player_OnPlayerInstantiated;
-    }
-
-    private void OnDestroy()
-    {
-        Player.OnPlayerInstantiated -= Player_OnPlayerInstantiated;
-
-        if(player != null)
-        {
-            player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-            player.OnEntityHeal += Player_OnEntityHeal;
-
-            aspectsManager.OnAspectTreeAdded -= AspectsManager_OnAspectTreeAdded;
-
-            memorySystem.OnNewShardTypeAdded -= MemorySystem_OnNewShardTypeAdded;
-            memorySystem.OnShardAdded -= MemorySystem_OnShardAdded;
-            memorySystem.OnMemoryBarFull -= MemorySystem_OnMemoryBarFull;
-            memorySystem.OnMemoryAbilityActivated -= MemorySystem_OnMemoryAbilityActivated;
-        }
-    }
-
-    private void Player_OnPlayerInstantiated(Player player)
-    {
-        Player.OnPlayerInstantiated -= Player_OnPlayerInstantiated;
-
-        this.player = player;
+        player = FindObjectOfType<Player>();
         aspectsManager = player.GetComponent<AspectsManager>();
         memorySystem = player.GetComponent<MemorySystem>();
 
@@ -67,6 +42,19 @@ public class PlayerUI : MonoBehaviour
         memorySystem.OnMemoryAbilityActivated += MemorySystem_OnMemoryAbilityActivated;
 
         StartCoroutine(DelayedOnGetPlayer());
+    }
+
+    private void OnDestroy()
+    {
+        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
+        player.OnEntityHeal += Player_OnEntityHeal;
+
+        aspectsManager.OnAspectTreeAdded -= AspectsManager_OnAspectTreeAdded;
+
+        memorySystem.OnNewShardTypeAdded -= MemorySystem_OnNewShardTypeAdded;
+        memorySystem.OnShardAdded -= MemorySystem_OnShardAdded;
+        memorySystem.OnMemoryBarFull -= MemorySystem_OnMemoryBarFull;
+        memorySystem.OnMemoryAbilityActivated -= MemorySystem_OnMemoryAbilityActivated;
     }
 
     private IEnumerator DelayedOnGetPlayer()

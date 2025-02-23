@@ -9,7 +9,7 @@ public class EventDisplayUI : MonoBehaviour
     private EventManager eventManager;
     private TMP_Text titleText;
 
-    private void Awake()
+    private void Start()
     {
         eventManager = FindObjectOfType<EventManager>();
         titleText = GetComponentInChildren<TMP_Text>();

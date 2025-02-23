@@ -65,7 +65,7 @@ public class MemorySystem : MonoBehaviour
     /// </remarks>
     public Action<string> OnMemoryAbilityActivated = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         player = GetComponent<Player>();
     }

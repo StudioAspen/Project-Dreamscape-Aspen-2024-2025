@@ -10,7 +10,7 @@ public class PlayerCameraController : MonoBehaviour
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         vCam = GetComponent<CinemachineVirtualCamera>();
@@ -18,7 +18,7 @@ public class PlayerCameraController : MonoBehaviour
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
+        AttachToTarget(FindObjectOfType<Player>().transform);
 
         DisableCameraInputs();
     }
@@ -26,8 +26,6 @@ public class PlayerCameraController : MonoBehaviour
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -40,13 +38,6 @@ public class PlayerCameraController : MonoBehaviour
         {
             DisableCameraInputs();
         }
-    }
-
-    private void Player_OnPlayerSpawned(Player spawnedPlayer)
-    {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-
-        AttachToTarget(spawnedPlayer.transform);
     }
 
     private void AttachToTarget(Transform targetTransform)

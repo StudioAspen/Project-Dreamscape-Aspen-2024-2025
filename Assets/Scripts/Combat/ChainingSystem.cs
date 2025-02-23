@@ -23,24 +23,18 @@ public class ChainingSystem : MonoBehaviour
 
     public int ChainCount { get; private set; }
 
-    private void Awake()
+    private void Start()
     {
         playerCombat = GetComponent<PlayerCombat>();
         levelSystem = GetComponent<LevelSystem>();
-    }
 
-    private void Start()
-    {
         ResetChain();
-    }
 
-    private void OnEnable()
-    {
         levelSystem.OnEXPAdded += LevelSystem_OnEXPAdded;
         playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         levelSystem.OnEXPAdded -= LevelSystem_OnEXPAdded;
         playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;

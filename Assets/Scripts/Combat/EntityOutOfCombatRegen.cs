@@ -16,18 +16,15 @@ public class EntityOutOfCombatRegen : MonoBehaviour
 
     private bool healingEnabled = false;
 
-    private void Awake()
+    private void Start()
     {
         entity = GetComponent<Entity>();
-    }
 
-    private void OnEnable()
-    {
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
         entity.OnEntityDealDamage += Entity_OnEntityDealDamage;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
         entity.OnEntityDealDamage -= Entity_OnEntityDealDamage;

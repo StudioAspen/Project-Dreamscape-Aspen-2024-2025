@@ -54,7 +54,7 @@ public class EnemySpawner : MonoBehaviour
     /// </remarks>
     public Action<Enemy> OnEnemyDeath = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         landManager = GetComponent<LandManager>();
         worldManager = FindObjectOfType<WorldManager>();

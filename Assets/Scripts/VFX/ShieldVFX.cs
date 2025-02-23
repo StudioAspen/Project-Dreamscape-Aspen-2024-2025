@@ -40,13 +40,10 @@ public class ShieldVFX : MonoBehaviour
         followOffset = offset;
     }
 
-    private void Awake()
-    {
-        shieldMaterial = GetComponent<Renderer>().material;
-    }
-
     private void Start()
     {
+        shieldMaterial = GetComponent<Renderer>().material;
+
         rotationDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1; // Randomly rotate the shield clockwise or counterclockwise
     }
 
