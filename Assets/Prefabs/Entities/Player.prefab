@@ -1422,24 +1422,20 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
-  baseSpeed: 3
+  baseSpeed: 7
   rotationSpeed: 10
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <EntityStaggeredState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -6959607903234413826, guid: 7042460e2d1c99249818b6e9e3b741e3,
       type: 3}
@@ -1447,6 +1443,7 @@ MonoBehaviour:
   <EntityDeathState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 36ffa4ca123b8cf48ace032eaac641f9,
       type: 3}
+    <DeathDuration>k__BackingField: 1
   <EntityLaunchState>k__BackingField:
     <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
       type: 3}
@@ -1455,9 +1452,9 @@ MonoBehaviour:
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
-  groundedAcceleration: 4
+  groundedAcceleration: 5
   <PlayerSprintState>k__BackingField:
-    <SprintSpeedModifier>k__BackingField: 1.66
+    <SprintSpeedModifier>k__BackingField: 1.5
     IsSprinting: 0
   <PlayerDashState>k__BackingField:
     dashTrailParticle: {fileID: 8508715176541134875}
@@ -1510,11 +1507,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Weapon>k__BackingField: {fileID: 451896838010783940}
-  IsAnimationPlaying: 0
   CanCombo: 0
-  CanCancelAnimation: 0
   nonAttackComboResetDelay: 1
-  attackComboResetDelay: 0.1
+  <AttackComboResetDelay>k__BackingField: 0.1
 --- !u!114 &2191053302705418715
 MonoBehaviour:
   m_ObjectHideFlags: 0
