@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class ChargerWindDownState : ChargerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
 
     private float timer;
@@ -14,7 +14,7 @@ public class ChargerWindDownState : ChargerBaseState
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
 
         timer = 0f;
         halfWindDownDuration = WindDownDuration / 2f;

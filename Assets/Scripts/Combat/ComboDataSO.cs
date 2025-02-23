@@ -4,26 +4,17 @@ using System.IO;
 using UnityEngine;
 using Dreamscape;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Animations;
-#endif
-
 [CreateAssetMenu(fileName = "Data", menuName = "ComboData", order = 1)]
 public class ComboDataSO : ScriptableObject
 {
-#if UNITY_EDITOR
-    // Serialize AnimatorController for validating animation states
-    [SerializeField, HideInInspector] private AnimatorController _animatorController;
-#endif // UNITY_EDITOR
-    
+
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Combo";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Combo description";
+
     [field: Header("Combo Data")]
     [field: SerializeField] public List<ComboAction> ComboInputs { get; private set; } = new List<ComboAction>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
-    [HideInInspector]
-    [field: SerializeField] private AnimationClip _ComboClipChecChangeCheck;
-    [HideInInspector] 
-    [field: SerializeField] public bool IsComboClipValid = true;
     [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
     [field: Header("Filter Options")]
@@ -33,7 +24,7 @@ public class ComboDataSO : ScriptableObject
     //[field: SerializeField] public bool CanChangeDirection { get; private set; } = true;
 
     [field: Header("Hit Options")]
-    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
+    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1f;
     [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
     [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float ImpactFramesTimeScale { get; private set; } = 0.05f;
@@ -132,20 +123,4 @@ public class ComboDataSO : ScriptableObject
 
         return result;
     }
-
-#if UNITY_EDITOR
-    
-    ///-/////////////////////////////////////////////////////////////////////////////////////
-    ///
-    private void OnValidate()
-    {
-        if (_ComboClipChecChangeCheck != ComboClip)
-        {
-            IsComboClipValid = _animatorController.ValidateAnimationClip("Combos", ComboClip);
-            Debug.Log(ComboClip.name + " - " + IsComboClipValid);
-            _ComboClipChecChangeCheck = ComboClip;
-        }
-    }
-    
-#endif // UNITY_EDITOR
 }

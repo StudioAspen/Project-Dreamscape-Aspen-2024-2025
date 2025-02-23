@@ -3,13 +3,14 @@
 public class EscortEventEntity : Enemy
 {
     #region States
-    public EscortEventEntityWanderState EscortEventEntityWanderState { get; private set; }
+    [field: Header("Escort Event Entity: States")]
+    [field: SerializeField] public EscortEventEntityWanderState EscortEventEntityWanderState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EscortEventEntityWanderState = EntityBaseState.InitializeOrCreate<EscortEventEntityWanderState>(this);
+        EscortEventEntityWanderState.Init(this);
     }
     #endregion
 

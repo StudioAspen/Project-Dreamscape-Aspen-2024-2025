@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerJumpState : PlayerBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float JumpHeight { get; private set; } = 2f;
     [field: SerializeField] public int MaxJumpCount { get; private set; } = 1;
 
@@ -12,7 +13,7 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("JumpingUp");
+        player.PlayOneShotAnimation(AnimationClip);
 
         Jump();
 

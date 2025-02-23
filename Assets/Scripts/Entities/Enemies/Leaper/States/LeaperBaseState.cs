@@ -1,8 +1,8 @@
-﻿public class LeaperBaseState : EnemyBaseState
+﻿public abstract class LeaperBaseState : EnemyBaseState
 {
     private protected Leaper leaper;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

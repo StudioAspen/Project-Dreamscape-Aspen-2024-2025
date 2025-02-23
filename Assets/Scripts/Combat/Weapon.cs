@@ -12,7 +12,7 @@ public class Weapon : MonoBehaviour
 
     private List<CapsuleCollider> capsuleColliders = new List<CapsuleCollider>();
     private ParticleSystem trailParticle;
-    private Entity holderEntity;
+    public Entity HolderEntity { get; private set; }
     private LayerMask hitLayerMask; // Assigned in awake
 
     #region Scale
@@ -22,6 +22,7 @@ public class Weapon : MonoBehaviour
 
     #region Between-Frame Collisions
     private bool isCheckingCollisions = false;
+    private bool willDoDamage = true;
     private List<Transform> colliderStartTransforms = new List<Transform>();
     private List<Transform> colliderEndTransforms = new List<Transform>();
     private Ray[] currentFrameCollisionRays;
@@ -59,17 +60,28 @@ public class Weapon : MonoBehaviour
     /// <item><description><c>int damage</c>: How much damage the hit did</description></item>
     /// </list>
     /// </remarks>
-    public Action<Entity, Entity, Vector3, int> OnWeaponHit = delegate { }; // parameters: attacker, victim, hit point, damage
+    public Action<Entity, Entity, Vector3, int> OnWeaponHit = delegate { };
+    /// <summary>
+    /// Action that is invoked when the weapon hits another weapon.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Weapon attackingWeapon</c>: The attacker weapon</description></item>
+    /// <item><description><c>Weapon victimWeapon</c>: The victim weapon that got hit</description></item>
+    /// <item><description><c>Vector3 hitPoint</c>: Where the hit was</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Weapon, Weapon, Vector3> OnWeaponHitWeapon = delegate { };
     #endregion
 
     [field: Header("Weapon: Combo")]
     [field: SerializeField] public List<ComboDataSO> Combos { get; private set; }
-    private float percentDamage;
+    private float damageMultiplier;
     private float impactFramesTimeScale;
     private float impactFramesDuration;
     private float impactFramesRemainingTime;
     private Coroutine impactFramesCoroutine;
-    private List<Entity> entitiesHitByCurrentAttack = new List<Entity>();
+    private List<GameObject> objectsHitByCurrentAttack = new List<GameObject>();
 
     private void Awake()
     {
@@ -77,9 +89,9 @@ public class Weapon : MonoBehaviour
 
         capsuleColliders = GetComponents<CapsuleCollider>().ToList();
         trailParticle = GetComponentInChildren<ParticleSystem>();
-        holderEntity = GetComponentInParent<Entity>();
+        HolderEntity = GetComponentInParent<Entity>();
 
-        hitLayerMask = LayerMask.GetMask("Damageable Entity");
+        hitLayerMask = LayerMask.GetMask("Damageable Entity", "Obstacle", "Damage Collider");
 
         PopulateColliderStartEndPositions();
     }
@@ -125,6 +137,11 @@ public class Weapon : MonoBehaviour
         DisableTriggers();
     }
 
+    private void OnEnable()
+    {
+        DisableTriggers();
+    }
+
     private void Update()
     {
         HandleHitDetectionBetweenFrames();
@@ -133,13 +150,47 @@ public class Weapon : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         if (!isCheckingCollisions) return;
+        if (!willDoDamage) return;
         if ((hitLayerMask & (1 << other.gameObject.layer)) == 0) return; // if not in the layer mask
 
-        Entity enemy = other.GetComponentInParent<Entity>();
+        CheckEntityCollisionsWithTrigger(other);
+        CheckObstacleCollisionsWithTrigger(other);
+        CheckWeaponCollisionsWithTrigger(other);
+    }
 
+    /// <summary>
+    /// Handles entity hit detection with the triggers
+    /// </summary>
+    /// <param name="other">The collider hit by the trigger</param>
+    private void CheckEntityCollisionsWithTrigger(Collider other)
+    {
+        Entity enemy = other.GetComponentInParent<Entity>();
+        Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
+        AttemptToHitEntity(enemy, hitPoint, true);
+    }
+
+    /// <summary>
+    /// Handles obstacle hit detection with the triggers
+    /// </summary>
+    /// <param name="other">The collider hit by the trigger</param>
+    private void CheckObstacleCollisionsWithTrigger(Collider other)
+    {
+        Obstacle obstacle = other.GetComponent<Obstacle>();
         Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
 
-        AttemptToHitEnemy(enemy, hitPoint, true);
+        AttemptToHitObstacle(obstacle, hitPoint, true);
+    }
+
+    /// <summary>
+    /// Handles weapon hit detection with the triggers
+    /// </summary>
+    /// <param name="other">The collider hit by the trigger</param>
+    private void CheckWeaponCollisionsWithTrigger(Collider other)
+    {
+        Weapon weapon = other.GetComponent<Weapon>();
+        Vector3 hitPoint = other.ClosestPointOnBounds(transform.position);
+
+        AttemptToHitWeapon(weapon, hitPoint, true);
     }
 
     /// <summary>
@@ -148,6 +199,12 @@ public class Weapon : MonoBehaviour
     private void HandleHitDetectionBetweenFrames()
     {
         if (!isCheckingCollisions)
+        {
+            currentHitFrame = 0;
+            return;
+        }
+
+        if (!willDoDamage)
         {
             currentHitFrame = 0;
             return;
@@ -205,8 +262,13 @@ public class Weapon : MonoBehaviour
             if (hit.distance == 0) hitPoint = hit.collider.ClosestPointOnBounds(transform.position);
 
             Entity enemy = hit.collider.GetComponentInParent<Entity>();
+            AttemptToHitEntity(enemy, hitPoint, false);
 
-            AttemptToHitEnemy(enemy, hitPoint, false);
+            Obstacle obstacle = hit.collider.GetComponent<Obstacle>();
+            AttemptToHitObstacle(obstacle, hitPoint, false);
+
+            Weapon weapon = hit.collider.GetComponent<Weapon>();
+            AttemptToHitWeapon(weapon, hitPoint, false);
         }
     }
 
@@ -216,35 +278,71 @@ public class Weapon : MonoBehaviour
     /// <param name="victim">The enemy to hit.</param>
     /// <param name="hitPoint">The point of impact.</param>
     /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
-    private void AttemptToHitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    private void AttemptToHitEntity(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         if (victim == null) return;
-        if (victim.Team == holderEntity.Team) return;
+        if (victim.Team == HolderEntity.Team) return;
         if (victim.CurrentState == victim.EntityDeathState) return;
 
-        if (entitiesHitByCurrentAttack.Contains(victim)) return;
-        entitiesHitByCurrentAttack.Add(victim);
+        if (objectsHitByCurrentAttack.Contains(victim.gameObject)) return;
+        objectsHitByCurrentAttack.Add(victim.gameObject);
 
-        HitEnemy(victim, hitPoint, fromTrigger);
+        HitEntity(victim, hitPoint, fromTrigger);
     }
 
     /// <summary>
-    /// Hits an enemy with the weapon, triggering impact frames, camera shake, and damage calculation.
+    /// Attempts to hit an obstacle with the weapon.
+    /// </summary>
+    /// <param name="obstacle">The obstacle to hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
+    private void AttemptToHitObstacle(Obstacle obstacle, Vector3 hitPoint, bool fromTrigger)
+    {
+        if (obstacle == null) return;
+        if (HolderEntity.Team != 0) return; // If not in player's team
+        if (objectsHitByCurrentAttack.Contains(obstacle.gameObject)) return;
+
+        objectsHitByCurrentAttack.Add(obstacle.gameObject);
+        obstacle.TakeDamage(hitPoint, HolderEntity.gameObject);
+    }
+
+    /// <summary>
+    /// Attempts to hit another weapon with the weapon.
+    /// </summary>
+    /// <param name="weapon">The weapon to hit.</param>
+    /// <param name="hitPoint">The point of impact.</param>
+    /// <param name="fromTrigger">Flag indicating if the hit is from a trigger.</param>
+    private void AttemptToHitWeapon(Weapon weapon, Vector3 hitPoint, bool fromTrigger)
+    {
+        if (weapon == null) return;
+        if (weapon == this) return; // If the weapon is your's
+        if (HolderEntity.Team == weapon.HolderEntity.Team) return; // If the weapon hit was an ally's
+        if (objectsHitByCurrentAttack.Contains(weapon.gameObject)) return;
+
+        objectsHitByCurrentAttack.Add(weapon.gameObject);
+
+        // Invoke action for both weapons
+        OnWeaponHitWeapon.Invoke(this, weapon, hitPoint);
+        weapon.OnWeaponHitWeapon.Invoke(this, weapon, hitPoint);
+    }
+
+    /// <summary>
+    /// Hits an entity with the weapon, triggering impact frames, camera shake, and damage calculation.
     /// </summary>
     /// <param name="victim">The enemy to hit.</param>
     /// <param name="hitPoint">The point of impact.</param>
     /// <param name="fromTrigger">Flag indicating if the hit is from the trigger.</param>
-    private void HitEnemy(Entity victim, Vector3 hitPoint, bool fromTrigger)
+    private void HitEntity(Entity victim, Vector3 hitPoint, bool fromTrigger)
     {
         StartImpactFrames(impactFramesTimeScale, impactFramesDuration);
 
         // CustomGizmos.InstantiateTemporarySphere(hitPoint, 0.1f, 1.5f, fromTrigger ? Color.green : Color.red);
 
-        int damageValue = holderEntity.CalculateDamage(percentDamage);
+        int damageValue = HolderEntity.CalculateDamage(damageMultiplier);
 
-        OnWeaponHit?.Invoke(holderEntity, victim, hitPoint, damageValue);
+        OnWeaponHit?.Invoke(HolderEntity, victim, hitPoint, damageValue);
 
-        holderEntity.DealDamageToOtherEntity(victim, damageValue, hitPoint);
+        HolderEntity.DealDamageToOtherEntity(victim, damageValue, hitPoint);
     }
 
     /// <summary>
@@ -299,22 +397,27 @@ public class Weapon : MonoBehaviour
     }
 
     /// <summary>
-    /// Clears the list of enemies hit by the current attack.
+    /// Clears the list of objects hit by the current attack.
     /// </summary>
-    public void ClearEnemiesHitList()
+    public void ClearObjectHitList()
     {
-        entitiesHitByCurrentAttack.Clear();
+        objectsHitByCurrentAttack.Clear();
     }
 
     /// <summary>
     /// Enables all the colliders attached to the weapon.
     /// Sets the isCheckingCollisions flag to true.
     /// </summary>
-    public void EnableTriggers()
+    /// <param name="willDoDamage">Determines whether the trigger will do damage</param>
+    public void EnableTriggers(bool willDoDamage = true)
     {
         isCheckingCollisions = true;
 
-        trailParticle?.Play();
+        if (willDoDamage)
+        {
+            this.willDoDamage = true;
+            trailParticle?.Play();
+        }
 
         foreach (CapsuleCollider collider in capsuleColliders)
         {
@@ -330,6 +433,7 @@ public class Weapon : MonoBehaviour
     {
         isCheckingCollisions = false;
 
+        willDoDamage = false;
         trailParticle?.Stop();
 
         foreach (CapsuleCollider collider in capsuleColliders)
@@ -339,12 +443,12 @@ public class Weapon : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the percentage of damage for the weapon.
+    /// Sets the damage multiplier for the weapon.
     /// </summary>
-    /// <param name="newPercent">The new percentage of damage.</param>
-    public void SetPercentDamage(float newPercent)
+    /// <param name="newDamageMultiplier">The new damage multiplier.</param>
+    public void SetDamageMultiplier(float newDamageMultiplier)
     {
-        percentDamage = newPercent;
+        damageMultiplier = newDamageMultiplier;
     }
 
     public void AddCombo(ComboDataSO comboData)

@@ -62,6 +62,8 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         BurningRageStatusEffectSO overridingStatusEffect = newStatusEffect as BurningRageStatusEffectSO;
 
+        Ticks = overridingStatusEffect.Ticks; // So the total number of ticks doesn't skyrocket to a high number. Default is +=.
+
         currentTicks = 0; // reset the ticks
         TickDamageMultiplierPerStack = overridingStatusEffect.TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
 

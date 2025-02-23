@@ -52,7 +52,7 @@ public class LevelSystem : MonoBehaviour
     private void Entity_OnKillEntity(Entity victim)
     {
         Enemy victimAsEnemy = victim as Enemy;
-        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue;
+        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
 
         AddEXP(expReward);
     }
@@ -63,7 +63,8 @@ public class LevelSystem : MonoBehaviour
     /// If the current experience exceeds the maximum experience, triggers a level up.
     /// </summary>
     /// <param name="amount">The amount of experience points to add.</param>
-    public void AddEXP(int amount)
+    /// <param name="willInvokeAction">Whether to invoke the action. When listenting to the action and applying AddEXP again, set this to false to avoid infinite recursion.</param>
+    public void AddEXP(int amount, bool willInvokeAction = true)
     {
         if(Level < 1)
         {
@@ -81,7 +82,7 @@ public class LevelSystem : MonoBehaviour
             return;
         }
 
-        OnEXPAdded.Invoke(amount);
+        if(willInvokeAction) OnEXPAdded.Invoke(amount);
         CurrentEXP += amount;
 
         if (CurrentEXP >= MaxEXP)

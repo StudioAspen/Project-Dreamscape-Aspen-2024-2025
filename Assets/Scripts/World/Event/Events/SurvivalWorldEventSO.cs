@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 // All lands spawn enemies for a certain amount of time, if the player survives that amount of time trigger EOW
-[CreateAssetMenu(fileName = "Survival World Event", menuName = "World Event/Survival")]
+[CreateAssetMenu(fileName = "Survival World Event", menuName = "World/World Event/Survival")]
 public class SurvivalWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]

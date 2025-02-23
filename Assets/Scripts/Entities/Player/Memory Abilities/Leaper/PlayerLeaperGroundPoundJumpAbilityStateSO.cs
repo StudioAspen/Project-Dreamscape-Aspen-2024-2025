@@ -25,7 +25,7 @@ public class PlayerLeaperGroundPoundJumpAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(JumpAnimationClip);
+        player.PlayOneShotAnimation(JumpAnimationClip);
 
         player.PlayerJumpState.Jump(JumpHeight);
 
@@ -46,7 +46,7 @@ public class PlayerLeaperGroundPoundJumpAbilityStateSO : PlayerAbilityStateSO
 
         if(midAirTimer >= MidAirPauseDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(GroundPoundState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(GroundPoundState, true);
             return;
         }
 
@@ -55,7 +55,7 @@ public class PlayerLeaperGroundPoundJumpAbilityStateSO : PlayerAbilityStateSO
         if (player.Velocity.y < 0f && !hasMidAirPauseStarted)
         {
             hasMidAirPauseStarted = true;
-            TransitionToAbilityAnimation(MidAirAnimationClip, MidAirPauseDuration);
+            player.PlayOneShotAnimation(MidAirAnimationClip, MidAirPauseDuration);
         }
 
         player.ApplyRotationToNextMovement();

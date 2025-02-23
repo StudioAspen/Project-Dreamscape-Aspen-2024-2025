@@ -7,7 +7,6 @@ public class VariantStatusEffectSO : StatusEffectSO
 
     [field: Header("Variant Config")]
     [field: SerializeField] public string Name { get; private set; } = "Variant";
-    [field: SerializeField] public Material VariantMaterial { get; private set; }
     [field: SerializeField] public float MaxHealthMultiplier { get; private set; } = 1.25f;
     [field: SerializeField] public float EXPValueMultiplier { get; private set; } = 1.25f;
     [field: SerializeField] public float SizeMultiplier { get; private set; } = 1.25f;
@@ -26,32 +25,25 @@ public class VariantStatusEffectSO : StatusEffectSO
         if (enemy == null)
         {
             Debug.LogError($"{GetType()} can only be applied to an Enemy entity.");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
+            RemoveSelf();
             return;
         }
 
-        entityRendererManager = enemy.GetComponent<EntityRendererManager>();
-        if (entityRendererManager != null)
-        {
-            entityRendererManager.RemoveAllMaterials();
-            entityRendererManager.AddMaterial(VariantMaterial);
-        }
+        enemy.MaxHealth.AddMultiplier(MaxHealthMultiplier, this);
+        enemy.HealToFull(false); // Heal to full after setting max health without spawning numbers
 
-        enemy.SetMaxHealthModifier(enemy.MaxHealthModifier * MaxHealthMultiplier);
-        enemy.SetEXPValueMultiplier(enemy.EXPValueMultiplier * EXPValueMultiplier);
-        enemy.SetSizeScaleModifier(enemy.SizeScaleModifier * SizeMultiplier);
-        enemy.SetDamageModifier(enemy.DamageModifier * DamageMultiplier);
+        enemy.EXPValue.AddMultiplier(EXPValueMultiplier, this);
+        enemy.SizeScale.AddMultiplier(SizeMultiplier, this);
+        enemy.DamageModifier.AddMultiplier(DamageMultiplier, this);
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        if (entityRendererManager != null) entityRendererManager.RestoreOriginalMaterials();
-
-        enemy.SetMaxHealthModifier(enemy.MaxHealthModifier / MaxHealthMultiplier, false);
-        enemy.SetEXPValueMultiplier(enemy.EXPValueMultiplier / EXPValueMultiplier);
-        enemy.SetSizeScaleModifier(enemy.SizeScaleModifier / SizeMultiplier);
-        enemy.SetDamageModifier(enemy.DamageModifier / DamageMultiplier);
+        enemy.MaxHealth.ClearBuffsFromSource(this);
+        enemy.EXPValue.ClearBuffsFromSource(this);
+        enemy.SizeScale.ClearBuffsFromSource(this);
+        enemy.DamageModifier.ClearBuffsFromSource(this);
     }
 }

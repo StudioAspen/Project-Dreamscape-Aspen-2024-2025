@@ -8,21 +8,25 @@ public class Leaper : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
+    [field: Header("Leaper: Animation")]
+    [field:SerializeField] public AnimationClip JumpAnimationClip { get; private set; }
+
     #region States
-    public LeaperWanderState LeaperWanderState { get; private set; }
-    public LeaperChaseState LeaperChaseState { get; private set; }
-    public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
-    public LeaperAttackState LeaperAttackState { get; private set; }
+    [field: Header("Leaper: States")]
+    [field: SerializeField] public LeaperWanderState LeaperWanderState { get; private set; }
+    [field: SerializeField] public LeaperChaseState LeaperChaseState { get; private set; }
+    [field: SerializeField] public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
+    [field: SerializeField] public LeaperAttackState LeaperAttackState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        LeaperWanderState = EntityBaseState.InitializeOrCreate<LeaperWanderState>(this);
-        LeaperReadyAttackState = EntityBaseState.InitializeOrCreate<LeaperReadyAttackState>(this);
-        LeaperAttackState = EntityBaseState.InitializeOrCreate<LeaperAttackState>(this);
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<LeaperChaseState>(this);
-        LeaperChaseState = EnemyChaseState as LeaperChaseState;
+        LeaperWanderState.Init(this);
+        LeaperReadyAttackState.Init(this);
+        LeaperAttackState.Init(this);
+        LeaperChaseState.Init(this);
+        EnemyChaseState = LeaperChaseState;
     }
     #endregion
 
@@ -83,9 +87,9 @@ public class Leaper : Enemy
     /// Checks for collisions with enemy entities and applies damage if a collision occurs.
     /// Pass in a reference to a list of hit entities to prevent multiple hits on the same entity.
     /// </summary>
-    /// <param name="damagePercent">The percentage damage to apply.</param>
+    /// <param name="damageMultiplier">The multiplier damage to apply.</param>
     /// <param name="hitEntities">A reference to the list of hit entities.</param>
-    public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
+    public void CheckCollisions(float damageMultiplier, ref List<Entity> hitEntities)
     {
         List<Collider> hits = GetCustomCollisionHits(LeaperAttackState.LeapAttackLayerMask);
 
@@ -96,7 +100,7 @@ public class Leaper : Enemy
                 if (hitEntities.Contains(enemyEntity)) continue;
                 hitEntities.Add(enemyEntity);
 
-                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()));
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damageMultiplier), hit.ClosestPoint(GetColliderCenterPosition()));
             }
         }
     }
@@ -220,6 +224,6 @@ public class Leaper : Enemy
         if (CurrentState == EntityLaunchState) return;
         if (CurrentState == EntityStaggeredState) return;
 
-        TransitionToAnimation("FlatMovement");
+        PlayDefaultAnimation();
     }
 }

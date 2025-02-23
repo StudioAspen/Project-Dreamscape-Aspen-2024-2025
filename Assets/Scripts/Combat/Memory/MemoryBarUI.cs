@@ -39,7 +39,7 @@ public class MemoryBarUI : MonoBehaviour
         memorySystem = player.GetComponent<MemorySystem>();
 
         if (memorySystem == null) return;
-        Debug.Log("Found player memory system!");
+        //Debug.Log("Found player memory system!");
 
         memorySystem.OnNewShardTypeAdded += MemorySystem_OnNewShardTypeAdded;
         memorySystem.OnShardAdded += MemorySystem_OnShardAdded;
@@ -61,17 +61,17 @@ public class MemoryBarUI : MonoBehaviour
 
     private void MemorySystem_OnLevelOneReached(string largestShardHolderType)
     {
-        Debug.Log($"Memory bar is level 1 now with {largestShardHolderType} as the dominant shard");
+        //Debug.Log($"Memory bar is level 1 now with {largestShardHolderType} as the dominant shard");
     }
 
     private void MemorySystem_OnLevelTwoReached(string largestShardHolderType)
     {
-        Debug.Log($"Memory bar is level 2 now with {largestShardHolderType} as the dominant shard");
+        //Debug.Log($"Memory bar is level 2 now with {largestShardHolderType} as the dominant shard");
     }
 
     private void MemorySystem_OnMemoryBarFull(string largestShardHolderType)
     {
-        Debug.Log($"Memory bar full, changing all bar colors to {memorySystem.ShardDictionary[largestShardHolderType].Color}");
+       //Debug.Log($"Memory bar full, changing all bar colors to {memorySystem.ShardDictionary[largestShardHolderType].Color}");
 
         // Change all shard bar colors to the largest holder's shard color
         foreach (RectTransform shardBarTransform in shardBarTransforms.Values)
@@ -82,7 +82,7 @@ public class MemoryBarUI : MonoBehaviour
 
     private void MemorySystem_OnMemoryAbilityActivated(string activatedShardHolderType)
     {
-        Debug.Log($"Memory ability for {activatedShardHolderType} activated, removing all shard bars");
+        //Debug.Log($"Memory ability for {activatedShardHolderType} activated, removing all shard bars");
 
         foreach (RectTransform shardBarTransform in shardBarTransforms.Values)
         {

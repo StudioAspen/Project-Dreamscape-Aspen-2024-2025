@@ -19,6 +19,10 @@ public class StatusEffectSO : ScriptableObject
     /// </summary>
     private protected GameObject source;
 
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Status Effect";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Status effect description";
+
     [field: Header("Status Effect: Settings")]
     [field: SerializeField] public bool Stackable { get; protected set; } // if the status effect can stack with itself (all augments should be stackable)
 
@@ -100,5 +104,14 @@ public class StatusEffectSO : ScriptableObject
     private protected virtual void OnStack(StatusEffectSO newStatusEffect)
     {
 
+    }
+
+    /// <summary>
+    /// Removes the status effect from the owner entity status effector.
+    /// Calls the cancel method.
+    /// </summary>
+    public void RemoveSelf()
+    {
+        entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
     }
 }

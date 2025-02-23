@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerSprintState : PlayerBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public float SprintSpeedModifier { get; private set; } = 1.66f;
 
     [HideInInspector] public bool IsSprinting;
@@ -24,7 +24,7 @@ public class PlayerSprintState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("FlatMovement");
+        player.PlayDefaultAnimation();
 
         player.SetSpeedModifier(SprintSpeedModifier);
     }

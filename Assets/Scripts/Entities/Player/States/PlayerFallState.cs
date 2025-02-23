@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerFallState : PlayerBaseState
 {
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Falling", 0.25f);
+        player.PlayOneShotAnimation(AnimationClip, 0, 0.25f);
     }
 
     public override void OnExit()

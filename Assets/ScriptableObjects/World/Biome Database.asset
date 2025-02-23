@@ -14,13 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DefaultLandPrefab>k__BackingField: {fileID: 6052383663745716427, guid: 006873e2de8d753499aa3b3f6548874b,
     type: 3}
-  <EliteStatusEffects>k__BackingField:
-  - {fileID: 11400000, guid: 076d2b95efb85964ebe73b4fef7d25fe, type: 2}
-  - {fileID: 11400000, guid: fb00bcff14eb5df4885bef7461ddcd90, type: 2}
-  - {fileID: 11400000, guid: ee93f4f7b9df7bb4a850cfd107539d3a, type: 2}
-  - {fileID: 11400000, guid: 7e7eb645585274f4d8fcfbcc4c301120, type: 2}
-  - {fileID: 11400000, guid: d0bd0b4a909472a4b91a87d8edcf6f9e, type: 2}
-  - {fileID: 11400000, guid: cd80a2c8d212e674599d6764bcee072e, type: 2}
   <BiomesDictionary>k__BackingField:
     _serializedList:
     - Key: 0
@@ -29,19 +22,22 @@ MonoBehaviour:
         <Description>k__BackingField: Description of biome.
         <BiomeColor>k__BackingField: {r: 0.85098046, g: 0.8235295, b: 0.91372555,
           a: 1}
-        <PossibleLands>k__BackingField: []
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 84f5487d103e0ed41913fa09e986aca4, type: 3}
     - Key: 1
       Value:
         <BiomeName>k__BackingField: Volcanic
         <Description>k__BackingField: Description of biome.
         <BiomeColor>k__BackingField: {r: 0.9568628, g: 0.8000001, b: 0.8000001, a: 1}
-        <PossibleLands>k__BackingField: []
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 1c648dc8b09af594891c9968c44bee10, type: 3}
     - Key: 2
       Value:
         <BiomeName>k__BackingField: Food
         <Description>k__BackingField: Description of biome.
         <BiomeColor>k__BackingField: {r: 1, g: 0.8313726, b: 0.9568628, a: 1}
-        <PossibleLands>k__BackingField: []
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 7ea2171c6d75cc34589a2d7db4df99be, type: 3}
     - Key: 3
       Value:
         <BiomeName>k__BackingField: Other
