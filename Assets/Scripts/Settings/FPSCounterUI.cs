@@ -18,7 +18,7 @@ public class FPSCounterUI : MonoBehaviour
 
     private float timeSinceLastUpdate = 0f;
 
-    private void Awake()
+    private void Start()
     {
         windowFrames = new float[rollingWindowSize];
     }

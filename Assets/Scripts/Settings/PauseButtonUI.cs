@@ -23,10 +23,13 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         button = GetComponent<Button>();
         buttonText = GetComponentInChildren<TMP_Text>();
 
+        button.onClick.AddListener(Button_OnClick);
+    }
+
+    private void Start()
+    {
         originalText = buttonText.text;
         originalColor = buttonText.color;
-
-        button.onClick.AddListener(Button_OnClick);
     }
 
     private void OnDestroy()

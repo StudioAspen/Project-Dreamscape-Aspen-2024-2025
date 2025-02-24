@@ -62,24 +62,20 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 300
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   baseSpeed: 1.5
   rotationSpeed: 5
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 20
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 20, y: 25}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <EntityStaggeredState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
       type: 3}
@@ -93,6 +89,9 @@ MonoBehaviour:
       type: 3}
     <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
       type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
+      type: 3}
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
       type: 3}
@@ -100,8 +99,6 @@ MonoBehaviour:
   <Cost>k__BackingField: 3
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 100
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}

@@ -9,7 +9,6 @@ public class PlayerCombat : MonoBehaviour
 {
     private Player player;
     private PlayerInputReader playerInputReader;
-    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -47,11 +46,7 @@ public class PlayerCombat : MonoBehaviour
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
-        animator = GetComponent<Animator>();
-    }
 
-    private void OnEnable()
-    {
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
         player.OnGrounded += Player_OnGrounded;
@@ -60,7 +55,7 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
@@ -252,15 +247,6 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the speed of the combo animation.
-    /// </summary>
-    /// <param name="speed">The speed value to set.</param>
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
-    }
-
-    /// <summary>
     /// Handles the weapon triggers based on the player's current state.
     /// A backup in case the PlayerAttackState doesn't do it.
     /// If the player's current state is not the PlayerAttackState, it calls the EndHit method.
@@ -305,17 +291,12 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
-    /// Fires a fireball. (NEEDS TO BE GENERALIZED FOR ALL ABILTIES).
     /// Called by animation through an event.
     /// </summary>
-    public void FireAbility(AnimationEvent animationEvent)
+    public void FireAbility()
     {
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
+        if (player.CurrentState != player.PlayerAttackState) return;
 
-        spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
-
-        Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
-        fireball.Fire(transform.forward, gameObject, player.Team, 1f);
+        player.PlayerAttackState.FireAbility();
     }
 }

@@ -12,7 +12,7 @@ public class CameraShakeManager : MonoBehaviour
     private float shakeTimerTotal;
     private float startingIntensity;
 
-    private void Awake()
+    private void Start()
     {
         if(Instance != null) Destroy(Instance.gameObject);
         Instance = this; 

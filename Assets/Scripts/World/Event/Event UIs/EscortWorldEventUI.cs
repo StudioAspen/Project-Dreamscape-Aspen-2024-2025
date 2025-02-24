@@ -7,7 +7,7 @@ public class EscortWorldEventUI : WorldEventUI
 
     [SerializeField] private TMP_Text displayText;
 
-    private protected override void OnAwake()
+    private protected override void OnStart()
     {
         escortWorldEvent = GetAndValidateCurrentEvent<EscortWorldEventSO>();
     }

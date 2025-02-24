@@ -35,7 +35,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private Vector3 startingPosition;
 
-    private void Awake()
+    private void Start()
     {
         eventManager = FindObjectOfType<EventManager>();
 

@@ -33,7 +33,7 @@ public class LevelSystem : MonoBehaviour
     /// </remarks>
     public Action<int> OnEXPAdded = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         entity = GetComponent<Entity>();
 

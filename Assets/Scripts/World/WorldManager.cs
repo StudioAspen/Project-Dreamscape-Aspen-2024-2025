@@ -40,14 +40,15 @@ public class WorldManager : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         navMeshSurface = GetComponent<NavMeshSurface>();
-
-        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
     }
 
-    void Start()
+    private void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
+        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
+
         BuildNavMesh();
 
         DisableGhostLand();
