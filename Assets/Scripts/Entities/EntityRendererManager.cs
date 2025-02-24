@@ -13,7 +13,7 @@ public class EntityRendererManager : MonoBehaviour
 /*    [field: SerializeField, SerializedDictionary("Biome", "Texture")]
     public SerializedDictionary<Biome, Texture> BiomeTextures { get; private set; } = new();
 */
-    private void Start()
+    private void Awake()
     {
         CacheOriginalMaterials();
         CacheOriginalTints();

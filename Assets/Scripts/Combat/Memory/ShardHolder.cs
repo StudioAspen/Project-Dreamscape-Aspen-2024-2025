@@ -12,7 +12,7 @@ public class ShardHolder : MonoBehaviour
     [SerializeField] private int shardDropCount = 1;
     [SerializeField] private float eliteShardDropCountMultiplier = 1.5f;
 
-    private void Start()
+    private void Awake()
     {
         entity = GetComponent<Entity>();
 

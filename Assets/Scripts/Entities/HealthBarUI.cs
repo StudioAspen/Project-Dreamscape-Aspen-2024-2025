@@ -19,11 +19,14 @@ public class HealthBarUI : MonoBehaviour
 
     private float value;
 
-    private void Start()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         healthText = GetComponentInChildren<TMP_Text>();
+    }
 
+    private void Start()
+    {
         value = 1;
         healthText.text = "0/0";
 

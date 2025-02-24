@@ -9,7 +9,6 @@ public class PlayerCombat : MonoBehaviour
 {
     private Player player;
     private PlayerInputReader playerInputReader;
-    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -43,11 +42,10 @@ public class PlayerCombat : MonoBehaviour
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
 
-    private void Start()
+    private void Awake()
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
-        animator = GetComponent<Animator>();
 
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
@@ -246,15 +244,6 @@ public class PlayerCombat : MonoBehaviour
         ResetCombos();
 
         delayedComboResetCoroutine = null;
-    }
-
-    /// <summary>
-    /// Sets the speed of the combo animation.
-    /// </summary>
-    /// <param name="speed">The speed value to set.</param>
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     /// <summary>

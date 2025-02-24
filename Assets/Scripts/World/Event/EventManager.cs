@@ -144,10 +144,14 @@ public class EventManager : MonoBehaviour
     }
     #endregion
 
+    private void Awake()
+    {
+        worldManager = GetComponent<WorldManager>();
+    }
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        worldManager = GetComponent<WorldManager>();
         player = FindObjectOfType<Player>();
 
         InitializeEvents();

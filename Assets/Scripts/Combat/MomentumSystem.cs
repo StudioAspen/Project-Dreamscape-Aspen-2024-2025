@@ -25,14 +25,17 @@ public class MomentumSystem : MonoBehaviour
     private int momentum;
     public int Momentum => momentum;
 
-    private void Start()
+    private void Awake()
     {
         player = GetComponent<Player>();
 
-        Reset();
-
         player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
         player.OnKillEntity += Player_OnKillEntity;
+    }
+
+    private void Start()
+    {
+        Reset();
     }
 
     private void OnDestroy()

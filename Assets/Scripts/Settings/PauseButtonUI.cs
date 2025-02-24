@@ -17,16 +17,19 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private bool isSelected;
 
-    private void Start()
+    private void Awake()
     {
         pauseUI = GetComponentInParent<PauseUIPanel>();
         button = GetComponent<Button>();
         buttonText = GetComponentInChildren<TMP_Text>();
 
+        button.onClick.AddListener(Button_OnClick);
+    }
+
+    private void Start()
+    {
         originalText = buttonText.text;
         originalColor = buttonText.color;
-
-        button.onClick.AddListener(Button_OnClick);
     }
 
     private void OnDestroy()

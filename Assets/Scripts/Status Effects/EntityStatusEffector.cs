@@ -10,7 +10,7 @@ public class EntityStatusEffector : MonoBehaviour
 
     public Dictionary<Type, StatusEffectSO> CurrentStatusEffects { get; private set; } = new Dictionary<Type, StatusEffectSO>();
 
-    private void Start()
+    private void Awake()
     {
         entity = GetComponent<Entity>();
 

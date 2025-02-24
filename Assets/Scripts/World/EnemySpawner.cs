@@ -54,9 +54,13 @@ public class EnemySpawner : MonoBehaviour
     /// </remarks>
     public Action<Enemy> OnEnemyDeath = delegate { };
 
-    private void Start()
+    private void Awake()
     {
         landManager = GetComponent<LandManager>();
+    }
+
+    private void Start()
+    {
         worldManager = FindObjectOfType<WorldManager>();
 
         enemyPooler = worldManager.transform.Find("EnemyPooler").GetComponent<ObjectPooler>();

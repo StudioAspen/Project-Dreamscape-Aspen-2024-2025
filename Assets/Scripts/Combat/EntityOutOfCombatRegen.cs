@@ -16,7 +16,7 @@ public class EntityOutOfCombatRegen : MonoBehaviour
 
     private bool healingEnabled = false;
 
-    private void Start()
+    private void Awake()
     {
         entity = GetComponent<Entity>();
 

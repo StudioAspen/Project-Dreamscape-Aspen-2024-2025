@@ -10,11 +10,15 @@ public class PlayerCameraController : MonoBehaviour
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
 
+    private void Awake()
+    {
+        vCam = GetComponent<CinemachineVirtualCamera>();
+        inputProvider = GetComponent<CinemachineInputProvider>();
+    }
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        vCam = GetComponent<CinemachineVirtualCamera>();
-        inputProvider = GetComponent<CinemachineInputProvider>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
