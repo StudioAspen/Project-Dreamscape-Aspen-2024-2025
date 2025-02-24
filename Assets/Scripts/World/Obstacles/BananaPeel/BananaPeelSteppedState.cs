@@ -24,7 +24,7 @@ public class BananaPeelSteppedState : BananaPeelBaseState
 
     public override void OnOnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.TryGetComponent(out Player player))
         {
             Entity entity = other.gameObject.GetComponent<Entity>();
             Vector3 luanchDirection = entity.GetColliderCenterPosition() - bananapeel.transform.position;
