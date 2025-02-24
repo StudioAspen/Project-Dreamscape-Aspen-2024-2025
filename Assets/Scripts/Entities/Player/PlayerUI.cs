@@ -61,18 +61,18 @@ public class PlayerUI : MonoBehaviour
     {
         yield return null;
 
-        UpdateHealthBar();
+        UpdateHealthBar(player.CurrentHealth);
         UpdateAspectsIcons();
     }
 
     private void Player_OnEntityHeal(Entity entity, int healAmount)
     {
-        UpdateHealthBar();
+        UpdateHealthBar(player.CurrentHealth + healAmount);
     }
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        UpdateHealthBar();
+        UpdateHealthBar(player.CurrentHealth - damage);
     }
 
     private void AspectsManager_OnAspectTreeAdded(AspectTree newTree)
@@ -132,13 +132,13 @@ public class PlayerUI : MonoBehaviour
         shardBarTransforms.Clear();
     }
 
-    private void UpdateHealthBar()
+    private void UpdateHealthBar(int newCurrentHealth)
     {
-        float healthFraction = player.CurrentHealth / player.MaxHealth.GetFloatValue();
+        float healthFraction = newCurrentHealth / player.MaxHealth.GetFloatValue();
         healthFraction = Mathf.Clamp(healthFraction, 0f, 1f);
         healthBar.value = healthFraction;
 
-        healthText.text = $"{player.CurrentHealth}/{player.MaxHealth.GetFloatValue()}";
+        healthText.text = $"{newCurrentHealth}/{player.MaxHealth.GetFloatValue()}";
     }
 
     private void UpdateAspectsIcons()
