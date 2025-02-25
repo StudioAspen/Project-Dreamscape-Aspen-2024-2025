@@ -9,7 +9,8 @@ public class EventDisplayUI : MonoBehaviour
     private EventManager eventManager;
     private TMP_Text titleText;
 
-    private void Start()
+    // Awake is safe because UI scene loads last
+    private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
         titleText = GetComponentInChildren<TMP_Text>();

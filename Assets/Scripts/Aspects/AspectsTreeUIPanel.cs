@@ -25,12 +25,15 @@ public class AspectsTreeUIPanel : UIPanel
 
     private List<AspectButtonUI> aspectButtonUIs = new List<AspectButtonUI>();
 
-    private void Start()
+    // Use awake here because UI scene loads last
+    private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-
         aspectsManager = FindObjectOfType<Player>().GetComponent<AspectsManager>();
+    }
 
+    private void Start()
+    {
         closeButton.onClick.AddListener(CloseButton_OnClick);
     }
 
@@ -80,7 +83,7 @@ public class AspectsTreeUIPanel : UIPanel
             for(int j = 0; j < aspectNodes.Count; j++)
             {
                 AspectButtonUI aspectButtonUI = Instantiate(aspectButtonUIPrefab, contentTransform);
-                aspectButtonUI.Init(this, aspectsManager, aspectNodes[j]);
+                aspectButtonUI.Init(gameManager, this, aspectsManager, aspectNodes[j]);
 
                 if(aspectNodes.Count % 2 == 1) aspectButtonUI.transform.localPosition = aspectButtonSpacing * new Vector3(i, j, 0);
                 else aspectButtonUI.transform.localPosition = new Vector3(aspectButtonSpacing * i, aspectButtonSpacing * j - aspectButtonSpacing / 2f, 0);

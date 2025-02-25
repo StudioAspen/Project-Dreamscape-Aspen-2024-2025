@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,8 +97,10 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e68c7b9931a70d548ba6c6c577fc2e0e,
+    type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 23e6c766f39d87b49baeb40be16b589f,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -408,11 +410,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scenesToLoad:
-  - asset: {fileID: 102900000, guid: 901370ebee62d9b4b8630e1c45cc42a7, type: 3}
-    guid: 901370ebee62d9b4b8630e1c45cc42a7
+  - asset: {fileID: 102900000, guid: 4be24f545046fd64a9f85d8cd5df947d, type: 3}
+    guid: 4be24f545046fd64a9f85d8cd5df947d
+  - asset: {fileID: 102900000, guid: 84c0418577588734587be6b7e9c66a8d, type: 3}
+    guid: 84c0418577588734587be6b7e9c66a8d
+  - asset: {fileID: 102900000, guid: 60373734b48007c4fa75f8e99820dc37, type: 3}
+    guid: 60373734b48007c4fa75f8e99820dc37
+  titleScene:
+    asset: {fileID: 102900000, guid: 61ce8085d84349243ada7ef0a7d03895, type: 3}
+    guid: 61ce8085d84349243ada7ef0a7d03895
+  loadingText: {fileID: 941490272}
   loadingBarSlider: {fileID: 1508882616}
-  sliderSmoothSpeed: 0.5
+  sliderSmoothSpeed: 3
   afterLoadDelay: 0.5
+  maxLoadDurationBeforeFail: 30
 --- !u!1 &941490270
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,12 +509,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 123.5
+  m_fontSize: 77.5
   m_fontSizeBase: 123.5
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 75
+  m_fontSizeMax: 125
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
