@@ -319,4 +319,16 @@ public class Player : Entity
         // Assign the override controller to the animator
         blendTreeAnimator.runtimeAnimatorController = overrideController;
     }
+
+    public void PlayFootstepLeft()
+    {
+        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+        AkSoundEngine.PostEvent("PlayerFootstepSolidLeft", gameObject);
+    }
+
+    public void PlayFootstepRight()
+    {
+        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+        AkSoundEngine.PostEvent("PlayerFootstepSolidRight", gameObject);
+    }
 }
