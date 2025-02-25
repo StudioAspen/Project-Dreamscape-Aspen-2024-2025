@@ -144,6 +144,7 @@ public class PlayerDashState : PlayerBaseState
         if (player.CurrentState == player.PlayerDashState) return false;
         if (player.CurrentState == player.EntityStaggeredState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
 
         return true;
     }

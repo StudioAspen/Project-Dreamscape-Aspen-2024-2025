@@ -36,13 +36,14 @@ public class PlayerInputReader : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
         memorySystem = player.GetComponent<MemorySystem>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+        
         playerControls.Gameplay.Movement.performed += PlayerControls_OnMovementPerformed;
         playerControls.Gameplay.Movement.canceled += PlayerControls_OnMovementCanceled;
 
@@ -56,7 +57,7 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         MoveDirection = Vector3.zero;
 

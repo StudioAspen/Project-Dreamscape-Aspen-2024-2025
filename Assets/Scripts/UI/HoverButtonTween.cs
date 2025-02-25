@@ -14,7 +14,7 @@ public class HoverButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private Vector3 originalScale;
     private bool isSelected;
 
-    private void Awake()
+    private void Start()
     {
         originalScale = transform.localScale;
     }

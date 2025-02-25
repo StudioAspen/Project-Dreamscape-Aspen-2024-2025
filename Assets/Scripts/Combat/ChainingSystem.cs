@@ -27,6 +27,9 @@ public class ChainingSystem : MonoBehaviour
     {
         playerCombat = GetComponent<PlayerCombat>();
         levelSystem = GetComponent<LevelSystem>();
+
+        levelSystem.OnEXPAdded += LevelSystem_OnEXPAdded;
+        playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
     }
 
     private void Start()
@@ -34,13 +37,7 @@ public class ChainingSystem : MonoBehaviour
         ResetChain();
     }
 
-    private void OnEnable()
-    {
-        levelSystem.OnEXPAdded += LevelSystem_OnEXPAdded;
-        playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
-    }
-
-    private void OnDisable()
+    private void OnDestroy()
     {
         levelSystem.OnEXPAdded -= LevelSystem_OnEXPAdded;
         playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
