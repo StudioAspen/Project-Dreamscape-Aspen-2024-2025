@@ -100,6 +100,7 @@ public class PlayerJumpState : PlayerBaseState
         if (player.CurrentState == player.PlayerChargeState) return false;
         if (player.CurrentState == player.PlayerAttackState) return false;
         if (player.CurrentState == player.EntityStaggeredState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
 
         return true;
     }

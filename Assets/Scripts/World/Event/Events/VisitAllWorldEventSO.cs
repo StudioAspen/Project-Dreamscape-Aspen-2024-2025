@@ -44,6 +44,8 @@ public class VisitAllWorldEventSO : WorldEventSO
 
     private protected override void OnStarted()
     {
+        visitIndicatorsDictionary = new();
+
         // Find all players and if there are none, clear the event
         players = GameObject.FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
         if(players == null)

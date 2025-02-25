@@ -4,33 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
-public class WorldEventUI : MonoBehaviour
+public abstract class WorldEventUI : MonoBehaviour
 {
     private protected GameManager gameManager;
     private protected EventManager eventManager;
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         eventManager = FindObjectOfType<EventManager>();
 
-        OnAwake();
+        OnStart();
     }
 
-    private protected virtual void OnAwake()
-    {
-
-    }
+    private protected abstract void OnStart();
 
     private void OnDestroy()
     {
         OnOnDestroy();
     }
 
-    private protected virtual void OnOnDestroy()
-    {
-
-    }
+    private protected abstract void OnOnDestroy();
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {

@@ -14,7 +14,7 @@ public class BiomeSelectUIPanel : UIPanel
     [Header("References")]
     [SerializeField] private List<BiomeCardUI> biomeCards;
 
-    private void Awake()
+    private void Start()
     {
         
     }

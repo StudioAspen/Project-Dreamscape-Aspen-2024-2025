@@ -10,7 +10,7 @@ public class ShielderDefensiveState : ShielderBaseState
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AnimationSpeed { get; private set; } = 0.75f;
     [field: SerializeField] public float SpeedModifier { get; private set; } = 0.5f;
-    [field: SerializeField] public int StaggerDamageThreshold { get; private set; } = 40;
+    [field: SerializeField] public int StaggerDamageThreshold { get; private set; } = 20;
 
     public override void OnEnter()
     {
@@ -41,7 +41,7 @@ public class ShielderDefensiveState : ShielderBaseState
 
         if(shielder.Distance(shielder.Target) < shielder.ShielderQuickAttackState.AttackRange)
         {
-            if (shielder.Target.CurrentState == shielder.Target.EntityLaunchState)
+            if (shielder.Target.CurrentState == shielder.Target.EntityLaunchState || shielder.Target.CurrentState == shielder.Target.EntityStunnedState)
             {
                 shielder.ChangeState(shielder.ShielderPowerAttackState);
                 return;

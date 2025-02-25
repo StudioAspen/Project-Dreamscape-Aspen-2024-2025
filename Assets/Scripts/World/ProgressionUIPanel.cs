@@ -13,6 +13,7 @@ public class ProgressionUIPanel : UIPanel
     [SerializeField] private TMP_Text weakenTokensText;
     [SerializeField] private TMP_Text continueText;
 
+    // UI scene loads last so Awake is safe here
     private void Awake()
     {
         progressionManager = FindObjectOfType<ProgressionManager>();

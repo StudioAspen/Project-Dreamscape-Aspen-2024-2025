@@ -28,20 +28,17 @@ public class MomentumSystem : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<Player>();
-    }
 
-    void Start()
-    {
-        Reset();
-    }
-
-    private void OnEnable()
-    {
         player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
         player.OnKillEntity += Player_OnKillEntity;
     }
 
-    private void OnDisable()
+    private void Start()
+    {
+        ResetMomentum();
+    }
+
+    private void OnDestroy()
     {
         player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
         player.OnKillEntity -= Player_OnKillEntity;
@@ -54,7 +51,7 @@ public class MomentumSystem : MonoBehaviour
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        Reset();
+        ResetMomentum();
     }
 
     private void Player_OnKillEntity(Entity victim)
@@ -70,7 +67,7 @@ public class MomentumSystem : MonoBehaviour
         }
         if (timer > timeBetween)
         {
-            Reset();
+            ResetMomentum();
         }
     }
 
@@ -110,7 +107,7 @@ public class MomentumSystem : MonoBehaviour
         }
     }
 
-    private void Reset()
+    private void ResetMomentum()
     {
         timer = 0;
         timeBetween = baseTimeBetween;

@@ -25,7 +25,10 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         originalText = buttonText.text;
         originalColor = buttonText.color;
+    }
 
+    private void Start()
+    {
         button.onClick.AddListener(Button_OnClick);
     }
 

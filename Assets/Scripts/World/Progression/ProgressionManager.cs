@@ -22,8 +22,12 @@ public class ProgressionManager : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         worldManager = GetComponent<WorldManager>();
+    }
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 

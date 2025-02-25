@@ -22,6 +22,8 @@ public class ZonesWorldEventSO : WorldEventSO
     private protected override void OnStarted()
     {
         activeLands = 0;
+        affectedLands = new();
+        debugSpheres = new();
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
         affectedLands = AffectLandsFromEpicenter();

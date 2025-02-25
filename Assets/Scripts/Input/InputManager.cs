@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -18,6 +19,9 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         PlayerControls = new PlayerControls();
+        PlayerControls.Enable();
+        InputSystem.onEvent += InputSystem_OnEvent;
+
         OnAwake();
     }
 
@@ -26,36 +30,28 @@ public class InputManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        OnStart();
+    }
+
+    private protected virtual void OnStart()
+    {
+
+    }
+
     private void OnDestroy()
     {
-        PlayerControls.Dispose();
-        PlayerControls = null;
-    }
-
-    private void OnEnable()
-    {
-        PlayerControls.Enable();
-
-        InputSystem.onEvent += InputSystem_OnEvent;
-
-        OnOnEnable();
-    }
-
-    private protected virtual void OnOnEnable()
-    {
-
-    }
-
-    private void OnDisable()
-    {
         PlayerControls.Disable();
-
         InputSystem.onEvent -= InputSystem_OnEvent;
 
-        OnOnDisable();
+        PlayerControls.Dispose();
+        PlayerControls = null;
+
+        OnOnDestroy();
     }
 
-    private protected virtual void OnOnDisable()
+    private protected virtual void OnOnDestroy()
     {
 
     }
