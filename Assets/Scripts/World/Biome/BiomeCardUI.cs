@@ -17,9 +17,14 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public bool IsReady => worldManager != null;
     private bool isSelected;
 
-    private void Start()
+    // Awake is safe here since UI scene loads last
+    private void Awake()
     {
         worldManager = FindObjectOfType<WorldManager>();
+    }
+
+    private void Start()
+    {
 
         button.onClick.AddListener(OnClickCard);
     }

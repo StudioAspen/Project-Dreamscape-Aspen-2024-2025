@@ -9,7 +9,6 @@ public class EventManager : MonoBehaviour
 {
     private GameManager gameManager;
     private WorldManager worldManager;
-    private Player player;
 
     #region Event Machine
     [SerializeField] private List<WorldEventSO> events = new List<WorldEventSO>();
@@ -147,26 +146,24 @@ public class EventManager : MonoBehaviour
     private void Awake()
     {
         worldManager = GetComponent<WorldManager>();
+        InitializeEvents();
     }
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        player = FindObjectOfType<Player>();
 
-        InitializeEvents();
-
-        player.OnEntityDestroyed += Player_OnEntityDestroyed;
+        Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
 
         SetDefaultEvent<SurvivalWorldEventSO>();
     }
 
     private void OnDestroy()
     {
-        player.OnEntityDestroyed -= Player_OnEntityDestroyed;
+        Player.OnPlayerDestroyed -= Player_OnPlayerDestroyed;
     }
 
-    private void Player_OnEntityDestroyed(Entity player, GameObject source)
+    private void Player_OnPlayerDestroyed(Player player)
     {
         // If the player is destroyed, fail the event. Keeps track of players before failing if this is multiplayer.
 

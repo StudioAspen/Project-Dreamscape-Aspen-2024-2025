@@ -22,14 +22,15 @@ public class PlayerCameraController : MonoBehaviour
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        AttachToTarget(FindObjectOfType<Player>().transform);
-
         DisableCameraInputs();
+
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded;
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -42,6 +43,11 @@ public class PlayerCameraController : MonoBehaviour
         {
             DisableCameraInputs();
         }
+    }
+
+    private void Player_OnPlayerLoaded(Player player)
+    {
+        AttachToTarget(player.transform);
     }
 
     private void AttachToTarget(Transform targetTransform)

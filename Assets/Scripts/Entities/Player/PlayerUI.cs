@@ -25,7 +25,8 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private TMP_Text memoryText;
     private Dictionary<string, RectTransform> shardBarTransforms = new();
 
-    private void Start()
+    // Awake is safe here because UI Scene loads last
+    private void Awake()
     {
         player = FindObjectOfType<Player>();
         aspectsManager = player.GetComponent<AspectsManager>();
@@ -40,8 +41,12 @@ public class PlayerUI : MonoBehaviour
         memorySystem.OnShardAdded += MemorySystem_OnShardAdded;
         memorySystem.OnMemoryBarFull += MemorySystem_OnMemoryBarFull;
         memorySystem.OnMemoryAbilityActivated += MemorySystem_OnMemoryAbilityActivated;
+    }
 
-        StartCoroutine(DelayedOnGetPlayer());
+    private void Start()
+    {
+        UpdateHealthBar(player.CurrentHealth);
+        UpdateAspectsIcons();
     }
 
     private void OnDestroy()
@@ -55,14 +60,6 @@ public class PlayerUI : MonoBehaviour
         memorySystem.OnShardAdded -= MemorySystem_OnShardAdded;
         memorySystem.OnMemoryBarFull -= MemorySystem_OnMemoryBarFull;
         memorySystem.OnMemoryAbilityActivated -= MemorySystem_OnMemoryAbilityActivated;
-    }
-
-    private IEnumerator DelayedOnGetPlayer()
-    {
-        yield return null;
-
-        UpdateHealthBar(player.CurrentHealth);
-        UpdateAspectsIcons();
     }
 
     private void Player_OnEntityHeal(Entity entity, int healAmount)

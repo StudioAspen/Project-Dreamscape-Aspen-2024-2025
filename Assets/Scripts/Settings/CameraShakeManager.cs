@@ -12,12 +12,17 @@ public class CameraShakeManager : MonoBehaviour
     private float shakeTimerTotal;
     private float startingIntensity;
 
-    private void Start()
+    private void Awake()
     {
-        if(Instance != null) Destroy(Instance.gameObject);
-        Instance = this; 
+        if (Instance != null) Destroy(Instance.gameObject);
+        else Instance = this;
 
         cinemachineVirtualCamera = GetComponent<CinemachineVirtualCamera>();
+    }
+
+    private void Start()
+    {
+
     }
 
     public void ShakeCamera(float intensity, float time)

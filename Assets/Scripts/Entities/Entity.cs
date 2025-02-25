@@ -464,7 +464,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void Update()
     {
         HandleSize();
-        HandleHealth();
 
         OnUpdate();
     }
@@ -894,14 +893,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
-    /// </summary>
-    private void HandleHealth()
-    {
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth.GetIntValue());
-    }
-
-    /// <summary>
     /// Sets the base maximum health of the entity and optionally heals it to full health. Do not use this for buffs.
     /// </summary>
     /// <param name="newMaxHealth">The new maximum health value.</param>
@@ -941,6 +932,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
+            CurrentHealth = 0;
             OnDeath();
         }
     }

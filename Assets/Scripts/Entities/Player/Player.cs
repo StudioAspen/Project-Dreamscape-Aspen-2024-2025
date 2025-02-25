@@ -11,6 +11,25 @@ public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
+    /// <summary>
+    /// Action that is invoked when the player is loaded.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Player player</c>: The loaded player.</description></item>
+    /// </list>
+    /// </remarks>
+    public static Action<Player> OnPlayerLoaded = delegate { };
+    /// <summary>
+    /// Action that is invoked when the player is destroyed.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Player player</c>: The destroyed player.</description></item>
+    /// </list>
+    /// </remarks>
+    public static Action<Player> OnPlayerDestroyed = delegate { };
+
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
@@ -81,10 +100,11 @@ public class Player : Entity
     {
         base.OnAwake();
 
+        OnPlayerLoaded.Invoke(this);
+
         playerInputReader = GetComponent<PlayerInputReader>();
 
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        OnEntityDestroyed += Player_OnEntityDestroyed;
     }
 
     private protected override void OnDeath()
@@ -114,14 +134,16 @@ public class Player : Entity
         PlayerDashState.HandleDashTrail();
     }
 
+    public override void Die()
+    {
+        base.Die();
+
+        OnPlayerDestroyed.Invoke(this);
+    }
+
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
     {
         CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
-    }
-
-    private void Player_OnEntityDestroyed(Entity destroyedEntity, GameObject killer)
-    {
-        OnEntityDestroyed -= Player_OnEntityDestroyed;
     }
 
     /// <summary>

@@ -55,14 +55,6 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.PAUSED);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            ChangeState(GameState.GAME_OVER);
-        }
-    }
-
     #region State Machine Functions
     public void ChangeState(GameState newState)
     {
