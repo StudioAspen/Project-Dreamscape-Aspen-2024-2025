@@ -222,6 +222,7 @@ public class Leaper : Enemy
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == EntitySpawnState) return;
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
         if (CurrentState == EntityStaggeredState) return;
 
         PlayDefaultAnimation();

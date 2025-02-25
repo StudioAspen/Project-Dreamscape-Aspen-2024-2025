@@ -1,42 +1,37 @@
 ﻿using UnityEngine;
 using UnityEngine.Pool;
 
-public class CastedAbility : MonoBehaviour, IPoolableObject
+public abstract class CastedAbility : MonoBehaviour, IPoolableObject
 {
-    private protected GameObject caster;
-    private protected int team;
+    private protected Entity casterEntity;
 
-    private ObjectPool<GameObject> pool;
+    private protected ObjectPool<GameObject> pool;
 
-    public void Init(GameObject caster, int team)
+    /// <summary>
+    /// Initialized the ability with the entity caster.
+    /// </summary>
+    /// <param name="caster">The entity caster.</param>
+    public void Init(Entity caster)
     {
-        this.caster = caster;
-        this.team = team;
+        casterEntity = caster;
+
+        OnSpawn();
     }
 
-    private void OnEnable()
-    {
-        caster = null;
-        team = 0;
-
-        OnOnEnable();
-    }
-
-    private protected virtual void OnOnEnable()
-    {
-
-    }
+    /// <summary>
+    /// Logic for when the ability is spawned
+    /// </summary>
+    private protected abstract void OnSpawn();
 
     private void OnDisable()
     {
-        // logic for when the fireball gets released to the pool
         OnOnDisable();
     }
 
-    private protected virtual void OnOnDisable()
-    {
-
-    }
+    /// <summary>
+    /// Logic for when the ability gets released to the pool
+    /// </summary>
+    private protected abstract void OnOnDisable();
 
     /// <summary>
     /// Attempts to release the object back to the pool. If the pool doesn't exist, then Destroy

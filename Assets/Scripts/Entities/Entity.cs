@@ -155,6 +155,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
+    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
@@ -312,6 +313,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: SerializeField] public EntityStaggeredState EntityStaggeredState { get; protected set; }
     [field: SerializeField] public EntityDeathState EntityDeathState { get; protected set; }
     [field: SerializeField] public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: SerializeField] public EntityStunnedState EntityStunnedState { get; protected set; }
     [field: SerializeField] public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
@@ -326,6 +328,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityDeathState.Init(this);
         EntityLaunchState.Init(this);
         EntityStaggeredState.Init(this);
+        EntityStunnedState.Init(this);
         EntitySpawnState.Init(this);
     }
 
@@ -460,7 +463,9 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
-        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+        HandleSize();
+        HandleHealth();
+
         OnUpdate();
     }
 
@@ -881,6 +886,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Changes the entity's scale based on the SizeScale value
+    /// </summary>
+    private void HandleSize()
+    {
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+    }
+
+    /// <summary>
     /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
     /// </summary>
     private void HandleHealth()
@@ -963,6 +976,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
         if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);
@@ -1196,6 +1210,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     public Vector3 GetColliderCenterPosition()
     {
         return CharacterController.bounds.center;
+    }
+
+    /// <summary>
+    /// Gets the top point of the entity.
+    /// </summary>
+    /// <returns>The the top point of the entity.</returns>
+    public Vector3 GetEntityTopPosition()
+    {
+        return transform.position + 2f * (GetColliderCenterPosition() - transform.position);
     }
 
     /// <summary>

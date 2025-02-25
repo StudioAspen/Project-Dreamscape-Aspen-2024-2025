@@ -29,7 +29,7 @@ public class AspectButtonUI : MonoBehaviour
         UpdateDisplayContents();
     }
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
         button = GetComponent<Button>();

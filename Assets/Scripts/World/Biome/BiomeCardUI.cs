@@ -17,7 +17,7 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public bool IsReady => worldManager != null;
     private bool isSelected;
 
-    private void Awake()
+    private void Start()
     {
         worldManager = FindObjectOfType<WorldManager>();
 

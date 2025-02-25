@@ -18,7 +18,7 @@ public class TitleScreenManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Button playButton;
 
-    private void Awake()
+    private void Start()
     {
         inputManager = FindObjectOfType<InputManager>();
 

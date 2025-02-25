@@ -7,18 +7,30 @@ public class AspectsManager : MonoBehaviour
 {
     private LevelSystem levelSystem;
 
-    [SerializeField] private List<AspectTree> aspectTrees = new List<AspectTree>();
-
+    [field: SerializeField] public List<AspectTree> AllAspectTrees { get; private set; } = new List<AspectTree>();
+    public AspectTree[] EquippedAspectTrees { get; private set; } = new AspectTree[3];
     public AspectTree CurrentAspectTree { get; private set; }
     public int AspectTokens { get; private set; } = 0;
 
-    private void Awake()
+    /// <summary>
+    /// Action that is invoked when an aspect is added
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>AspectTree aspectTree</c>: The added aspect tree</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<AspectTree> OnAspectTreeAdded = delegate { };
+
+    private void Start()
     {
         levelSystem = GetComponent<LevelSystem>();
 
         levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
 
-        SetCurrentAspectTree(aspectTrees[0]);
+        SetCurrentAspectTree(AllAspectTrees[0]);
+        AddAspectTree(AllAspectTrees[1]);
+        AddAspectTree(AllAspectTrees[2]);
     }
 
     private void OnDestroy()
@@ -48,7 +60,25 @@ public class AspectsManager : MonoBehaviour
     {
         CurrentAspectTree = aspectTree.CreateRuntimeInstance();
 
+        AddAspectTree(aspectTree);
+
         //Debug.Log($"Set current aspect tree to {CurrentAspectTree.name}");
+    }
+
+    public void AddAspectTree(AspectTree newTree)
+    {
+        for (int i = 0; i < EquippedAspectTrees.Length; i++)
+        {
+            if (EquippedAspectTrees[i] != null) continue;
+
+            AspectTree runtimeTree = newTree.CreateRuntimeInstance();
+            EquippedAspectTrees[i] = runtimeTree;
+            OnAspectTreeAdded.Invoke(runtimeTree);
+
+            return;
+        }
+
+        Debug.LogWarning($"Can't add aspect tree {newTree.name}. You can only have up to 3 aspects.");
     }
 
     public void ConsumeAspectToken()

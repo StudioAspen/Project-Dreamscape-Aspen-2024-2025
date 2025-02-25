@@ -28,19 +28,16 @@ public class ShardCollectible : MonoBehaviour
         this.shardCount = count;
     }
 
-    private void Awake()
+    private void Start()
     {
         // Gets the closest player
         player = FindObjectsByType<Player>(FindObjectsSortMode.None).OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).ToList()[0];
-    }
 
-    private void Start()
-    {
         meshRenderer.material.SetColor("_main", shardColor);
         meshRenderer.material.SetColor("_highlight", shardColor);
         meshRenderer.material.SetColor("_Shine", shardColor);
 
-        transform.localScale = (shardCount/20f) * Vector3.one;
+        transform.localScale = (shardCount / 20f) * Vector3.one;
     }
 
     private void Update()
