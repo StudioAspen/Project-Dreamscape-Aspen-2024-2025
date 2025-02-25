@@ -26,6 +26,20 @@ public class WorldEventSO : ScriptableObject
     [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
     private WorldEventUI eventUI;
 
+    [field: Header("Enemy Spawners")]
+    
+    /// <summary>
+    /// The time that must elapse between spawning enemies. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float SpawnInterval { get; private set; } = 3f;
+
+    /// <summary>
+    /// The number of enemies to spawn at each Spawn Interval. Default value: 1 Enemy
+    /// </summary>
+    [field: Range(1, 10)]
+    [field: SerializeField] public int SpawnAmount { get; private set; } = 1;
+
     /// <summary>
     /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
     /// </summary>
@@ -100,7 +114,7 @@ public class WorldEventSO : ScriptableObject
     public void StartEnemySpawnerWithCurrency(LandManager land, bool willRefillCurrency = true)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(willRefillCurrency)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine( SpawnInterval, SpawnAmount, willRefillCurrency)));
     }
 
     /// <summary>
@@ -112,7 +126,7 @@ public class WorldEventSO : ScriptableObject
     public void StartEnemySpawnerWithDuration(LandManager land, float duration)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(duration)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine( SpawnInterval, SpawnAmount, duration)));
     }
 
     /// <summary>

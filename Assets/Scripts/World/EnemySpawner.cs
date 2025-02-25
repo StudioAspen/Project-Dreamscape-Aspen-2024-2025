@@ -21,7 +21,6 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewFactor = 2.2f;
-    [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private float baseCurrency;
     [SerializeField] private float growthFactor;
     [SerializeField] private int polynomialDegree;
@@ -74,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <returns>An IEnumerator for the coroutine.</returns>
     /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public IEnumerator SpawnWithCurrencyCoroutine(bool willRefillCurrency = true)
+    public IEnumerator SpawnWithCurrencyCoroutine(float spawnInterval, int spawnAmount, bool willRefillCurrency = true)
     {
         isUsingCurrency = true;
         if(willRefillCurrency) RefillCurrency();
@@ -92,7 +91,7 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="duration">The duration of the spawning process.</param>
-    public IEnumerator SpawnWithDurationCoroutine(float duration)
+    public IEnumerator SpawnWithDurationCoroutine(float spawnInterval, int spawnAmount, float duration)
     {
         float elapsedTime = 0f;
         float spawnTimer = 0f;

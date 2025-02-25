@@ -18,22 +18,39 @@ public class DefendWorldEventSO : WorldEventSO
 
     public float RemainingTime { get; private set; }
 
+    private List<Player> players = new List<Player>();
+
     private protected override void OnStarted()
     {
-        // All lands will spawn enemies
-        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
+      // Find all players and if there are none, clear the event
+      players = FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
+      
+      if(players == null || players.Count <= 0)
+      {
+        eventManager.ClearEvent();
+        return;
+      }
 
-        // Select a random land and spawn the defend event entity in the center of the land
-        LandManager randomLand = worldManager.GetRandomLand();
-        DefendEventEntity = GameObject.Instantiate(DefendEventEntityPrefab, randomLand.transform.position + 5f * Vector3.up, Quaternion.identity, eventManager.transform);
-        DefendEventEntity.SetBaseMaxHealth(DefendEventMaxHealth, true);
+      // All lands will spawn enemies, based on the event duration
+      StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), DefendEventDuration);
 
-        randomLand.EnemySpawner.MaterializeEntity(DefendEventEntity);
+      // Select a random player. Will always return players[0] if single player
+      int randomIndex = UnityEngine.Random.Range(0, players.Count);
+      Player randomPlayer = players.ElementAt(randomIndex);
 
-        // Listen for when the defend event entity dies
-        DefendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
+      // Get the random player's position and find the land they're standing on
+      Vector2Int playerGridPosition = worldManager.GetGridPosition(randomPlayer.transform.position);
+      LandManager land = worldManager.GetLandByGridPosition(playerGridPosition);
 
-        RemainingTime = DefendEventDuration;
+      // Spawn and Initialize the Defend Entity at the specified land.
+      DefendEventEntity = Instantiate(DefendEventEntityPrefab, land.transform.position + 5f * Vector3.up, Quaternion.identity, eventManager.transform);
+      DefendEventEntity.SetBaseMaxHealth(DefendEventMaxHealth, true);
+      land.EnemySpawner.MaterializeEntity(DefendEventEntity);
+
+      // Listen for when the defend event entity dies
+      DefendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
+
+      RemainingTime = DefendEventDuration;
     }
 
     private protected override void OnCleared()
@@ -41,15 +58,13 @@ public class DefendWorldEventSO : WorldEventSO
         StopEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
-        {
-            land.EnemySpawner.DeactivateAllEnemies();
-        }
-        
-        // Remove the defend event entity and cleanup the listener
+          land.EnemySpawner.DeactivateAllEnemies();
+
+        // Remove the Defend Entity and Clean up the listener
         if(DefendEventEntity != null)
         {
-            DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
-            GameObject.Destroy(DefendEventEntity.gameObject);
+          DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
+          Destroy(DefendEventEntity.gameObject);
         }
     }
 
