@@ -12,7 +12,7 @@ public class GameOverUIPanel : UIPanel
     [Header("Buttons")]
     [SerializeField] private Button menuButton;
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 

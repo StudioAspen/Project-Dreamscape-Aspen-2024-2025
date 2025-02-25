@@ -1422,24 +1422,20 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 10
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <EntityStaggeredState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -6959607903234413826, guid: 7042460e2d1c99249818b6e9e3b741e3,
       type: 3}
@@ -1447,10 +1443,14 @@ MonoBehaviour:
   <EntityDeathState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 36ffa4ca123b8cf48ace032eaac641f9,
       type: 3}
+    <DeathDuration>k__BackingField: 1
   <EntityLaunchState>k__BackingField:
     <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
       type: 3}
     <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
       type: 3}
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 0}
@@ -1510,11 +1510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Weapon>k__BackingField: {fileID: 451896838010783940}
-  IsAnimationPlaying: 0
   CanCombo: 0
-  CanCancelAnimation: 0
   nonAttackComboResetDelay: 1
-  attackComboResetDelay: 0.1
+  <AttackComboResetDelay>k__BackingField: 0.1
 --- !u!114 &2191053302705418715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1611,8 +1609,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3015ec1bdaf4a64988629f136ad8e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspectTrees:
+  <AllAspectTrees>k__BackingField:
   - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
+  - {fileID: 11400000, guid: a28dd62f121619a46a6b807c141ad513, type: 2}
+  - {fileID: 11400000, guid: 49ebe326734cd8c4cb1f39ce5baa7131, type: 2}
 --- !u!143 &7237775664649881152
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2173,7 +2173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6408246663267494866
 RectTransform:
   m_ObjectHideFlags: 0

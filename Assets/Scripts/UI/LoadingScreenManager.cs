@@ -25,10 +25,7 @@ public class LoadingScreenManager : MonoBehaviour
         loadingScreenScene = SceneManager.GetActiveScene();
 
         StartCoroutine(LoadScenesAsync());
-    }
 
-    private void Start()
-    {
         loadingBarSlider.value = 0;
     }
 

@@ -9,7 +9,6 @@ public class ShielderShieldBashState : ShielderBaseState
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float Duration { get; private set; } = 1f;
     [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 0.5f;
-    [field: SerializeField] public float ShieldBashPushForce { get; private set; } = 5f;
     [field: SerializeField] public float ShieldBashStunTime { get; private set; } = 1f;
 
     private float timer;
@@ -32,6 +31,8 @@ public class ShielderShieldBashState : ShielderBaseState
         shielder.UseRootMotion = true;
 
         timer = 0f;
+
+        shielder.Shield.OnWeaponHit += Shielder_Shield_OnWeaponHit;
     }
 
     public override void OnExit()
@@ -59,8 +60,7 @@ public class ShielderShieldBashState : ShielderBaseState
 
     private void Shielder_Shield_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        Vector3 pushDirection = (victim.transform.position + 1f/4f * victim.GetColliderCenterPosition()) - attacker.transform.position; // Slightly upwards direction
-        victim.ForceChangeToLaunchState(pushDirection.normalized, ShieldBashPushForce, ShieldBashStunTime);
+        victim.EntityStunnedState.StunEntity(ShieldBashStunTime);
     }
 }
 

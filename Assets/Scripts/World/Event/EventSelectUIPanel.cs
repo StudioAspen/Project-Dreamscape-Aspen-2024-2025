@@ -34,7 +34,7 @@ public class EventSelectUIPanel : UIPanel
     private Color backgroundStartingColor;
     private Color titleTextStartingColor;
 
-    private void Awake()
+    private void Start()
     {
         eventManager = FindObjectOfType<EventManager>();
 

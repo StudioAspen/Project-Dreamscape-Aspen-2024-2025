@@ -25,28 +25,18 @@ public class AspectsTreeUIPanel : UIPanel
 
     private List<AspectButtonUI> aspectButtonUIs = new List<AspectButtonUI>();
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
+        aspectsManager = FindObjectOfType<Player>().GetComponent<AspectsManager>();
 
         closeButton.onClick.AddListener(CloseButton_OnClick);
     }
 
     private void OnDestroy()
     {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-
         closeButton.onClick.RemoveListener(CloseButton_OnClick);
-    }
-
-    private void Player_OnPlayerSpawned(Player player)
-    {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-        
-        aspectsManager = player.GetComponent<AspectsManager>();
-        //Debug.LogWarning("Aspects manager assigned");
     }
 
     private void CloseButton_OnClick()

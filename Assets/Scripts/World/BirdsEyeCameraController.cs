@@ -21,7 +21,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     private float currentMoveSpeed;
     private float zoomDelta;
 
-    private void Awake()
+    private void Start()
     {
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         gameManager = FindObjectOfType<GameManager>();
@@ -43,6 +43,8 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandEmpowerment.Continue.performed += PlayerControls_LandEmpowerment_OnContinuePerformed;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom) / (maxZoom - minZoom));
     }
 
     private void OnDestroy()
@@ -59,11 +61,6 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandEmpowerment.Continue.performed -= PlayerControls_LandEmpowerment_OnContinuePerformed;
 
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
-
-    private void Start()
-    {
-        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom)/(maxZoom - minZoom));
     }
 
     private void Update()
