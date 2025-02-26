@@ -12,9 +12,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     private int currentStacks;
     private float timer;
 
-    private float originalSpeed;
-    private Stat originalDamage;
-
     private HashSet<string> activeBuffs = new HashSet<string>(); // checks for current active buffs, so non-active buffs can be activated when stacks are filled again
 
     private void OnValidate()
@@ -25,7 +22,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     private protected override void OnApply()
     {
         base.OnApply();
-        originalSpeed = entity.SpeedModifier;
     }
 
     public override void Update()
@@ -56,7 +52,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
             // then refresh timer, stacks, and duration of buffs
             if (selectedBuff == "SpeedBoost")
             {
-                entity.SetSpeedModifier(SpeedModifierBuff);
+                entity.StatusSpeedModifier.AddMultiplier(SpeedModifierBuff, this);
                 activeBuffs.Add("SpeedBoost");
                 Debug.Log("SPEED boost from aspect of fear");
 
@@ -87,7 +83,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
             currentStacks = 0;
             activeBuffs.Clear();
 
-            entity.SetSpeedModifier(originalSpeed);
+            entity.StatusSpeedModifier.RemoveMultiplier(SpeedModifierBuff, this);
             //entity.DamageModifier.AddFlatAmount(originalDamage, this); // flat amount
             entity.DamageModifier.RemoveMultiplier(DamageModifierBuff, this); // multiplier
         }
