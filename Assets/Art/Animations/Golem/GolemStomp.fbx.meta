@@ -17,7 +17,11 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: 
+    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
+      copied configuration does not match position in animation file:\n\t'mixamorig:LeftUpLeg'
+      : position error = 16.661255 mm\n\t'mixamorig:LeftLeg' : position error = 36.438141
+      mm\n\t'mixamorig:LeftFoot' : position error = 23.463079 mm\n\t'mixamorig:LeftToeBase'
+      : position error = 18.399958 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -59,13 +63,6 @@ ModelImporter:
       events:
       - time: 0.6091603
         functionName: StompImpact
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 1
-        functionName: FinishAnimation
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

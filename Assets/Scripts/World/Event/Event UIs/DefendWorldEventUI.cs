@@ -7,7 +7,7 @@ public class DefendWorldEventUI : WorldEventUI
 
     [SerializeField] private TMP_Text displayText;
 
-    private protected override void OnAwake()
+    private protected override void OnStart()
     {
         defendWorldEvent = GetAndValidateCurrentEvent<DefendWorldEventSO>();
     }

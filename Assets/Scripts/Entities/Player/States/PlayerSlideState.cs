@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerSlideState : PlayerBaseState
 {
     private RaycastHit hitBelow;
@@ -10,7 +11,7 @@ public class PlayerSlideState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Falling");
+        player.PlayOneShotAnimation(player.PlayerFallState.AnimationClip);
     }
 
     public override void OnExit()

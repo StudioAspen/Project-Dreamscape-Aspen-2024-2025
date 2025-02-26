@@ -23,7 +23,7 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(AnimationClip, TargetDetectedDuration);
+        player.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
         player.SetSpeedModifier(0f);
 

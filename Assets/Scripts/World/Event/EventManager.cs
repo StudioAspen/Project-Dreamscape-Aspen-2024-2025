@@ -145,10 +145,13 @@ public class EventManager : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         worldManager = GetComponent<WorldManager>();
-
         InitializeEvents();
+    }
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
 
         Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
 

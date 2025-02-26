@@ -50,9 +50,8 @@ MonoBehaviour:
   Parent: {fileID: -5092554926121242106}
   Children:
   - {fileID: 1864611941190978949}
-  <DisplayName>k__BackingField: Permanent Damage Buff
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 6e227a232bcc3bf4b9cbd7ab022d7c84,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5359809309940247393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,9 +95,8 @@ MonoBehaviour:
       _dynamic: 0
   Parent: {fileID: 4095001867604409900}
   Children: []
-  <DisplayName>k__BackingField: Charge Attack Passive Upgrade
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 356dfbea0f11fac42a5c615f5058cd22,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,9 +144,8 @@ MonoBehaviour:
   Parent: {fileID: -3918194093017296719}
   Children:
   - {fileID: -6323877592038428020}
-  <DisplayName>k__BackingField: Intimidation Passive
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: b942d46754e6cea4c96fb1be83bd039f,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-3918194093017296719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,9 +194,8 @@ MonoBehaviour:
   Children:
   - {fileID: -5092554926121242106}
   - {fileID: 2763769569843930792}
-  <DisplayName>k__BackingField: 4-hit Combo
-  <ComboData>k__BackingField: {fileID: 11400000, guid: ed5fba988c30b9645af847b51526eb5b,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <ComboData>k__BackingField: {fileID: 0}
 --- !u!114 &-3194902288124324442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,9 +239,8 @@ MonoBehaviour:
       _dynamic: 0
   Parent: {fileID: 4095001867604409900}
   Children: []
-  <DisplayName>k__BackingField: Burning Rage Passive Upgrade
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 3157f7dfa238ae74594489c140f4302f,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +262,10 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
+  <DisplayName>k__BackingField: Aspect Tree
+  <Description>k__BackingField: Description
+  <AspectSprite>k__BackingField: {fileID: 21300000, guid: a2ceee80f19dcfc41a6369bbfac7c7e9,
+    type: 3}
 --- !u!114 &1864611941190978949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,9 +313,8 @@ MonoBehaviour:
   Parent: {fileID: -6323877592038428020}
   Children:
   - {fileID: 4095001867604409900}
-  <DisplayName>k__BackingField: Hammerhead Hitbox Increase
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: a9a951a67ee1dc64c920e5a1ff8c732b,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &2763769569843930792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,9 +362,8 @@ MonoBehaviour:
   Parent: {fileID: -3918194093017296719}
   Children:
   - {fileID: -6323877592038428020}
-  <DisplayName>k__BackingField: Charge Attack Passive
-  <StatusEffect>k__BackingField: {fileID: 11400000, guid: dbee157fca761864ebb17e1179ef67e6,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,6 +415,5 @@ MonoBehaviour:
   Children:
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
-  <DisplayName>k__BackingField: Fireball Combo
-  <ComboData>k__BackingField: {fileID: 11400000, guid: cf12a1bb44269bc45b094201cb68b02d,
-    type: 2}
+  <DisplayName>k__BackingField: Fear
+  <ComboData>k__BackingField: {fileID: 0}

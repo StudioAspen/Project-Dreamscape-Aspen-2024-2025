@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
+[System.Serializable]
 public class PlayerDashState : PlayerBaseState
 {
     [Header("References")]
     [SerializeField] private ParticleSystem dashTrailParticle;
 
     [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DashDuration { get; private set; } = 0.25f;
     [field: SerializeField] public float InitialDashVelocity { get; private set; } = 75f;
     [field: SerializeField] public float SprintDurationAfterDash { get; private set; } = 2f;
@@ -19,7 +21,7 @@ public class PlayerDashState : PlayerBaseState
     private float currDashSpeed;
     private float maxSpeed;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 
@@ -28,7 +30,7 @@ public class PlayerDashState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Dash");
+        player.PlayOneShotAnimation(AnimationClip);
 
         dashCooldownTimer = 0f; // Reset the dash cooldown timer when you start dashing
         
@@ -142,6 +144,7 @@ public class PlayerDashState : PlayerBaseState
         if (player.CurrentState == player.PlayerDashState) return false;
         if (player.CurrentState == player.EntityStaggeredState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
 
         return true;
     }

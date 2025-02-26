@@ -14,7 +14,7 @@ public class RoomUI : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Button startButton;
 
-    private void Awake()
+    private void Start()
     {
         inputManager = FindObjectOfType<InputManager>();
 

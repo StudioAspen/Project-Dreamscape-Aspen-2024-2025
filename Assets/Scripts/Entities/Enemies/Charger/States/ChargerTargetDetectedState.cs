@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ChargerTargetDetectedState : ChargerBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; protected set; }
     [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
     [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
@@ -19,7 +20,7 @@ public class ChargerTargetDetectedState : ChargerBaseState
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("TargetDetected");
+        charger.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
         charger.SetSpeedModifier(0f);
 
@@ -30,7 +31,7 @@ public class ChargerTargetDetectedState : ChargerBaseState
 
     public override void OnExit()
     {
-
+        
     }
 
     public override void OnUpdate()

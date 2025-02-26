@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: 8613667669225006032}
   - component: {fileID: 3915645929625153338}
   - component: {fileID: 3904365795041977702}
+  - component: {fileID: 4989748366973988274}
+  - component: {fileID: 7735577443286621309}
+  - component: {fileID: 451327940540879268}
   m_Layer: 16
   m_Name: Golem
   m_TagString: Untagged
@@ -36,7 +39,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 2616225644448459613}
   - {fileID: 795691779609316352}
   - {fileID: 4150967214179094889}
   - {fileID: 4811610901159636523}
@@ -60,35 +62,88 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 300
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   baseSpeed: 1.5
   rotationSpeed: 5
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 20
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 20, y: 25}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
-  <Cost>k__BackingField: 2
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 63fab502227f2e64484ec14f2256702b,
+      type: 3}
+    <DeathDuration>k__BackingField: 1
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
+      type: 3}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
+      type: 3}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
+      type: 3}
+    <SpawnDuration>k__BackingField: 1.5
+  <Cost>k__BackingField: 3
   <EXPValue>k__BackingField:
-    <BaseValue>k__BackingField: 60
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
+    <BaseValue>k__BackingField: 100
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  IsAttackAnimationPlaying: 0
   dazeDamageThreshold: 25
   staggerDamageThreshold: 10
+  <GolemGroundSmashState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: e169be8521aae734b88a8524ad3da798,
+      type: 3}
+    <AOERadius>k__BackingField: 7
+    <AOEDamageMultiplier>k__BackingField: 1
+    <AOELaunchForce>k__BackingField: 7.5
+    <AOEStunDuration>k__BackingField: 3
+  <GolemWanderState>k__BackingField:
+    <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+    <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+    <WanderSpeedModifer>k__BackingField: 0.75
+  <GolemChaseState>k__BackingField:
+    <AttackRange>k__BackingField: 5
+    <ChaseSpeedModifier>k__BackingField: 1
+  <GolemReadyAttackState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 6459f4ebf99fdd64ea7c7545d4948f19,
+      type: 3}
+    <StompReadyDuration>k__BackingField: 2
+    <GroundSmashReadyDuration>k__BackingField: 1
+    <CloseRangeCutoff>k__BackingField: 2
+  <GolemAttackRecoverState>k__BackingField:
+    <AttackRecoverDuration>k__BackingField: 1
+  <GolemStompState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 94ed853afbbd446448d58bddb65427c6,
+      type: 3}
+    <AOEInitialRadius>k__BackingField: 1
+    <AOEDamageMultiplier>k__BackingField: 1
+    <AOELaunchForce>k__BackingField: 7.5
+    <AOEStunDuration>k__BackingField: 3
+    <ShockwaveGrowMaxSteps>k__BackingField: 8
+    <ShockwaveGrowStepDuration>k__BackingField: 0.05
+    <ShockwaveRadiusGrowStepIncrement>k__BackingField: 0.5
+  <GolemStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <GolemDazedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 55314c980792026468fc27ddee6b3a10,
+      type: 3}
+    <DazedDuration>k__BackingField: 5
 --- !u!114 &2008562887667020325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,7 +184,7 @@ Animator:
   m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2be0c0643d1b0f54e92d2c57b2545ce5, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8903add0df15b544e99c700f89dad25c, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -208,163 +263,66 @@ MonoBehaviour:
   <Renderers>k__BackingField:
   - {fileID: 7989203739341791905}
   - {fileID: 3278909593834522684}
---- !u!1 &5857298160996688264
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2616225644448459613}
-  - component: {fileID: 2957554798500186327}
-  - component: {fileID: 5392196128862372024}
-  - component: {fileID: 2509868483899744837}
-  - component: {fileID: 3593046390679252307}
-  - component: {fileID: 1578901079306579272}
-  - component: {fileID: 4900044992831005937}
-  - component: {fileID: 1200696102969395278}
-  - component: {fileID: 8012411747568153416}
-  m_Layer: 0
-  m_Name: States
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2616225644448459613
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3490398193883977143}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2957554798500186327
+--- !u!114 &4989748366973988274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
+  m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 952e6fd2c7d97dd44b07b517dac27dc0, type: 3}
+  m_Script: {fileID: 11500000, guid: 18498f4614684d14b942ac9d7ad80b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackRecoverDuration>k__BackingField: 1
---- !u!114 &5392196128862372024
+  m_useCustomFrameRate: 0
+  m_customFrameRate: 60
+--- !u!114 &7735577443286621309
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
+  m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b2e5df8714ce824088a7bc8830409fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b7252b345e69f9439e871e0102cb078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackRange>k__BackingField: 4
-  <ChaseSpeedModifier>k__BackingField: 1
---- !u!114 &2509868483899744837
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 0
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  ToClip: {fileID: 0}
+--- !u!114 &451327940540879268
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
+  m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bd44921c097de245a4a3b4c7eade6c9, type: 3}
+  m_Script: {fileID: 11500000, guid: a4cfb5fb47b7a7143b09b60466a3830e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AOERadius>k__BackingField: 5
-  <AOEDamageMultiplier>k__BackingField: 1.5
-  <AOELaunchForce>k__BackingField: 15
-  <AOEStunDuration>k__BackingField: 3
---- !u!114 &3593046390679252307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a69f651596469a74d862bc67f4233a31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <StompReadyDuration>k__BackingField: 2
-  <GroundSmashReadyDuration>k__BackingField: 1
-  <CloseRangeCutoff>k__BackingField: 3
---- !u!114 &1578901079306579272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6d0fc58b4984e043858c968487da5cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <AOEInitialRadius>k__BackingField: 1
-  <AOEDamageMultiplier>k__BackingField: 2
-  <AOELaunchForce>k__BackingField: 7.5
-  <AOEStunDuration>k__BackingField: 1.5
-  <ShockwaveGrowMaxSteps>k__BackingField: 16
-  <ShockwaveGrowStepDuration>k__BackingField: 0.03333334
-  <ShockwaveRadiusGrowStepIncrement>k__BackingField: 0.35
---- !u!114 &4900044992831005937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f95539ef889d9714d9a6066628c6c035, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
-  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
-  <WanderSpeedModifer>k__BackingField: 0.75
---- !u!114 &1200696102969395278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c3e6e07af141bb8d310939f76b89b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <StaggerDuration>k__BackingField: 0.6666667
---- !u!114 &8012411747568153416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5857298160996688264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e087107e14443d690e3e099ab7a4ade, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <DazedDuration>k__BackingField: 6
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 1
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  AnimationControll: {fileID: 9100000, guid: 8903add0df15b544e99c700f89dad25c, type: 2}
 --- !u!1 &6512184381983205014
 GameObject:
   m_ObjectHideFlags: 0
