@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using System.Linq;
 using System;
 using System.Collections;
-using DG.Tweening.Core.Easing;
 
 public class Weapon : MonoBehaviour
 {
@@ -82,6 +80,9 @@ public class Weapon : MonoBehaviour
     private float impactFramesRemainingTime;
     private Coroutine impactFramesCoroutine;
     private List<GameObject> objectsHitByCurrentAttack = new List<GameObject>();
+
+    [field: Header("Weapon: Tip")]
+    [field: SerializeField] public Transform TipTransform { get; private set; }
 
     private void Start()
     {
