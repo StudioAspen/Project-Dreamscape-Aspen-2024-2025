@@ -100,6 +100,9 @@ GameObject:
   - component: {fileID: 4300584991908531450}
   - component: {fileID: 5045720341135740806}
   - component: {fileID: 3111121893295821575}
+  - component: {fileID: 3296721957612239917}
+  - component: {fileID: 9040606862517126508}
+  - component: {fileID: 9130585628096286221}
   m_Layer: 16
   m_Name: Slime
   m_TagString: Untagged
@@ -120,7 +123,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3666914600907076981}
   - {fileID: 5221716668589270579}
   - {fileID: 3121701890540656384}
   - {fileID: 7237329991370873262}
@@ -142,29 +144,74 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 3186133371071620309}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 40
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 50
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField: 1
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+    <DeathDuration>k__BackingField: 1
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: 0}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: 0}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+    <SpawnDuration>k__BackingField: 1.5
   <Cost>k__BackingField: 1
-  <EXPValue>k__BackingField: 20
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 30
   <CustomCollisionRadius>k__BackingField: 0.4
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  IsAttackAnimationPlaying: 0
   <DetectionDistance>k__BackingField: 10
   <DetectionConeHalfAngle>k__BackingField: 20
   <SplitCount>k__BackingField: 2
-  isSplit: 0
-  hasAttacked: 0
-  startScale: 0
+  <SmallSize>k__BackingField: 0.5
+  <SmallMaxHealth>k__BackingField: 0.5
+  <OriginalBaseMaxHealth>k__BackingField: 50
+  <JumpAnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
+    type: 3}
+  <SlimeWanderState>k__BackingField:
+    <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
+    <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
+    <WanderHopHeight>k__BackingField: 2
+  <SlimeChaseState>k__BackingField:
+    <ChaseHopHeight>k__BackingField: 1.25
+    <ChaseHopDistance>k__BackingField: 2
+    <StartAttackDistance>k__BackingField: 1
+  <SlimeAttackExpandState>k__BackingField:
+    <SlimeAttackLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 65600
+    <AttackContactDamageMultiplier>k__BackingField: 1.5
+    <AttackExpandSize>k__BackingField: 2
+    <AttackExpandDuration>k__BackingField: 0.3
+    <ExpandEase>k__BackingField: 9
+    <AttackCooldown>k__BackingField: 3
+  <SlimeAttackShrinkState>k__BackingField:
+    <AttackShrinkDuration>k__BackingField: 1
+    <ShrinkEase>k__BackingField: 8
+  <SlimeGrowthState>k__BackingField:
+    <GrowthDuration>k__BackingField: 5
+    <NoDamageTakenTargetDuration>k__BackingField: 10
+    <GrowthEase>k__BackingField: 9
 --- !u!114 &6764650017304162668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,7 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShardPrefab>k__BackingField: {fileID: 4789584422821504724, guid: aab5c2308ea333d468003485129cd32a,
     type: 3}
-  color: {r: 1, g: 0, b: 0, a: 1}
+  color: {r: 0.9384973, g: 1, b: 0, a: 1}
   memoryAbility: {fileID: 11400000, guid: 69c7e38d89f02ed4a89e000894191b01, type: 2}
   shardDropCount: 15
   eliteShardDropCountMultiplier: 1.5
@@ -205,7 +252,7 @@ Animator:
   m_GameObject: {fileID: 4518511054676028987}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2be0c0643d1b0f54e92d2c57b2545ce5, type: 3}
-  m_Controller: {fileID: 9100000, guid: 987ffbe617b6a5542933e507ab59894c, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -284,105 +331,66 @@ MonoBehaviour:
   <Renderers>k__BackingField:
   - {fileID: 8941593168971293896}
   - {fileID: 4560095846427250261}
---- !u!1 &7488334897341966185
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3666914600907076981}
-  - component: {fileID: 74157946886590567}
-  - component: {fileID: 770797970627563926}
-  - component: {fileID: 5750105145494702149}
-  - component: {fileID: 6858467558299828234}
-  m_Layer: 0
-  m_Name: States
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3666914600907076981
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488334897341966185}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3186133371071620309}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &74157946886590567
+--- !u!114 &3296721957612239917
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488334897341966185}
+  m_GameObject: {fileID: 4518511054676028987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 297c5ea8453526749b7a38d1cd521c10, type: 3}
+  m_Script: {fileID: 11500000, guid: 18498f4614684d14b942ac9d7ad80b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
-  <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
-  <WanderHopHeight>k__BackingField: 2
---- !u!114 &770797970627563926
+  m_useCustomFrameRate: 0
+  m_customFrameRate: 60
+--- !u!114 &9040606862517126508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488334897341966185}
+  m_GameObject: {fileID: 4518511054676028987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0ee7184a2e546d4fa166353557f4d9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1b7252b345e69f9439e871e0102cb078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ChaseHopHeight>k__BackingField: 1.25
-  <ChaseHopDistance>k__BackingField: 2
-  <StartReadyAttackDistance>k__BackingField: 2
---- !u!114 &5750105145494702149
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 0
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  ToClip: {fileID: 0}
+--- !u!114 &9130585628096286221
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488334897341966185}
+  m_GameObject: {fileID: 4518511054676028987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac9e4edba0a16a47bfd36edb3e390de, type: 3}
+  m_Script: {fileID: 11500000, guid: a4cfb5fb47b7a7143b09b60466a3830e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <SlimeAttackLayerMask>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 320
-  <AttackContactDamageMultiplier>k__BackingField: 1.5
-  <RegularContactDamagePercent>k__BackingField: 100
-  <scaleIncrement>k__BackingField: 0.01
-  <attackCooldown>k__BackingField: 2
-  <shrinkCoolDown>k__BackingField: 2
---- !u!114 &6858467558299828234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488334897341966185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b7719cedc3d1194c90a06e6600acdb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <growthTimer>k__BackingField: 3
-  <scaleIncrement>k__BackingField: 0.01
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 1
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  AnimationControll: {fileID: 9100000, guid: 987ffbe617b6a5542933e507ab59894c, type: 2}
 --- !u!1001 &3231396680522412267
 PrefabInstance:
   m_ObjectHideFlags: 0

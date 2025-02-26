@@ -2,28 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class SlimeChaseState : EnemyChaseState
 {
-    // the same as leaperchasestate with tweaks for slime variables
-    [field: Header("Config")]
-
     [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
     [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
-    [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 0.5f;
-
+    [field: SerializeField] public float StartAttackDistance { get; private set; } = 1f;
 
     private Slime slime;
+
     private Entity rememberedTarget;
+
     private Vector3 currentHopDestination;
     private Vector3 directionToHopDestination;
 
-    private protected override void Init(Entity entity)
+    private float attackCooldownTimer;
+
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 
         slime = entity as Slime;
     }
-
 
     public void AssignCurentRememberedTarget(Entity target)
     {
@@ -35,18 +35,17 @@ public class SlimeChaseState : EnemyChaseState
         base.OnEnter();
 
         slime.SetSpeedModifier(0f);
-
     }
 
     public override void OnExit()
     {
         base.OnExit();
+
         rememberedTarget = null;
     }
 
     public override void OnUpdate()
     {
-        
         slime.ApplyGravity();
 
         if(slime.IsGrounded)
@@ -57,10 +56,11 @@ public class SlimeChaseState : EnemyChaseState
                 return;
             }
 
-            if (slime.Distance(rememberedTarget) < StartReadyAttackDistance)
+            if (slime.Distance(rememberedTarget) < StartAttackDistance && attackCooldownTimer > slime.SlimeAttackExpandState.AttackCooldown)
             {
-                slime.SlimeAttackState.AssignCurrentRememberedTarget(rememberedTarget);
-                slime.ChangeState(slime.SlimeAttackState);
+                attackCooldownTimer = 0f;
+                slime.SlimeAttackExpandState.AssignCurrentRememberedTarget(rememberedTarget);
+                slime.ChangeState(slime.SlimeAttackExpandState);
                 return;
             }
 
@@ -68,8 +68,6 @@ public class SlimeChaseState : EnemyChaseState
             directionToHopDestination = (currentHopDestination - slime.transform.position).normalized;
 
             slime.Hop(currentHopDestination, ChaseHopHeight);
-        
-            
         }
 
         slime.LookAt(slime.transform.position + directionToHopDestination);
@@ -78,10 +76,10 @@ public class SlimeChaseState : EnemyChaseState
         {
             slime.ApplyHorizontalVelocity();
         }
+
+        attackCooldownTimer += slime.LocalDeltaTime;
     }
     
-
-
     private Vector3 GetCurrentHopDestination()
     {
         List<Vector3> path = slime.GetPathToDestination(rememberedTarget.transform.position);
@@ -91,7 +89,6 @@ public class SlimeChaseState : EnemyChaseState
         Vector3 currentDestination = path[1];
 
         Vector3 direction = (currentDestination - slime.transform.position).normalized;
-
         Vector3 currentHopDestination = ChaseHopDistance * direction + slime.transform.position;
 
         return slime.IsValidPointOnNavMesh(currentDestination, ChaseHopHeight, out Vector3 validDestination) ? currentDestination : slime.transform.position;

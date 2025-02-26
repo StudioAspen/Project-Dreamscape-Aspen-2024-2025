@@ -1,8 +1,8 @@
-public class SlimeBaseState : EnemyBaseState
+public abstract class SlimeBaseState : EnemyBaseState
 {
     private protected Slime slime;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 

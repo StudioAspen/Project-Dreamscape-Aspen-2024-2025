@@ -1,55 +1,40 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class SlimeGrowthState : SlimeBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public float GrowthDuration { get; private set; } = 5f;
+    [field: SerializeField] public float NoDamageTakenTargetDuration { get; private set; } = 10f;
+    [field: SerializeField] public Ease GrowthEase { get; private set; } = Ease.OutCubic;
 
-    // set to how long it takes for the slime to grow
-    [field: SerializeField] public float growthTimer { get; private set; } = 3f;
-    
-    [field: SerializeField] public float scaleIncrement {get; private set;} = 0.01f;
-
-    private float currentScale = 0f;
-
-    private float currentTime = 0f;
+    private float currentTime;
 
     public override void OnEnter()
     {
         currentTime = 0f;
-        currentScale = 0.5f;
-
+        slime.SetSmall(true);
     }
+
     public override void OnExit()
     {
-        
-        base.OnExit();
+        slime.SetSmall(false);
     }
 
     public override void OnUpdate()
     {
-        currentTime += Time.deltaTime;
-       if (currentTime > growthTimer && slime.isSplit == true)
-        {
+        slime.ApplyGravity();
 
-            StartCoroutine(scaleToOriginal());
-        }
-        else if (slime.isSplit == false)
+        currentTime += slime.LocalDeltaTime;
+        if(currentTime > GrowthDuration)
         {
             slime.ChangeState(slime.SlimeWanderState);
+            return;
         }
-    }
 
-    IEnumerator scaleToOriginal()
-    {
-        while (currentScale < slime.startScale)
-        {
-            currentScale += scaleIncrement;
-            slime.transform.localScale = Vector3.one * currentScale;
-            yield return null;
-        }
-        slime.isSplit = false;
-        slime.ChangeState(slime.SlimeWanderState);
+        float parameter = DOVirtual.EasedValue(0f, 1f, currentTime / GrowthDuration, GrowthEase);
+        slime.SizeScale.SetBaseValue(Mathf.Lerp(slime.SmallSize, 1f, parameter));
     }
 }

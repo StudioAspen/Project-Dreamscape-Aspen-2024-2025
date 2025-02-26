@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class Slime : Enemy
 {
@@ -9,91 +10,73 @@ public class Slime : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
-    // if true is small else false
-    // [field: SerializeField] public bool isSplit { get; private set; }
+    [field: Header("Slime: Split Settings")]
     [field: SerializeField] public int SplitCount { get; private set; } = 2;
-    
-    
-    
+    [field: SerializeField] public float SmallSize { get; private set; } = 0.5f;
+    [field: SerializeField] public float SmallMaxHealth { get; private set; } = 0.5f;
+    [field: SerializeField] public int OriginalBaseMaxHealth { get; private set; } = 50;
+    public bool IsSmall { get; private set; } = false;
+    private float timeSinceLastDamage;
+
+    [field: Header("Slime: Animation")]
+    [field: SerializeField] public AnimationClip JumpAnimationClip { get; private set; }
+
     private Enemy slimeEnemyPrefab;
-    public bool isSplit = false;
-    public bool hasAttacked = false;
-    public float startScale = 0;
-
-
 
     #region States
-    public SlimeWanderState SlimeWanderState {get; private set;}
-    public SlimeChaseState SlimeChaseState  {get; private set;}
-    public SlimeAttackState SlimeAttackState {get; private set;}
-    public SlimeGrowthState SlimeGrowthState {get; private set;}
+    [field: Header("Slime: States")]
+    [field: SerializeField] public SlimeWanderState SlimeWanderState {get; private set;}
+    [field: SerializeField] public SlimeChaseState SlimeChaseState  {get; private set;}
+    [field: SerializeField] public SlimeAttackExpandState SlimeAttackExpandState {get; private set;}
+    [field: SerializeField] public SlimeAttackShrinkState SlimeAttackShrinkState { get; private set;}
+    [field: SerializeField] public SlimeGrowthState SlimeGrowthState {get; private set;}
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        SlimeAttackState = EntityBaseState.InitializeOrCreate<SlimeAttackState>(this);
-        SlimeGrowthState = EntityBaseState.InitializeOrCreate<SlimeGrowthState>(this);
+        SlimeChaseState.Init(this);
+        SlimeWanderState.Init(this);
+        SlimeAttackExpandState.Init(this);
+        SlimeAttackShrinkState.Init(this);
+        SlimeGrowthState.Init(this);
 
-        SlimeWanderState = EntityBaseState.InitializeOrCreate<SlimeWanderState>(this);
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<SlimeChaseState>(this);
-        SlimeChaseState = EnemyChaseState as SlimeChaseState;
-
-
+        EnemyChaseState = SlimeChaseState; // In case you accidentally change to EnemyChaseState
     }
-
     #endregion    
 
     private protected override void OnAwake()
     {
         base.OnAwake();
-        
     }
 
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-        OnEntityDeath += Entity_OnEntityDeath;
-        if(isSplit)
-        {
-            this.MaxHealth = 20;
-            startScale = 1f;
-            SetDefaultState(SlimeGrowthState);
-        }
-        else
-        {
-            this.MaxHealth = 40;
-            startScale = transform.localScale.x;
-            SetDefaultState(SlimeWanderState);
-        }
 
+        SetSmall(IsSmall);
+
+        OnEntityDestroyed += Entity_OnEntityDestroyed;
+        OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
-        OnEntityDeath -= Entity_OnEntityDeath;
+        OnEntityDestroyed -= Entity_OnEntityDestroyed;
+        OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
     }
 
     private protected override void OnStart()
     {
         base.OnStart();
-
     }
 
     private protected override void OnUpdate()
     {
         base.OnUpdate();
 
-        if (CurrentState == EntityLaunchState) 
-        {
-            this.CurrentHealth = 0;
-        }
-    }
-
-    private protected override void OnFixedUpdate()
-    {
-        base.OnFixedUpdate();
+        HandleGrowthConditionWhenSmall();
     }
 
     private protected override void OnOnDrawGizmos()
@@ -118,40 +101,34 @@ public class Slime : Enemy
         base.OnDeath();
     }
 
-    private void Entity_OnEntityDeath(GameObject entityGameObject)
+    private void Entity_OnEntityDestroyed(Entity entityDestroyed, GameObject source)
     {
-        
+        // small slimes dont split, they die
+        if(IsSmall) return;
+
         slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
-        
-        // returns without doing anything if already "died"
-       if(isSplit == true)
-        {
-            return;
-        }
-            
+        if (slimeEnemyPrefab == null) return;
+
         for (int i = 0; i < SplitCount; i++ )
         {
             // if you suspect this is crashing game uncomment bellow
             // Debug.Break();
             float angle = i * (360f / SplitCount);
             
-            Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)) * 1f;
+            Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad));
         
-            Vector3 spawnPos = this.transform.position + offset;
+            Vector3 spawnPos = transform.position + offset;
 
-            // similar to previous code except this time it changes isSplit to true
-            // so the duplicate cant split once it has already done so 
-            Slime duplicateSlime = this.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
-            if (isSplit == false)
-            {
-                duplicateSlime.isSplit = true;
-                duplicateSlime.ChangeState(duplicateSlime.SlimeGrowthState);
-                duplicateSlime.transform.localScale = Vector3.one * 0.75f;
-            }
-
-    
+            Slime duplicateSlime = Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
+            duplicateSlime.SetSmall(true); 
         }
-        OnEntityDeath -= Entity_OnEntityDeath;
+
+        OnEntityDestroyed -= Entity_OnEntityDestroyed;
+    }
+
+    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    {
+        timeSinceLastDamage = 0f;
     }
 
     // <summary>
@@ -163,7 +140,7 @@ public class Slime : Enemy
     public void CheckCollisions(float damageMultiplier, ref List<Entity> hitEntities)
     {
 
-        List<Collider> hits = GetCustomCollisionHits(SlimeAttackState.SlimeAttackLayerMask);
+        List<Collider> hits = GetCustomCollisionHits(SlimeAttackExpandState.SlimeAttackLayerMask);
                 
         foreach (Collider hit in hits)
         {
@@ -180,9 +157,9 @@ public class Slime : Enemy
     // nothing changed from the duplicate elite variant script
     private Enemy GetEnemyPrefabFromCurrentType()
     {
-        foreach (Enemy enemyPrefab in this.Spawner.NeutralEnemyPrefabs)
+        foreach (Enemy enemyPrefab in Spawner.NeutralEnemyPrefabs)
         {
-            if (enemyPrefab.GetType() == this.GetType())
+            if (enemyPrefab.GetType() == GetType())
             {
                 return enemyPrefab;
             }
@@ -267,9 +244,53 @@ public class Slime : Enemy
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == EntitySpawnState) return;
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
         if (CurrentState == EntityStaggeredState) return;
 
-        TransitionToAnimation("FlatMovement");
+        PlayDefaultAnimation();
     }
-    
+
+    public override bool CanBeStaggered()
+    {
+        bool cannotBeStaggered = 
+            CurrentState == SlimeGrowthState ||
+            CurrentState == SlimeAttackExpandState ||
+            CurrentState == SlimeAttackShrinkState ||
+            CurrentState == EntityStunnedState;
+
+        return !cannotBeStaggered;
+    }
+
+    /// <summary>
+    /// Makes the slime small by adjusting the maxhealth and size.
+    /// </summary>
+    /// <param name="isSmall">Whether to make the slime small or big.</param>
+    public void SetSmall(bool isSmall)
+    {
+        IsSmall = isSmall;
+
+        MaxHealth.SetBaseValue(IsSmall ? OriginalBaseMaxHealth * SmallMaxHealth : OriginalBaseMaxHealth);
+        SizeScale.SetBaseValue(IsSmall ? SmallSize : 1f);
+    }
+
+    /// <summary>
+    /// Keeps track of how long the small slime has went without taken damage to grow
+    /// </summary>
+    private void HandleGrowthConditionWhenSmall()
+    {
+        if (!IsSmall)
+        {
+            timeSinceLastDamage = 0f;
+            return;
+        }
+
+        if(timeSinceLastDamage > SlimeGrowthState.NoDamageTakenTargetDuration)
+        {
+            ChangeState(SlimeGrowthState);
+        }
+        else
+        {
+            timeSinceLastDamage += LocalDeltaTime;
+        }
+    }
 }

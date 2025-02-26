@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class SlimeWanderState : SlimeBaseState
 {
-    // Similar to leaper wander state just adjusted for slime
-
-
-    [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange {get;private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange {get;private set;} = new Vector2(3f, 5f);
     [field: SerializeField] public float WanderHopHeight {get;private set;} = 2f;
@@ -16,18 +13,15 @@ public class SlimeWanderState : SlimeBaseState
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-
-
     public override void OnEnter()
     {
+        slime.PlayDefaultAnimation();
+
         slime.SetSpeedModifier(0);
 
         wanderTimeElapsed = 0;
-
-        // slime.OnEntityDeath += slime.Entity_OnEntityDeath;
         randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
-
 
     public override void OnExit()
     {
@@ -43,12 +37,11 @@ public class SlimeWanderState : SlimeBaseState
             if (slime.Target != null)
             {
                 slime.SlimeChaseState.AssignCurentRememberedTarget(slime.Target);
-                slime.ChangeState(slime.EnemyChaseState);
+                slime.ChangeState(slime.SlimeChaseState);
                 return;
             }
             wanderTimeElapsed += slime.LocalDeltaTime;
         }
-
 
         if (wanderTimeElapsed > randomWanderIntervalDuration)
         {
@@ -59,7 +52,7 @@ public class SlimeWanderState : SlimeBaseState
 
             slime.Hop(currentWanderDestination, WanderHopHeight);
 
-            slime.TransitionToAnimation("JumpingUp");
+            slime.PlayOneShotAnimation(slime.JumpAnimationClip);
         }
 
         slime.SetSpeedModifier(slime.IsGrounded ? 0f : 1f);
@@ -71,5 +64,4 @@ public class SlimeWanderState : SlimeBaseState
             slime.ApplyHorizontalVelocity();
         }
     }
-
 }
