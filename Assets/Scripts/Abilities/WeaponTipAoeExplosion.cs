@@ -40,6 +40,7 @@ namespace Dreamscape.Abilities
             }
 
             CustomDebug.InstantiateTemporarySphere(weapon.TipTransform.position, explosionRadius, 1, Color.red);
+            DestroyAndRelease();
         }
 
         private protected override void OnOnDisable()
