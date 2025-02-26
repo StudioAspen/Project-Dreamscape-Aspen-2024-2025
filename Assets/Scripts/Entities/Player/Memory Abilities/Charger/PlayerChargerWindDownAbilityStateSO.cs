@@ -23,7 +23,7 @@ public class PlayerChargerWindDownAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("FlatMovement");
+        player.PlayDefaultAnimation();
 
         timer = 0f;
     }

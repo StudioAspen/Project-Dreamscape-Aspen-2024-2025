@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  landScale: 30
   ghostLandTransform: {fileID: 4562900200964922340}
   <BiomeDatabase>k__BackingField: {fileID: 11400000, guid: 3cd142a13b4f30541b5d350499677ef4,
     type: 2}
@@ -121,6 +122,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca374d8738a92604c851e6668d6a3f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseEmpowerTokens: 2
+  baseWeakenTokens: 1
+  possibleProgressionQuests:
+  - {fileID: 11400000, guid: f4be2fd8871b2764f9f1b2d8aa7cc70f, type: 2}
+  - {fileID: 11400000, guid: a62a275b5e62c5f44994b34097fabdfe, type: 2}
+  - {fileID: 11400000, guid: d48696fd59e255142b9982ca3bb19f48, type: 2}
 --- !u!114 &2152970851481245927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,7 +329,7 @@ PrefabInstance:
     - target: {fileID: 3999374681703134211, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3999374681703134211, guid: 006873e2de8d753499aa3b3f6548874b,
         type: 3}

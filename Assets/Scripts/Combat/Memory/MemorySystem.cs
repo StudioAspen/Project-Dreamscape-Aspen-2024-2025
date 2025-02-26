@@ -2,7 +2,6 @@ using AYellowpaper.SerializedCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Playables;
 using UnityEngine;
 
 public class MemorySystem : MonoBehaviour
@@ -12,14 +11,12 @@ public class MemorySystem : MonoBehaviour
     [Serializable]
     public class ShardDictionaryData
     {
-        public int Level;
         public int Count;
         public Color Color;
         public PlayerAbilityStateSO MemoryAbility;
 
         public ShardDictionaryData(int count, Color color, PlayerAbilityStateSO memoryAbility)
         {
-            Level = 0;
             Count = count;
             Color = color;
             MemoryAbility = memoryAbility;
@@ -50,24 +47,6 @@ public class MemorySystem : MonoBehaviour
     /// </remarks>
     public Action<string> OnShardAdded = delegate { };
     /// <summary>
-    /// Action that is invoked when the memory bar reaches level 1.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>string shardHolderType</c>: The current largest shard holder type.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<string> OnLevelOneReached = delegate { };
-    /// <summary>
-    /// Action that is invoked when the memory bar reaches level 2.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>string shardHolderType</c>: The current largest shard holder type.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<string> OnLevelTwoReached = delegate { };
-    /// <summary>
     /// Action that is invoked when the memory bar reaches level 3 (MAX).
     /// </summary>
     /// <remarks>
@@ -86,7 +65,7 @@ public class MemorySystem : MonoBehaviour
     /// </remarks>
     public Action<string> OnMemoryAbilityActivated = delegate { };
 
-    private void Awake()
+    private void Start()
     {
         player = GetComponent<Player>();
     }
@@ -115,12 +94,12 @@ public class MemorySystem : MonoBehaviour
             return;
         }
 
-        OnMemoryAbilityActivated.Invoke(largestShardType);
-
-        // Activate ability
-        player.PlayerAbilityState.ChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false);
-
-        ShardDictionary.Clear();
+        // Try to activate ability
+        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        {
+            OnMemoryAbilityActivated.Invoke(largestShardType);
+            ShardDictionary.Clear();
+        }
     }
 
     /// <summary>
@@ -155,32 +134,24 @@ public class MemorySystem : MonoBehaviour
             ShardDictionary[typeName].Count += count;
             ShardDictionary[typeName].Color = color;
             ShardDictionary[typeName].MemoryAbility = memoryAbility;
-
-            // Subtract the overfill
-            if (GetTotalShards() >= GetMaxShards())
-            {
-                ShardDictionary[typeName].Count -= GetTotalShards() - GetMaxShards();
-                OnMemoryBarFull.Invoke(GetLargestShardType());
-            }
         }
         else
         {
             ShardDictionary.Add(typeName, new ShardDictionaryData(count, color, memoryAbility));
-
-            // Subtract the overfill
-            if (GetTotalShards() >= GetMaxShards())
-            {
-                ShardDictionary[typeName].Count -= GetTotalShards() - GetMaxShards();
-                OnMemoryBarFull.Invoke(GetLargestShardType());
-            }
-
             OnNewShardTypeAdded.Invoke(typeName);
         }
 
-        OnShardAdded.Invoke(typeName);
+        int totalShards = GetTotalShards();
+        int maxShards = GetMaxShards();
 
-        if(GetTotalShards() >= MaxShardsPerLevel) OnLevelOneReached.Invoke(GetLargestShardType());
-        if(GetTotalShards() >= 2 * MaxShardsPerLevel) OnLevelTwoReached.Invoke(GetLargestShardType());
+        // Subtract the overfill
+        if (totalShards >= maxShards)
+        {
+            ShardDictionary[typeName].Count -= (totalShards - maxShards);
+            OnMemoryBarFull.Invoke(GetLargestShardType());
+        }
+
+        OnShardAdded.Invoke(typeName);
     }
 
     /// <summary>

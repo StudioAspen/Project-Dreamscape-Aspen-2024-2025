@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 // A 3x3 of lands are highlighted on the map. Enemies will only spawn from those lands, once they are all defeated trigger EOW
-[CreateAssetMenu(fileName = "Zones World Event", menuName = "World Event/Zones")]
+[CreateAssetMenu(fileName = "Zones World Event", menuName = "World/World Event/Zones")]
 public class ZonesWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
@@ -18,6 +18,8 @@ public class ZonesWorldEventSO : WorldEventSO
     private protected override void OnStarted()
     {
         activeLands = 0;
+        affectedLands = new();
+        debugSpheres = new();
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
         affectedLands = GetRandom3x3Land();

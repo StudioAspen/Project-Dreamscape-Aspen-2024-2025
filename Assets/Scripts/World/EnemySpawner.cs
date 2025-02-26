@@ -40,14 +40,27 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Enemy spawnedEnemy</c>: The enemySpawned.</description></item>
+    /// <item><description><c>Enemy spawnedEnemy</c>: The enemy spawned.</description></item>
     /// </list>
     /// </remarks>
     public Action<Enemy> OnEnemySpawned = delegate { };
+    /// <summary>
+    /// Triggers when a spawned enemy dies.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Enemy killedEnemy</c>: The enemy killed.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Enemy> OnEnemyDeath = delegate { };
 
     private void Awake()
     {
         landManager = GetComponent<LandManager>();
+    }
+
+    private void Start()
+    {
         worldManager = FindObjectOfType<WorldManager>();
 
         enemyPooler = worldManager.transform.Find("EnemyPooler").GetComponent<ObjectPooler>();
@@ -117,7 +130,7 @@ public class EnemySpawner : MonoBehaviour
 
             if (randomValue < cumalativeWeight)
             {
-                Enemy spawnedEnemy = SpawnEnemy(NeutralEnemyPrefabs[i], GetRandomEnemySpawnPointTransform().position);
+                Enemy spawnedEnemy = SpawnEnemy(NeutralEnemyPrefabs[i], GetRandomEnemySpawnPoint(1f));
 
                 // If the spawned enemy is an elite, apply a random elite status effect
                 if (UnityEngine.Random.value < eliteChance)
@@ -146,9 +159,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
     public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
     {
-        enemyPooler.ChangePrefab(enemyPrefab.gameObject);
-
-        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(spawnPosition);
+        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(enemyPrefab.gameObject, spawnPosition);
         spawnedEnemy.Init(this);
 
         OnEnemySpawned?.Invoke(spawnedEnemy);
@@ -191,12 +202,24 @@ public class EnemySpawner : MonoBehaviour
 
     /// <summary>
     /// Generates a random spawn point for an enemy.
+    /// It picks a random point within a radius of the spawn point.
     /// </summary>
+    /// <param name="radius">The radius around the spawn point transform.</param>
     /// <returns>The position of the random spawn point.</returns>
-    private Transform GetRandomEnemySpawnPointTransform()
+    public Vector3 GetRandomEnemySpawnPoint(float radius)
     {
         int randomIndex = UnityEngine.Random.Range(0, enemySpawnPoints.Count);
-        return enemySpawnPoints[randomIndex];
+        Transform baseSpawnPoint = enemySpawnPoints[randomIndex];
+
+        // Generate a random offset within the radius, keeping y coordinate the same
+        Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * radius;
+        Vector3 randomPosition = new Vector3(
+            baseSpawnPoint.position.x + randomOffset.x,
+            baseSpawnPoint.position.y,
+            baseSpawnPoint.position.z + randomOffset.y
+        );
+
+        return randomPosition;
     }
 
     /// <summary>
@@ -235,6 +258,8 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="enemy">The enemy to remove.</param>
     public void RemoveEnemy(Enemy enemy)
     {
+        OnEnemyDeath.Invoke(enemy);
+
         enemiesSpawned.Remove(enemy);
 
         if (isUsingCurrency)

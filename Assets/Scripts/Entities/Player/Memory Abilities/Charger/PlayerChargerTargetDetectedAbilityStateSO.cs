@@ -23,7 +23,7 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(AnimationClip, TargetDetectedDuration);
+        player.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
         player.SetSpeedModifier(0f);
 
@@ -43,11 +43,11 @@ public class PlayerChargerTargetDetectedAbilityStateSO : PlayerAbilityStateSO
 
         if (timer > TargetDetectedDuration)
         {
-            player.PlayerAbilityState.ChangeAbilityState(ChargeState, true);
+            player.PlayerAbilityState.TryChangeAbilityState(ChargeState, true);
             return;
         }
 
-        player.ApplyRotationToNextMovement();
-        player.RotateToTargetRotation();
+        //player.ApplyRotationToNextMovement();
+        //player.RotateToTargetRotation();
     }
 }

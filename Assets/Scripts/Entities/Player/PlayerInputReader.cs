@@ -13,6 +13,14 @@ public class PlayerInputReader : MonoBehaviour
     private Player player;
     private MemorySystem memorySystem;
 
+    /// <summary>
+    /// Action that is invoked when the player fires a combo action.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>ComboAction incomingAction</c>: The combo action that was just fired.</description></item>
+    /// </list>
+    /// </remarks>
     public Action<ComboAction> OnComboAction = delegate { };
 
     public Vector3 MoveDirection { get; private set; }
@@ -28,13 +36,14 @@ public class PlayerInputReader : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
         memorySystem = player.GetComponent<MemorySystem>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+        
         playerControls.Gameplay.Movement.performed += PlayerControls_OnMovementPerformed;
         playerControls.Gameplay.Movement.canceled += PlayerControls_OnMovementCanceled;
 
@@ -48,7 +57,7 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         MoveDirection = Vector3.zero;
 

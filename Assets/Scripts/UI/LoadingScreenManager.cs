@@ -1,84 +1,69 @@
-using AYellowpaper.SerializedCollections;
 using Eflatun.SceneReference;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoadingScreenManager : MonoBehaviour
 {
-    [Header("Scenes")]
+    [Header("Scenes References")]
     [SerializeField] private List<SceneReference> scenesToLoad = new();
+    [SerializeField] private SceneReference titleScene;
     private Scene loadingScreenScene;
 
     [Header("UI")]
+    [SerializeField] private TMP_Text loadingText;
     [SerializeField] private Slider loadingBarSlider;
-    [SerializeField] private float sliderSmoothSpeed = 1f;
+    [SerializeField] private float sliderSmoothSpeed = 3f;
 
     [Header("Config")]
     [SerializeField] private float afterLoadDelay = 1f;
+    [SerializeField] private float maxLoadDurationBeforeFail = 30f;
 
     private void Awake()
     {
         loadingScreenScene = SceneManager.GetActiveScene();
-
-        StartCoroutine(LoadScenesAsync());
     }
 
     private void Start()
     {
         loadingBarSlider.value = 0;
+
+        StartCoroutine(LoadScenesAsync());
     }
 
     private IEnumerator LoadScenesAsync()
     {
-        Debug.Log("Starting to load scenes...");
-
-        List<AsyncOperation> operations = new List<AsyncOperation>();
         float totalProgress = 0f;
 
         foreach (SceneReference scene in scenesToLoad)
         {
-            Debug.Log($"Loading scene: {scene.Name}");
+            loadingText.text = $"Loading scene: {scene.Name}";
+            float timeElapsed = 0f;
 
-            AsyncOperation operation = SceneManager.LoadSceneAsync(scene.Name, LoadSceneMode.Additive);
-            operation.allowSceneActivation = false;
-            operations.Add(operation);
+            AsyncOperation operation = SceneManager.LoadSceneAsync(scene.BuildIndex, LoadSceneMode.Additive);
 
-            while (operation.progress < 0.9f) // Scene is still loading
+            while (!operation.isDone)
             {
-                // Calculate the total progress
-                totalProgress = operations.Sum(op => op.progress) / scenesToLoad.Count;
-
-                // Move towards the target progress at a constant speed
+                totalProgress += operation.progress / scenesToLoad.Count;
                 loadingBarSlider.value = Mathf.MoveTowards(loadingBarSlider.value, totalProgress, Time.unscaledDeltaTime * sliderSmoothSpeed);
 
                 yield return null;
+
+                timeElapsed += Time.unscaledDeltaTime;
+                if(timeElapsed > maxLoadDurationBeforeFail)
+                {
+                    SceneManager.LoadScene(titleScene.BuildIndex);
+                    yield break;
+                }
             }
         }
 
-        // Smoothly transition to full progress (1f) after all scenes are loaded
-        while (loadingBarSlider.value < 1f)
-        {
-            loadingBarSlider.value = Mathf.MoveTowards(loadingBarSlider.value, 1f, Time.unscaledDeltaTime * sliderSmoothSpeed);
-            yield return null;
-        }
-
-        Debug.Log("All scenes ready, setting slider to full");
         loadingBarSlider.value = 1f;
-
-        yield return new WaitForSecondsRealtime(afterLoadDelay);
-
-        // Activate all scenes once loading is complete
-        foreach (AsyncOperation operation in operations)
-        {
-            operation.allowSceneActivation = true;
-        }
-        Debug.Log("Activating scenes");
 
         SceneManager.UnloadSceneAsync(loadingScreenScene);
     }
-
 }

@@ -7,6 +7,11 @@ using XNode;
 [CreateAssetMenu(menuName = "Aspect Tree")]
 public class AspectTree : NodeGraph
 {
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Tree";
+    [field: SerializeField] public string Description { get; private set; } = "Description";
+    [field: SerializeField] public Sprite AspectSprite { get; private set; }
+
     /// <summary>
     /// Makes a runtime copy of this aspect tree so that it can be modified without affecting the original.
     /// </summary>

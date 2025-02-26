@@ -4899,6 +4899,7 @@ GameObject:
   - component: {fileID: 3421845928575617237}
   - component: {fileID: 8465198154066823501}
   - component: {fileID: 7691410506760389046}
+  - component: {fileID: 5419932812429451754}
   m_Layer: 7
   m_Name: Hammer
   m_TagString: Untagged
@@ -4947,6 +4948,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
   - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}
   - {fileID: 11400000, guid: 806622eae2be3db40b86d3a5c53da0c7, type: 2}
+  - {fileID: 11400000, guid: 391bc76b6ed6af54d9ed7ac8fc730a45, type: 2}
+  - {fileID: 11400000, guid: 080c04b1bfd82c6459ddd53bee7f2a8c, type: 2}
 --- !u!136 &8465198154066823501
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4993,6 +4996,33 @@ CapsuleCollider:
   m_Height: 1.1511238
   m_Direction: 1
   m_Center: {x: 0, y: 0.37055957, z: 0}
+--- !u!54 &5419932812429451754
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819267110015381236}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &2206007959178876986
 GameObject:
   m_ObjectHideFlags: 0

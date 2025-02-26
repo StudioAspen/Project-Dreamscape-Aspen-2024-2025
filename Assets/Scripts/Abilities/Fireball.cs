@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Fireball : MonoBehaviour, IPoolableObject
+public class Fireball : CastedAbility, IPoolableObject
 {
     private Rigidbody rigidBody;
 
@@ -11,42 +11,26 @@ public class Fireball : MonoBehaviour, IPoolableObject
     [SerializeField] private float speed = 5f;
     [SerializeField] private float maxDistance = 50f;
     [SerializeField] private float aoeRadius = 5f;
+    [SerializeField] private float damageMultiplier = 1f;
 
-    private Vector3 direction;
-    private GameObject caster;
-    private int team;
-    private float damagePercent;
-    private Vector2Int damageRange;
+    private Coroutine moveCoroutine;
 
-    private ObjectPool<GameObject> pool;
-
-    /* spawning a fireball from another script
-            ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-            if (spawner == null) return;
-
-            spawner.ChangePrefab(FireballPrefab.gameObject);
-
-            Fireball fireball = spawner.SpawnObject<Fireball>(GetColliderCenterPosition());
-            fireball.Fire(transform.forward, gameObject, Team, 100f);
-     * */
-
-    private void Awake()
+    private void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
     }
 
-    private void OnEnable()
+    private protected override void OnSpawn()
     {
-        direction = Vector3.zero;
-        caster = null;
-        team = 0;
-        damagePercent = 0f;
-        damageRange = Vector2Int.zero;
+        transform.position = casterEntity.GetColliderCenterPosition();
+
+        if(moveCoroutine != null) StopCoroutine(moveCoroutine);
+        moveCoroutine = StartCoroutine(FireballMove(casterEntity.transform.forward));
     }
 
-    private void OnDisable()
+    private protected override void OnOnDisable()
     {
-        // logic for when the fireball gets released to the pool
+        
     }
 
     void OnDrawGizmos()
@@ -56,44 +40,7 @@ public class Fireball : MonoBehaviour, IPoolableObject
         Gizmos.DrawWireSphere(transform.position, aoeRadius);
     }
 
-    /// <summary>
-    /// Fires a fireball in the specified direction.
-    /// </summary>
-    /// <param name="direction">The direction in which to fire the fireball.</param>
-    /// <param name="caster">The GameObject that casted the fireball.</param>
-    /// <param name="team">The team of the fireball.</param>
-    /// <param name="damagePercent">The percentage of damage to apply to the entities hit by the fireball.</param>
-    public void Fire(Vector3 direction, GameObject caster, int team, float damagePercent)
-    {
-        this.direction = direction;
-        this.caster = caster;
-        this.team = team;
-        this.damagePercent = damagePercent;
-
-        StartCoroutine(FireballMove());
-    }
-
-    /// <summary>
-    /// Fires a fireball in the specified direction.
-    /// You can also specify a damage range to calculate the damage for entities hit by the fireball.
-    /// </summary>
-    /// <param name="direction">The direction in which to fire the fireball.</param>
-    /// <param name="caster">The GameObject that casted the fireball.</param>
-    /// <param name="team">The team of the fireball.</param>
-    /// <param name="damagePercent">The percentage of damage to apply to the entities hit by the fireball.</param>
-    /// <param name="damageRange">The damage range to calculate the damage for entities hit by the fireball.</param>
-    public void Fire(Vector3 direction, GameObject caster, int team, float damagePercent, Vector2Int damageRange)
-    {
-        this.direction = direction;
-        this.caster = caster;
-        this.team = team;
-        this.damagePercent = damagePercent;
-        this.damageRange = damageRange;
-
-        StartCoroutine(FireballMove());
-    }
-
-    private IEnumerator FireballMove()
+    private IEnumerator FireballMove(Vector3 direction)
     {
         float distanceTraveled = 0f;
 
@@ -109,17 +56,19 @@ public class Fireball : MonoBehaviour, IPoolableObject
         }
 
         Explode();
+        moveCoroutine = null;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Entity enemy))
-        {
-            if (enemy.CurrentState == enemy.EntityDeathState) return; // if theyre already dying
-            if (enemy.Team == team) return; // if theyre on the same team
+        Entity hitEntity = other.GetComponent<Entity>();
+        if(hitEntity == null) hitEntity = other.GetComponentInParent<Entity>();
+        if(hitEntity == null) return;
 
-            Explode();
-        }
+        if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
+        if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
+
+        Explode();
     }
 
     private void Explode()
@@ -128,35 +77,14 @@ public class Fireball : MonoBehaviour, IPoolableObject
 
         foreach (Entity entity in entitiesHit)
         {
-            if (entity.Team != team) 
-            {
-                // if caster is an entity, calculate damage based on entity stats
-                if(caster.TryGetComponent(out Entity casterEntity))
-                {
-                    casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damagePercent), transform.position);
-                }
-                else
-                {
-                    // otherwise 
-                    entity.TakeDamage(Random.Range(damageRange.x, damageRange.y), transform.position, caster);
-                }
-            }
+            if (entity.Team == casterEntity.Team) return;
+
+            casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damageMultiplier), transform.position);
         }
 
         //insert explosion vfx here:
         CustomDebug.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
-        if (pool == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        pool.Release(gameObject);
-    }
-
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
-    {
-        pool = objectPool;
+        DestroyAndRelease();
     }
 }

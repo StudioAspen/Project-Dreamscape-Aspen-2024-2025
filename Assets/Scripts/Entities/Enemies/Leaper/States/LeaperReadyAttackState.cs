@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class LeaperReadyAttackState : LeaperBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;
     [field: SerializeField] public float ReadyAttackHopDistance { get; private set; } = 1.5f;
     [field: SerializeField] public float ReadyAttackHopHeight { get; private set; } = .75f;
@@ -27,7 +27,7 @@ public class LeaperReadyAttackState : LeaperBaseState
 
     public override void OnEnter()
     {
-        leaper.TransitionToAnimation("FlatMovement");
+        leaper.PlayDefaultAnimation();
 
         leaper.SetSpeedModifier(0);
 
@@ -69,7 +69,7 @@ public class LeaperReadyAttackState : LeaperBaseState
 
             leaper.Hop(currentHopDestination, ReadyAttackHopHeight);
 
-            leaper.TransitionToAnimation("JumpingUp");
+            leaper.PlayOneShotAnimation(leaper.JumpAnimationClip);
 
             currentHopCount--;
         }

@@ -11,18 +11,19 @@ using UnityEngine.UI;
 
 public class BiomeSelectUIPanel : UIPanel
 {
-    private Image panel;
-
     [Header("References")]
     [SerializeField] private List<BiomeCardUI> biomeCards;
 
-    private void Awake()
+    private void Start()
     {
-        panel = GetComponent<Image>();
+        
     }
 
     public void OnEnable()
     {
+        // If the cards are not ready dont do anything
+        if (!biomeCards[0].IsReady) return;
+
         AssignRandomBiomesToCards();
 
         EnableCards();

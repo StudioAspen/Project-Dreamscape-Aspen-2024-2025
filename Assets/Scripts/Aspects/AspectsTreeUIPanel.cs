@@ -25,28 +25,21 @@ public class AspectsTreeUIPanel : UIPanel
 
     private List<AspectButtonUI> aspectButtonUIs = new List<AspectButtonUI>();
 
+    // Use awake here because UI scene loads last
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+        aspectsManager = FindObjectOfType<Player>().GetComponent<AspectsManager>();
+    }
 
-        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
-
+    private void Start()
+    {
         closeButton.onClick.AddListener(CloseButton_OnClick);
     }
 
     private void OnDestroy()
     {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-
         closeButton.onClick.RemoveListener(CloseButton_OnClick);
-    }
-
-    private void Player_OnPlayerSpawned(Player player)
-    {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-        
-        aspectsManager = player.GetComponent<AspectsManager>();
-        Debug.LogWarning("Aspects manager assigned");
     }
 
     private void CloseButton_OnClick()
@@ -58,16 +51,14 @@ public class AspectsTreeUIPanel : UIPanel
     {
         if(aspectsManager == null)
         {
-            Debug.LogWarning("Aspects manager not found");
+            //Debug.LogWarning("Aspects manager not found");
             return;
         }
 
         // reset scroll rect back to center
         if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
 
-        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
-
-        GenerateTree();
+        GenerateTree(aspectsManager.CurrentAspectTree);
     }
 
     private void OnDisable()
@@ -75,27 +66,15 @@ public class AspectsTreeUIPanel : UIPanel
         DeleteTree();
     }
 
-    private void GenerateTree()
+    private void GenerateTree(AspectTree aspectTree)
     {
-        if (aspectsManager == null)
-        {
-            Debug.LogError("Aspects manager not found");
-            return;
-        }
-
-        AspectTree aspectTree = aspectsManager.CurrentAspectTree;
         if(aspectTree == null)
         {
-            titleText.text = "Missing Aspect";
-            Debug.LogWarning("No aspect tree selected, press T to assign");
+            titleText.text = "Selected Aspect Tree is missing";
             return;
         }
         titleText.text = $"{aspectTree.name}";
-
-        Vector2Int currentNodeLevel = aspectTree.GetNodeLevel(aspectTree.GetMostRecentlyAppliedNode());
-        if(currentNodeLevel == new Vector2Int(-1, -1)) currentNodeLevel = new Vector2Int(0, 0);
-
-        Vector3 rootNodePosition = new Vector3(-currentNodeLevel.x * aspectButtonSpacing, -currentNodeLevel.y * aspectButtonSpacing, 0);
+        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}";
 
         for(int i = 0; i < aspectTree.GetTotalLevels(); i++)
         {
@@ -104,13 +83,24 @@ public class AspectsTreeUIPanel : UIPanel
             for(int j = 0; j < aspectNodes.Count; j++)
             {
                 AspectButtonUI aspectButtonUI = Instantiate(aspectButtonUIPrefab, contentTransform);
-                aspectButtonUI.Init(this, aspectsManager, aspectNodes[j]);
+                aspectButtonUI.Init(gameManager, this, aspectsManager, aspectNodes[j]);
 
-                if(aspectNodes.Count % 2 == 1) aspectButtonUI.transform.localPosition = rootNodePosition + aspectButtonSpacing * new Vector3(i, j, 0);
-                else aspectButtonUI.transform.localPosition = rootNodePosition + new Vector3(aspectButtonSpacing * i, aspectButtonSpacing * j - aspectButtonSpacing / 2f, 0);
+                if(aspectNodes.Count % 2 == 1) aspectButtonUI.transform.localPosition = aspectButtonSpacing * new Vector3(i, j, 0);
+                else aspectButtonUI.transform.localPosition = new Vector3(aspectButtonSpacing * i, aspectButtonSpacing * j - aspectButtonSpacing / 2f, 0);
     
                 aspectButtonUIs.Add(aspectButtonUI);
             }   
+        }
+    }
+
+    public void UpdateTree()
+    {
+        tokensText.text = $"Tokens: {aspectsManager.AspectTokens}"; // Update token count
+
+        // Update button states
+        foreach (AspectButtonUI aspectButtonUI in new List<AspectButtonUI>(aspectButtonUIs))
+        {
+            aspectButtonUI.UpdateDisplayContents();
         }
     }
 

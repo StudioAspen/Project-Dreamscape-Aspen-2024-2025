@@ -5,10 +5,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public class ChargerChargeState : ChargerBaseState
 {
-    [field: Header("Charger: Charge Settings")]
-    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
+    [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
@@ -27,7 +27,7 @@ public class ChargerChargeState : ChargerBaseState
 
     public override void OnEnter() 
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
         
         charger.SetSpeedModifier(ChargeSpeedModifier);
 
@@ -96,7 +96,7 @@ public class ChargerChargeState : ChargerBaseState
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
                 enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
-                charger.DealDamageToOtherEntity(enemyEntity, charger.CalculateDamage(ChargeContactPercentDamage), hit.ClosestPoint(charger.GetColliderCenterPosition()), false);
+                charger.DealDamageToOtherEntity(enemyEntity, charger.CalculateDamage(ChargeContactDamageMultiplier), hit.ClosestPoint(charger.GetColliderCenterPosition()), false);
 
                 charger.ChangeState(charger.ChargerWindDownState);
                 return;

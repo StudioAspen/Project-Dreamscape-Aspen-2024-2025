@@ -9,17 +9,14 @@ public class PlayerCombat : MonoBehaviour
 {
     private Player player;
     private PlayerInputReader playerInputReader;
-    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
-    [HideInInspector] public bool IsAnimationPlaying;
     [HideInInspector] public bool CanCombo;
-    [HideInInspector] public bool CanCancelAnimation;
 
     [field: Header("Combo")]
     [SerializeField] private float nonAttackComboResetDelay = 1f;
-    [SerializeField] private float attackComboResetDelay = 0.1f;
+    [field: SerializeField] public float AttackComboResetDelay { get; private set; } = 0.1f;
     private Coroutine delayedComboResetCoroutine;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
@@ -49,11 +46,7 @@ public class PlayerCombat : MonoBehaviour
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
-        animator = GetComponent<Animator>();
-    }
 
-    private void OnEnable()
-    {
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
         player.OnGrounded += Player_OnGrounded;
@@ -62,7 +55,7 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
@@ -109,26 +102,32 @@ public class PlayerCombat : MonoBehaviour
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
 
-        if (IsAttackAction(incomingAction)) TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+        if (IsAttackAction(incomingAction))
+        {
+            bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
+            if (!successfullyExecutedCombo && player.CurrentState == player.PlayerChargeState) player.ChangeState(player.DefaultState);
+        }
     }
 
     /// <summary>
     /// Tries to execute the given combo if it is not null and the player's current state allows it.
     /// </summary>
     /// <param name="combo">The combo to execute.</param>
-    private void TryExecuteCombo(ComboDataSO combo)
+    /// <returns>Whether a combo was executed</returns>
+    private bool TryExecuteCombo(ComboDataSO combo)
     {
         if (combo == null)
         {
             //Debug.LogWarning($"Executed combo is null with combo lists:\n{PrintComboLists(false)}");
-            return;
+            return false;
         }
 
-        if (player.CurrentState == player.PlayerSlideState) return;
-        if (player.CurrentState == player.EntityStaggeredState) return;
+        if (player.CurrentState == player.PlayerSlideState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
 
         player.PlayerAttackState.SetCombo(combo);
         player.ChangeState(player.PlayerAttackState, true);
+        return true;
     }   
 
     /// <summary>
@@ -216,7 +215,7 @@ public class PlayerCombat : MonoBehaviour
     /// Starts a delayed reset of the combo lists by using DOTween to delay the execution of the ResetCombos method.
     /// </summary>
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
-    private void StartDelayedComboListsReset(float delay)
+    public void StartDelayedComboListsReset(float delay)
     {
         if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
         delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
@@ -245,15 +244,6 @@ public class PlayerCombat : MonoBehaviour
         ResetCombos();
 
         delayedComboResetCoroutine = null;
-    }
-
-    /// <summary>
-    /// Sets the speed of the combo animation.
-    /// </summary>
-    /// <param name="speed">The speed value to set.</param>
-    public void SetComboAnimationSpeed(float speed)
-    {
-        animator.SetFloat("ComboAnimationSpeed", speed);
     }
 
     /// <summary>
@@ -301,16 +291,12 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
-    /// Finish the animation and clear the combo lists if animation cancellation is allowed.
-    /// Animation cancelling is disabled for the first half of the attack animation to prevent premature cancelling bug.
-    /// Called at the end of an attack animation through an event.
+    /// Called by animation through an event.
     /// </summary>
-    public void FinishAnimation()
+    public void FireAbility()
     {
-        if (!CanCancelAnimation) return;
+        if (player.CurrentState != player.PlayerAttackState) return;
 
-        IsAnimationPlaying = false;
-
-        StartDelayedComboListsReset(attackComboResetDelay);
+        player.PlayerAttackState.FireAbility();
     }
 }

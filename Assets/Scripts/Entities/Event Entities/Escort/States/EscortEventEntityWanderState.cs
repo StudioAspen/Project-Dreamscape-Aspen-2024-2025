@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
 public class EscortEventEntityWanderState : EntityBaseState
 {
     [field: Header("Config")]
@@ -16,7 +17,7 @@ public class EscortEventEntityWanderState : EntityBaseState
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 
@@ -26,7 +27,7 @@ public class EscortEventEntityWanderState : EntityBaseState
 
     public override void OnEnter()
     {
-        escortEventEntity.TransitionToAnimation("FlatMovement");
+        escortEventEntity.PlayDefaultAnimation();
 
         escortEventEntity.SetSpeedModifier(1f);
 
