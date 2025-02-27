@@ -80,9 +80,10 @@ public class EnemySpawner : MonoBehaviour
 
         while (currentShopCurrency > 0)
         {
+            for (int i = 0; i < spawnAmount; i++)
+              SpawnRandomEnemy(true);
+            
             yield return new WaitForSeconds(spawnInterval);
-
-            SpawnRandomEnemy(true);
         }
     }
 
@@ -94,7 +95,7 @@ public class EnemySpawner : MonoBehaviour
     public IEnumerator SpawnWithDurationCoroutine(float spawnInterval, int spawnAmount, float duration)
     {
         float elapsedTime = 0f;
-        float spawnTimer = 0f;
+        float spawnTimer = duration;
 
         while (elapsedTime < duration)
         {
@@ -103,8 +104,10 @@ public class EnemySpawner : MonoBehaviour
 
             if (spawnTimer >= spawnInterval)
             {
+              for (int i = 0; i < spawnAmount; i++)
                 SpawnRandomEnemy(false);
-                spawnTimer = 0f;
+
+              spawnTimer = 0f;
             }
 
             yield return null;

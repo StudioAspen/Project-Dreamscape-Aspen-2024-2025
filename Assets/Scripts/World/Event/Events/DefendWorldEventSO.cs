@@ -11,9 +11,12 @@ using UnityEngine;
 public class DefendWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public float DefendEventDuration { get; private set; } = 60f;
-    [field: SerializeField] public int DefendEventMaxHealth { get; private set; } = 200;
+    [field: SerializeField] public float DefaultDuration { get; private set; } = 40f;
+    
+
+    [field: Header("Defend Entity")]
     [field: SerializeField] public DefendEventEntity DefendEventEntityPrefab { get; private set; }
+    [field: SerializeField] public int DefendEventMaxHealth { get; private set; } = 200;
     public DefendEventEntity DefendEventEntity { get; private set; }
 
     public float RemainingTime { get; private set; }
@@ -32,7 +35,7 @@ public class DefendWorldEventSO : WorldEventSO
       }
 
       // All lands will spawn enemies, based on the event duration
-      StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), DefendEventDuration);
+      StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), DefaultDuration);
 
       // Select a random player. Will always return players[0] if single player
       int randomIndex = UnityEngine.Random.Range(0, players.Count);
@@ -50,7 +53,7 @@ public class DefendWorldEventSO : WorldEventSO
       // Listen for when the defend event entity dies
       DefendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 
-      RemainingTime = DefendEventDuration;
+      RemainingTime = DefaultDuration;
     }
 
     private protected override void OnCleared()

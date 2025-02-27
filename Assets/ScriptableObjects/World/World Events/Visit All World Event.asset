@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Visit All World Event
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Wanderlust
-  <Description>k__BackingField: Visit each Land highlighted on the map.
+  <Description>k__BackingField: Visit each Land highlighted on the map!
   <EventUIPrefab>k__BackingField: {fileID: 0}
+  <SpawnInterval>k__BackingField: 3
+  <SpawnAmount>k__BackingField: 1
   <CountModifier>k__BackingField: 7.95
   <YIntercept>k__BackingField: 9
   <RadiusDecayRate>k__BackingField: 0.096

@@ -114,7 +114,7 @@ public class WorldEventSO : ScriptableObject
     public void StartEnemySpawnerWithCurrency(LandManager land, bool willRefillCurrency = true)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine( SpawnInterval, SpawnAmount, willRefillCurrency)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(SpawnInterval, SpawnAmount, willRefillCurrency)));
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public class WorldEventSO : ScriptableObject
     public void StartEnemySpawnerWithDuration(LandManager land, float duration)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine( SpawnInterval, SpawnAmount, duration)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(SpawnInterval, SpawnAmount, duration)));
     }
 
     /// <summary>
