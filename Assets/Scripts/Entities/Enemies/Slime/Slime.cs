@@ -120,7 +120,8 @@ public class Slime : Enemy
             Vector3 spawnPos = transform.position + offset;
 
             Slime duplicateSlime = Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
-            duplicateSlime.SetSmall(true); 
+            duplicateSlime.SetSmall(true);
+            duplicateSlime.HealToFull(false);
         }
 
         OnEntityDestroyed -= Entity_OnEntityDestroyed;
@@ -139,7 +140,6 @@ public class Slime : Enemy
     // <param name="hitEntities">A reference to the list of hit entities.</param>
     public void CheckCollisions(float damageMultiplier, ref List<Entity> hitEntities)
     {
-
         List<Collider> hits = GetCustomCollisionHits(SlimeAttackExpandState.SlimeAttackLayerMask);
                 
         foreach (Collider hit in hits)
@@ -170,20 +170,33 @@ public class Slime : Enemy
         return null;
     }
 
+    /// <summary>
+    /// Calculates the velocity required to hop from the current position to an end position with a specified maximum hop height.
+    /// Default hop duration is calculated based on the height difference between the current and end positions, unless specified.
+    /// If a hop duration is specified, the hop height is ignored.
+    /// </summary>
+    /// <param name="endPosition">The target position to reach.</param>
+    /// <param name="hopHeight">The maximum height of the hop.</param>
+    /// <param name="hopDuration">The duration of the hop.</param>
+    /// <returns>The initial velocity vector needed to make the hop.</returns>
     private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
+        // Gravity constant (positive value, assuming downward acceleration)
         float gravity = Mathf.Abs(PhysicsConfig.Gravity);
 
+        // Current position of the entity
         Vector3 startPosition = transform.position;
 
-        Vector3 horizontalDisplacement = new Vector3 (
+        // Horizontal displacement (ignoring vertical component)
+        Vector3 horizontalDisplacement = new Vector3(
             endPosition.x - startPosition.x,
             0,
-            endPosition.y - startPosition.y
+            endPosition.z - startPosition.z
         );
 
         float horizontalDistance = horizontalDisplacement.magnitude;
 
+        // Vertical displacement (difference in height)
         float verticalDisplacement = endPosition.y - startPosition.y;
 
         float totalFlightTime;
@@ -192,49 +205,79 @@ public class Slime : Enemy
 
         if (hopDuration == 0f)
         {
+            // Calculate initial vertical velocity required to reach hopHeight
             initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
 
             totalFlightTime = CalculateHopDuration(endPosition, hopHeight);
         }
         else
         {
+            // Use the provided hopDuration to calculate vertical velocity
             totalFlightTime = hopDuration;
 
+            // Using kinematic equation to solve for initial vertical velocity
+            // s = v*t - 0.5*g*t^2
+            // verticalDisplacement = v * totalFlightTime - 0.5 * gravity * totalFlightTime^2
             initialVerticalVelocity = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(totalFlightTime, 2)) / totalFlightTime;
-            if(float.IsNaN(initialVerticalVelocity)) initialVerticalVelocity = 0f;            
+            if (float.IsNaN(initialVerticalVelocity)) initialVerticalVelocity = 0f;
         }
 
-        Vector3 horizontalVelocity = horizontalDisplacement /totalFlightTime;
-        if(totalFlightTime == 0f) horizontalVelocity = Vector3.zero;
+        // Calculate the horizontal velocity
+        Vector3 horizontalVelocity = horizontalDisplacement / totalFlightTime;
+        if (totalFlightTime == 0f) horizontalVelocity = Vector3.zero;
 
+        // Combine horizontal and vertical components into the final velocity vector
         Vector3 hopVelocity = horizontalVelocity + Vector3.up * initialVerticalVelocity;
-        
+
         return hopVelocity;
     }
 
+    /// <summary>
+    /// Calculates the total duration required to hop from the current position to the end position
+    /// with a specified maximum hop height.
+    /// </summary>
+    /// <param name="endPosition">The target position to reach.</param>
+    /// <param name="hopHeight">The maximum height of the hop.</param>
+    /// <returns>The total duration of the hop.</returns>
     public float CalculateHopDuration(Vector3 endPosition, float hopHeight)
     {
+        // Gravity constant (positive value, assuming downward acceleration)
         float gravity = Mathf.Abs(PhysicsConfig.Gravity);
 
+        // Current position of the entity
         Vector3 startPosition = transform.position;
 
+        // Vertical displacement (difference in height)
         float verticalDisplacement = endPosition.y - startPosition.y;
-        float initialVerticalVelocity = Mathf.Sqrt(2* gravity * Mathf.Abs(hopHeight));
+
+        // Calculate initial vertical velocity required to reach hopHeight
+        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
+
+        // Time to reach the apex of the hop
         float timeToApex = initialVerticalVelocity / gravity;
-        float timeToDescend = Mathf.Sqrt(2* (hopHeight - verticalDisplacement) / gravity);
 
-        if(float.IsNaN(timeToDescend)) timeToDescend = 0f;
+        // Time to descend from the apex to the end position
+        float timeToDescend = Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+        if (float.IsNaN(timeToDescend)) timeToDescend = 0f;
 
+        // Total flight time (ascent + descent)
         float totalFlightTime = timeToApex + timeToDescend;
 
         return totalFlightTime;
     }
 
+
+    /// <summary>
+    /// Makes the enemy hop to a specified end position with a given hop height.
+    /// Default hop duration is calculated based on the height difference between the current and end positions, unless specified.
+    /// </summary>
+    /// <param name="endPosition">The target position to hop to.</param>
+    /// <param name="hopHeight">The maximum height of the hop.</param>
     public void Hop(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight, hopDuration);
 
-        if(hopVelocity== Vector3.zero) return;
+        if (hopVelocity == Vector3.zero) return;
 
         Launch(hopVelocity.normalized, hopVelocity.magnitude);
     }

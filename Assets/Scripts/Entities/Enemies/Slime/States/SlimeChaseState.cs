@@ -16,7 +16,7 @@ public class SlimeChaseState : EnemyChaseState
     private Vector3 currentHopDestination;
     private Vector3 directionToHopDestination;
 
-    private float attackCooldownTimer;
+    private float attackCooldownTimer = Mathf.Infinity;
 
     public override void Init(Entity entity)
     {
@@ -56,11 +56,16 @@ public class SlimeChaseState : EnemyChaseState
                 return;
             }
 
-            if (slime.Distance(rememberedTarget) < StartAttackDistance && attackCooldownTimer > slime.SlimeAttackExpandState.AttackCooldown)
+            attackCooldownTimer += slime.LocalDeltaTime;
+
+            if (slime.Distance(rememberedTarget) < StartAttackDistance)
             {
-                attackCooldownTimer = 0f;
-                slime.SlimeAttackExpandState.AssignCurrentRememberedTarget(rememberedTarget);
-                slime.ChangeState(slime.SlimeAttackExpandState);
+                if(attackCooldownTimer > slime.SlimeAttackExpandState.AttackCooldown)
+                {
+                    attackCooldownTimer = 0f;
+                    slime.SlimeAttackExpandState.AssignCurrentRememberedTarget(rememberedTarget);
+                    slime.ChangeState(slime.SlimeAttackExpandState);
+                }
                 return;
             }
 
@@ -76,8 +81,6 @@ public class SlimeChaseState : EnemyChaseState
         {
             slime.ApplyHorizontalVelocity();
         }
-
-        attackCooldownTimer += slime.LocalDeltaTime;
     }
     
     private Vector3 GetCurrentHopDestination()
@@ -91,6 +94,6 @@ public class SlimeChaseState : EnemyChaseState
         Vector3 direction = (currentDestination - slime.transform.position).normalized;
         Vector3 currentHopDestination = ChaseHopDistance * direction + slime.transform.position;
 
-        return slime.IsValidPointOnNavMesh(currentDestination, ChaseHopHeight, out Vector3 validDestination) ? currentDestination : slime.transform.position;
+        return slime.IsValidPointOnNavMesh(currentHopDestination, ChaseHopHeight, out Vector3 validDestination) ? currentHopDestination : slime.transform.position;
     }
 }
