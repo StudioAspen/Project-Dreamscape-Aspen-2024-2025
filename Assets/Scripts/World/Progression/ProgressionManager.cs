@@ -16,7 +16,7 @@ public class ProgressionManager : MonoBehaviour
 
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
-    public const int QUEST_COUNT = 3;
+    public const int QUEST_COUNT = 4;
     public ProgressionQuestSO[] CurrentQuests { get; private set; } = new ProgressionQuestSO[QUEST_COUNT];
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
