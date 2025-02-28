@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc521136db8e10b45a525b6c6462c5a1, type: 3}
   m_Name: Defend World Event
   m_EditorClassIdentifier: 
-  <EventName>k__BackingField: Defend
+  <EventName>k__BackingField: Guardian
   <Description>k__BackingField: Protect the [Defend Entity] until time runs out!
   <EventUIPrefab>k__BackingField: {fileID: 597010184163234115, guid: a36730bfe74a18e49a364614fc6e99e6,
     type: 3}
-  <SpawnInterval>k__BackingField: 20
-  <SpawnAmount>k__BackingField: 3
-  <DefaultDuration>k__BackingField: 40
-  <DefendEventMaxHealth>k__BackingField: 200
+  <BaseSpawnAmount>k__BackingField: 2
+  <BaseTimeLimit>k__BackingField: 40
+  <TimeIncrement>k__BackingField: 20
+  <EndLayer>k__BackingField: 2
+  <CheckLayer0>k__BackingField: 1
+  <BaseIntervals>k__BackingField: 3
   <DefendEventEntityPrefab>k__BackingField: {fileID: -6622033700469236084, guid: 283748bb881c25f47834dfa195740453,
     type: 3}
+  <DefendEventMaxHealth>k__BackingField: 200
