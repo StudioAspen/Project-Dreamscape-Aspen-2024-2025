@@ -10,6 +10,7 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
     [field: SerializeField] public float TimeMultiplier { get; private set; } = 60f;
 
     private float requiredTime;
+    private int activeSpawners;
 
     private protected override void OnActivated()
     {
@@ -18,10 +19,11 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
 
         int landCount = worldManager.SpawnedLands.Count;
         requiredTime = TimeMultiplier * landCount;
+        activeSpawners = enemySpawners.Length;
 
         foreach (var spawner in enemySpawners)
         {
-            spawner.OnSpawnerDepleted += TrackWaveCompletion;
+            spawner.OnSpawnerDepleted += HandleSpawnerDepletion;
         }
     }
 
@@ -29,7 +31,7 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
     {
         foreach (var spawner in enemySpawners)
         {
-            spawner.OnSpawnerDepleted -= TrackWaveCompletion;
+            spawner.OnSpawnerDepleted -= HandleSpawnerDepletion;
         }
     }
 
@@ -37,13 +39,18 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
     {
     }
 
-    private void TrackWaveCompletion()
+    private void HandleSpawnerDepletion()
     {
-        float waveCompletionTime = Time.timeSinceLevelLoad; 
+        activeSpawners--;
 
-        if (waveCompletionTime <= requiredTime)
+        if (activeSpawners <= 0)
         {
-            Complete();
+            float waveCompletionTime = Time.timeSinceLevelLoad;
+
+            if (waveCompletionTime <= requiredTime)
+            {
+                Complete();
+            }
         }
     }
 }
