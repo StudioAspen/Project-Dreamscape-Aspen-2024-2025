@@ -38,6 +38,14 @@ public class VisitAllWorldEventSO : WorldEventSO
     [field: Range(0, 3)]
     [field: SerializeField] public float MinimumRadius { get; private set; }
 
+    [field: Header("Config")]
+    /// <summary>
+    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+
     private List<Player> players = new List<Player>();
 
     private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
@@ -73,7 +81,7 @@ public class VisitAllWorldEventSO : WorldEventSO
           if (visitIndicatorsDictionary.ContainsKey(land.GridPosition))
             continue;
 
-          StartEnemySpawnerWithCurrency(land);
+          StartEnemySpawnerWithCurrency(land, BaseSpawnInterval, BaseSpawnAmount);
 
           // Since we're using the land level as a power, we need to ensure it's always >= 0
           int absLandLevel = land.Level + 5;

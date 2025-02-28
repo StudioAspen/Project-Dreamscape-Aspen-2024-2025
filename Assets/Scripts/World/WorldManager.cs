@@ -120,6 +120,46 @@ public class WorldManager : MonoBehaviour
         return TryGetLandByGridPosition(gridPosition, out land);
     }
 
+    public List<LandManager> GetLandsWithManhattanDistance(Vector2Int gridPosition, int endLayer = 1, bool checkLayer0 = true) 
+    {
+      // If the grid position has a Land, initialize the list with that Land as the first element. Otherwise, initialize the list as empty.
+      List<LandManager> lands = TryGetLandByGridPosition(gridPosition, out LandManager landZero) && checkLayer0 ? new List<LandManager>{ landZero } : new List<LandManager>();
+
+      // search layer 1 -> endLayer for lands
+      for (int layer = 1; layer <= endLayer; layer++)
+      {
+        for (int xOffset = -layer; xOffset <= layer; xOffset++)
+        {
+          int absX = Mathf.Abs(xOffset);
+          int remainingSteps = layer - absX;
+
+          if (remainingSteps > 0)
+          {
+            // Check the top side of the layer for a land
+            if (TryGetLandByGridPosition(new Vector2Int(gridPosition.x + xOffset, gridPosition.y + remainingSteps), out LandManager topLand))
+              lands.Add(topLand);
+
+            // Check the top side of the layer for a land
+            if (TryGetLandByGridPosition(new Vector2Int(gridPosition.x + xOffset, gridPosition.y - remainingSteps), out LandManager botLand))
+              lands.Add(botLand);
+          } else 
+          {
+            // Check the rightmost coordinate of the last layer for a land
+            if (TryGetLandByGridPosition(new Vector2Int(gridPosition.x + xOffset, gridPosition.y), out LandManager lastLand))
+              lands.Add(lastLand);
+          }
+        }
+      }
+
+      return lands;
+    }
+
+    public List<LandManager> GetLandsWithManhattanDistance(Vector3 worldPosition, int endLayer = 1) 
+    {
+      Vector2Int gridPosition = GetGridPosition(worldPosition);
+      return GetLandsWithManhattanDistance(gridPosition, endLayer);
+    }
+
     /// <summary>
     /// Retrieves the grid position based on the given world position.
     /// </summary>

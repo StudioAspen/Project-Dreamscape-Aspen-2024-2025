@@ -12,6 +12,15 @@ public class PrioritiesWorldEventSO : WorldEventSO
     [field: Header("Config")]
     [field: SerializeField] public Marker MarkerPrefab { get; private set; }
 
+    [field: Space(5)]
+
+    /// <summary>
+    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
@@ -47,7 +56,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         enemyMarkers = new();
 
         // Spawn enemies on all lands
-        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
+        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList(), BaseSpawnInterval, BaseSpawnAmount);
 
         // Get the top 3 lands based on their level and track them
         affectedLands = GetTop3Lands();

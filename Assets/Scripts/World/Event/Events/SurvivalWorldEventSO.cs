@@ -9,14 +9,24 @@ using UnityEngine;
 public class SurvivalWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
+    
     [field: SerializeField] public float SurvivalEventDuration { get; private set; } = 120f;
+
+    [field: Space(5)]
+
+    /// <summary>
+    /// The base number of intervals that will elapse during a timed event. Default value: 3 intervals
+    /// </summary>
+    [field: Tooltip("The base number of intervals that will elapse during a timed event. Default value: 3 intervals")]
+    [field: Range(1, 6)]
+    [field: SerializeField] public int BaseIntervals { get; private set; } = 3;
 
     public float RemainingTime { get; private set; }
 
     private protected override void OnStarted()
     {
         // Spawn enemies on all lands for the duration of the event
-        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), SurvivalEventDuration);
+        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), BaseIntervals, BaseSpawnAmount, SurvivalEventDuration);
 
         RemainingTime = SurvivalEventDuration;
     }

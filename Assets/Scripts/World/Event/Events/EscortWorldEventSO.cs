@@ -12,6 +12,16 @@ public class EscortWorldEventSO : WorldEventSO
     [field: SerializeField] public float EscortEventDuration { get; private set; } = 120f;
     [field: SerializeField] public int EscortEventMaxHealth { get; private set; } = 200;
     [field: SerializeField] public EscortEventEntity EscortEventEntityPrefab { get; private set; }
+    
+    [field: Space(5)]
+
+    /// <summary>
+    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+
     public EscortEventEntity EscortEventEntity { get; private set; }
     private LandManager escortPreviousLand;
 
@@ -29,7 +39,7 @@ public class EscortWorldEventSO : WorldEventSO
         randomLand.EnemySpawner.MaterializeEntity(EscortEventEntity);
 
         // The land the escort entity spawns on will spawn enemies
-        StartEnemySpawnerWithCurrency(randomLand);
+        StartEnemySpawnerWithCurrency(randomLand, BaseSpawnInterval, BaseSpawnAmount);
 
         // Listen for the escort entity's death
         EscortEventEntity.OnEntityDeath += EscortEventEntity_OnEntityDeath;
@@ -78,7 +88,7 @@ public class EscortWorldEventSO : WorldEventSO
     {
         StopEnemySpawners();
 
-        StartEnemySpawnerWithCurrency(newLand, false);
+        StartEnemySpawnerWithCurrency(newLand, BaseSpawnInterval, BaseSpawnAmount, false);
     }
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)

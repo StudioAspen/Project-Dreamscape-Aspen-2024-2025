@@ -92,9 +92,10 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="duration">The duration of the spawning process.</param>
-    public IEnumerator SpawnWithDurationCoroutine(float spawnInterval, int spawnAmount, float duration)
+    public IEnumerator SpawnWithDurationCoroutine(int intervals, int spawnAmount, float duration)
     {
         float elapsedTime = 0f;
+        float spawnInterval = duration / intervals;
         float spawnTimer = duration;
 
         while (elapsedTime < duration)

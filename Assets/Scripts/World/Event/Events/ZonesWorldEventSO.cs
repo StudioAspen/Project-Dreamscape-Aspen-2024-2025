@@ -14,6 +14,15 @@ public class ZonesWorldEventSO : WorldEventSO
     [field: Range(1, 29)]
     [field: SerializeField] private int MaxSearchLayer;
 
+    [field: Space(5)]
+
+    /// <summary>
+    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
@@ -31,7 +40,7 @@ public class ZonesWorldEventSO : WorldEventSO
         {
             // if (land.Level <= 0) continue;
 
-            StartEnemySpawnerWithCurrency(land);
+            StartEnemySpawnerWithCurrency(land, BaseSpawnInterval, BaseSpawnAmount);
 
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;

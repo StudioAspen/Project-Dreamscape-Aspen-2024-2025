@@ -11,7 +11,37 @@ using UnityEngine;
 public class DefendWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public float DefaultDuration { get; private set; } = 40f;
+    
+    
+    [field: Range(5f, 60f)]
+    [field: SerializeField] public float BaseTimeLimit { get; private set; } = 40f;
+    [field: Range(5f, 60f)]
+    [field: SerializeField] public float TimeIncrement { get; private set; } = 20f;
+
+    [field:Space(5)]
+
+    /// <summary>
+    /// When this event selects lands to spawn enemies using Manhattan distance, the end layer is the index of the last layer searched. Default value: layer 2
+    /// </summary>
+    [field: Tooltip("When this event selects lands to spawn enemies using Manhattan distance, the end layer is the index of the last layer searched. Default value: layer 2")]
+    [field: Range (0, 3)]
+    [field: SerializeField] public int EndLayer { get; private set; } = 2;
+
+    /// <summary>
+    /// When this event selects lands to spawn enemies using Manhattan distance, decide whether to search the origin coordinate for a land. Default value: true
+    /// </summary>
+    [field: Tooltip("When this event selects lands to spawn enemies using Manhattan distance, decide whether to search the origin coordinate for a land. Default value: true")]
+    [field: SerializeField] public bool CheckLayer0 { get; private set; } = true;
+
+    [field: Space(5)]
+
+    /// <summary>
+    /// The base number of intervals that will elapse during a timed event. Default value: 3 intervals
+    /// </summary>
+    [field: Tooltip("The base number of intervals that will elapse during a timed event. Default value: 3 intervals")]
+    [field: Range(1, 6)]
+    [field: SerializeField] public int BaseIntervals { get; private set; } = 3;
+
     
 
     [field: Header("Defend Entity")]
@@ -34,9 +64,6 @@ public class DefendWorldEventSO : WorldEventSO
         return;
       }
 
-      // All lands will spawn enemies, based on the event duration
-      StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), DefaultDuration);
-
       // Select a random player. Will always return players[0] if single player
       int randomIndex = UnityEngine.Random.Range(0, players.Count);
       Player randomPlayer = players.ElementAt(randomIndex);
@@ -53,7 +80,18 @@ public class DefendWorldEventSO : WorldEventSO
       // Listen for when the defend event entity dies
       DefendEventEntity.OnEntityDeath += DefendEventEntity_OnEntityDeath;
 
-      RemainingTime = DefaultDuration;
+      // Use Manhattan distance to search 2 layers out from the Defend Entity's Land and make those lands spawn enemies.
+      List<LandManager> activeLands = worldManager.GetLandsWithManhattanDistance(land.GridPosition, EndLayer, true);
+
+      // Calculate the number of spawns per interval, based on the Base Spawn Amount and the number of players.
+      int spawnAmount = BaseSpawnAmount + players.Count - 1;
+
+      // Calculate the time limit, based the number of active lands, the Base Time Limit, the Time Increment, and the End Layer.
+      float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((activeLands.Count - 1) / EndLayer + 1) * TimeIncrement);
+
+      StartEnemySpawnersWithDuration(activeLands, BaseIntervals, spawnAmount, timeLimit);
+
+      RemainingTime = timeLimit;
     }
 
     private protected override void OnCleared()
