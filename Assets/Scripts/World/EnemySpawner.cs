@@ -294,6 +294,7 @@ public class EnemySpawner : MonoBehaviour
     {
         foreach (Enemy enemy in new List<Enemy>(enemiesSpawned))
         {
+            enemy.TakeDamage(0, enemy.transform.position, null, false);
             enemy.Die();
         }
 

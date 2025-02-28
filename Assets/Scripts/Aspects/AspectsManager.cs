@@ -22,18 +22,20 @@ public class AspectsManager : MonoBehaviour
     /// </remarks>
     public Action<AspectTree> OnAspectTreeAdded = delegate { };
 
-    private void Start()
+    private void Awake()
     {
         levelSystem = GetComponent<LevelSystem>();
-
-        levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
 
         SetCurrentAspectTree(AllAspectTrees[0]);
         AddAspectTree(AllAspectTrees[1]);
         AddAspectTree(AllAspectTrees[2]);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
+    {
+        levelSystem.OnLevelUp += LevelSystem_OnLevelUp;
+    }
+    private void OnDisable()
     {
         levelSystem.OnLevelUp -= LevelSystem_OnLevelUp;
     }

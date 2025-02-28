@@ -16,7 +16,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-    private List<Marker> enemyMarkers = new List<Marker>();
+    private Dictionary<Enemy, Marker> enemyMarkers = new();
 
     /// <summary>
     /// Triggers when a priorities enemy spawns.
@@ -99,7 +99,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         }
         debugSpheres.Clear();
 
-        foreach (Marker marker in enemyMarkers)
+        foreach (Marker marker in enemyMarkers.Values)
         {
             GameObject.Destroy(marker.gameObject);
         }
@@ -143,11 +143,17 @@ public class PrioritiesWorldEventSO : WorldEventSO
         OnPrioritiesEnemySpawned.Invoke(enemySpawned.Spawner, enemySpawned);
 
         Marker enemyMarker = Instantiate(MarkerPrefab, enemySpawned.GetEntityTopPosition() + 2f * Vector3.up, Quaternion.identity, enemySpawned.transform);
-        enemyMarkers.Add(enemyMarker);
+        enemyMarkers.Add(enemySpawned, enemyMarker);
     }
 
     private void EnemySpawner_OnEnemyDeath(Enemy enemy)
     {
         OnPrioritiesEnemyDeath.Invoke(enemy.Spawner, enemy);
+
+        if (enemyMarkers.ContainsKey(enemy))
+        {
+            Destroy(enemyMarkers[enemy].gameObject);
+            enemyMarkers.Remove(enemy);
+        }
     }
 }

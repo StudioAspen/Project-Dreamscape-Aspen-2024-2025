@@ -102,7 +102,6 @@ public class EventSelectUIPanel : UIPanel
 
         Vector3 bottomLeftPositionOffScreen = new Vector3(-Camera.main.pixelWidth, -Camera.main.pixelHeight, 0);
 
-        print(eventCards[0].gameObject.transform.position);
         // Kill all previous tweens on the event cards and return them to their starting states
         for (int i = 0; i < eventCards.Count; i++)
         {
@@ -112,7 +111,6 @@ public class EventSelectUIPanel : UIPanel
             // Move the cards off screen
             eventCards[i].transform.position = bottomLeftPositionOffScreen;
         }
-        print(eventCards[0].gameObject.transform.position);
 
         for (int i = 0; i < eventCards.Count; i++)
         {
@@ -127,7 +125,6 @@ public class EventSelectUIPanel : UIPanel
 
             yield return new WaitForSecondsRealtime(flipDurationBetweenCards);
         }
-        print(eventCards[0].gameObject.transform.position);
 
         startCardsAnimationCoroutine = null;
     }

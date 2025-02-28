@@ -90,11 +90,11 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth.GetIntValue());
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
     }
 
     private void Entity_OnEntityHeal(Entity healedEntity, int healValue)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth.GetIntValue());
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
     }
 }

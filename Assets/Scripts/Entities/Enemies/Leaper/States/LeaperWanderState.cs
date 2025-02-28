@@ -42,7 +42,6 @@ public class LeaperWanderState : LeaperBaseState
                 leaper.ChangeState(leaper.EnemyChaseState);
                 return;
             }
-
             wanderTimeElapsed += leaper.LocalDeltaTime;
         }
 

@@ -3,9 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Unity.Burst.Intrinsics;
-using UnityEditor;
 using UnityEngine;
+using Dreamscape.Abilities;
 
 [System.Serializable]
 public class PlayerAttackState : PlayerBaseState

@@ -40,7 +40,7 @@ public class PlayerInputReader : MonoBehaviour
         memorySystem = player.GetComponent<MemorySystem>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         
@@ -57,7 +57,7 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         MoveDirection = Vector3.zero;
 

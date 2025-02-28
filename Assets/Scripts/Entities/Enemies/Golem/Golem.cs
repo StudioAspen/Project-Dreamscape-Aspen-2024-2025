@@ -115,8 +115,6 @@ public class Golem : Enemy
 
         int newDamage = dmg;
 
-        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-
         if (CanBeStaggered())
         {
             damageTakenSinceLastStagger += newDamage;
@@ -139,6 +137,7 @@ public class Golem : Enemy
         }
 
         CurrentHealth -= newDamage;
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
         lastHitSource = source;
         
