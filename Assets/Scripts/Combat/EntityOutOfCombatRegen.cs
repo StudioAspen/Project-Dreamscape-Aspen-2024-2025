@@ -19,12 +19,15 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     private void Awake()
     {
         entity = GetComponent<Entity>();
+    }
 
+    private void OnEnable()
+    {
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
         entity.OnEntityDealDamage += Entity_OnEntityDealDamage;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
         entity.OnEntityDealDamage -= Entity_OnEntityDealDamage;

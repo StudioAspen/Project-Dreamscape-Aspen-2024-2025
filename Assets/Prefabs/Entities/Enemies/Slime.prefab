@@ -288,7 +288,7 @@ MonoBehaviour:
   <DetectionDistance>k__BackingField: 10
   <DetectionConeHalfAngle>k__BackingField: 20
   <SplitCount>k__BackingField: 2
-  <SmallSize>k__BackingField: 0.4
+  <SmallSize>k__BackingField: 0.6
   <SmallMaxHealth>k__BackingField: 0.5
   <OriginalBaseMaxHealth>k__BackingField: 50
   <JumpAnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
@@ -317,6 +317,9 @@ MonoBehaviour:
     <GrowthDuration>k__BackingField: 5
     <NoDamageTakenTargetDuration>k__BackingField: 10
     <GrowthEase>k__BackingField: 9
+  <SlimeDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 0}
+    <DeathDuration>k__BackingField: 1
 --- !u!114 &6764650017304162668
 MonoBehaviour:
   m_ObjectHideFlags: 0

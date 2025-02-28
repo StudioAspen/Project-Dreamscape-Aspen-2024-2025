@@ -33,18 +33,21 @@ public class LevelSystem : MonoBehaviour
     /// </remarks>
     public Action<int> OnEXPAdded = delegate { };
 
-    private void Start()
+    private void Awake()
     {
         entity = GetComponent<Entity>();
 
         CurrentEXP = 0;
         MaxEXP = CalculateMaxEXP();
         AddEXP(0);
+    }
 
+    private void OnEnable()
+    {
         entity.OnKillEntity += Entity_OnKillEntity;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnKillEntity -= Entity_OnKillEntity;
     }

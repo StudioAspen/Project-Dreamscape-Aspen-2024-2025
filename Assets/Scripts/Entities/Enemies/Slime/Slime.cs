@@ -30,6 +30,7 @@ public class Slime : Enemy
     [field: SerializeField] public SlimeAttackExpandState SlimeAttackExpandState {get; private set;}
     [field: SerializeField] public SlimeAttackShrinkState SlimeAttackShrinkState { get; private set;}
     [field: SerializeField] public SlimeGrowthState SlimeGrowthState {get; private set;}
+    [field: SerializeField] public SlimeDeathState SlimeDeathState { get; private set;}
 
     private protected override void InitializeStates()
     {
@@ -40,8 +41,10 @@ public class Slime : Enemy
         SlimeAttackExpandState.Init(this);
         SlimeAttackShrinkState.Init(this);
         SlimeGrowthState.Init(this);
+        SlimeDeathState.Init(this);
 
         EnemyChaseState = SlimeChaseState; // In case you accidentally change to EnemyChaseState
+        EntityDeathState = SlimeDeathState;
     }
     #endregion    
 
@@ -56,15 +59,16 @@ public class Slime : Enemy
 
         SetSmall(IsSmall);
 
-        OnEntityDestroyed += Entity_OnEntityDestroyed;
         OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
-        OnEntityDestroyed -= Entity_OnEntityDestroyed;
+
         OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
+
+        SetSmall(false);
     }
 
     private protected override void OnStart()
@@ -101,32 +105,6 @@ public class Slime : Enemy
         base.OnDeath();
     }
 
-    private void Entity_OnEntityDestroyed(Entity entityDestroyed, GameObject source)
-    {
-        // small slimes dont split, they die
-        if(IsSmall) return;
-
-        slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
-        if (slimeEnemyPrefab == null) return;
-
-        for (int i = 0; i < SplitCount; i++ )
-        {
-            // if you suspect this is crashing game uncomment bellow
-            // Debug.Break();
-            float angle = i * (360f / SplitCount);
-            
-            Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad));
-        
-            Vector3 spawnPos = transform.position + offset;
-
-            Slime duplicateSlime = Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
-            duplicateSlime.SetSmall(true);
-            duplicateSlime.HealToFull(false);
-        }
-
-        OnEntityDestroyed -= Entity_OnEntityDestroyed;
-    }
-
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
         timeSinceLastDamage = 0f;
@@ -152,22 +130,6 @@ public class Slime : Enemy
                 DealDamageToOtherEntity(enemyEntity, CalculateDamage(damageMultiplier), hit.ClosestPoint(GetColliderCenterPosition()));
             }
         }
-    }
-
-    // nothing changed from the duplicate elite variant script
-    private Enemy GetEnemyPrefabFromCurrentType()
-    {
-        foreach (Enemy enemyPrefab in Spawner.NeutralEnemyPrefabs)
-        {
-            if (enemyPrefab.GetType() == GetType())
-            {
-                return enemyPrefab;
-            }
-        }
-
-        Debug.LogWarning("Could not find enemy prefab from current type.");
-
-        return null;
     }
 
     /// <summary>

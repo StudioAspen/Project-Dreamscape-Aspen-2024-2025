@@ -919,13 +919,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
-
         if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
+
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
 
         lastHitSource = source;
 

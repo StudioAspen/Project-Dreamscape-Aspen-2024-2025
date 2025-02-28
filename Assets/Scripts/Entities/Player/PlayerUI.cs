@@ -64,12 +64,12 @@ public class PlayerUI : MonoBehaviour
 
     private void Player_OnEntityHeal(Entity entity, int healAmount)
     {
-        UpdateHealthBar(player.CurrentHealth + healAmount);
+        UpdateHealthBar(player.CurrentHealth);
     }
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        UpdateHealthBar(player.CurrentHealth - damage);
+        UpdateHealthBar(player.CurrentHealth);
     }
 
     private void AspectsManager_OnAspectTreeAdded(AspectTree newTree)

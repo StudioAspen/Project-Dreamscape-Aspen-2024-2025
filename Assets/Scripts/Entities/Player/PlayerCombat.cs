@@ -46,7 +46,10 @@ public class PlayerCombat : MonoBehaviour
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
+    }
 
+    private void OnEnable()
+    {
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
 
         player.OnGrounded += Player_OnGrounded;
@@ -55,7 +58,7 @@ public class PlayerCombat : MonoBehaviour
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 

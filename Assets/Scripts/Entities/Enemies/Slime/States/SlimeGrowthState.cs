@@ -21,6 +21,7 @@ public class SlimeGrowthState : SlimeBaseState
     public override void OnExit()
     {
         slime.SetSmall(false);
+        slime.HealToFull(true);
     }
 
     public override void OnUpdate()

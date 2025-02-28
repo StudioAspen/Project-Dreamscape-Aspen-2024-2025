@@ -28,7 +28,6 @@ public class AchieveXEnemiesDefeatedProgressionQuestSO : ProgressionQuestSO
     private void Player_OnKillEntity(Entity entity)
     {
         killCount++;
-        Debug.Log(killCount);
         if (killCount >= DefeatedGoal)
         {
             Complete();
