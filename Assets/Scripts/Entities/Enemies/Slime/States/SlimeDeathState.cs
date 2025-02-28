@@ -40,6 +40,11 @@ public class SlimeDeathState : EntityDeathState
             Vector3 spawnPos = slime.transform.position + offset;
 
             Slime duplicateSlime = slime.Spawner.SpawnEnemy(slimeEnemyPrefab, spawnPos) as Slime;
+            if (duplicateSlime == null)
+            {
+                Debug.LogWarning("Duplicate slime is null");
+                continue;
+            }
             duplicateSlime.SetSmall(true);
             duplicateSlime.HealToFull(false);
         }
