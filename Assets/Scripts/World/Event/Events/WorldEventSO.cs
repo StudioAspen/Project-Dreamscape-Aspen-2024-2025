@@ -26,6 +26,14 @@ public class WorldEventSO : ScriptableObject
     [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
     private WorldEventUI eventUI;
 
+    [field: Header("Enemy Spawners")] 
+
+    /// <summary>
+    /// The number of enemies to spawn at each Spawn Interval. Default value: 1 Enemy
+    /// </summary>
+    [field: Range(1, 10)]
+    [field: SerializeField] public int BaseSpawnAmount { get; private set; } = 2;
+
     /// <summary>
     /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
     /// </summary>
@@ -97,10 +105,10 @@ public class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
     /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public void StartEnemySpawnerWithCurrency(LandManager land, bool willRefillCurrency = true)
+    public void StartEnemySpawnerWithCurrency(LandManager land, float interval, int spawnAmount, bool willRefillCurrency = true)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(willRefillCurrency)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(interval, spawnAmount, willRefillCurrency)));
     }
 
     /// <summary>
@@ -109,10 +117,10 @@ public class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
     /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnerWithDuration(LandManager land, float duration)
+    public void StartEnemySpawnerWithDuration(LandManager land, int intervals, int spawnAmount, float duration)
     {
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(duration)));
+        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(intervals, spawnAmount, duration)));
     }
 
     /// <summary>
@@ -121,11 +129,11 @@ public class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="lands">The list of lands to spawn enemies on.</param>
     /// /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, bool willRefillCurrency = true)
+    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, float interval, int spawnAmount, bool willRefillCurrency = true)
     {
         foreach (LandManager land in lands)
         {
-            StartEnemySpawnerWithCurrency(land, willRefillCurrency);
+            StartEnemySpawnerWithCurrency(land, interval, spawnAmount, willRefillCurrency);
         }
     }
 
@@ -135,11 +143,11 @@ public class WorldEventSO : ScriptableObject
     /// </summary>
     /// /// <param name="lands">The list of lands to spawn enemies on.</param>
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnersWithDuration(List<LandManager> lands, float duration)
+    public void StartEnemySpawnersWithDuration(List<LandManager> lands, int intervals, int spawnAmount, float duration)
     {
         foreach (LandManager land in lands)
         {
-            StartEnemySpawnerWithDuration(land, duration);
+            StartEnemySpawnerWithDuration(land, intervals, spawnAmount, duration);
         }
     }
 

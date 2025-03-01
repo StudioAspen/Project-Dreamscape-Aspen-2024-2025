@@ -21,7 +21,6 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewFactor = 2.2f;
-    [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private float baseCurrency;
     [SerializeField] private float growthFactor;
     [SerializeField] private int polynomialDegree;
@@ -74,16 +73,17 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <returns>An IEnumerator for the coroutine.</returns>
     /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public IEnumerator SpawnWithCurrencyCoroutine(bool willRefillCurrency = true)
+    public IEnumerator SpawnWithCurrencyCoroutine(float spawnInterval, int spawnAmount, bool willRefillCurrency = true)
     {
         isUsingCurrency = true;
         if(willRefillCurrency) RefillCurrency();
 
         while (currentShopCurrency > 0)
         {
+            for (int i = 0; i < spawnAmount; i++)
+              SpawnRandomEnemy(true);
+            
             yield return new WaitForSeconds(spawnInterval);
-
-            SpawnRandomEnemy(true);
         }
     }
 
@@ -92,10 +92,11 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="duration">The duration of the spawning process.</param>
-    public IEnumerator SpawnWithDurationCoroutine(float duration)
+    public IEnumerator SpawnWithDurationCoroutine(int intervals, int spawnAmount, float duration)
     {
         float elapsedTime = 0f;
-        float spawnTimer = 0f;
+        float spawnInterval = duration / intervals;
+        float spawnTimer = duration;
 
         while (elapsedTime < duration)
         {
@@ -104,8 +105,10 @@ public class EnemySpawner : MonoBehaviour
 
             if (spawnTimer >= spawnInterval)
             {
+              for (int i = 0; i < spawnAmount; i++)
                 SpawnRandomEnemy(false);
-                spawnTimer = 0f;
+
+              spawnTimer = 0f;
             }
 
             yield return null;
