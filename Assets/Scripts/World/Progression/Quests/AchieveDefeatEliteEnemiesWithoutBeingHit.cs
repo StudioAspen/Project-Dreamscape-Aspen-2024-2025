@@ -28,13 +28,7 @@ public class AchieveDefeatEliteEnemiesWithoutBeingHit : ProgressionQuestSO
 
     private void player_OnTakeDamage(int damage, Vector3 hitPosition, GameObject source)
     {
-        
-        if(source.)
-        {   
             killCount = 0;
-        }
-        
-        
     }
 
     private void Player_OnKillEntity(Entity entity)
