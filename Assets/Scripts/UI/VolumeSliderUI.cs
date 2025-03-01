@@ -1,40 +1,31 @@
-﻿using System;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+public class VolumeSliderUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private PauseUIPanel pauseUI;
-    private Button button;
-    private TMP_Text buttonText;
+    private Slider slider;
+    private TMP_Text sliderText;
 
-    public string originalText { get; private set; }
+    private string originalText = "";
     private Color originalColor;
 
     public Action OnButtonClicked = delegate { };
 
     private bool isSelected;
+    private bool hovering;
 
     private void Awake()
     {
         pauseUI = GetComponentInParent<PauseUIPanel>();
-        button = GetComponent<Button>();
-        buttonText = GetComponentInChildren<TMP_Text>();
+        slider = GetComponent<Slider>();
+        sliderText = GetComponentInChildren<TMP_Text>();
 
-        originalText = buttonText.text;
-        originalColor = buttonText.color;
-    }
-
-    private void Start()
-    {
-        button.onClick.AddListener(Button_OnClick);
-    }
-
-    private void OnDestroy()
-    {
-        button.onClick.RemoveListener(Button_OnClick);
+        originalText = sliderText.text;
+        originalColor = sliderText.color;
     }
 
     private void OnEnable()
@@ -46,6 +37,10 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         isSelected = false;
         DisableSelectedIndicator();
+    }
+
+    private void Update() {
+        sliderText.text = (hovering ? ">" : "") + "Volume: " + Mathf.Floor(slider.value * 100f) + "%" + (hovering ? "<" : "");
     }
 
     private void Button_OnClick()
@@ -78,28 +73,22 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     private void EnableSelectedIndicator() {
-        buttonText.text = $"> {buttonText.text} <";
-        buttonText.color = pauseUI.ButtonHighlightColor;
+        hovering = true;
+        sliderText.color = pauseUI.SliderHighlightColor;
     }
 
-    private void DisableSelectedIndicator()
-    {
-        buttonText.text = originalText;
-        buttonText.color = originalColor;
+    private void DisableSelectedIndicator() {
+        hovering = false;
+        sliderText.color = originalColor;
     }
 
     public void SetInteractable(bool isInteractable)
     {
-        button.interactable = isInteractable;
+        slider.interactable = isInteractable;
     }
 
     public bool IsInteractable()
     {
-        return button.interactable;
+        return slider.interactable;
     }
-
-    public void SetOriginalText(string origTxt) {
-        originalText = origTxt;
-    }
-    
 }
