@@ -1,4 +1,5 @@
 using DG.Tweening.Core.Easing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,7 +117,6 @@ public class WorldManager : MonoBehaviour
     public bool TryGetLandByWorldPosition(Vector3 worldPosition, out LandManager land)
     {
         Vector2Int gridPosition = GetGridPosition(worldPosition);
-
         return TryGetLandByGridPosition(gridPosition, out land);
     }
 
@@ -160,6 +160,32 @@ public class WorldManager : MonoBehaviour
       return GetLandsWithManhattanDistance(gridPosition, endLayer);
     }
 
+    public LandManager GetFarthestLand(Vector2Int originPosition)
+    {
+      Vector2Int targetPosition = Vector2Int.zero;
+      float farthestDistance = 0f;
+
+      foreach (KeyValuePair<Vector2Int, LandManager> land in SpawnedLands)
+      {
+        Vector2Int gridPosition = land.Key;
+        LandManager spawnedLand = land.Value;
+
+        // Skip the origin position
+        if (gridPosition == originPosition) continue;
+
+        // Calculate the manhattan distance between the two grid positions
+        float distance = Math.Abs(gridPosition.x - originPosition.x) + Math.Abs(gridPosition.y - originPosition.y);
+
+        if (distance > farthestDistance)
+        {
+          farthestDistance = distance;
+          targetPosition = gridPosition;
+        }
+      }
+
+      return SpawnedLands[targetPosition];
+    }
+
     /// <summary>
     /// Retrieves the grid position based on the given world position.
     /// </summary>
@@ -189,7 +215,7 @@ public class WorldManager : MonoBehaviour
     /// <returns>A random LandManager object.</returns>
     public LandManager GetRandomLand()
     {
-        int randomIndex = Random.Range(0, SpawnedLands.Count);
+        int randomIndex = UnityEngine.Random.Range(0, SpawnedLands.Count);
         return SpawnedLands.Values.ElementAt(randomIndex);
     }
 
@@ -199,7 +225,7 @@ public class WorldManager : MonoBehaviour
     /// <returns>A random LandManager object</returns>
     public LandManager GetRandomLandByWeight()
     {
-      float random = Random.Range(0f, SpawnedLands.Values.Sum(land => land.Weight));
+      float random = UnityEngine.Random.Range(0f, SpawnedLands.Values.Sum(land => land.Weight));
       float current = 0;
 
       foreach (LandManager land in SpawnedLands.Values)
@@ -246,7 +272,7 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            landPrefabToUse = BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands[Random.Range(0, BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count)];
+            landPrefabToUse = BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands[UnityEngine.Random.Range(0, BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count)];
         }
 
         LandManager spawnedLand = Instantiate(landPrefabToUse, new Vector3(landScale * gridPosition.x, 0, landScale * gridPosition.y), Quaternion.identity, transform);

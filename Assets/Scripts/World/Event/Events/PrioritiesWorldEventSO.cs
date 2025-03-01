@@ -70,7 +70,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
             if (land.Level <= 0) continue;
 
             // Each top land will use ALL of its currency to spawn many enemies as possible all at once.
-            StartEnemySpawnerWithCurrency(land, 0, 12);
+            StartEnemySpawnerWithCurrency(land, 0, BaseSpawnAmount);
 
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
