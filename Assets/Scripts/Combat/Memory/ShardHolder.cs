@@ -14,12 +14,15 @@ public class ShardHolder : MonoBehaviour
 
     private void Awake()
     {
-        entity = GetComponent<Entity>();
+        entity = GetComponent<Entity>(); 
+    }
 
+    private void OnEnable()
+    {
         entity.OnEntityDeath += Entity_OnEntityDeath;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnEntityDeath -= Entity_OnEntityDeath;
     }

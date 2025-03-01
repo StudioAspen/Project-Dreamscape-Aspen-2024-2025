@@ -5,9 +5,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public class ChargerChargeState : ChargerBaseState
 {
-    [field: Header("Charger: Charge Settings")]
     [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
@@ -27,7 +27,7 @@ public class ChargerChargeState : ChargerBaseState
 
     public override void OnEnter() 
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
         
         charger.SetSpeedModifier(ChargeSpeedModifier);
 

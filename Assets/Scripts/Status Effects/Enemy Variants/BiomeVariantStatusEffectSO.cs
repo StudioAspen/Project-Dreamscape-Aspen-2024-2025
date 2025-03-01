@@ -1,7 +1,7 @@
-﻿public class BiomeVariantStatusEffectSO : VariantStatusEffectSO
-{
-    //[field: Header("Biome Variant Config")]
+﻿using UnityEngine;
 
+public class BiomeVariantStatusEffectSO : VariantStatusEffectSO
+{
     private protected override void OnApply()
     {
         base.OnApply();

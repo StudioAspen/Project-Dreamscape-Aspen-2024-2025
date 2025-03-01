@@ -20,11 +20,6 @@ public class ObjectPooler : MonoBehaviour
         objectPool = new ObjectPool<GameObject>(CreateObject, OnGetFromPool, OnReleaseToPool, OnDestroyObject, true, defaultCapacity, maxSize);
     }
 
-    public void ChangePrefab(GameObject prefab)
-    {
-        objectPrefab = prefab;
-    }
-
     private GameObject CreateObject()
     {
         GameObject o = Instantiate(objectPrefab, new Vector3(0f, 100000f, 0f), Quaternion.identity, transform);
@@ -49,41 +44,44 @@ public class ObjectPooler : MonoBehaviour
     }
 
     #region Factory
-    public T SpawnObject<T>() where T : Component
+    public T SpawnObject<T>(GameObject newPrefab, Vector3? position = null, Transform parent = null) where T : Component
     {
+        objectPrefab = newPrefab;
         GameObject spawnedObject = objectPool.Get();
-        spawnedObject.transform.position = Vector3.zero;
+
+        // Set position if provided, otherwise default to zero
+        spawnedObject.transform.position = position ?? Vector3.zero;
+
+        // Set parent if provided
+        if (parent != null)
+        {
+            spawnedObject.transform.SetParent(parent);
+        }
+
         Physics.SyncTransforms();
 
         T component = spawnedObject.GetComponent<T>();
-        
         Debug.Assert(component != null, $"Prefab is missing {typeof(T)} component");
 
         return component;
     }
 
-    public T SpawnObject<T>(Vector3 position) where T : Component
+    public T SpawnObject<T>(Vector3? position = null, Transform parent = null) where T : Component
     {
         GameObject spawnedObject = objectPool.Get();
-        spawnedObject.transform.position = position;
+
+        // Set position if provided, otherwise default to zero
+        spawnedObject.transform.position = position ?? Vector3.zero;
+
+        // Set parent if provided
+        if (parent != null)
+        {
+            spawnedObject.transform.SetParent(parent);
+        }
+
         Physics.SyncTransforms();
 
         T component = spawnedObject.GetComponent<T>();
-
-        Debug.Assert(component != null, $"Prefab is missing {typeof(T)} component");
-
-        return component;
-    }
-
-    public T SpawnObject<T>(Vector3 position, Transform parent) where T : Component
-    {
-        GameObject spawnedObject = objectPool.Get();
-        spawnedObject.transform.position = position;
-        spawnedObject.transform.SetParent(parent);
-        Physics.SyncTransforms();
-
-        T component = spawnedObject.GetComponent<T>();
-
         Debug.Assert(component != null, $"Prefab is missing {typeof(T)} component");
 
         return component;

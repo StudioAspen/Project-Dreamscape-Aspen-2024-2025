@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using AYellowpaper.SerializedCollections;
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ public class EntityRendererManager : MonoBehaviour
     private Dictionary<Renderer, List<Material>> originalMaterials = new Dictionary<Renderer, List<Material>>();
     private Dictionary<Renderer, List<Color>> originalColors = new Dictionary<Renderer, List<Color>>();
 
+/*    [field: SerializeField, SerializedDictionary("Biome", "Texture")]
+    public SerializedDictionary<Biome, Texture> BiomeTextures { get; private set; } = new();
+*/
     private void Awake()
     {
         CacheOriginalMaterials();

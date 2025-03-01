@@ -40,11 +40,14 @@ public class LevelSystem : MonoBehaviour
         CurrentEXP = 0;
         MaxEXP = CalculateMaxEXP();
         AddEXP(0);
+    }
 
+    private void OnEnable()
+    {
         entity.OnKillEntity += Entity_OnKillEntity;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnKillEntity -= Entity_OnKillEntity;
     }

@@ -47,23 +47,6 @@ public class PlayerAbilityStateSO : ScriptableObject
     }
 
     /// <summary>
-    /// Transitions the player to the specified ability animation.
-    /// Use a clipDuration of 0 to force the clip to play at its normal speed.
-    /// </summary>
-    /// <param name="animationClip">The animation clip to transition to.</param>
-    /// <param name="clipDuration">The duration to force the clip to.</param>
-    /// <param name="fadeDuration">The duration of the fade transition (optional, default is 0.1 seconds).</param>
-    public void TransitionToAbilityAnimation(AnimationClip animationClip, float clipDuration = 0f, float fadeDuration = 0.1f)
-    {
-        // Calculate the speed based on the clip duration
-        float speed = (clipDuration == 0f) ? 1f : animationClip.length / clipDuration;
-        player.PlayerAbilityState.SetAbilityAnimationSpeed(speed);
-
-        player.ReplaceOneShotAnimationClip(animationClip, "AbilityPlaceholder");
-        player.TransitionToAnimation("Ability", fadeDuration);
-    }
-
-    /// <summary>
     /// Called once when entering the state.
     /// </summary>
     public virtual void OnEnter() { }

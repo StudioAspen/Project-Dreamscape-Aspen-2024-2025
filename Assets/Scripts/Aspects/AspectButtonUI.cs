@@ -20,8 +20,9 @@ public class AspectButtonUI : MonoBehaviour
     /// <param name="treeUI">The AspectsTreeUI instance.</param>
     /// <param name="aspectsManager">The AspectsManager instance.</param>
     /// <param name="aspectNode">The AspectNodeNode instance.</param>
-    public void Init(AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
+    public void Init(GameManager gameManager, AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
     {
+        this.gameManager = gameManager;
         aspectsTreeUI = treeUI;
         this.aspectsManager = aspectsManager;
         this.aspectNode = aspectNode;
@@ -29,9 +30,8 @@ public class AspectButtonUI : MonoBehaviour
         UpdateDisplayContents();
     }
 
-    private void Awake()
+    private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
         button = GetComponent<Button>();
         text = GetComponentInChildren<TMP_Text>();
 

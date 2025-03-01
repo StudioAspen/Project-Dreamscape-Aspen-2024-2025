@@ -1,8 +1,9 @@
-﻿public class EnemyIdleState : EnemyBaseState
+﻿[System.Serializable]
+public class EnemyIdleState : EnemyBaseState
 {
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         enemy.SetSpeedModifier(0f);
     }

@@ -13,11 +13,14 @@ public class EntityStatusEffector : MonoBehaviour
     private void Awake()
     {
         entity = GetComponent<Entity>();
+    }
 
+    private void OnEnable()
+    {
         entity.OnEntityDestroyed += Entity_OnEntityDestroyed;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnEntityDestroyed -= Entity_OnEntityDestroyed;
     }

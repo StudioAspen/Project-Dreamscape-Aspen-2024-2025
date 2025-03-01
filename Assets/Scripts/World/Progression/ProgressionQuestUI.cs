@@ -8,7 +8,8 @@ public class ProgressionQuestUI : MonoBehaviour
 
     [SerializeField] private TMP_Text[] questTexts = new TMP_Text[3];
 
-    private void Start()
+    // Awake is safe here because UI Scene loads last
+    private void Awake()
     {
         progressionManager = FindObjectOfType<ProgressionManager>();
     }
