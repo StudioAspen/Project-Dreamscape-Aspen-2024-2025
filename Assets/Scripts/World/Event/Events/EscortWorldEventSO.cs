@@ -67,7 +67,7 @@ public class EscortWorldEventSO : WorldEventSO
 
 
 
-      // TODO: We need the Escort Entity to walk towards the destination land. Then we need to Trigger EOW when the entity reaches the destination land.
+      // TODO: We need the Escort Entity to walk towards the destination land. Then we need to Trigger EOW when the entity reaches the destination land. We also would need an indicator like a debug sphere at the destination land.
 
 
 
