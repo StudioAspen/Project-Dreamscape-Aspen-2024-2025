@@ -1,56 +1,57 @@
 ﻿using UnityEngine;
+using System.Collections;
+
 
 [CreateAssetMenu(fileName = "Complete Wave Under X * LandCount Time Quest", menuName = "World/Progression Quest/Complete Wave Under X LandCount Time")]
 public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
 {
-    private EnemySpawner[] enemySpawners;
     private WorldManager worldManager;
+    private EventManager eventManager;
 
     [field: Header("Config")]
     [field: SerializeField] public float TimeMultiplier { get; private set; } = 60f;
 
     private float requiredTime;
-    private int activeSpawners;
+    private Coroutine timerCoroutine;
+    private bool timeExpired = false;
 
     private protected override void OnActivated()
     {
         worldManager = FindObjectOfType<WorldManager>();
-        enemySpawners = FindObjectsOfType<EnemySpawner>();
+        eventManager = FindObjectOfType<EventManager>();
+        requiredTime = TimeMultiplier * worldManager.SpawnedLands.Count;
 
-        int landCount = worldManager.SpawnedLands.Count;
-        requiredTime = TimeMultiplier * landCount;
-        activeSpawners = enemySpawners.Length;
+        timerCoroutine = worldManager.StartCoroutine(TimerCountdown());
 
-        foreach (var spawner in enemySpawners)
+        eventManager.OnEventCleared += HandleEventCleared;
+    }
+
+    private IEnumerator TimerCountdown()
+    {
+        yield return new WaitForSeconds(requiredTime);
+        timeExpired = true; // Mark time as expired
+  
+    }
+
+    private void HandleEventCleared(WorldEventSO worldEvent)
+    {
+        if (!timeExpired) // Only complete if time has NOT expired
         {
-            spawner.OnSpawnerDepleted += HandleSpawnerDepletion;
+            Complete();
         }
     }
 
     private protected override void OnCleanUp()
     {
-        foreach (var spawner in enemySpawners)
+        if (timerCoroutine != null)
         {
-            spawner.OnSpawnerDepleted -= HandleSpawnerDepletion;
+            worldManager.StopCoroutine(timerCoroutine);
         }
+
+        eventManager.OnEventCleared -= HandleEventCleared;
     }
 
     private protected override void OnUpdate()
     {
-    }
-
-    private void HandleSpawnerDepletion()
-    {
-        activeSpawners--;
-
-        if (activeSpawners <= 0)
-        {
-            float waveCompletionTime = Time.timeSinceLevelLoad;
-
-            if (waveCompletionTime <= requiredTime)
-            {
-                Complete();
-            }
-        }
     }
 }

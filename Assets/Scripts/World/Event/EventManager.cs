@@ -9,6 +9,15 @@ public class EventManager : MonoBehaviour
 {
     private GameManager gameManager;
     private WorldManager worldManager;
+    /// <summary>
+    /// Triggers when the current event is cleared.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>WorldEventSO CkearedEvent</c>: The event cleared.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<WorldEventSO> OnEventCleared = delegate { };
 
     #region Event Machine
     [SerializeField] private List<WorldEventSO> events = new List<WorldEventSO>();
@@ -189,7 +198,7 @@ public class EventManager : MonoBehaviour
     public void ClearEvent()
     {
         CurrentEvent?.Clear();
-
+        OnEventCleared?.Invoke(CurrentEvent);
         gameManager.ChangeState(GameState.BIOME_SELECTION);
     }
 
