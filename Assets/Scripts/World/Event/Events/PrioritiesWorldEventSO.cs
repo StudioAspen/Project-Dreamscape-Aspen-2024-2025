@@ -15,13 +15,13 @@ public class PrioritiesWorldEventSO : WorldEventSO
     [field: Space(5)]
 
     /// <summary>
-    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// The number of lands needed on the map for the event to select an additional top land. Default value: 4
     /// </summary>
-    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
-    [field: Range(3f, 30f)]
-    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+    [field: Tooltip("The number of lands needed on the map for the event to select an additional top land. Default value: 4")]
+    [field: Range(2, 6)]
+    [field: SerializeField] public float LandsPerTopLand { get; private set; } = 4;
 
-    private List<LandManager> affectedLands = new List<LandManager>();
+    private List<LandManager> topLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
@@ -51,18 +51,26 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private protected override void OnStarted()
     {
         activeLands = 0;
-        affectedLands = new();
+        topLands = new();
         debugSpheres = new();
         enemyMarkers = new();
 
-        // Spawn enemies on all lands
-        StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList(), BaseSpawnInterval, BaseSpawnAmount);
+        // StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList(), BaseSpawnInterval, BaseSpawnAmount);
+
+        // Get all spawned lands on the map
+        List<LandManager> spawnedLands = worldManager.SpawnedLands.Values.ToList();
+
+        int topLandsAmount = 1 + Mathf.FloorToInt((spawnedLands.Count - 1) / LandsPerTopLand);
 
         // Get the top 3 lands based on their level and track them
-        affectedLands = GetTop3Lands();
-        foreach (LandManager land in affectedLands)
+        topLands = GetTopLands(topLandsAmount);
+
+        foreach (LandManager land in topLands)
         {
             if (land.Level <= 0) continue;
+
+            // Each top land will use ALL of its currency to spawn many enemies as possible all at once.
+            StartEnemySpawnerWithCurrency(land, 0, 12);
 
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
@@ -90,7 +98,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
             land.EnemySpawner.DeactivateAllEnemies();
         }
 
-        foreach (LandManager land in affectedLands)
+        foreach (LandManager land in topLands)
         {
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
@@ -100,7 +108,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
             land.EnemySpawner.OnEnemyDeath -= EnemySpawner_OnEnemyDeath;
         }
-        affectedLands.Clear();
+        topLands.Clear();
 
         foreach (GameObject sphere in debugSpheres)
         {
@@ -116,10 +124,10 @@ public class PrioritiesWorldEventSO : WorldEventSO
     }
 
     /// <summary>
-    /// Gets the top 3 lands based on their level.
+    /// Gets the top lands based on their level.
     /// </summary>
-    /// <returns>A list of the top 3 lands.</returns>
-    private List<LandManager> GetTop3Lands()
+    /// <returns>A list of the top lands.</returns>
+    private List<LandManager> GetTopLands(int topLandsAmount)
     {
         List<LandManager> topLands = new List<LandManager>();
 
@@ -127,7 +135,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         List<LandManager> sortedLands = worldManager.SpawnedLands.Values.OrderByDescending(land => land.Level).ToList();
 
         // Add the top 3 lands to the result list
-        for (int i = 0; i < 3 && i < sortedLands.Count; i++)
+        for (int i = 0; i < topLandsAmount && i < sortedLands.Count; i++)
         {
             topLands.Add(sortedLands[i]);
 

@@ -12,9 +12,14 @@ public class DefendWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
     
-    
+    /// <summary>
+    /// The minimum time limit, in seconds, of the event. Default value: 40 seconds.
+    /// </summary>
+    [field: Tooltip("The minimum time limit, in seconds, of the event. Default value: 40 seconds")]
     [field: Range(5f, 60f)]
     [field: SerializeField] public float BaseTimeLimit { get; private set; } = 40f;
+
+    [field: Tooltip("The time, in seconds, this event will increase by as players progress. Default value: 20 seconds")]
     [field: Range(5f, 60f)]
     [field: SerializeField] public float TimeIncrement { get; private set; } = 20f;
 
@@ -86,7 +91,7 @@ public class DefendWorldEventSO : WorldEventSO
       // Calculate the number of spawns per interval, based on the Base Spawn Amount and the number of players.
       int spawnAmount = BaseSpawnAmount + players.Count - 1;
 
-      // Calculate the time limit, based the number of active lands, the Base Time Limit, the Time Increment, and the End Layer.
+      // Calculate the time limit based the number of active lands, the Base Time Limit, the Time Increment, and the End Layer.
       float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((activeLands.Count - 1) / (EndLayer + 1)) * TimeIncrement);
 
       StartEnemySpawnersWithDuration(activeLands, BaseIntervals, spawnAmount, timeLimit);

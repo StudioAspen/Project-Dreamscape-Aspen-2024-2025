@@ -10,25 +10,52 @@ public class SurvivalWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
     
-    [field: SerializeField] public float SurvivalEventDuration { get; private set; } = 120f;
+    /// <summary>
+    /// The minimum time limit, in seconds, of the event. Default value: 40 seconds.
+    /// </summary>
+    [field: Tooltip("The minimum time limit, in seconds, of the event. Default value: 40 seconds")]
+    [field: Range(5f, 60f)]
+    [field: SerializeField] public float BaseTimeLimit { get; private set; } = 40f;
+
+    [field: Tooltip("The time, in seconds, this event will increase by as players progress. Default value: 20 seconds")]
+    [field: Range(5f, 60f)]
+    [field: SerializeField] public float TimeIncrement { get; private set; } = 10f;
 
     [field: Space(5)]
 
     /// <summary>
-    /// The base number of intervals that will elapse during a timed event. Default value: 3 intervals
+    /// The base number of intervals that will elapse during a timed event. Default value: 5 intervals
     /// </summary>
-    [field: Tooltip("The base number of intervals that will elapse during a timed event. Default value: 3 intervals")]
+    [field: Tooltip("The base number of intervals that will elapse during a timed event. Default value: 5 intervals")]
     [field: Range(1, 6)]
-    [field: SerializeField] public int BaseIntervals { get; private set; } = 3;
+    [field: SerializeField] public int BaseIntervals { get; private set; } = 5;
 
     public float RemainingTime { get; private set; }
+    private List<Player> players = new List<Player>();
 
     private protected override void OnStarted()
     {
-        // Spawn enemies on all lands for the duration of the event
-        StartEnemySpawnersWithDuration(worldManager.SpawnedLands.Values.ToList(), BaseIntervals, BaseSpawnAmount, SurvivalEventDuration);
+      // Find all players and if there are none, clear the event
+      players = FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
+      
+      if(players == null || players.Count <= 0)
+      {
+        eventManager.ClearEvent();
+        return;
+      }
 
-        RemainingTime = SurvivalEventDuration;
+      // Get all spawned lands on the map
+      List<LandManager> spawnedLands = worldManager.SpawnedLands.Values.ToList();
+
+      int spawnAmount = BaseSpawnAmount + players.Count - 1;
+
+      // Calculate the time limit based the number of spawned lands, the Base Time Limit, and the Time Increment.
+      float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((spawnedLands.Count - 1) / 2) * TimeIncrement);
+
+      // Spawn enemies on all lands for the duration of the event
+      StartEnemySpawnersWithDuration(spawnedLands, BaseIntervals, spawnAmount, timeLimit);
+
+      RemainingTime = timeLimit;
     }
 
     private protected override void OnCleared()
