@@ -5,7 +5,7 @@ public class SlimeDeathState : EntityDeathState
 {
     private Slime slime;
 
-    private float currentTime;
+    private bool hasSplit;
 
     public override void Init(Entity entity)
     {
@@ -17,12 +17,31 @@ public class SlimeDeathState : EntityDeathState
     public override void OnEnter()
     {
         base.OnEnter();
+
+        hasSplit = false;
     }
 
     public override void OnExit()
     {
         base.OnExit();
+    }
 
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if(timer > DeathDuration / 2 && !hasSplit)
+        {
+            hasSplit = true;
+            Split();
+        }
+    }
+
+    /// <summary>
+    /// Splits the slime by spawning smaller duplicates through its enemy spawner
+    /// </summary>
+    private void Split()
+    {
         // small slimes dont split, they die
         if (slime.IsSmall) return;
 
@@ -46,12 +65,8 @@ public class SlimeDeathState : EntityDeathState
                 continue;
             }
             duplicateSlime.SetSmall(true);
+            duplicateSlime.UpdateCloneFlag();
             duplicateSlime.HealToFull(false);
         }
-    }
-
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
     }
 }
