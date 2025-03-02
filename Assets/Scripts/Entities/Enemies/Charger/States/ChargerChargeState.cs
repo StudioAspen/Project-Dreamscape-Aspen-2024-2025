@@ -75,7 +75,7 @@ public class ChargerChargeState : ChargerBaseState
         {
             if (charger.DidHitWall(hit))
             {
-                CameraShakeManager.Instance.ShakeCamera(3f, 0.5f);
+                CameraShakeManager.Instance.ShakeCamera(3f, 1f, 0.5f);
 
                 charger.ChangeState(charger.ChargerDazedState);
                 return;
@@ -83,7 +83,7 @@ public class ChargerChargeState : ChargerBaseState
 
             if (charger.DidHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 1f,0.25f);
 
                 Vector3 launchDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
                 friendlyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
@@ -91,7 +91,7 @@ public class ChargerChargeState : ChargerBaseState
 
             if (charger.DidHitEnemyEntity(hit, out Entity enemyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
 
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
                 enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
