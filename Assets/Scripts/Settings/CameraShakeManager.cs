@@ -15,7 +15,7 @@ public class CameraShakeManager : MonoBehaviour
     private void Awake()
     {
         if (Instance != null) Destroy(Instance.gameObject);
-        else Instance = this;
+        Instance = this;
 
         cinemachineVirtualCamera = GetComponent<CinemachineVirtualCamera>();
     }

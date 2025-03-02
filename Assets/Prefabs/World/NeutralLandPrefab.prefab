@@ -549,8 +549,10 @@ MonoBehaviour:
   - {fileID: 262600604663446260}
   - {fileID: 209724545201421855}
   - {fileID: 4446345457396114121}
+  materializeVFXPrefab: {fileID: 1927549556296071580, guid: 70bd4e497e88a9b4581b60f89f79dae2,
+    type: 3}
   weightingSkewPower: 2.2
-  spawnInterval: 3
+  enemySpawnIntervalRange: {x: 3, y: 6}
   baseCurrency: 2
   growthFactor: 1
   polynomialDegree: 1

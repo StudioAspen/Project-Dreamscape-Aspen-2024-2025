@@ -277,10 +277,7 @@ public class PlayerAttackState : PlayerBaseState
         AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
         if (abilityComboData == null) return;
 
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        CastedAbility spawnedAbility = spawner.SpawnObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
         spawnedAbility.Init(player);
     }
 }

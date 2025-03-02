@@ -10,14 +10,13 @@ public class EnemySpawner : MonoBehaviour
 {
     private LandManager landManager;
     private WorldManager worldManager;
-    private ObjectPooler enemyPooler;
-    private ObjectPooler materializeVFXPooler;
 
     [field: Header("References")]
     [field: SerializeField] public BiomeVariantStatusEffectSO BiomeVariantStatusEffect { get; private set; }
     [field: SerializeField] public List<Enemy> EnemyPrefabs { get; private set; } = new();
     private Dictionary<Enemy, float> enemySpawnChanceDictionary = new();
     [SerializeField] private List<Transform> enemySpawnPoints;
+    [SerializeField] private MaterializeVFX materializeVFXPrefab;
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewPower = 2.2f;
@@ -61,9 +60,6 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         worldManager = FindObjectOfType<WorldManager>();
-
-        enemyPooler = worldManager.transform.Find("EnemyPooler").GetComponent<ObjectPooler>();
-        materializeVFXPooler = worldManager.transform.Find("MaterializeVFXPooler").GetComponent<ObjectPooler>();
 
         CalculateNormalizedWeights();
     }
@@ -238,7 +234,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="willMaterialize">Flag for whether to materialize the enemy</param>
     public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition, bool willTryElite = false, bool willMaterialize = false)
     {
-        Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(enemyPrefab.gameObject, spawnPosition);
+        Enemy spawnedEnemy = ObjectPoolerManager.Instance.SpawnPooledObject<Enemy>(enemyPrefab.gameObject, spawnPosition);
         spawnedEnemy.Init(this);
 
         OnEnemySpawned?.Invoke(spawnedEnemy);
@@ -272,7 +268,7 @@ public class EnemySpawner : MonoBehaviour
         EntityRendererManager entityRendererManager = entity.GetComponent<EntityRendererManager>();
         if (entityRendererManager == null) return;
 
-        MaterializeVFX materializeVFX = materializeVFXPooler.SpawnObject<MaterializeVFX>(entity.transform.position);
+        MaterializeVFX materializeVFX = ObjectPoolerManager.Instance.SpawnPooledObject<MaterializeVFX>(materializeVFXPrefab.gameObject, entity.transform.position);
 
         for(int i = 0; i < entityRendererManager.Renderers.Count; i++)
         {
