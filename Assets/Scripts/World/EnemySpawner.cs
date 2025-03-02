@@ -14,27 +14,26 @@ public class EnemySpawner : MonoBehaviour
     private ObjectPooler materializeVFXPooler;
 
     [field: Header("References")]
-    [field: SerializeField] public BiomeVariantStatusEffectSO BiomeVariantStatusEffect { get; private set; } 
-    [field: SerializeField] public List<Enemy> NeutralEnemyPrefabs { get; private set; } = new List<Enemy>();
+    [field: SerializeField] public BiomeVariantStatusEffectSO BiomeVariantStatusEffect { get; private set; }
+    [field: SerializeField] public List<Enemy> EnemyPrefabs { get; private set; } = new();
+    private Dictionary<Enemy, float> enemySpawnChanceDictionary = new();
     [SerializeField] private List<Transform> enemySpawnPoints;
-    private List<float> enemyNormalizedWeights = new List<float>();
 
     [Header("Currency Settings")]
-    [SerializeField] private float weightingSkewFactor = 2.2f;
-    [SerializeField] private float spawnInterval = 3f;
+    [SerializeField] private float weightingSkewPower = 2.2f;
+    [SerializeField] private Vector2 enemySpawnIntervalRange = new Vector2(3f, 6f);
     [SerializeField] private float baseCurrency;
     [SerializeField] private float growthFactor;
     [SerializeField] private int polynomialDegree;
     [SerializeField] private float eliteChance = 0.5f;
-    private float maxShopCurrency;
-    private float currentShopCurrency;
-    private bool isUsingCurrency;
+    private float currentRemainingCurrency;
+    private Coroutine currentSpawnerCoroutine;
+    private List<Enemy> enemiesSpawned = new List<Enemy>();
+
     /// <summary>
     /// Triggers when the spawner has no more currency and all enemies are defeated.
     /// </summary>
     public Action OnSpawnerDepleted = delegate { };
-
-    private List<Enemy> enemiesSpawned = new List<Enemy>();
     /// <summary>
     /// Triggers when the spawner spawns an enemy.
     /// </summary>
@@ -70,21 +69,52 @@ public class EnemySpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawns enemies with currency coroutine.
+    /// Starts the enemy spawner coroutine with currency.
+    /// Stops any existing spawning coroutine.
     /// </summary>
-    /// <returns>An IEnumerator for the coroutine.</returns>
-    /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public IEnumerator SpawnWithCurrencyCoroutine(bool willRefillCurrency = true)
+    /// <param name="willRestockCurrency">Whether to restock currency</param>
+    public void StartSpawnerWithCurrency(bool willRestockCurrency = true)
     {
-        isUsingCurrency = true;
-        if(willRefillCurrency) RefillCurrency();
+        StopSpawner();
+        currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency));
+    }
 
-        while (currentShopCurrency > 0)
+    /// <summary>
+    /// Starts the enemy spawner coroutine with duration.
+    /// Stops any existing spawning coroutine.
+    /// </summary>
+    /// <param name="duration">The duration to spawn enemies for.</param>
+    public void StartSpawnerWithDuration(float duration)
+    {
+        StopSpawner();
+        currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(duration));
+    }
+
+    /// <summary>
+    /// Stops the enemy spawner by stopping the coroutine.
+    /// </summary>
+    public void StopSpawner()
+    {
+        if (currentSpawnerCoroutine != null) StopCoroutine(currentSpawnerCoroutine);
+        currentSpawnerCoroutine = null;
+    }
+
+    /// <summary>
+    /// Spawns enemies with currency coroutine.
+    /// Stores the remaining currency.
+    /// <param name="startingCurrency">The starting currency</param>
+    /// </summary>
+    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency)
+    {
+        currentRemainingCurrency = startingCurrency;
+        List<(Enemy, float)> enemyRemainingCurrencyQueue = GetEnemyPrefabQueue(startingCurrency);
+        foreach ((Enemy enemyPrefab, float remainingCurrency) in enemyRemainingCurrencyQueue)
         {
-            yield return new WaitForSeconds(spawnInterval);
-
-            SpawnRandomEnemy(true);
+            yield return new WaitForSeconds(UnityEngine.Random.Range(enemySpawnIntervalRange.x, enemySpawnIntervalRange.y));
+            SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
+            currentRemainingCurrency = remainingCurrency;
         }
+        currentSpawnerCoroutine = null;
     }
 
     /// <summary>
@@ -92,72 +122,121 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="duration">The duration of the spawning process.</param>
-    public IEnumerator SpawnWithDurationCoroutine(float duration)
+    private IEnumerator SpawnWithDurationCoroutine(float duration)
     {
-        float elapsedTime = 0f;
-        float spawnTimer = 0f;
-
-        while (elapsedTime < duration)
+        List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, enemySpawnIntervalRange);
+        foreach ((Enemy enemyPrefab, float delay) in enemySpawnDelayQueue)
         {
-            elapsedTime += Time.deltaTime;
-            spawnTimer += Time.deltaTime;
-
-            if (spawnTimer >= spawnInterval)
-            {
-                SpawnRandomEnemy(false);
-                spawnTimer = 0f;
-            }
-
-            yield return null;
+            yield return new WaitForSeconds(delay);
+            SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
         }
+        currentSpawnerCoroutine = null;
     }
 
     /// <summary>
-    /// Spawns a random enemy based on weighted probabilities.
+    /// Gets the list of enemies to spawn based on the total currency to use and how much currency remains after spawning.
+    /// Enemy spawn chance is based on their cost.
     /// </summary>
-    /// <param name="willUseCurrency">Flag indicating whether currency should be used for spawning.</param>
-    private void SpawnRandomEnemy(bool willUseCurrency)
+    /// <param name="startingCurrency">The starting currency.</param>
+    /// <returns>The list of enemies and how remaining currency or empty list if a warning was thrown.</returns>
+    private List<(Enemy, float)> GetEnemyPrefabQueue(float startingCurrency)
     {
-        float randomValue = UnityEngine.Random.Range(0f, 1f);
-        int spawnLocation = UnityEngine.Random.Range(1, 5);
-        float cumalativeWeight = 0f;
-
-        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
+        if(enemySpawnChanceDictionary == null || enemySpawnChanceDictionary.Count == 0)
         {
-            cumalativeWeight += enemyNormalizedWeights[i];
+            Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because enemy spawn chances have not been computed.");
+            return new List<(Enemy, float)>();
+        }
 
-            if (willUseCurrency && currentShopCurrency < NeutralEnemyPrefabs[i].Cost) continue;
+        List<(Enemy, float)> enemyCurrencyQueue = new List<(Enemy, float)>();
+        float remainingCurrency = startingCurrency;
 
-            if (randomValue < cumalativeWeight)
+        while(remainingCurrency > 0)
+        {
+            Enemy enemyPrefab = GetRandomEnemyPrefab();
+            if (enemyPrefab == null)
             {
-                Enemy spawnedEnemy = SpawnEnemy(NeutralEnemyPrefabs[i], GetRandomEnemySpawnPoint(1f));
+                Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
+                return new List<(Enemy, float)>();
+            }
 
-                // If the spawned enemy is an elite, apply a random elite status effect
-                if (UnityEngine.Random.value < eliteChance)
-                {
-                    int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantStatusEffects.Count);
-                    EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantStatusEffects[randomIndex];
+            remainingCurrency -= enemyPrefab.Cost;
+            enemyCurrencyQueue.Add((enemyPrefab, remainingCurrency));
+        }
 
-                    EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
-                }
+        return enemyCurrencyQueue;
+    }
 
-                MaterializeEntity(spawnedEnemy);
+    /// <summary>
+    /// Gets the list of enemies to spawn based on the total duration to use.
+    /// </summary>
+    /// <param name="totalDuration">The total duration to spawn the enemies</param>
+    /// <param name="spawnIntervalRange">The random range of spawn intervals</param>
+    /// <returns>The list of enemies and their spawn delay or empty list if a warning was thrown.</returns>
+    private List<(Enemy, float)> GetEnemyPrefabQueue(float totalDuration, Vector2 spawnIntervalRange)
+    {
+        if (enemySpawnChanceDictionary == null || enemySpawnChanceDictionary.Count == 0)
+        {
+            Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because enemy spawn chances have not been computed.");
+            return new List<(Enemy, float)>();
+        }
 
-                if (willUseCurrency)
-                {
-                    currentShopCurrency -= NeutralEnemyPrefabs[i].Cost;
-                }
+        List<(Enemy, float)> enemySpawnDelayQueue = new List<(Enemy, float)>();
+        float remainingDuration = totalDuration;
+        float randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
 
-                break;
+        while (remainingDuration > randomDelay)
+        {
+            Enemy enemyPrefab = GetRandomEnemyPrefab();
+            if (enemyPrefab == null)
+            {
+                Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
+                return new List<(Enemy, float)>();
+            }
+
+            randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
+            enemySpawnDelayQueue.Add((enemyPrefab, randomDelay));
+            remainingDuration -= randomDelay;
+        }
+
+        return enemySpawnDelayQueue;
+    }
+
+    /// <summary>
+    /// Gets a random enemy prefab based on their weighted spawn chance from cost.
+    /// </summary>
+    /// <returns>The random enemy prefab</returns>
+    private Enemy GetRandomEnemyPrefab()
+    {
+        if(EnemyPrefabs.Count == 0)
+        {
+            Debug.LogWarning($"{gameObject.name} Enemy Spawner: Can't get random enemy prefab because enemy prefabs list is empty!");
+            return null;
+        }
+
+        float randomChance = UnityEngine.Random.Range(0f, 1f);
+        float cumalativeChance = 0f;
+        foreach (Enemy enemyPrefab in EnemyPrefabs)
+        {
+            float chance = enemySpawnChanceDictionary[enemyPrefab];
+            cumalativeChance += chance;
+            if (cumalativeChance >= randomChance)
+            {
+                return enemyPrefab;
             }
         }
+
+        Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get random enemy prefab");
+        return null;
     }
 
     /// <summary>
     /// Spawns an enemy based on the provided enemy prefab.
     /// </summary>
     /// <param name="enemyPrefab">The enemy prefab to spawn.</param>
-    public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition)
+    /// <param name="spawnPosition">The position to spawn the enemy</param>
+    /// <param name="willTryElite">Flag for whether to have a change of the enemy becoming elite</param>
+    /// <param name="willMaterialize">Flag for whether to materialize the enemy</param>
+    public Enemy SpawnEnemy(Enemy enemyPrefab, Vector3 spawnPosition, bool willTryElite = false, bool willMaterialize = false)
     {
         Enemy spawnedEnemy = enemyPooler.SpawnObject<Enemy>(enemyPrefab.gameObject, spawnPosition);
         spawnedEnemy.Init(this);
@@ -167,6 +246,19 @@ public class EnemySpawner : MonoBehaviour
         enemiesSpawned.Add(spawnedEnemy);
 
         if(BiomeVariantStatusEffect != null) EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, BiomeVariantStatusEffect, spawnedEnemy.gameObject);
+
+        if (willTryElite)
+        {
+            // If the spawned enemy is an elite, apply a random elite status effect
+            if (UnityEngine.Random.value < eliteChance)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, worldManager.EliteVariantStatusEffects.Count);
+                EliteVariantStatusEffectSO eliteStatusEffectToApply = worldManager.EliteVariantStatusEffects[randomIndex];
+                EntityStatusEffector.TryApplyStatusEffect(spawnedEnemy.gameObject, eliteStatusEffectToApply, spawnedEnemy.gameObject);
+            }
+        }
+
+        if(willMaterialize) MaterializeEntity(spawnedEnemy);
 
         return spawnedEnemy;
     }
@@ -190,14 +282,6 @@ public class EnemySpawner : MonoBehaviour
             // If the current renderer is the last one, invoke the callback
             materializeVFX.TriggerMaterializeVFX(skinnedMeshRenderer, i == entityRendererManager.Renderers.Count - 1);
         }
-    }
-
-    /// <summary>
-    /// Refills the current shop currency by calculating the shop currency based on the base currency, growth factor, and polynomial degree.
-    /// </summary>
-    private void RefillCurrency()
-    {
-        currentShopCurrency = CalculateShopCurrency();
     }
 
     /// <summary>
@@ -226,8 +310,11 @@ public class EnemySpawner : MonoBehaviour
     /// Calculates the shop currency based on the base currency, growth factor, and polynomial degree.
     /// </summary>
     /// <returns>The calculated shop currency.</returns>
-    private float CalculateShopCurrency() => baseCurrency + (growthFactor * Mathf.Pow(landManager.Level, polynomialDegree));
-
+    private float CalculateShopCurrency()
+    {
+        return baseCurrency + (growthFactor * Mathf.Pow(landManager.Level, polynomialDegree));
+    }
+    
     /// <summary>
     /// Calculates the normalized weights for each enemy prefab based on their cost and the weighting skew factor.
     /// Used for weighted random selection of enemy prefabs.
@@ -235,21 +322,35 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     private void CalculateNormalizedWeights()
     {
-        enemyNormalizedWeights = new List<float>();
-
+        // Get total weight first
         float totalWeight = 0f;
-
-        foreach (Enemy enemy in NeutralEnemyPrefabs)
+        foreach (Enemy enemy in EnemyPrefabs)
         {
-            totalWeight += 1f / Mathf.Pow(enemy.Cost, weightingSkewFactor);
+            totalWeight += 1f / Mathf.Pow(enemy.Cost, weightingSkewPower);
         }
 
-        for (int i = 0; i < NeutralEnemyPrefabs.Count; i++)
+        if(totalWeight == 0f)
         {
-            float weight = 1f / Mathf.Pow(NeutralEnemyPrefabs[i].Cost, weightingSkewFactor);
-
-            enemyNormalizedWeights.Add(weight / totalWeight);
+            Debug.LogWarning($"{gameObject.name} Enemy Spawner: Can't compute spawn chances" +
+                $" because it either has no enemy prefabs or the prefabs have 0 cost");
+            return;
         }
+
+        // Get normalized weights for each enemy prefab
+        foreach(Enemy enemy in EnemyPrefabs)
+        {
+            float weight = 1f / Mathf.Pow(enemy.Cost, weightingSkewPower);
+            enemySpawnChanceDictionary.Add(enemy, weight / totalWeight);
+        }
+    }
+
+    /// <summary>
+    /// Determines if the spawner is done spawning and has all enemies killed.
+    /// </summary>
+    /// <returns>Whether the spawner is fully cleared.</returns>
+    private bool IsFullyCleared()
+    {
+        return currentSpawnerCoroutine == null && enemiesSpawned.Count == 0;
     }
 
     /// <summary>
@@ -262,13 +363,9 @@ public class EnemySpawner : MonoBehaviour
 
         enemiesSpawned.Remove(enemy);
 
-        if (isUsingCurrency)
+        if (IsFullyCleared())
         {
-            if (IsFullyCleared())
-            {
-                isUsingCurrency = false;
-                OnSpawnerDepleted?.Invoke();
-            }
+            OnSpawnerDepleted.Invoke();
         }
     }
 
@@ -281,8 +378,6 @@ public class EnemySpawner : MonoBehaviour
         {
             enemy.Kill(null);
         }
-
-        isUsingCurrency = false;
     }
 
     /// <summary>
@@ -295,14 +390,25 @@ public class EnemySpawner : MonoBehaviour
             enemy.TakeDamage(0, enemy.transform.position, null, false);
             enemy.Die();
         }
-
-        isUsingCurrency = false;
     }
 
     /// <summary>
-    /// Checks if the enemy spawner has used up all of its currency and has all spawned enemies defeated.
-    /// Use this method only when the enemy spawner is using currency and has a finite number of enemies to spawn.
+    /// Gets the original prefab from the spawner that matches the enemy instance's type.
     /// </summary>
-    /// <returns>True if the enemy spawner is fully cleared, false otherwise.</returns>
-    private bool IsFullyCleared() => currentShopCurrency <= 0 && enemiesSpawned.Count == 0;
+    /// <param name="enemyInstance">The enemy instance.</param>
+    /// <returns>The enemy prefab or null if not found.</returns>
+    public Enemy GetPrefabFromEnemyInstance(Enemy enemyInstance)
+    {
+        foreach (Enemy enemyPrefab in EnemyPrefabs)
+        {
+            if (enemyPrefab.GetType() == enemyInstance.GetType())
+            {
+                return enemyPrefab;
+            }
+        }
+
+        Debug.LogWarning("Could not find spawner enemy prefab from enemy instance type.");
+
+        return null;
+    }
 }

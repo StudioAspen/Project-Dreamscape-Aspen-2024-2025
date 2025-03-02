@@ -74,7 +74,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach(LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -104,6 +104,11 @@ public class PrioritiesWorldEventSO : WorldEventSO
             GameObject.Destroy(marker.gameObject);
         }
         enemyMarkers.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>

@@ -26,7 +26,7 @@ public class SlimeDeathState : EntityDeathState
         // small slimes dont split, they die
         if (slime.IsSmall) return;
 
-        Enemy slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
+        Enemy slimeEnemyPrefab = slime.Spawner.GetPrefabFromEnemyInstance(slime);
         if (slimeEnemyPrefab == null) return;
 
         for (int i = 0; i < slime.SplitCount; i++)
@@ -53,21 +53,5 @@ public class SlimeDeathState : EntityDeathState
     public override void OnUpdate()
     {
         base.OnUpdate();
-    }
-
-    // nothing changed from the duplicate elite variant script
-    private Enemy GetEnemyPrefabFromCurrentType()
-    {
-        foreach (Enemy enemyPrefab in slime.Spawner.NeutralEnemyPrefabs)
-        {
-            if (enemyPrefab.GetType() == slime.GetType())
-            {
-                return enemyPrefab;
-            }
-        }
-
-        Debug.LogWarning("Could not find enemy prefab from current type.");
-
-        return null;
     }
 }

@@ -6,6 +6,7 @@ public class ShardHolder : MonoBehaviour
     private Entity entity;
 
     [field: SerializeField] public ShardCollectible ShardPrefab { get; private set; }
+
     [Header("Config")]
     [SerializeField] private Color color = Color.white;
     [SerializeField] private PlayerAbilityStateSO memoryAbility;
@@ -29,6 +30,12 @@ public class ShardHolder : MonoBehaviour
 
     private void Entity_OnEntityDeath(GameObject killer)
     {
+        // Player must last hit the enemy to get shard drop
+        if(!killer.TryGetComponent(out MemorySystem memorySystem))
+        {
+            return;
+        }
+
         ShardCollectible spawnedShard = Instantiate(ShardPrefab, entity.GetColliderCenterPosition(), Quaternion.identity);
         spawnedShard.Init(entity.GetType(), color, memoryAbility, GetShardDropCount());
     }

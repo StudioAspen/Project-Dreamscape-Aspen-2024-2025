@@ -5,8 +5,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
 
-[RequireComponent(typeof(Animator), typeof(AnimationClipOutput), typeof(AnimatorOutput)),
-RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))] // Stores the blend tree
+[RequireComponent(typeof(AnimatorOutput))] // Plays the blend tree animator's animations
+[RequireComponent(typeof(AnimationClipOutput))] // Plays one shot animations
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
