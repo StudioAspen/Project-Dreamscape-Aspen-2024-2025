@@ -44,7 +44,7 @@ public class GolemGroundSmashState : GolemBaseState
 
     public void GroundImpact()
     {
-        golem.ShakeCam();
+        CameraShakeManager.Instance.ShakeCamera(5f, 1f, 0.75f);
         GolemHitEntitiesWithAOEIgnoreTeam(golem, golem.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
         CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }

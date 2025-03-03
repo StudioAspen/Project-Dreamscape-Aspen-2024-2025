@@ -48,7 +48,7 @@ public class GolemStompState : GolemBaseState
 
     public void GroundImpactShockwave() 
     {
-        golem.ShakeCam();
+        CameraShakeManager.Instance.ShakeCamera(5f, 1f, ShockwaveGrowMaxSteps * ShockwaveGrowStepDuration);
         golem.StartCoroutine(ShockwaveCoroutine());
     }
 

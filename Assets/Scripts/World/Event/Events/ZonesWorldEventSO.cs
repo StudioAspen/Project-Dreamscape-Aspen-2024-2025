@@ -43,7 +43,7 @@ public class ZonesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in affectedLands)
         {
@@ -59,6 +59,11 @@ public class ZonesWorldEventSO : WorldEventSO
             GameObject.Destroy(sphere);
         }
         debugSpheres.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>

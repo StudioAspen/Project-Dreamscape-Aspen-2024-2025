@@ -107,7 +107,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
         if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
     public override void OnUpdate()
@@ -277,10 +277,7 @@ public class PlayerAttackState : PlayerBaseState
         AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
         if (abilityComboData == null) return;
 
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        CastedAbility spawnedAbility = spawner.SpawnObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
         spawnedAbility.Init(player);
     }
 }

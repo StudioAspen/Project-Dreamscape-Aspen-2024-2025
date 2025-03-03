@@ -174,7 +174,7 @@ public class EventManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
         
-        CurrentEvent?.OnUpdate();
+        CurrentEvent?.Update();
 
         if(Input.GetKeyDown(KeyCode.K))
         {

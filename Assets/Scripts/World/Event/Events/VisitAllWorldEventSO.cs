@@ -44,7 +44,7 @@ public class VisitAllWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -59,7 +59,7 @@ public class VisitAllWorldEventSO : WorldEventSO
         visitIndicatorsDictionary.Clear();
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         if (visitIndicatorsDictionary.Count <= 0)
         {
