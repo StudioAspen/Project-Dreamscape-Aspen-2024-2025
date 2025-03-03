@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private EventManager eventManager;
+    private RectTransform rectTransform;
 
     [Header("References")]
     [SerializeField] private Button button;
@@ -38,8 +39,9 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
+        rectTransform = GetComponent<RectTransform>();
 
-        startingPosition = transform.position;
+        startingPosition = rectTransform.localPosition;
 
         ResetCard();
     }
@@ -80,7 +82,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DisableSelectedIndicator();
         InstantlyFlipCard(false);
 
-        transform.position = startingPosition;
+        rectTransform.localPosition = startingPosition;
         transform.localScale = Vector3.one;
     }
 
@@ -220,7 +222,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DOTween.Kill(transform);
 
         // Move the card to the end position (starting original position)
-        return transform.DOMove(startingPosition, duration).SetUpdate(true).SetEase(ease);
+        return transform.DOLocalMove(startingPosition, duration).SetUpdate(true).SetEase(ease);
     }
     #endregion
 }
