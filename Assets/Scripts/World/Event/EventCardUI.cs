@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     private EventManager eventManager;
-    private RectTransform rectTransform;
 
     [Header("References")]
     [SerializeField] private Button button;
@@ -39,9 +38,8 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
-        rectTransform = GetComponent<RectTransform>();
 
-        startingPosition = rectTransform.localPosition;
+        startingPosition = transform.localPosition;
 
         ResetCard();
     }
@@ -82,7 +80,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DisableSelectedIndicator();
         InstantlyFlipCard(false);
 
-        rectTransform.localPosition = startingPosition;
+        transform.localPosition = startingPosition;
         transform.localScale = Vector3.one;
     }
 

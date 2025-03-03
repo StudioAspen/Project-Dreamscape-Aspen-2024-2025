@@ -13,6 +13,7 @@ public class AspectsTreeUIPanel : UIPanel
     private AspectsManager aspectsManager;
 
     [Header("References")]
+    [SerializeField] private AspectOptionUI[] aspectOptions = new AspectOptionUI[3];
     [SerializeField] private AspectButtonUI aspectButtonUIPrefab;
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text tokensText;
@@ -44,7 +45,7 @@ public class AspectsTreeUIPanel : UIPanel
 
     private void CloseButton_OnClick()
     {
-        gameManager.ChangeState(GameState.PLAYING);
+        gameManager.ChangeState(GameState.BIOME_SELECTION);
     }
 
     private void OnEnable()
@@ -58,12 +59,26 @@ public class AspectsTreeUIPanel : UIPanel
         // reset scroll rect back to center
         if (scrollRect.normalizedPosition != Vector2.zero) scrollRect.normalizedPosition = Vector2.zero;
 
-        GenerateTree(aspectsManager.CurrentAspectTree);
+        AssignRandomAspectOptions();
+        //GenerateTree(aspectsManager.CurrentAspectTree);
     }
 
     private void OnDisable()
     {
         DeleteTree();
+    }
+
+    private void AssignRandomAspectOptions()
+    {
+        List<AspectTree> availableAspects = new List<AspectTree>(aspectsManager.AllAspectTrees);
+
+        for(int i = 0; i < aspectOptions.Length; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, availableAspects.Count);
+            AspectTree randomTree = availableAspects[randomIndex];
+            aspectOptions[i].Init(randomTree);
+            availableAspects.Remove(randomTree);
+        }
     }
 
     private void GenerateTree(AspectTree aspectTree)

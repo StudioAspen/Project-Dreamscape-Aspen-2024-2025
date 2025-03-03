@@ -25,7 +25,6 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Start()
     {
-
         button.onClick.AddListener(OnClickCard);
     }
 
