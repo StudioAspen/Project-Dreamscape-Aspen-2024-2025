@@ -92,7 +92,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void ConvertToRuntimeInstance(AspectTree runtimeInstace)
     {
-        Debug.Log($"Converted {gameObject.name}'s {runtimeInstace.DisplayName} to runtime instance");
+        //Debug.Log($"Converted {gameObject.name}'s {runtimeInstace.DisplayName} to runtime instance");
         representsRuntimeInstance = true;
         aspectTree = runtimeInstace;
 
@@ -254,7 +254,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnSingleContentSelect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Single select");
+        //Debug.Log("Single select");
         singleContentButton.transform.DOKill();
         singleContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
@@ -262,7 +262,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnSingleContentDeselect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Single deselect");
+        //Debug.Log("Single deselect");
         singleContentButton.transform.DOKill();
         singleContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
@@ -270,7 +270,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnLeftContentSelect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Left select");
+        //Debug.Log("Left select");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
@@ -278,7 +278,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnLeftContentDeselect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Left deselect");
+        //Debug.Log("Left deselect");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
@@ -286,7 +286,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnRightContentSelect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Right select");
+        //Debug.Log("Right select");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
@@ -294,7 +294,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnRightContentDeselect(BaseEventData eventData)
     {
         if (!aspectsUIPanel.IsSelectingAspect) return;
-        Debug.Log("Right deselect");
+        //Debug.Log("Right deselect");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
