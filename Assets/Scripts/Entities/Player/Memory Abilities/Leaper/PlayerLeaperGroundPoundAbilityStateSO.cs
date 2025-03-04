@@ -36,7 +36,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(GroundPoundAnimationClip);
+        player.PlayOneShotAnimation(GroundPoundAnimationClip);
 
         player.Launch(Vector3.down, GroundPoundForce);
 
@@ -69,13 +69,13 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
         {
             hasRecoveredStarted = true;
 
-            TransitionToAbilityAnimation(GroundImpactAnimationClip);
+            player.PlayOneShotAnimation(GroundImpactAnimationClip);
 
             Entity.DamageEnemyEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
 
             CustomDebug.InstantiateTemporarySphere(player.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
-            CameraShakeManager.Instance.ShakeCamera(15f, 1f);
+            CameraShakeManager.Instance.ShakeCamera(15f,1f, 1f);
         }
     }
 }

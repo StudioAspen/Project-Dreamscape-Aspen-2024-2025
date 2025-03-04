@@ -34,7 +34,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(ChargeAnimationClip);
+        player.PlayOneShotAnimation(ChargeAnimationClip);
 
         player.SetSpeedModifier(ChargeSpeedModifier);
 
@@ -68,7 +68,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
     {
         if (player.DidHitEnemyEntity(hit.collider, out Entity enemyEntity))
         {
-            CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
+            CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
 
             Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - player.transform.position;
             enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);

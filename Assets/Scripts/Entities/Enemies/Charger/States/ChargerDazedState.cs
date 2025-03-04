@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class ChargerDazedState : ChargerBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     private float timer;
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("Hit");
+        charger.PlayOneShotAnimation(AnimationClip);
 
         charger.SetSpeedModifier(0f);
 
@@ -20,7 +21,7 @@ public class ChargerDazedState : ChargerBaseState
 
     public override void OnExit()
     {
-
+        charger.PlayDefaultAnimation();
     }
 
     public override void OnUpdate()

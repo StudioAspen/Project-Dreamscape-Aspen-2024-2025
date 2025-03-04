@@ -22,8 +22,12 @@ public class ProgressionManager : MonoBehaviour
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         worldManager = GetComponent<WorldManager>();
+    }
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
@@ -39,13 +43,13 @@ public class ProgressionManager : MonoBehaviour
     private void GameManager_OnGameStateChanged(GameState newState)
     {
         // If just entering playmode for the first time (ignores pause/unpause and other game state changes)
-        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.ASPECT_SELECTION)
+        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.EVENT_SELECTION)
         {
             CreateNewQuests();
         }
 
         // If clearing the event
-        if (newState == GameState.BIOME_SELECTION && gameManager.PreviousState == GameState.PLAYING)
+        if (newState == GameState.ASPECT_SELECTION && gameManager.PreviousState == GameState.PLAYING)
         {
             CleanUpQuests();
         }

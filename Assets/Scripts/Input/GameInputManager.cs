@@ -12,17 +12,19 @@ public class GameInputManager : InputManager
     {
         base.OnAwake();
 
-        gameManager = FindObjectOfType<GameManager>();
-    }
-
-    private protected override void OnOnEnable()
-    {
-        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
         OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
     }
 
-    private protected override void OnOnDisable()
+    private protected override void OnStart()
+    {
+        base.OnStart();
+
+        gameManager = FindObjectOfType<GameManager>();
+
+        gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private protected override void OnOnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
 

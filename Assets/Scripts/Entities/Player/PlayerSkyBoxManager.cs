@@ -50,9 +50,18 @@ public class PlayerSkyBoxManager : MonoBehaviour
     /// <param name="newLand">The new land the player stepped on</param>
     private void OnPlayerEnterNewLand(LandManager newLand)
     {
+        if (RenderSettings.skybox == null) return;
         if(newLand.SkyBoxMaterial == null) return;
-
         if (RenderSettings.skybox == newLand.SkyBoxMaterial) return; // Prevent redundant changes
+
+        if (!RenderSettings.skybox.HasColor(SKYBOX_SKY_COLOR)) return;
+        if (!RenderSettings.skybox.HasColor(SKYBOX_HORIZON_COLOR)) return;
+        if (!RenderSettings.skybox.HasColor(SKYBOX_STAR_COLOR)) return;
+        if (!RenderSettings.skybox.HasFloat(SKYBOX_HORIZON_THICKNESS)) return;
+        if (!newLand.SkyBoxMaterial.HasColor(SKYBOX_SKY_COLOR)) return;
+        if (!newLand.SkyBoxMaterial.HasColor(SKYBOX_HORIZON_COLOR)) return;
+        if (!newLand.SkyBoxMaterial.HasColor(SKYBOX_STAR_COLOR)) return;
+        if (!newLand.SkyBoxMaterial.HasFloat(SKYBOX_HORIZON_THICKNESS)) return;
 
         // Clone the skybox material to avoid modifying the original
         Material skyBoxMaterial = new Material(RenderSettings.skybox);

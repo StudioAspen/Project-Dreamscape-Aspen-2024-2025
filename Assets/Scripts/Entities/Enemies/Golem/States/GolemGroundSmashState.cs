@@ -1,26 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class GolemGroundSmashState : GolemBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float AOERadius { get; private set; } = 1f;
     [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
 
+    private float timer;
+    private float duration;
+
     public override void OnEnter()
     {
-        golem.TransitionToAnimation("GroundSmash");
+        golem.PlayOneShotAnimation(AnimationClip);
         golem.SetSpeedModifier(0f);
         
-        golem.IsAttackAnimationPlaying = true;
         golem.UseRootMotion = false;
+
+        timer = 0f;
+        duration = AnimationClip.length;
     }
 
     public override void OnExit()
     {
-        golem.IsAttackAnimationPlaying = false;
         golem.UseRootMotion = false;
     }
 
@@ -29,7 +34,8 @@ public class GolemGroundSmashState : GolemBaseState
         golem.ApplyGravity();
         golem.LookAt(golem.transform.position + golem.GolemReadyAttackState.GetAttackDirection());
 
-        if (!golem.IsAttackAnimationPlaying)
+        timer += golem.LocalDeltaTime;
+        if(timer > duration)
         {
             golem.ChangeState(golem.GolemAttackRecoverState);
             return;
@@ -38,7 +44,7 @@ public class GolemGroundSmashState : GolemBaseState
 
     public void GroundImpact()
     {
-        golem.ShakeCam();
+        CameraShakeManager.Instance.ShakeCamera(5f, 1f, 0.75f);
         GolemHitEntitiesWithAOEIgnoreTeam(golem, golem.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
         CustomDebug.InstantiateTemporarySphere(golem.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }

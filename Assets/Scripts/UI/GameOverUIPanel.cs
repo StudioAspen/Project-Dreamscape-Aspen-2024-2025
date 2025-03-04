@@ -12,10 +12,14 @@ public class GameOverUIPanel : UIPanel
     [Header("Buttons")]
     [SerializeField] private Button menuButton;
 
+    // UI scene loads last so Awake is safe here
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+    }
 
+    private void Start()
+    {
         menuButton.onClick.AddListener(MenuButton_OnClicked);
     }
 

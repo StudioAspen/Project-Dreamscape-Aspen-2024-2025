@@ -33,7 +33,7 @@ public class MinimapController : MonoBehaviour
     private Transform border;
     [SerializeField] private Canvas minimap_canvas;
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 

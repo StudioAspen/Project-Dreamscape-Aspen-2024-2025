@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public class EnemyChaseState : EnemyBaseState
 {
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         enemy.SetSpeedModifier(1f);
     }

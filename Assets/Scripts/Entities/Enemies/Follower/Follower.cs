@@ -5,22 +5,24 @@ using UnityEngine;
 public class Follower : Enemy
 {
     #region States
-    public FollowerAttackState FollowerAttackState { get; private set; }
-    public FollowerWanderState FollowerWanderState { get; private set; }
-    public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
-    public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
-    public FollowerCircleState FollowerCircleState { get; private set; }
+    [field: Header("Follower: States")]
+    [field: SerializeField] public FollowerChaseState FollowerChaseState { get; private set; }
+    [field: SerializeField] public FollowerAttackState FollowerAttackState { get; private set; }
+    [field: SerializeField] public FollowerWanderState FollowerWanderState { get; private set; }
+    [field: SerializeField] public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
+    [field: SerializeField] public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
+    [field: SerializeField] public FollowerCircleState FollowerCircleState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyChaseState = EntityBaseState.InitializeOrCreate<FollowerChaseState>(this);
-        FollowerWanderState = EntityBaseState.InitializeOrCreate<FollowerWanderState>(this);
-        FollowerCircleState = EntityBaseState.InitializeOrCreate<FollowerCircleState>(this);
-        FollowerAttackState = EntityBaseState.InitializeOrCreate<FollowerAttackState>(this);
-        FollowerReadyAttackState = EntityBaseState.InitializeOrCreate<FollowerReadyAttackState>(this);
-        FollowerAttackRecoverState = EntityBaseState.InitializeOrCreate<FollowerAttackRecoverState>(this);
+        FollowerChaseState.Init(this);
+        FollowerWanderState.Init(this);
+        FollowerCircleState.Init(this);
+        FollowerAttackState.Init(this);
+        FollowerReadyAttackState.Init(this);
+        FollowerAttackRecoverState.Init(this);
     }
     #endregion
 
@@ -32,8 +34,6 @@ public class Follower : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -46,8 +46,6 @@ public class Follower : Enemy
         base.OnStart();
 
         SetDefaultState(FollowerWanderState);
-
-        FinishAnimation();
     }
 
     private protected override void OnUpdate()
@@ -58,12 +56,6 @@ public class Follower : Enemy
     private protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        EndHit();
     }
 
     public void StartHit()

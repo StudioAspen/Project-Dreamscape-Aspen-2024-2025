@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c55ab9b2d03f2b43b4ab4531cf79237, type: 3}
   m_Name: Fury Elite Variant
   m_EditorClassIdentifier: Assembly-CSharp::FuryEliteVariantStatusEffectSO
+  <DisplayName>k__BackingField: Status Effect
+  <Description>k__BackingField: Status effect description
   <Stackable>k__BackingField: 0
   <Name>k__BackingField: Fury
-  <VariantMaterial>k__BackingField: {fileID: 2100000, guid: 5686f86fef18ba6468e1bcfb9bc298db,
-    type: 2}
   <MaxHealthMultiplier>k__BackingField: 1.2
   <EXPValueMultiplier>k__BackingField: 1.5
   <SizeMultiplier>k__BackingField: 0.75
   <DamageMultiplier>k__BackingField: 0.75
+  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 5686f86fef18ba6468e1bcfb9bc298db,
+    type: 2}
   <TimeScaleMultiplier>k__BackingField: 1.33
