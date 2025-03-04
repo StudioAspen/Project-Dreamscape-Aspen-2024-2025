@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Ghastly Grievance", menuName = "Status Effect/Aspect of Fear/Passive A/Ghastly Grievance")]
 public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
 {
     [field: Header("Ghastly Grievance Stacks: Settings")]
@@ -29,7 +30,7 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        if (entity.CurrentHealth - damage < Mathf.RoundToInt(entity.MaxHealth.GetFloatValue() * DamageThreshold))
+        if (entity.CurrentHealth < Mathf.RoundToInt(entity.MaxHealth.GetFloatValue() * DamageThreshold))
         {
             entity.Kill(source);
         }

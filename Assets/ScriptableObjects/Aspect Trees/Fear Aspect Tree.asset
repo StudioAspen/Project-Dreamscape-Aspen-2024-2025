@@ -50,10 +50,10 @@ MonoBehaviour:
   Parent: {fileID: -5092554926121242106}
   Children:
   - {fileID: 1864611941190978949}
-  <DisplayName>k__BackingField: Fear
-  <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <DisplayName>k__BackingField: Health Increase
+  <Description>k__BackingField: Increases player health by 50
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: a0fd25768d3b5ef46a82d6bbf54955c4,
+    type: 2}
 --- !u!114 &-5359809309940247393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,7 +99,6 @@ MonoBehaviour:
   Children: []
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
@@ -114,7 +113,7 @@ MonoBehaviour:
   m_Name: Status Effect Aspect Node
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -24, y: -200}
+  position: {x: -24, y: -248}
   ports:
     keys:
     - Parent
@@ -150,7 +149,6 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-3918194093017296719
 MonoBehaviour:
@@ -202,7 +200,6 @@ MonoBehaviour:
   - {fileID: 2763769569843930792}
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 0}
 --- !u!114 &-3194902288124324442
 MonoBehaviour:
@@ -249,7 +246,6 @@ MonoBehaviour:
   Children: []
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -329,7 +325,6 @@ MonoBehaviour:
   - {fileID: 4095001867604409900}
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &2763769569843930792
 MonoBehaviour:
@@ -344,7 +339,7 @@ MonoBehaviour:
   m_Name: Status Effect Aspect Node
   m_EditorClassIdentifier: 
   graph: {fileID: 11400000}
-  position: {x: -24, y: 24}
+  position: {x: -24, y: 88}
   ports:
     keys:
     - Parent
@@ -380,7 +375,6 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
@@ -435,5 +429,4 @@ MonoBehaviour:
   - {fileID: -5359809309940247393}
   <DisplayName>k__BackingField: Fear
   <Description>k__BackingField: Aspect Node Description
-  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 0}
