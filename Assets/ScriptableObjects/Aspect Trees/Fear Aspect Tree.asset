@@ -51,6 +51,8 @@ MonoBehaviour:
   Children:
   - {fileID: 1864611941190978949}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5359809309940247393
 MonoBehaviour:
@@ -96,6 +98,8 @@ MonoBehaviour:
   Parent: {fileID: 4095001867604409900}
   Children: []
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
@@ -145,6 +149,8 @@ MonoBehaviour:
   Children:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-3918194093017296719
 MonoBehaviour:
@@ -195,6 +201,8 @@ MonoBehaviour:
   - {fileID: -5092554926121242106}
   - {fileID: 2763769569843930792}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 0}
 --- !u!114 &-3194902288124324442
 MonoBehaviour:
@@ -240,6 +248,8 @@ MonoBehaviour:
   Parent: {fileID: 4095001867604409900}
   Children: []
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -262,10 +272,14 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
-  <DisplayName>k__BackingField: Aspect Tree
-  <Description>k__BackingField: Description
+  <DisplayName>k__BackingField: Aspect of Fear
+  <Description>k__BackingField: "Enhances attacks with debuffing effects, provides
+    stack-based power scaling, rewards aggressive play with temporary stat boosts.
+    Encourages the use of combos and abilities that either swap inputs mid-combo
+    or stuns/launches enemies\r"
   <AspectSprite>k__BackingField: {fileID: 21300000, guid: a2ceee80f19dcfc41a6369bbfac7c7e9,
     type: 3}
+  <AspectTextColor>k__BackingField: {r: 0.76470596, g: 0.6901961, b: 0.7686275, a: 1}
 --- !u!114 &1864611941190978949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +328,8 @@ MonoBehaviour:
   Children:
   - {fileID: 4095001867604409900}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &2763769569843930792
 MonoBehaviour:
@@ -363,6 +379,8 @@ MonoBehaviour:
   Children:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
@@ -416,4 +434,6 @@ MonoBehaviour:
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
   <DisplayName>k__BackingField: Fear
+  <Description>k__BackingField: Aspect Node Description
+  <IsApplied>k__BackingField: 0
   <ComboData>k__BackingField: {fileID: 0}

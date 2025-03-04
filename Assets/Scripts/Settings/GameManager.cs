@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     public void ForceChangeState(GameState newState)
     {
+        Debug.Log($"Changing state to {newState}");
         PreviousState = CurrentState;
 
         switch (newState)

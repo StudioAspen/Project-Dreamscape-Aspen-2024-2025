@@ -23,6 +23,12 @@ public class UIManager : MonoBehaviour
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         gameInputManager.OnControlSchemeChanged += GameInputManager_OnControlSchemeChanged;
 
+        // Init all the panels
+        foreach(UIPanel panel in gamePanels.Values)
+        {
+            panel.Init(this, gameInputManager);
+        }
+
         // Manually call the event handlers to set up the initial state
         GameManager_OnGameStateChanged(gameManager.CurrentState);
     }

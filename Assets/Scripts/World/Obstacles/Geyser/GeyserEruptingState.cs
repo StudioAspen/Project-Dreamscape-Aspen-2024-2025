@@ -33,9 +33,9 @@ public class GeyserEruptingState : GeyserBaseState
         capsuleCollider = GetComponent<CapsuleCollider>();
 
         Gizmos.color = Color.green;
-        CustomDebug.DrawWireCapsule(geyser.transform.position + capsuleCollider.radius * Vector3.up, geyser.transform.position + (HeightRange.x - capsuleCollider.radius) * Vector3.up, capsuleCollider.radius);
+        CustomDebug.DrawWireCapsule(transform.position + capsuleCollider.radius * Vector3.up, transform.position + (HeightRange.x - capsuleCollider.radius) * Vector3.up, capsuleCollider.radius);
         Gizmos.color = Color.red;
-        CustomDebug.DrawWireCapsule(geyser.transform.position + capsuleCollider.radius * Vector3.up, geyser.transform.position + (HeightRange.y - capsuleCollider.radius) * Vector3.up, capsuleCollider.radius);
+        CustomDebug.DrawWireCapsule(transform.position + capsuleCollider.radius * Vector3.up, transform.position + (HeightRange.y - capsuleCollider.radius) * Vector3.up, capsuleCollider.radius);
 #endif
     }
 

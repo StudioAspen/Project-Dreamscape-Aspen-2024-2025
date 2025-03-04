@@ -9,6 +9,7 @@ public class AspectNodeNode : Node
 
     [field: Header("Display")]
     [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Node";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Aspect Node Description";
 
     public bool IsApplied { get; protected set; }
 
