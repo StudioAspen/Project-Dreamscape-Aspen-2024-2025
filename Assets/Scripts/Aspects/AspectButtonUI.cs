@@ -61,7 +61,7 @@ public class AspectButtonUI : MonoBehaviour
     public void UpdateDisplayContents()
     {
         // only the next possible nodes will be interactable and on the same level as the first applied multi-node level node
-        button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);
+        //button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);
         // make the button green if its been applied already
         buttonImage.color = aspectNode.IsApplied ? Color.green : buttonImage.color;
 

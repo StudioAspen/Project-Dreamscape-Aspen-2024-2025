@@ -9,23 +9,27 @@ using System;
 
 public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
+    private bool representsRuntimeInstance;
     private AspectsUIPanel aspectsUIPanel;
     private AspectTree aspectTree;
     private AspectsManager aspectsManager;
     private GameManager gameManager;
-    private Button optionsButton;
+    public Button OptionsButton { get; private set; }
     private int optionsIndex;
 
     [Header("References")]
     [SerializeField] private Image diamondImage;
     [SerializeField] private RectTransform diamondEndTransform;
     [SerializeField] private TMP_Text titleText;
-    [SerializeField] private GameObject singleContentObject;
+    [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private Button singleContentButton;
     [SerializeField] private TMP_Text singleUpgradeText;
     [SerializeField] private TMP_Text singleDescriptionText;
     [SerializeField] private GameObject doubleContentObject;
+    [SerializeField] private Button leftContentButton;
     [SerializeField] private TMP_Text leftUpgradeText;
     [SerializeField] private TMP_Text leftDescriptionText;    
+    [SerializeField] private Button rightContentButton;
     [SerializeField] private TMP_Text rightUpgradeText;
     [SerializeField] private TMP_Text rightDescriptionText;
 
@@ -43,8 +47,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private bool isSingle;
     private bool isSelected;
 
-    public void Init(AspectsUIPanel aspectsUIPanel, AspectTree aspectTree, AspectsManager aspectsManager, GameManager gameManager, int index)
+    public void Init(bool isRuntimeInstance, AspectsUIPanel aspectsUIPanel, AspectTree aspectTree, AspectsManager aspectsManager, GameManager gameManager, int index)
     {
+        representsRuntimeInstance = isRuntimeInstance;
         this.aspectsUIPanel = aspectsUIPanel;
         this.aspectTree = aspectTree;
         this.aspectsManager = aspectsManager;
@@ -52,7 +57,12 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         optionsIndex = index;
         aspectNodes = new();
 
+        diamondImage.sprite = aspectTree.AspectSprite;
         titleText.text = $"{aspectTree.DisplayName}";
+        descriptionText.text = $"{aspectTree.Description}";
+
+        textStartColor = aspectTree.AspectTextColor;
+
         List<AspectNodeNode> nextNodes = aspectTree.GetNextUnappliedNodes();
         isSingle = nextNodes.Count != 2;
         if (isSingle)
@@ -72,6 +82,22 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         }
 
         ResetToDefault();
+        if(aspectsUIPanel.IsSelectingAspect) aspectsUIPanel.DeselectOptionUI();
+
+        if (isSelected)
+        {
+            OnSelect(null);
+        }
+    }
+
+    private void ConvertToRuntimeInstance(AspectTree runtimeInstace)
+    {
+        Debug.Log($"Converted {gameObject.name}'s {runtimeInstace.DisplayName} to runtime instance");
+        representsRuntimeInstance = true;
+        aspectTree = runtimeInstace;
+
+        List<AspectNodeNode> nextNodes = aspectTree.GetNextUnappliedNodes();
+        aspectNodes = new() { nextNodes[0] };
     }
 
     public void AssignOptionsIndex(int index)
@@ -79,44 +105,120 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         optionsIndex = index;
     }
 
+    public void SetLockedNavigation()
+    {
+        Navigation newNavigation = OptionsButton.navigation;
+        newNavigation.mode = Navigation.Mode.Explicit;
+
+        if (isSingle)
+        {
+            newNavigation.selectOnUp = OptionsButton;
+            newNavigation.selectOnDown = singleContentButton;
+            newNavigation.selectOnLeft = OptionsButton;
+            newNavigation.selectOnRight = OptionsButton;
+        }
+        else
+        {
+            newNavigation.selectOnUp = OptionsButton;
+            newNavigation.selectOnDown = leftContentButton;
+            newNavigation.selectOnLeft = OptionsButton;
+            newNavigation.selectOnRight = OptionsButton;
+        }
+
+        OptionsButton.navigation = newNavigation;
+    }
+
     private void Awake()
     {
-        optionsButton = GetComponent<Button>();
+        OptionsButton = GetComponent<Button>();
 
-        textStartColor = titleText.color;
         diamondImageStartPosition = diamondImage.transform.localPosition;
 
-        optionsButton.onClick.AddListener(OptionsButton_OnClick);
+        OptionsButton.onClick.AddListener(OptionsButton_OnClick);
     }
 
     private void OnDestroy()
     {
-        optionsButton.onClick.RemoveListener(OptionsButton_OnClick);
+        OptionsButton.onClick.RemoveListener(OptionsButton_OnClick);
     }
 
     private void OptionsButton_OnClick()
     {
-        if (isSingle)
+        if (aspectsUIPanel.IsSelectingAspect)
         {
-            aspectNodes[0].ApplyAspect(aspectsManager);
-            aspectsManager.ConsumeAspectToken();
-            if(aspectsManager.AspectTokens > 0)
-            {
-                Init(aspectsUIPanel, aspectTree, aspectsManager, gameManager, optionsIndex);
-            }
-            else
-            {
-                gameManager.ChangeState(GameState.BIOME_SELECTION);
-            }
+            aspectsUIPanel.DeselectOptionUI();
+            PlayNodesUnrevealAnimation();
         }
         else
         {
-            if (aspectsUIPanel.IsSelectingBranch)
-            {
-                aspectsUIPanel.DeselectBranchOptionUI();
-                return;
-            }
-            aspectsUIPanel.SelectBranchOptionUI(optionsIndex);
+            aspectsUIPanel.SelectOptionUI(optionsIndex);
+            PlayNodesRevealAnimation();
+        }
+    }
+
+    public void OnSingleContentClick(BaseEventData eventData)
+    {
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+
+        if (!representsRuntimeInstance)
+        {
+            AspectTree runtimeAspectTree = aspectsManager.AddAspectTree(aspectTree);
+            ConvertToRuntimeInstance(runtimeAspectTree);
+        }
+        
+        aspectNodes[0].ApplyAspect(aspectsManager);
+        aspectsManager.ConsumeAspectToken();
+        if (aspectsManager.AspectTokens > 0)
+        {
+            Init(true, aspectsUIPanel, aspectTree, aspectsManager, gameManager, optionsIndex);
+        }
+        else
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+        }
+    }
+
+    public void OnLeftContentClick(BaseEventData eventData)
+    {
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+
+        if (!representsRuntimeInstance)
+        {
+            AspectTree runtimeAspectTree = aspectsManager.AddAspectTree(aspectTree);
+            ConvertToRuntimeInstance(runtimeAspectTree);
+        }
+
+        aspectNodes[0].ApplyAspect(aspectsManager);
+        aspectsManager.ConsumeAspectToken();
+        if (aspectsManager.AspectTokens > 0)
+        {
+            Init(true, aspectsUIPanel, aspectTree, aspectsManager, gameManager, optionsIndex);
+        }
+        else
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+        }
+    }
+
+    public void OnRightContentClick(BaseEventData eventData)
+    {
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+
+        if (!representsRuntimeInstance)
+        {
+            AspectTree runtimeAspectTree = aspectsManager.AddAspectTree(aspectTree);
+            ConvertToRuntimeInstance(runtimeAspectTree);
+        }
+
+        aspectNodes[1].ApplyAspect(aspectsManager);
+        aspectsManager.ConsumeAspectToken();
+        if (aspectsManager.AspectTokens > 0)
+        {
+            Init(true, aspectsUIPanel, aspectTree, aspectsManager, gameManager, optionsIndex);
+        }
+        else
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
         }
     }
 
@@ -133,56 +235,68 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSelect(BaseEventData eventData)
     {
-        if (aspectsUIPanel.IsSelectingBranch) return;
+        if (aspectsUIPanel.IsSelectingAspect) return;
 
         isSelected = true;
 
-        PlaySelectedAnimation();
+        PlayOptionSelectedAnimation();
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
-        if (aspectsUIPanel.IsSelectingBranch) return;
+        if (aspectsUIPanel.IsSelectingAspect) return;
 
         isSelected = false;
 
-        PlayDeselectedAnimation();
+        PlayOptionDeselectedAnimation();
     }
 
     public void OnSingleContentSelect(BaseEventData eventData)
     {
-        if (aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Single selected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Single select");
+        singleContentButton.transform.DOKill();
+        singleContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
 
     public void OnSingleContentDeselect(BaseEventData eventData)
     {
-        if (aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Single deselected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Single deselect");
+        singleContentButton.transform.DOKill();
+        singleContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
 
     public void OnLeftContentSelect(BaseEventData eventData)
     {
-        if (!aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Left selected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Left select");
+        leftContentButton.transform.DOKill();
+        leftContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
 
     public void OnLeftContentDeselect(BaseEventData eventData)
     {
-        if (!aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Left deselected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Left deselect");
+        leftContentButton.transform.DOKill();
+        leftContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
 
     public void OnRightContentSelect(BaseEventData eventData)
     {
-        if (!aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Right selected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Right select");
+        rightContentButton.transform.DOKill();
+        rightContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
     }
 
     public void OnRightContentDeselect(BaseEventData eventData)
     {
-        if (!aspectsUIPanel.IsSelectingBranch) return;
-        Debug.Log("Right deselected");
+        if (!aspectsUIPanel.IsSelectingAspect) return;
+        Debug.Log("Right deselect");
+        rightContentButton.transform.DOKill();
+        rightContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
     }
     #endregion
 
@@ -194,10 +308,15 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         DOTween.Kill($"{this}DiamondOutDelay");
         diamondImage.DOKill();
         titleText.DOKill();
+        descriptionText.DOKill();
+        singleContentButton.transform.DOKill();
         singleUpgradeText.DOKill();
         singleDescriptionText.DOKill();
+        doubleContentObject.transform.DOKill();
+        leftContentButton.transform.DOKill();
         leftUpgradeText.DOKill();
         leftDescriptionText.DOKill();
+        rightContentButton.transform.DOKill();
         rightUpgradeText.DOKill();
         rightDescriptionText.DOKill();
     }
@@ -211,6 +330,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         diamondImage.transform.localPosition = diamondImageStartPosition;
 
         titleText.color = Color.clear;
+        descriptionText.color = Color.clear;
         singleUpgradeText.color = Color.clear;
         singleDescriptionText.color = Color.clear;
         leftUpgradeText.color = Color.clear;
@@ -218,67 +338,94 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         rightUpgradeText.color = Color.clear;
         rightDescriptionText.color = Color.clear;
 
+        singleUpgradeText.transform.localScale = Vector3.one;
+        singleDescriptionText.transform.localScale = Vector3.one;
+        leftUpgradeText.transform.localScale = Vector3.one;
+        leftDescriptionText.transform.localScale = Vector3.one;
+        rightUpgradeText.transform.localScale = Vector3.one;
+        rightDescriptionText.transform.localScale = Vector3.one;
+
         titleText.gameObject.SetActive(false);
-        singleContentObject.gameObject.SetActive(false);
+        descriptionText.gameObject.SetActive(false);
+        singleContentButton.gameObject.SetActive(false);
         doubleContentObject.gameObject.SetActive(false);
 
-        optionsButton.interactable = false;
+        OptionsButton.interactable = false;
     }
 
-    private void PlaySelectedAnimation()
+    private void PlayNodesRevealAnimation()
+    {
+        KillTweens();
+
+        // Fade out description text
+        descriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
+
+        if (isSingle)
+        {
+            singleContentButton.gameObject.SetActive(true);
+            singleUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+            singleDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+        }
+        else
+        {
+            doubleContentObject.SetActive(true);
+            leftUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+            leftDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+            rightUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+            rightDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+        }
+    }
+
+    private void PlayNodesUnrevealAnimation()
+    {
+        KillTweens();
+
+        // Fade in description
+        descriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true);
+
+        if (isSingle)
+        {
+            singleUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
+            singleDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true).OnComplete(() => singleContentButton.gameObject.SetActive(true));
+        }
+        else
+        {
+            leftUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
+            leftDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
+            rightUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
+            rightDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true).OnComplete(() => doubleContentObject.SetActive(true));
+        }
+    }
+
+    private void PlayOptionSelectedAnimation()
     {
         KillTweens();
 
         titleText.gameObject.SetActive(true);
-        singleContentObject.SetActive(isSingle);
-        doubleContentObject.SetActive(!isSingle);
+        descriptionText.gameObject.SetActive(true);
 
         // Move diamond up
         diamondImage.transform.DOLocalMove(diamondEndTransform.localPosition, diamondImageRiseDuration).SetEase(diamondImageRiseEase).SetUpdate(true);
 
         Sequence contentsFadeInSequence = DOTween.Sequence().SetUpdate(true);
         contentsFadeInSequence.Append(titleText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true));
-        if (isSingle)
-        {
-            contentsFadeInSequence.Join(singleUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .Join(singleDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .SetId($"{this}ContentIn")
-                .Pause(); // So it doesn't immediately play
-        }
-        else
-        {
-            contentsFadeInSequence.Join(leftDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .Join(leftUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .Join(rightDescriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .Join(rightUpgradeText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true))
-                .SetId($"{this}ContentIn")
-                .Pause(); // So it doesn't immediately play
-        }
+        contentsFadeInSequence.Join(descriptionText.DOColor(textStartColor, contentsFadeInDuration).SetUpdate(true));
+        contentsFadeInSequence.SetId($"{this}ContentIn");
+        contentsFadeInSequence.Pause();
 
         // Fade in the text after a delay
         DOVirtual.DelayedCall(contentsFadeInDelay, () => contentsFadeInSequence.Play(), true)
             .SetId($"{this}ContentInDelay")
-            .OnComplete(() => { optionsButton.interactable = true; });
+            .OnComplete(() => { OptionsButton.interactable = true; });
     }
 
-    private void PlayDeselectedAnimation()
+    private void PlayOptionDeselectedAnimation()
     {
         KillTweens();
 
         // Fade out text
         titleText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-        if (isSingle)
-        {
-            singleUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-            singleDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-        }
-        else
-        {
-            leftDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-            leftUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-            rightDescriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-            rightUpgradeText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
-        }
+        descriptionText.DOColor(Color.clear, contentsFadeInDuration).SetUpdate(true);
 
         // Move diamond down after a delay
         DOVirtual.DelayedCall(contentsFadeInDelay, () =>

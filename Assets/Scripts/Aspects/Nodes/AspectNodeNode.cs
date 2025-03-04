@@ -11,7 +11,7 @@ public class AspectNodeNode : Node
     [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Node";
     [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Aspect Node Description";
 
-    public bool IsApplied { get; protected set; }
+    [field: SerializeField] public bool IsApplied { get; protected set; }
 
     // updates the node connections in the editor
     private void OnValidate()
