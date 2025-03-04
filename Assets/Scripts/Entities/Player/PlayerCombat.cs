@@ -9,7 +9,6 @@ public class PlayerCombat : MonoBehaviour
 {
     private Player player;
     private PlayerInputReader playerInputReader;
-    private Animator animator;
 
     [field: Header("Settings")]
     [field: SerializeField] public Weapon Weapon { get; private set; }
@@ -18,7 +17,7 @@ public class PlayerCombat : MonoBehaviour
     [field: Header("Combo")]
     [SerializeField] private float nonAttackComboResetDelay = 1f;
     [field: SerializeField] public float AttackComboResetDelay { get; private set; } = 0.1f;
-    private Coroutine delayedComboResetCoroutine;
+    private float delayedComboResetTimer;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
@@ -47,7 +46,6 @@ public class PlayerCombat : MonoBehaviour
     {
         player = GetComponent<Player>();
         playerInputReader = GetComponent<PlayerInputReader>();
-        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -73,11 +71,12 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
+        HandleDelayedComboReset();
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.1f, 0.25f);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
@@ -155,7 +154,7 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void ResetCombos()
     {
-        if (delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
+        delayedComboResetTimer = 0;
 
         CurrentInputsList.Clear();
         potentialCombos.Clear();
@@ -222,42 +221,20 @@ public class PlayerCombat : MonoBehaviour
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
     public void StartDelayedComboListsReset(float delay)
     {
-        if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
-        delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
-    }
-
-    private IEnumerator DelayedComboResetCoroutine(float delay)
-    {
-        float elapsedTime = 0;
-        while(elapsedTime < delay)
-        {
-            elapsedTime += player.LocalDeltaTime;
-            yield return null;
-
-            if (player.CurrentState == player.PlayerAttackState)
-            {
-                delayedComboResetCoroutine = null;
-                yield break;
-            }
-            if (player.CurrentState == player.PlayerChargeState)
-            {
-                delayedComboResetCoroutine = null;
-                yield break;
-            }
-        }
-
-        ResetCombos();
-
-        delayedComboResetCoroutine = null;
+        delayedComboResetTimer = delay;
     }
 
     /// <summary>
-    /// Sets the speed of the combo animation.
+    /// Handles delayed combo resets by updating a timer
     /// </summary>
-    /// <param name="speed">The speed value to set.</param>
-    public void SetComboAnimationSpeed(float speed)
+    private void HandleDelayedComboReset()
     {
-        animator.SetFloat("ComboAnimationSpeed", speed);
+        if (delayedComboResetTimer <= 0) return;
+        if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.PlayerChargeState) return;
+
+        delayedComboResetTimer -= Time.deltaTime;
+        if(delayedComboResetTimer <= 0) ResetCombos();
     }
 
     /// <summary>
@@ -305,17 +282,12 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
-    /// Fires a fireball. (NEEDS TO BE GENERALIZED FOR ALL ABILTIES).
     /// Called by animation through an event.
     /// </summary>
-    public void FireAbility(AnimationEvent animationEvent)
+    public void FireAbility()
     {
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
+        if (player.CurrentState != player.PlayerAttackState) return;
 
-        spawner.ChangePrefab(animationEvent.objectReferenceParameter as GameObject);
-
-        Fireball fireball = spawner.SpawnObject<Fireball>(player.GetColliderCenterPosition());
-        fireball.Fire(transform.forward, gameObject, player.Team, 1f);
+        player.PlayerAttackState.FireAbility();
     }
 }

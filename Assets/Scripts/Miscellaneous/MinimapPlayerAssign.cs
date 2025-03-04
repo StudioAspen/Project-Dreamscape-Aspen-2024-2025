@@ -9,7 +9,7 @@ public class MinimapPlayerAssign : MonoBehaviour
 
     [SerializeField] private Camera m_Camera;
 
-    void Awake()
+    void Start()
     {
         player = FindObjectOfType<Player>();
 

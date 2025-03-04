@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using System.Linq;
 using System;
 using System.Collections;
-using DG.Tweening.Core.Easing;
 
 public class Weapon : MonoBehaviour
 {
@@ -83,7 +81,10 @@ public class Weapon : MonoBehaviour
     private Coroutine impactFramesCoroutine;
     private List<GameObject> objectsHitByCurrentAttack = new List<GameObject>();
 
-    private void Awake()
+    [field: Header("Weapon: Tip")]
+    [field: SerializeField] public Transform TipTransform { get; private set; }
+
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 
@@ -94,6 +95,10 @@ public class Weapon : MonoBehaviour
         hitLayerMask = LayerMask.GetMask("Damageable Entity", "Obstacle", "Damage Collider");
 
         PopulateColliderStartEndPositions();
+
+        OriginalScale = transform.localScale.x;
+
+        DisableTriggers();
     }
 
     /// <summary>
@@ -128,13 +133,6 @@ public class Weapon : MonoBehaviour
 
         currentFrameCollisionRays = new Ray[capsuleColliders.Count];
         previousFrameCollisionRays = new Ray[capsuleColliders.Count];
-    }
-
-    private void Start()
-    {
-        OriginalScale = transform.localScale.x;
-
-        DisableTriggers();
     }
 
     private void OnEnable()

@@ -10,13 +10,13 @@ using UnityEngine;
 public class PrioritiesWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public int PrioritiesEventDummyVariable { get; private set; }
+    [field: SerializeField] public Marker MarkerPrefab { get; private set; }
 
     private List<LandManager> affectedLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-    private List<GameObject> enemyDebugSpheres = new List<GameObject>();
+    private Dictionary<Enemy, Marker> enemyMarkers = new();
 
     /// <summary>
     /// Triggers when a priorities enemy spawns.
@@ -42,6 +42,9 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private protected override void OnStarted()
     {
         activeLands = 0;
+        affectedLands = new();
+        debugSpheres = new();
+        enemyMarkers = new();
 
         // Spawn enemies on all lands
         StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
@@ -71,7 +74,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach(LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -96,11 +99,16 @@ public class PrioritiesWorldEventSO : WorldEventSO
         }
         debugSpheres.Clear();
 
-        foreach (GameObject sphere in enemyDebugSpheres)
+        foreach (Marker marker in enemyMarkers.Values)
         {
-            GameObject.Destroy(sphere);
+            GameObject.Destroy(marker.gameObject);
         }
-        enemyDebugSpheres.Clear();
+        enemyMarkers.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>
@@ -139,14 +147,18 @@ public class PrioritiesWorldEventSO : WorldEventSO
     {
         OnPrioritiesEnemySpawned.Invoke(enemySpawned.Spawner, enemySpawned);
 
-        GameObject enemyDebugSphere = CustomDebug.InstantiateTemporarySphere(enemySpawned.transform.position + 3f * Vector3.up, 0.5f, Mathf.Infinity, new Color(1, 0, 0, 0.25f));
-        enemyDebugSphere.transform.SetParent(enemySpawned.transform);
-
-        enemyDebugSpheres.Add(enemyDebugSphere);
+        Marker enemyMarker = Instantiate(MarkerPrefab, enemySpawned.GetEntityTopPosition() + 2f * Vector3.up, Quaternion.identity, enemySpawned.transform);
+        enemyMarkers.Add(enemySpawned, enemyMarker);
     }
 
     private void EnemySpawner_OnEnemyDeath(Enemy enemy)
     {
         OnPrioritiesEnemyDeath.Invoke(enemy.Spawner, enemy);
+
+        if (enemyMarkers.ContainsKey(enemy))
+        {
+            Destroy(enemyMarkers[enemy].gameObject);
+            enemyMarkers.Remove(enemy);
+        }
     }
 }

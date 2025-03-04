@@ -62,24 +62,20 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 40
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   baseSpeed: 3
   rotationSpeed: 15
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 3
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 5, y: 10}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <EntityStaggeredState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
       type: 3}
@@ -93,6 +89,9 @@ MonoBehaviour:
       type: 3}
     <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
       type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
+      type: 3}
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
       type: 3}
@@ -100,12 +99,9 @@ MonoBehaviour:
   <Cost>k__BackingField: 1
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 30
-    multipliers: []
-    <FlatIncrease>k__BackingField: 0
   <CustomCollisionRadius>k__BackingField: 0.4
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  IsAttackAnimationPlaying: 0
   <DetectionDistance>k__BackingField: 15
   <DetectionConeHalfAngle>k__BackingField: 30
   <JumpAnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
@@ -129,7 +125,6 @@ MonoBehaviour:
       m_Bits: 65600
     <LeapAttackHeightToDistanceRatio>k__BackingField: 0.2
     <AttackContactDamageMultiplier>k__BackingField: 1.5
-    <RegularContactDamageMultiplier>k__BackingField: 1
 --- !u!114 &364766872975019307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,7 +227,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 1
 --- !u!114 &7989052314933418525
 MonoBehaviour:

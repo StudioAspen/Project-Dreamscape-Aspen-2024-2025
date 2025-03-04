@@ -90,6 +90,7 @@ public class PlayerChargeState : PlayerBaseState
     {
         if (!EntityStatusEffector.HasStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
         return true;
@@ -106,6 +107,7 @@ public class PlayerChargeState : PlayerBaseState
         if (player.CurrentState == player.PlayerAttackState) return false;
         if (player.CurrentState == player.PlayerDashState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
 
         return true;
     }

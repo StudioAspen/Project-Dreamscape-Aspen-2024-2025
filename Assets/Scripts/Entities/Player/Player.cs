@@ -12,20 +12,20 @@ public class Player : Entity
     private PlayerInputReader playerInputReader;
 
     /// <summary>
-    /// Action that is invoked when the player is first instantiated.
+    /// Action that is invoked when the player is loaded.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The instantiated player</description></item>
+    /// <item><description><c>Player player</c>: The loaded player.</description></item>
     /// </list>
     /// </remarks>
-    public static Action<Player> OnPlayerInstantiated = delegate { };
+    public static Action<Player> OnPlayerLoaded = delegate { };
     /// <summary>
     /// Action that is invoked when the player is destroyed.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The destroyed player</description></item>
+    /// <item><description><c>Player player</c>: The destroyed player.</description></item>
     /// </list>
     /// </remarks>
     public static Action<Player> OnPlayerDestroyed = delegate { };
@@ -100,12 +100,11 @@ public class Player : Entity
     {
         base.OnAwake();
 
+        OnPlayerLoaded.Invoke(this);
+
         playerInputReader = GetComponent<PlayerInputReader>();
 
-        OnPlayerInstantiated?.Invoke(this);
-
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        OnEntityDestroyed += Player_OnEntityDestroyed;
     }
 
     private protected override void OnDeath()
@@ -135,16 +134,16 @@ public class Player : Entity
         PlayerDashState.HandleDashTrail();
     }
 
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
+    public override void Die()
     {
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        base.Die();
+
+        OnPlayerDestroyed.Invoke(this);
     }
 
-    private void Player_OnEntityDestroyed(Entity destroyedEntity, GameObject killer)
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
     {
-        OnEntityDestroyed -= Player_OnEntityDestroyed;
-
-        OnPlayerDestroyed?.Invoke(this);
+        CameraShakeManager.Instance.ShakeCamera(5f,0.1f, 0.25f);
     }
 
     /// <summary>
@@ -265,6 +264,7 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
 
         ChangeState(EntityStaggeredState, true);
     }

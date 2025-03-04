@@ -38,12 +38,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HorizonThickness: 1
+    - _HorizonThickness: 0.31
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _HorizonColor: {r: 0.93725497, g: 0.5529412, b: 0.67058825, a: 0}
-    - _SkyColor: {r: 0.62352943, g: 0.1137255, b: 0.12941177, a: 0}
+    - _HorizonColor: {r: 1, g: 0.6949685, b: 0.9982755, a: 0}
+    - _SkyColor: {r: 0.34199592, g: 0.49220896, b: 0.8301887, a: 0}
     - _StarColor: {r: 3.9999998, g: 3.9999998, b: 3.9999998, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5459749697462026109

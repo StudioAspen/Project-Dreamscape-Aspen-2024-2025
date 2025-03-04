@@ -5,8 +5,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
 
-[RequireComponent(typeof(Animator), typeof(AnimationClipOutput), typeof(AnimatorOutput)),
-RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))] // Stores the blend tree
+[RequireComponent(typeof(AnimatorOutput))] // Plays the blend tree animator's animations
+[RequireComponent(typeof(AnimationClipOutput))] // Plays one shot animations
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
@@ -155,6 +157,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
+    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
@@ -312,6 +315,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: SerializeField] public EntityStaggeredState EntityStaggeredState { get; protected set; }
     [field: SerializeField] public EntityDeathState EntityDeathState { get; protected set; }
     [field: SerializeField] public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: SerializeField] public EntityStunnedState EntityStunnedState { get; protected set; }
     [field: SerializeField] public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
@@ -326,6 +330,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         EntityDeathState.Init(this);
         EntityLaunchState.Init(this);
         EntityStaggeredState.Init(this);
+        EntityStunnedState.Init(this);
         EntitySpawnState.Init(this);
     }
 
@@ -460,7 +465,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
-        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+        HandleSize();
+
         OnUpdate();
     }
 
@@ -881,11 +887,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
+    /// Changes the entity's scale based on the SizeScale value
     /// </summary>
-    private void HandleHealth()
+    private void HandleSize()
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth.GetIntValue());
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
     }
 
     /// <summary>
@@ -915,19 +921,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
-
         if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
 
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
+
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
         if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
+            CurrentHealth = 0;
             OnDeath();
         }
     }
@@ -963,6 +970,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
         if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);
@@ -989,10 +997,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (damage <= 0) return;
 
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
+        HitNumbers hitNumber = ObjectPoolerManager.Instance.SpawnPooledObject<HitNumbers>(ObjectPoolerManager.Instance.HitNumbersPrefab.gameObject);
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 
@@ -1196,6 +1201,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     public Vector3 GetColliderCenterPosition()
     {
         return CharacterController.bounds.center;
+    }
+
+    /// <summary>
+    /// Gets the top point of the entity.
+    /// </summary>
+    /// <returns>The the top point of the entity.</returns>
+    public Vector3 GetEntityTopPosition()
+    {
+        return transform.position + 2f * (GetColliderCenterPosition() - transform.position);
     }
 
     /// <summary>

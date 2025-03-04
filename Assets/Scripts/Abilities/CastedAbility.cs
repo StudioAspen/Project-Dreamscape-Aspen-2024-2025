@@ -1,59 +1,57 @@
 ﻿using UnityEngine;
 using UnityEngine.Pool;
 
-public class CastedAbility : MonoBehaviour, IPoolableObject
+namespace Dreamscape.Abilities
 {
-    private protected GameObject caster;
-    private protected int team;
-
-    private ObjectPool<GameObject> pool;
-
-    public void Init(GameObject caster, int team)
+    public abstract class CastedAbility : MonoBehaviour, IPoolableObject
     {
-        this.caster = caster;
-        this.team = team;
-    }
+        private protected Entity casterEntity;
 
-    private void OnEnable()
-    {
-        caster = null;
-        team = 0;
+        private protected ObjectPool<GameObject> pool;
 
-        OnOnEnable();
-    }
-
-    private protected virtual void OnOnEnable()
-    {
-
-    }
-
-    private void OnDisable()
-    {
-        // logic for when the fireball gets released to the pool
-        OnOnDisable();
-    }
-
-    private protected virtual void OnOnDisable()
-    {
-
-    }
-
-    /// <summary>
-    /// Attempts to release the object back to the pool. If the pool doesn't exist, then Destroy
-    /// </summary>
-    public void DestroyAndRelease()
-    {
-        if (pool == null)
+        /// <summary>
+        /// Initialized the ability with the entity caster.
+        /// </summary>
+        /// <param name="caster">The entity caster.</param>
+        public void Init(Entity caster)
         {
-            Destroy(gameObject);
-            return;
+            casterEntity = caster;
+
+            OnSpawn();
         }
 
-        pool.Release(gameObject);
-    }
+        /// <summary>
+        /// Logic for when the ability is spawned
+        /// </summary>
+        private protected abstract void OnSpawn();
 
-    public void SetObjectPool(ObjectPool<GameObject> objectPool)
-    {
-        pool = objectPool;
+        private void OnDisable()
+        {
+            OnOnDisable();
+        }
+
+        /// <summary>
+        /// Logic for when the ability gets released to the pool
+        /// </summary>
+        private protected abstract void OnOnDisable();
+
+        /// <summary>
+        /// Attempts to release the object back to the pool. If the pool doesn't exist, then Destroy
+        /// </summary>
+        public void DestroyAndRelease()
+        {
+            if (pool == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            pool.Release(gameObject);
+        }
+
+        public void SetObjectPool(ObjectPool<GameObject> objectPool)
+        {
+            pool = objectPool;
+        }
     }
 }

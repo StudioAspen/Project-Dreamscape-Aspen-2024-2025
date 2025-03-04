@@ -3,9 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Unity.Burst.Intrinsics;
-using UnityEditor;
 using UnityEngine;
+using Dreamscape.Abilities;
 
 [System.Serializable]
 public class PlayerAttackState : PlayerBaseState
@@ -108,7 +107,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
         if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
     public override void OnUpdate()
@@ -122,8 +121,6 @@ public class PlayerAttackState : PlayerBaseState
             player.ChangeState(player.DefaultState);
             return;
         }
-
-        //HandleAnimationCancellingBuffer();
 
         TryLookAtClosestTarget();
 
@@ -199,6 +196,8 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
+        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(ComboData.StunDuration);
+
         TryLaunchVictim(victim, damage);
         TryAirComboVictim(victim, damage);
     }
@@ -243,6 +242,8 @@ public class PlayerAttackState : PlayerBaseState
     {
         if (player.CurrentState == player.PlayerChargeState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
         return true;
@@ -266,6 +267,18 @@ public class PlayerAttackState : PlayerBaseState
         }
 
         playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
+    }
+
+    /// <summary>
+    /// Called from playerCombat's FireAbility() method. That method is called from an animation event.
+    /// </summary>
+    public void FireAbility()
+    {
+        AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
+        if (abilityComboData == null) return;
+
+        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        spawnedAbility.Init(player);
     }
 }
 

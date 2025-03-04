@@ -12,9 +12,6 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         base.OnApply();
 
-        enemy.MaxHealth.AddMultiplier(0, this); // Make the enemy invincible (MaxHealth = 0 means unkillable)
-        enemy.HealToFull(false); // Update current health to 0
-
         enemy.OnEntityTakeDamage += Enemy_OnEntityTakeDamage;
 
         shieldVFXInstance = Instantiate(ShieldVFXPrefab, enemy.GetColliderCenterPosition(), Quaternion.identity);
@@ -41,10 +38,7 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         enemy.OnEntityTakeDamage -= Enemy_OnEntityTakeDamage; // Remove the event listener because this only happens once
 
-        enemy.MaxHealth.ClearBuffsFromSource(this); // Make the enemy killable again
         enemy.HealToFull(false); // Update current health to full
-
-        enemy.TakeDamage(0, Vector3.zero, source, false); // Deal 0 damage to update the health bar
 
         shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
     }

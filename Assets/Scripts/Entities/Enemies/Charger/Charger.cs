@@ -111,11 +111,11 @@ public class Charger : Enemy
             }
         }
 
-        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-
         if (willTryStagger) TryChangeStaggeredState();
 
         CurrentHealth -= newDamage;
+
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
 
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 

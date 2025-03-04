@@ -7,7 +7,7 @@ public class SurvivalWorldEventUI : WorldEventUI
 
     [SerializeField] private TMP_Text timerText;
 
-    private protected override void OnAwake()
+    private protected override void OnStart()
     {
         survivalWorldEvent = GetAndValidateCurrentEvent<SurvivalWorldEventSO>();
     }
