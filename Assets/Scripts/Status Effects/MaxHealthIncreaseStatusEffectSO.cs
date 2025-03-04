@@ -12,12 +12,12 @@ public class MaxHealthIncreaseStatusEffectSO : StatusEffectSO
     private protected override void OnApply()
     {
         base.OnApply();
-        entity.MaxHealth.AddFlatAmount(healthIncrease);
+        entity.MaxHealth.AddFlatAmount(healthIncrease, this);
     }
 
     public override void Cancel()
     {
         base.Cancel();
-        entity.MaxHealth.AddFlatAmount(-healthIncrease);
+        entity.MaxHealth.ClearFlatIncreaseFromSource(this);
     }
 }
