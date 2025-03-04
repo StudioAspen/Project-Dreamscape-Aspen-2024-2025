@@ -7,19 +7,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static InputManager;
 
 public class TitleScreenManager : MonoBehaviour
 {
     private InputManager inputManager;
 
     [Header("Scenes")]
-    [SerializeField] private SceneReference loadingScene;
+    [SerializeField] private SceneReference bedroomScene;
 
     [Header("UI")]
     [SerializeField] private Button playButton;
 
-    private void Awake()
+    private void Start()
     {
         inputManager = FindObjectOfType<InputManager>();
 
@@ -52,6 +51,6 @@ public class TitleScreenManager : MonoBehaviour
 
     public void PlayButton_OnClicked()
     {
-        SceneManager.LoadScene(loadingScene.Name);
+        SceneManager.LoadScene(bedroomScene.Name);
     }
 }

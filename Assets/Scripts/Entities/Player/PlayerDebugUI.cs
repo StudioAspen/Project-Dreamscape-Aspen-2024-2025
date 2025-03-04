@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerDebugUI : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class PlayerDebugUI : MonoBehaviour
     private ChainingSystem chainingSystem;
     private MomentumSystem momentumSystem;
     private LevelSystem levelSystem;
-    private HealthBarUI healthBarUI;
 
     [SerializeField] private TMP_Text stateText;
     [SerializeField] private TMP_Text inputsText;
@@ -21,29 +19,21 @@ public class PlayerDebugUI : MonoBehaviour
     [SerializeField] private TMP_Text momentumText;
     [SerializeField] private TMP_Text levelText;
 
-    private void Awake()
+    private void Start()
     {
         player = GetComponentInParent<Player>();
         playerCombat = player.GetComponent<PlayerCombat>();
         chainingSystem = player.GetComponent<ChainingSystem>();
         momentumSystem = player.GetComponent<MomentumSystem>();
         levelSystem = player.GetComponent<LevelSystem>();
-        healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-        player.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
-        
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
-    }
+        if (playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
 
-    private void Start()
-    {
-        // Need to delay start for a frame because of potential race condition as Player hp is also set in start.
         StartCoroutine(LateStartCoroutine());
     }
 
     private void LateStart()
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth);
     }
 
     private IEnumerator LateStartCoroutine()
@@ -55,10 +45,7 @@ public class PlayerDebugUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
-
         if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
-
     }
 
     private void LateUpdate()
@@ -68,11 +55,6 @@ public class PlayerDebugUI : MonoBehaviour
         chainText.text = chainingSystem == null ? "Missing ChainingSystem component." : $"Chain: {chainingSystem.ChainCount}";
         momentumText.text = momentumSystem == null ? "Missing MomentumSystem component." : $"Momentum: {momentumSystem.Momentum}";
         levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
-    }
-
-    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth);
     }
 
     private void Weapon_OnWeaponStartSwing(Entity source)

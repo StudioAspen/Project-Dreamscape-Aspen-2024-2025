@@ -23,7 +23,7 @@ public class PauseUIPanel : UIPanel
     [field: Header("Button Highlight Color")]
     [field: SerializeField] public Color ButtonHighlightColor { get; private set; }
 
-    private void Awake()
+    private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 

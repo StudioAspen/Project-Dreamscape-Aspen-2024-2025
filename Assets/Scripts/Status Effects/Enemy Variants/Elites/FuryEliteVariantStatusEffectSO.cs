@@ -10,13 +10,13 @@ public class FuryEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         base.OnApply();
 
-        enemy.SetLocalTimeScaleModifier(enemy.LocalTimeScaleModifier * TimeScaleMultiplier);
+        enemy.LocalTimeScale.AddMultiplier(TimeScaleMultiplier, this);
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        enemy.SetLocalTimeScaleModifier(enemy.LocalTimeScaleModifier / TimeScaleMultiplier);
+        enemy.LocalTimeScale.ClearBuffsFromSource(this);
     }
 }

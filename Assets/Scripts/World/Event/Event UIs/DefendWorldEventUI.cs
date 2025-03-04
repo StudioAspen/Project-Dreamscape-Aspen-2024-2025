@@ -7,7 +7,7 @@ public class DefendWorldEventUI : WorldEventUI
 
     [SerializeField] private TMP_Text displayText;
 
-    private protected override void OnAwake()
+    private protected override void OnStart()
     {
         defendWorldEvent = GetAndValidateCurrentEvent<DefendWorldEventSO>();
     }
@@ -26,6 +26,6 @@ public class DefendWorldEventUI : WorldEventUI
             return;
         }
 
-        displayText.text = $"({Mathf.Max(defendWorldEvent.DefendEventEntity.CurrentHealth, 0)}/{defendWorldEvent.DefendEventEntity.MaxHealth}): {Mathf.Round(defendWorldEvent.RemainingTime)}s";
+        displayText.text = $"({Mathf.Max(defendWorldEvent.DefendEventEntity.CurrentHealth, 0)}/{defendWorldEvent.DefendEventEntity.MaxHealth.GetIntValue()}): {Mathf.Round(defendWorldEvent.RemainingTime)}s";
     }
 }

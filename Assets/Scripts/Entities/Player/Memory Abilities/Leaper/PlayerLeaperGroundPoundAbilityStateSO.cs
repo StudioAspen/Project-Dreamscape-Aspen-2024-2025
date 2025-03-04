@@ -9,7 +9,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
     [field: SerializeField] public AnimationClip GroundPoundAnimationClip { get; private set; }
     [field: SerializeField] public AnimationClip GroundImpactAnimationClip { get; private set; }
     [field: SerializeField] public float GroundPoundForce { get; private set; } = 15f;
-    [field: SerializeField] public float AOEPercentDamage { get; private set; } = 150f;
+    [field: SerializeField] public float AOEDamageMultiplier { get; private set; } = 1.5f;
     [field: SerializeField] public float AOERadius { get; private set; } = 4f;
     [field: SerializeField] public float AOELaunchForce { get; private set; } = 7.5f;
     [field: SerializeField] public float AOEStunDuration { get; private set; } = 3f;
@@ -36,7 +36,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        TransitionToAbilityAnimation(GroundPoundAnimationClip);
+        player.PlayOneShotAnimation(GroundPoundAnimationClip);
 
         player.Launch(Vector3.down, GroundPoundForce);
 
@@ -69,13 +69,13 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
         {
             hasRecoveredStarted = true;
 
-            TransitionToAbilityAnimation(GroundImpactAnimationClip);
+            player.PlayOneShotAnimation(GroundImpactAnimationClip);
 
-            Entity.DamageEnemyEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEPercentDamage, AOELaunchForce, AOEStunDuration);
+            Entity.DamageEnemyEntitiesWithAOELaunch(player, player.transform.position, AOERadius, AOEDamageMultiplier, AOELaunchForce, AOEStunDuration);
 
             CustomDebug.InstantiateTemporarySphere(player.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
-            CameraShakeManager.Instance.ShakeCamera(15f, 1f);
+            CameraShakeManager.Instance.ShakeCamera(15f,1f, 1f);
         }
     }
 }

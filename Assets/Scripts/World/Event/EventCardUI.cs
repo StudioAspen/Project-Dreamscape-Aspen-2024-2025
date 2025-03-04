@@ -34,15 +34,19 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private Vector3 startingPosition;
 
+    // Awake is safe here because UI scene loads last
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
 
-        button.onClick.AddListener(Button_OnClick);
-
-        startingPosition = transform.position;
+        startingPosition = transform.localPosition;
 
         ResetCard();
+    }
+
+    private void Start()
+    {
+        button.onClick.AddListener(Button_OnClick);
     }
 
     private void OnDestroy()
@@ -76,7 +80,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DisableSelectedIndicator();
         InstantlyFlipCard(false);
 
-        transform.position = startingPosition;
+        transform.localPosition = startingPosition;
         transform.localScale = Vector3.one;
     }
 
@@ -87,6 +91,8 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void AssignCardEvent(Type eventType)
     {
         CurrentEventType = eventType;
+
+        if (eventManager == null) eventManager = FindObjectOfType<EventManager>();
 
         WorldEventSO worldEvent = eventManager.GetEvent(CurrentEventType);
 
@@ -155,14 +161,12 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     /// </summary>
     /// <param name="flipDuration"></param>
     /// <param name="isFront">True to flip the card to the front side, false to flip it to the back side.</param>
-    /// <param name="onCompleteCallback">An optional callback to execute when the flip animation is finished.</param>
-    public void FlipCard(float flipDuration, bool isFront, Action onCompleteCallback = null)
+    public Sequence FlipCard(float flipDuration, bool isFront)
     {
         if (isFrontFacing == isFront)
         {
             // If the card is already facing the specified side, don't do anything.
-            onCompleteCallback?.Invoke();
-            return;
+            return null;
         }
 
         // Kill existing tweens
@@ -184,12 +188,9 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             .OnComplete(() => {
                 // Ensure the card is facing the correct side
                 InstantlyFlipCard(isFront);
-
-                // Invoke the callback after the animation finishes
-                onCompleteCallback?.Invoke();
             });
 
-        flipSequence.Play();
+        return flipSequence.Play();
     }
 
     /// <summary>
@@ -213,14 +214,13 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     /// </summary>
     /// <param name="endPosition">The starting position of the card.</param>
     /// <param name="duration">The duration of the movement.</param>
-    /// <param name="onCompleteCallback">An optional callback to execute when the movement is complete.</param>
-    public void MoveToStartingPosition(float duration, Ease ease, Action onCompleteCallback = null)
+    public Tween MoveToStartingPosition(float duration, Ease ease)
     {
         // Kill existing tween
         DOTween.Kill(transform);
 
         // Move the card to the end position (starting original position)
-        transform.DOMove(startingPosition, duration).SetUpdate(true).SetEase(ease).OnComplete(() => onCompleteCallback?.Invoke());
+        return transform.DOLocalMove(startingPosition, duration).SetUpdate(true).SetEase(ease);
     }
     #endregion
 }

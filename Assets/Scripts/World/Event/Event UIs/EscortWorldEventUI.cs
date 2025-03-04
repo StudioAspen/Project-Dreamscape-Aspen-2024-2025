@@ -7,7 +7,7 @@ public class EscortWorldEventUI : WorldEventUI
 
     [SerializeField] private TMP_Text displayText;
 
-    private protected override void OnAwake()
+    private protected override void OnStart()
     {
         escortWorldEvent = GetAndValidateCurrentEvent<EscortWorldEventSO>();
     }
@@ -26,6 +26,6 @@ public class EscortWorldEventUI : WorldEventUI
             return;
         }
 
-        displayText.text = $"({Mathf.Max(escortWorldEvent.EscortEventEntity.CurrentHealth, 0)}/{escortWorldEvent.EscortEventEntity.MaxHealth}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
+        displayText.text = $"({Mathf.Max(escortWorldEvent.EscortEventEntity.CurrentHealth, 0)}/{escortWorldEvent.EscortEventEntity.MaxHealth.GetIntValue()}): {Mathf.Round(escortWorldEvent.RemainingTime)}s";
     }
 }

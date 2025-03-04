@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31fc67a59d5706e429e3b0a88a5637e6, type: 3}
+  m_Name: Hammer_GroundedFireball
+  m_EditorClassIdentifier: 
+  <DisplayName>k__BackingField: Combo
+  <Description>k__BackingField: Combo description
+  <ComboInputs>k__BackingField: 000000000000000002000000
+  <ComboClip>k__BackingField: {fileID: 6799651534840860903, guid: cb382c6f8d916fa4a86490c23e017850,
+    type: 3}
+  <ComboClipAnimationSpeed>k__BackingField: 0.5
+  <HasRootMotion>k__BackingField: 1
+  <IsAirCombo>k__BackingField: 0
+  <DamageMultiplier>k__BackingField: 2.5
+  <WillLaunchUpwards>k__BackingField: 0
+  <AirLaunchForce>k__BackingField: 0
+  <WillStun>k__BackingField: 0
+  <StunDuration>k__BackingField: 0
+  <ImpactFramesTimeScale>k__BackingField: 0.01
+  <ImpactFramesDuration>k__BackingField: 0.15
+  <WeaponScale>k__BackingField: 3
+  <WeaponScalingDuration>k__BackingField: 0.1
+  <AbilityPrefab>k__BackingField: {fileID: 7068450658859443637, guid: 7b05cd697cf132e40a2d6f3ce5a0bff6,
+    type: 3}

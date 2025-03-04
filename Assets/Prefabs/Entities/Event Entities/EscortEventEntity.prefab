@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 3915645929625153338}
   - component: {fileID: 5771956850173615022}
   - component: {fileID: 1074443551977019563}
+  - component: {fileID: 5744428633160475357}
+  - component: {fileID: 4330623612858139805}
+  - component: {fileID: 8786391614727791196}
   m_Layer: 16
   m_Name: EscortEventEntity
   m_TagString: Untagged
@@ -35,7 +38,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7109859629904296950}
   - {fileID: 41544952237181766}
   - {fileID: 4150967214179094889}
   - {fileID: 5623669448985553106}
@@ -57,23 +59,51 @@ MonoBehaviour:
     type: 2}
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField: 0
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 100
   baseSpeed: 3
   rotationSpeed: 5
   mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField: 1
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
   UseRootMotion: 0
-  <LocalTimeScale>k__BackingField: 1
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a15e742835b4fff4f9fdf88f94096009,
+      type: 3}
+    <DeathDuration>k__BackingField: 1
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
+      type: 3}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
+      type: 3}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
+      type: 3}
+    <SpawnDuration>k__BackingField: 1.5
   <Cost>k__BackingField: 0
-  <EXPValue>k__BackingField: 0
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 0
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  IsAttackAnimationPlaying: 0
+  <EscortEventEntityWanderState>k__BackingField:
+    <WanderIntervalDurationRange>k__BackingField: {x: 7, y: 10}
+    <WanderRadiusRange>k__BackingField: {x: 7, y: 10}
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
@@ -84,7 +114,7 @@ Animator:
   m_GameObject: {fileID: 2211407975701868877}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2be0c0643d1b0f54e92d2c57b2545ce5, type: 3}
-  m_Controller: {fileID: 9100000, guid: 271131071937db94b86b0935b5941917, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -146,7 +176,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 126
   m_CollisionDetection: 1
 --- !u!114 &5771956850173615022
 MonoBehaviour:
@@ -175,6 +205,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5744428633160475357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18498f4614684d14b942ac9d7ad80b20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_useCustomFrameRate: 0
+  m_customFrameRate: 60
+--- !u!114 &4330623612858139805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b7252b345e69f9439e871e0102cb078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 0
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  ToClip: {fileID: 0}
+--- !u!114 &8786391614727791196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4cfb5fb47b7a7143b09b60466a3830e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LayerIndex: 0
+  AvatarMask: {fileID: 0}
+  IsStatic: 1
+  TransitionSetting:
+    OutputTargetWeight: 1
+    FadeInTime: 0.1
+    FixedTimeOffset: 0
+    ExitTime: 0
+    ClipSpeed: 1
+    RestartWhenPlay: 0
+  AnimationControll: {fileID: 9100000, guid: 271131071937db94b86b0935b5941917, type: 2}
 --- !u!1 &2299435363706797073
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,52 +349,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &8307921547085757002
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7109859629904296950}
-  - component: {fileID: 6957530255124802048}
-  m_Layer: 0
-  m_Name: States
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7109859629904296950
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8307921547085757002}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3490398193883977143}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6957530255124802048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8307921547085757002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aad421127f7212b47a323e2faae742cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <WanderIntervalDurationRange>k__BackingField: {x: 7, y: 10}
-  <WanderRadiusRange>k__BackingField: {x: 7, y: 10}
 --- !u!1001 &1828750121621215027
 PrefabInstance:
   m_ObjectHideFlags: 0

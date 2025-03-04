@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 // All lands spawn enemies for a certain amount of time, if the player survives that amount of time trigger EOW
-[CreateAssetMenu(fileName = "Survival World Event", menuName = "World Event/Survival")]
+[CreateAssetMenu(fileName = "Survival World Event", menuName = "World/World Event/Survival")]
 public class SurvivalWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
@@ -23,7 +23,7 @@ public class SurvivalWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -31,7 +31,7 @@ public class SurvivalWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         RemainingTime -= Time.deltaTime;
 

@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerIdleState : PlayerBaseState
 {
     public override void OnEnter()
     {
-        player.TransitionToAnimation("FlatMovement");
+        player.PlayDefaultAnimation();
 
         player.SetSpeedModifier(0f);
     }

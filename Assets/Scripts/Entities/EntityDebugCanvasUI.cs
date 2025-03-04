@@ -14,7 +14,7 @@ public class EntityDebugCanvasUI : MonoBehaviour
     [SerializeField] private TMP_Text entityStateText;
     [SerializeField] private TMP_Text entityNameText;
 
-    private void Awake()
+    private void Start()
     {
         entity = GetComponentInParent<Entity>();
         entityStatusEffector = entity.GetComponent<EntityStatusEffector>();
@@ -38,7 +38,7 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void LateOnEnable()
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
 
         EliteVariantStatusEffectSO eliteStatus = null;
         if (entityStatusEffector != null)
@@ -90,11 +90,11 @@ public class EntityDebugCanvasUI : MonoBehaviour
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
     }
 
     private void Entity_OnEntityHeal(Entity healedEntity, int healValue)
     {
-        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth);
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
     }
 }

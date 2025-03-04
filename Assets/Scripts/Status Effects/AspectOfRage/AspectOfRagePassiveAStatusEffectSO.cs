@@ -22,7 +22,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
         if (ownerWeapon == null)
         {
             Debug.LogError($"{name}: Weapon not found on entity: {entity.name}");
-            entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true); // If theres no Weapon, remove this passive
+            RemoveSelf(); // If theres no Weapon, remove this passive
             return;
         }
 

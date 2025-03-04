@@ -14,14 +14,18 @@ public class LandManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private List<LandBorder> borders;
+    [SerializeField] private Transform bodyContentTransform;
+    [field: SerializeField] public Material SkyBoxMaterial { get; private set; }
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
-    [field: SerializeField] public int Level { get; private set; }
     public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
+    [field: SerializeField] public int Level { get; private set; }
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
+    [SerializeField] private int minLevel = -5;
+    [SerializeField] private int maxLevel = 10;
 
     /// <summary>
     /// Initializes the LandManager with the given grid position.
@@ -36,13 +40,17 @@ public class LandManager : MonoBehaviour
 
     private void Awake()
     {
-        worldManager = FindObjectOfType<WorldManager>();
         EnemySpawner = GetComponent<EnemySpawner>();
         navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
-    void Start()
+    private void Start()
     {
+        worldManager = FindObjectOfType<WorldManager>();
+
+        // Give the body a random 90 degree rotation
+        bodyContentTransform.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 4) * 90f, 0);
+
         Level = 1;
 
         levelText.text = $"{Level}";
@@ -83,8 +91,21 @@ public class LandManager : MonoBehaviour
     /// Also updates the LevelDifference which is used to track the changes made to the current level.
     /// </summary>
     /// <param name="amount">The amount to add to the level.</param>
-    public void AddLevel(int amount)
+    /// <returns>Whether the land's level was sucessfully changed</returns>
+    public bool TryAddLevel(int amount)
     {
+        // If at minimum
+        if(Level + amount < minLevel)
+        {
+            return false;
+        }
+
+        // If at maximum
+        if(Level + amount > maxLevel)
+        {
+            return false;
+        }
+
         Level += amount;
         LevelDifference += amount;
 
@@ -98,6 +119,8 @@ public class LandManager : MonoBehaviour
         {
             levelText.color = Color.black;
         }
+
+        return true;
     }
 
     /// <summary>
@@ -114,7 +137,7 @@ public class LandManager : MonoBehaviour
     /// </summary>
     public void UndoLevelChanges()
     {
-        AddLevel(-LevelDifference);
+        TryAddLevel(-LevelDifference);
         ResetLevelDifference();
     }
 

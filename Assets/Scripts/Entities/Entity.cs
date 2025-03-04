@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UIElements;
-using static UnityEngine.EventSystems.EventTrigger;
+using UPlayable.AnimationMixer;
 
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))] // Stores the blend tree
+[RequireComponent(typeof(AnimatorOutput))] // Plays the blend tree animator's animations
+[RequireComponent(typeof(AnimationClipOutput))] // Plays one shot animations
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     public CharacterController CharacterController { get; protected set; }
-    private protected Animator animator;
+    private protected Animator blendTreeAnimator;
+    private protected AnimationClipOutput playablesOneShotClipManager;
+    private protected AnimatorOutput blendTreeAnimatorManager;
 
     [field: Header("Entity: References")]
     [field: SerializeField] public GlobalPhysicsConfigSO PhysicsConfig { get; private set; }
@@ -20,22 +25,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Health Variables
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: Tooltip("Max health for entity. Set to 0 for invicibility.")][field: SerializeField] public int MaxHealth { get; protected set; }
-    public float MaxHealthModifier { get; protected set; } = 1f;
-    private int originalMaxHealth;
-
-    /// <summary>
-    /// Sets the maximum health modifier for the entity.
-    /// </summary>
-    /// <param name="newModifier">The new maximum health modifier.</param>
-    /// <param name="willHealToFull">Whether the entity will be healed to full health after the modifier is applied.</param>
-    public void SetMaxHealthModifier(float newModifier, bool willHealToFull = true)
-    {
-        MaxHealthModifier = newModifier;
-
-        MaxHealth = Mathf.RoundToInt(originalMaxHealth * MaxHealthModifier);
-        if (willHealToFull) CurrentHealth = MaxHealth;
-    }
+    [field: SerializeField, Tooltip("Max health for entity. Set to 0 for invicibility.")] public Stat MaxHealth { get; protected set; }
     #endregion
 
     #region Speed Variables
@@ -46,7 +36,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
-    public float StatusSpeedModifier { get; protected set; } = 1f;
+    [field: SerializeField]public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
     public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion
@@ -166,27 +156,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Attack Variables
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
-    [field: SerializeField] public float DamageModifier { get; protected set; } = 1f;
+    [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
+    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
-    /// Sets the damage modifier for the entity.
+    /// Calculates the damage based on the given multiplier.
     /// </summary>
-    /// <param name="newModifier">The new damage modifier value.</param>
-    public void SetDamageModifier(float newModifier)
-    {
-        DamageModifier = newModifier;
-    }
-
-    /// <summary>
-    /// Calculates the damage based on the given percentage.
-    /// </summary>
-    /// <param name="percent">The percentage of the damage range to calculate.</param>
+    /// <param name="multiplier">The multiplier of the damage range to calculate.</param>
     /// <returns>The calculated damage value.</returns>
-    public int CalculateDamage(float percent)
+    public int CalculateDamage(float multiplier)
     {
         Vector2Int modifiedDamageRange = Vector2Int.RoundToInt(
-                (percent / 100f) * DamageModifier * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
+                multiplier * DamageModifier.GetFloatValue() * new Vector2(BaseDamageRange.x, BaseDamageRange.y)
             );
 
         return UnityEngine.Random.Range(modifiedDamageRange.x, modifiedDamageRange.y);
@@ -301,55 +283,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Local Time Scale
     [field: Header("Local Time Scale")]
-    [field: SerializeField] public float LocalTimeScale { get; protected set; } = 1f;
-    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale;
-    public float LocalTimeScaleModifier { get; private set; } = 1f;
-
-    /// <summary>
-    /// Sets the local time scale for the entity.
-    /// Cant set time scale if entity is dead.
-    /// </summary>
-    /// <param name="newTimeScale">The new time scale value.</param>
-    public void SetLocalTimeScale(float newTimeScale)
-    {
-        if (CurrentState == EntityDeathState) return;
-
-        LocalTimeScale = newTimeScale;
-    }
-
-    /// <summary>
-    /// Sets the local time scale of the entity.
-    /// </summary>
-    /// <param name="newTimeScaleModifier">The new scale value.</param>
-    public void SetLocalTimeScaleModifier(float newTimeScaleModifier)
-    {
-        LocalTimeScaleModifier = newTimeScaleModifier;
-        SetLocalTimeScale(LocalTimeScale * LocalTimeScaleModifier);
-    }
+    [field: SerializeField] public Stat LocalTimeScale { get; protected set; } = new Stat(1f);
+    public float LocalDeltaTime => Time.deltaTime * LocalTimeScale.GetFloatValue();
     #endregion
 
     #region Scale
-    public float SizeScaleModifier { get; private set; } = 1f;
-    private protected float originalSizeScale;
-
-    /// <summary>
-    /// Sets the local scale of the entity's model.
-    /// </summary>
-    /// <param name="newSizeScaleModifier">The new scale value.</param>
-    public void SetSizeScaleModifier(float newSizeScaleModifier)
-    {
-        SizeScaleModifier = newSizeScaleModifier;
-        transform.localScale = SizeScaleModifier * originalSizeScale * Vector3.one;
-    }
-
-    /// <summary>
-    /// Resets the local scale of the entity to its original scale.
-    /// </summary>
-    public void ResetScaleSize()
-    {
-        SizeScaleModifier = 1f;
-        transform.localScale = originalSizeScale * Vector3.one;
-    }
+    public Stat SizeScale { get; protected set; } = new Stat(1f);
     #endregion
 
     #region Pooling Variables
@@ -367,16 +306,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
-    [field: Header("Entity: States")]
     public EntityBaseState CurrentState { get; protected set; }
     public EntityBaseState PreviousState { get; protected set; }
     public EntityBaseState DefaultState { get; protected set; }
 
-    public EntityEmptyState EntityEmptyState { get; protected set; }
-    public EntityStaggeredState EntityStaggeredState { get; protected set; }
-    public EntityDeathState EntityDeathState { get; protected set; }
-    public EntityLaunchState EntityLaunchState { get; protected set; }
-    public EntitySpawnState EntitySpawnState { get; protected set; }
+    [field: Header("Entity: States")]
+    [field: SerializeField] public EntityEmptyState EntityEmptyState { get; protected set; }
+    [field: SerializeField] public EntityStaggeredState EntityStaggeredState { get; protected set; }
+    [field: SerializeField] public EntityDeathState EntityDeathState { get; protected set; }
+    [field: SerializeField] public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: SerializeField] public EntityStunnedState EntityStunnedState { get; protected set; }
+    [field: SerializeField] public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -386,11 +326,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = EntityBaseState.InitializeOrCreate<EntityEmptyState>(this);
-        EntityDeathState = EntityBaseState.InitializeOrCreate<EntityDeathState>(this);
-        EntityLaunchState = EntityBaseState.InitializeOrCreate<EntityLaunchState>(this);
-        EntityStaggeredState = EntityBaseState.InitializeOrCreate<EntityStaggeredState>(this);
-        EntitySpawnState = EntityBaseState.InitializeOrCreate<EntitySpawnState>(this);
+        EntityEmptyState.Init(this);
+        EntityDeathState.Init(this);
+        EntityLaunchState.Init(this);
+        EntityStaggeredState.Init(this);
+        EntityStunnedState.Init(this);
+        EntitySpawnState.Init(this);
     }
 
     /// <summary>
@@ -441,10 +382,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
-
-        originalSizeScale = transform.localScale.x;
-        originalMaxHealth = MaxHealth;
+        blendTreeAnimator = GetComponent<Animator>();
+        playablesOneShotClipManager = GetComponent<AnimationClipOutput>();
+        blendTreeAnimatorManager = GetComponent<AnimatorOutput>();
 
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
@@ -483,22 +423,15 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         lastHitSource = null;
 
-        CurrentHealth = MaxHealth;
+        CurrentHealth = MaxHealth.GetIntValue();
 
         IgnoreOtherEntityCollisions(false);
 
         SetStartState(EntityEmptyState);
-        SetLocalTimeScale(1f);
     }
 
     private void OnDisable()
     {
-        SetDamageModifier(1f);
-        SetMaxHealthModifier(1f, false);
-        SetStatusSpeedModifier(1f);
-        SetSizeScaleModifier(1f);
-        SetLocalTimeScaleModifier(1f);
-
         OnOnDisable();
     }
 
@@ -532,6 +465,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
+        HandleSize();
+
         OnUpdate();
     }
 
@@ -546,7 +481,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.OnUpdate();
 
-        HandleAnimations();
+        HandleBlendTreeAnimation();
         EvaluateMovementSpeed();
 
         HandleGrounded();
@@ -600,14 +535,15 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (!UseRootMotion) return;
 
         float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        Vector3 desiredAnimationMovement = modelScale * blendTreeAnimator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
         CharacterController.Move(desiredAnimationMovement);
     }
-
     private void OnDrawGizmos()
     {
+        CurrentState?.OnDrawGizmos();
+
         OnOnDrawGizmos();
     }
 
@@ -845,15 +781,62 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Handles the animations of the entity.
+    /// Handles the blend tree animation of the entity.
     /// Sets the MovementSpeed parameter for the FlatMovement blend tree
     /// </summary>
-    private protected virtual void HandleAnimations()
+    private protected virtual void HandleBlendTreeAnimation()
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
-        animator.speed = LocalTimeScale;
+        blendTreeAnimator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        blendTreeAnimator.speed = LocalTimeScale.GetFloatValue();
+    }
+
+    /// <summary>
+    /// Plays a one shot animation using Playables API. If you want to return to the default blend tree, you must call PlayDefaultAnimation().
+    /// </summary>
+    /// <param name="animationClip">The clip to play.</param>
+    /// <param name="clipDuration">The duration you want to force the clip into. The default is the regular clip length.</param>
+    /// <param name="transitionDuration">The fade duration.</param>
+    public void PlayOneShotAnimation(AnimationClip animationClip, float clipDuration = 0f, float transitionDuration = 0.1f)
+    {
+        if(animationClip == null)
+        {
+            Debug.LogWarning("Cant play null one shot animation");
+            return;
+        }
+
+        if(playablesOneShotClipManager == null)
+        {
+            return;
+        }
+
+        if (!playablesOneShotClipManager.IsReady()) return;
+
+        playablesOneShotClipManager.ToClip = animationClip;
+
+        float speed = (clipDuration <= 0f) ? 1f : animationClip.length / clipDuration;
+        speed = speed * LocalTimeScale.GetFloatValue();
+        playablesOneShotClipManager.SetSpeed(speed);
+
+        playablesOneShotClipManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
+
+        playablesOneShotClipManager.Play();
+    }
+
+    /// <summary>
+    /// Plays the default blend tree animation
+    /// </summary>
+    /// <param name="transitionDuration">The fade duration to the animation</param>
+    public void PlayDefaultAnimation(float transitionDuration = 0.1f)
+    {
+        if (blendTreeAnimatorManager == null) return;
+        if (blendTreeAnimatorManager.AnimationControll == null) return;
+        if (!blendTreeAnimatorManager.IsReady()) return;
+
+        blendTreeAnimatorManager.SetSpeed(LocalTimeScale.GetFloatValue());
+        blendTreeAnimatorManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
+        blendTreeAnimatorManager.Play();
     }
 
     /// <summary>
@@ -904,23 +887,23 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
+    /// Changes the entity's scale based on the SizeScale value
     /// </summary>
-    private void HandleHealth()
+    private void HandleSize()
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
     }
 
     /// <summary>
-    /// Sets the maximum health of the entity and optionally heals it to full health.
+    /// Sets the base maximum health of the entity and optionally heals it to full health. Do not use this for buffs.
     /// </summary>
     /// <param name="newMaxHealth">The new maximum health value.</param>
     /// <param name="willHealToFull">Whether the entity will be healed to full health.</param>
-    public void SetMaxHealth(int newMaxHealth, bool willHealToFull)
+    public void SetBaseMaxHealth(int newMaxHealth, bool willHealToFull)
     {
-        MaxHealth = newMaxHealth;
+        MaxHealth.SetBaseValue(newMaxHealth);
 
-        if (willHealToFull) CurrentHealth = MaxHealth;
+        if (willHealToFull) CurrentHealth = MaxHealth.GetIntValue();
     }
 
     /// <summary>
@@ -938,19 +921,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
-
         if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
         CurrentHealth -= damage;
 
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
+
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
+        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
         {
+            CurrentHealth = 0;
             OnDeath();
         }
     }
@@ -976,7 +960,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <returns>True if the entity will die, false otherwise.</returns>
     public virtual bool WillDieFromDamage(int damage)
     {
-        return MaxHealth > 0 && CurrentHealth - damage <= 0;
+        return MaxHealth.GetIntValue() > 0 && CurrentHealth - damage <= 0;
     }
 
     /// <summary>
@@ -986,8 +970,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
+        if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);
+    }
+
+    /// <summary>
+    /// Determines if the entity can get staggered.
+    /// Override this method to prevent stagger depending on current state.
+    /// </summary>
+    /// <returns>Whether the entity can be staggered</returns>
+    public virtual bool CanBeStaggered()
+    {
+        return true;
     }
 
     /// <summary>
@@ -1001,10 +997,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (damage <= 0) return;
 
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
+        HitNumbers hitNumber = ObjectPoolerManager.Instance.SpawnPooledObject<HitNumbers>(ObjectPoolerManager.Instance.HitNumbersPrefab.gameObject);
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 
@@ -1020,7 +1013,20 @@ public class Entity : MonoBehaviour, IPoolableObject
         OnEntityHeal?.Invoke(this, health);
 
         CurrentHealth += health;
+        if(CurrentHealth > MaxHealth.GetIntValue()) CurrentHealth = MaxHealth.GetIntValue();
+
         AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
+    }
+
+    /// <summary>
+    /// Heals the entity to full.
+    /// </summary>
+    /// <param name="willSpawnHitNumbers">Whether to spawn hit numbers or not.</param>
+    public void HealToFull(bool willSpawnHitNumbers = true)
+    {
+        if(willSpawnHitNumbers) AttemptToSpawnHitNumbers(MaxHealth.GetIntValue() - CurrentHealth, gameObject.transform.position + Vector3.up, Color.green);
+
+        CurrentHealth = MaxHealth.GetIntValue();
     }
 
     /// <summary>
@@ -1053,16 +1059,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Transitions the animator to the specified animation using the specified transition duration and layer.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    /// <param name="transitionDuration">The duration of the transition.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
-    {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
-    }
-
-    /// <summary>
     /// Invoked when this entity kills another entity.
     /// Override this function if you want to add custom on kill logic.
     /// </summary>
@@ -1077,7 +1073,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void EvaluateMovementSpeed()
     {
-        MovementSpeed = StatusSpeedModifier * SpeedModifier * baseSpeed;
+        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
     }
 
     /// <summary>
@@ -1208,6 +1204,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Gets the top point of the entity.
+    /// </summary>
+    /// <returns>The the top point of the entity.</returns>
+    public Vector3 GetEntityTopPosition()
+    {
+        return transform.position + 2f * (GetColliderCenterPosition() - transform.position);
+    }
+
+    /// <summary>
     /// Gets the largest size of the collider attached to the entity.
     /// </summary>
     /// <returns>The largest size of the collider.</returns>
@@ -1280,15 +1285,6 @@ public class Entity : MonoBehaviour, IPoolableObject
         ChangeState(EntityLaunchState, true);
     }
 
-    /// <summary>
-    /// Sets the status speed modifier for the entity.
-    /// </summary>
-    /// <param name="newModifer">The new status speed modifier.</param>
-    public void SetStatusSpeedModifier(float newModifer)
-    {
-        StatusSpeedModifier = newModifer;
-    }
-
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
     /// List is sorted from closest to farthest entity from the hit position.
     /// By default, the list will include dead entities.
@@ -1323,10 +1319,10 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="attacker">The entity causing the damage.</param>
     /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius within which entities will be damaged.</param>
-    /// <param name="percentDamage">The percentage of damage to apply to each entity.</param>
+    /// <param name="damageMultiplier">The multiplier of damage to apply to each entity.</param>
     /// <param name="willTryStagger">Whether to try to stagger the entites hit.</param>
     /// <returns>A list of entities that were damaged.</returns>
-    public static List<Entity> DamageEnemyEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float percentDamage, bool willTryStagger = true)
+    public static List<Entity> DamageEnemyEntitiesWithAOE(Entity attacker, Vector3 center, float radius, float damageMultiplier, bool willTryStagger = true)
     {
         List<Entity> entitiesInRadius = GetEntitiesThroughAOE(center, radius, false);
         List<Entity> entitiesDamaged = new List<Entity>();
@@ -1336,7 +1332,7 @@ public class Entity : MonoBehaviour, IPoolableObject
             if (entityHit.Team == attacker.Team) continue; // skip friendly entities
 
             attacker.DealDamageToOtherEntity(entityHit,
-                attacker.CalculateDamage(percentDamage),
+                attacker.CalculateDamage(damageMultiplier),
                 entityHit.CharacterController.ClosestPointOnBounds(center),
                 willTryStagger);
 
@@ -1352,12 +1348,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="attacker">The entity initiating the AOE damage.</param>
     /// /// <param name="center">The center position of the AOE.</param>
     /// <param name="radius">The radius of the AOE.</param>
-    /// <param name="percentDamage">The percentage of damage to apply to the entities within the AOE.</param>
+    /// <param name="damageMultiplier">The multiplier of damage to apply to the entities within the AOE.</param>
     /// <param name="launchForce">The force with which to launch the entities within the AOE.</param>
     /// <param name="stunDuration">The duration of the stun effect applied to the entities within the AOE.</param>
-    public static void DamageEnemyEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float percentDamage, float launchForce, float stunDuration)
+    public static void DamageEnemyEntitiesWithAOELaunch(Entity attacker, Vector3 center, float radius, float damageMultiplier, float launchForce, float stunDuration)
     {
-        List<Entity> entitiesHit = DamageEnemyEntitiesWithAOE(attacker, center, radius, percentDamage, false);
+        List<Entity> entitiesHit = DamageEnemyEntitiesWithAOE(attacker, center, radius, damageMultiplier, false);
 
         foreach (Entity entityHit in entitiesHit)
         {

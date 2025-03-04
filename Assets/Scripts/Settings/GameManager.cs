@@ -34,43 +34,25 @@ public class GameManager : MonoBehaviour
     private float previousTimeScale = 1f;
     #endregion
 
-    private void Awake()
+    private void Start()
     {
         DefaultFixedDeltaTime = Time.fixedDeltaTime;
 
         playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
-        playerControls.Gameplay.OpenAspects.performed += PlayerControls_OnOpenAspectsPerformed;
+
+        ForceChangeState(GameState.EVENT_SELECTION);
     }
 
     private void OnDestroy()
     {
         playerControls.Gameplay.Pause.performed -= PlayerControls_OnPausePerformed;
-        playerControls.Gameplay.OpenAspects.performed -= PlayerControls_OnOpenAspectsPerformed;
     }
 
     private void PlayerControls_OnPausePerformed(InputAction.CallbackContext context)
     {
         ChangeState(GameState.PAUSED);
-    }
-
-    private void PlayerControls_OnOpenAspectsPerformed(InputAction.CallbackContext context)
-    {
-        ChangeState(GameState.ASPECT_SELECTION);
-    }
-
-    private void Start()
-    {
-        ForceChangeState(GameState.EVENT_SELECTION);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            ChangeState(GameState.GAME_OVER);
-        }
     }
 
     #region State Machine Functions
@@ -83,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     public void ForceChangeState(GameState newState)
     {
+        Debug.Log($"Changing state to {newState}");
         PreviousState = CurrentState;
 
         switch (newState)

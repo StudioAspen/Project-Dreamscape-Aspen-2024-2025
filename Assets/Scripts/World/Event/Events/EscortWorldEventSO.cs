@@ -5,7 +5,7 @@ using UnityEngine;
 
 // An NPC will run around the map for X minutes.
 // Only land the NPC stands on spawn enemies,if they survive trigger EOW
-[CreateAssetMenu(fileName = "Escort World Event", menuName = "World Event/Escort")]
+[CreateAssetMenu(fileName = "Escort World Event", menuName = "World/World Event/Escort")]
 public class EscortWorldEventSO : WorldEventSO
 {
     [field: Header("Config")]
@@ -22,8 +22,8 @@ public class EscortWorldEventSO : WorldEventSO
         LandManager randomLand = worldManager.GetRandomLand();
 
         // Spawn the escort entity on the random land
-        EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.transform.position + 6f * Vector3.up, Quaternion.identity, eventManager.transform);
-        EscortEventEntity.SetMaxHealth(EscortEventMaxHealth, true);
+        EscortEventEntity = GameObject.Instantiate(EscortEventEntityPrefab, randomLand.EnemySpawner.GetRandomEnemySpawnPoint(1f), Quaternion.identity, eventManager.transform);
+        EscortEventEntity.SetBaseMaxHealth(EscortEventMaxHealth, true);
         escortPreviousLand = randomLand;
 
         randomLand.EnemySpawner.MaterializeEntity(EscortEventEntity);
@@ -39,7 +39,7 @@ public class EscortWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -54,7 +54,7 @@ public class EscortWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         if (EscortEventEntity == null) return;
 
@@ -76,7 +76,7 @@ public class EscortWorldEventSO : WorldEventSO
     /// <param name="newLand">The new land the escort entity has moved to.</param>
     private void OnEscortEntityChangeLand(LandManager newLand)
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         StartEnemySpawnerWithCurrency(newLand, false);
     }
@@ -85,7 +85,7 @@ public class EscortWorldEventSO : WorldEventSO
     {
         EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         eventManager.FailEvent();
     }
