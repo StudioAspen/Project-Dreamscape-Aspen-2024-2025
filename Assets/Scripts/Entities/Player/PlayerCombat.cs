@@ -98,6 +98,8 @@ public class PlayerCombat : MonoBehaviour
         // if the incoming action is not an attack action, the combo list is reset after a delay.
         if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
 
+        DetectInputSwitch();
+        
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
         {
@@ -105,7 +107,7 @@ public class PlayerCombat : MonoBehaviour
             CurrentInputsList.Add(incomingAction);
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
-
+        
         if (IsAttackAction(incomingAction))
         {
             bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
@@ -140,6 +142,7 @@ public class PlayerCombat : MonoBehaviour
     /// <param name="validCombos">The list of valid combos.</param>
     private void GenerateComboLists(List<ComboDataSO> validCombos)
     {
+        
         potentialCombos = new List<ComboDataSO>();
         predictedCombos = new List<ComboDataSO>();
         foreach (ComboDataSO weaponCombo in validCombos)
@@ -222,6 +225,27 @@ public class PlayerCombat : MonoBehaviour
     public void StartDelayedComboListsReset(float delay)
     {
         delayedComboResetTimer = delay;
+    }
+    
+    /// <summary>
+    /// Detects input switch from X to Y and vice versa
+    /// </summary>
+    private void DetectInputSwitch()
+    {
+        if (CurrentInputsList.Count < 2) return;
+
+        // Getting the last two inputs from the list
+        ComboAction lastAction = CurrentInputsList[CurrentInputsList.Count - 1];
+        ComboAction secondLastAction = CurrentInputsList[CurrentInputsList.Count - 2];
+        
+        if (lastAction == ComboAction.ATTACK1 && secondLastAction == ComboAction.ATTACK2)
+        {
+            Debug.Log("Detected switch: Y-> X");
+        }
+        else if (lastAction == ComboAction.ATTACK2 && secondLastAction == ComboAction.ATTACK1)
+        {
+            Debug.Log("Detected switch: X -> Y");
+        }
     }
 
     /// <summary>
