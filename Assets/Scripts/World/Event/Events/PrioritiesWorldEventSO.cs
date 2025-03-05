@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 // 3 Lands of the highest Level are selected.
@@ -18,26 +19,8 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private List<GameObject> debugSpheres = new List<GameObject>();
     private Dictionary<Enemy, Marker> enemyMarkers = new();
 
-    /// <summary>
-    /// Triggers when a priorities enemy spawns.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
-    /// <item><description><c>Enemy spawnedEnemy</c>: The enemy spawned.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<EnemySpawner, Enemy> OnPrioritiesEnemySpawned = delegate { };
-    /// <summary>
-    /// Triggers when a priorities spawned enemy dies.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
-    /// <item><description><c>Enemy killedEnemy</c>: The enemy killed.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<EnemySpawner, Enemy> OnPrioritiesEnemyDeath = delegate { };
+    private int enemiesRemaining;
+    private int totalEnemiesToKill;
 
     private protected override void OnStarted()
     {
@@ -45,6 +28,9 @@ public class PrioritiesWorldEventSO : WorldEventSO
         affectedLands = new();
         debugSpheres = new();
         enemyMarkers = new();
+
+        enemiesRemaining = 0;
+        totalEnemiesToKill = 0;
 
         // Spawn enemies on all lands
         StartEnemySpawnersWithCurrency(worldManager.SpawnedLands.Values.ToList());
@@ -74,7 +60,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach(LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -104,6 +90,11 @@ public class PrioritiesWorldEventSO : WorldEventSO
             GameObject.Destroy(marker.gameObject);
         }
         enemyMarkers.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>
@@ -140,7 +131,8 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private void EnemySpawner_OnEnemySpawned(Enemy enemySpawned)
     {
-        OnPrioritiesEnemySpawned.Invoke(enemySpawned.Spawner, enemySpawned);
+        enemiesRemaining++;
+        totalEnemiesToKill++;
 
         Marker enemyMarker = Instantiate(MarkerPrefab, enemySpawned.GetEntityTopPosition() + 2f * Vector3.up, Quaternion.identity, enemySpawned.transform);
         enemyMarkers.Add(enemySpawned, enemyMarker);
@@ -148,12 +140,18 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private void EnemySpawner_OnEnemyDeath(Enemy enemy)
     {
-        OnPrioritiesEnemyDeath.Invoke(enemy.Spawner, enemy);
+        enemiesRemaining--;
 
         if (enemyMarkers.ContainsKey(enemy))
         {
             Destroy(enemyMarkers[enemy].gameObject);
             enemyMarkers.Remove(enemy);
         }
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

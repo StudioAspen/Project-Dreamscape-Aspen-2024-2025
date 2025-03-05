@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 // A 3x3 of lands are highlighted on the map. Enemies will only spawn from those lands, once they are all defeated trigger EOW
@@ -15,11 +17,17 @@ public class ZonesWorldEventSO : WorldEventSO
 
     private List<GameObject> debugSpheres = new List<GameObject>();
 
+    private int enemiesRemaining;
+    private int totalEnemiesToKill;
+
     private protected override void OnStarted()
     {
         activeLands = 0;
         affectedLands = new();
         debugSpheres = new();
+
+        enemiesRemaining = 0;
+        totalEnemiesToKill = 0;
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
         affectedLands = GetRandom3x3Land();
@@ -32,6 +40,9 @@ public class ZonesWorldEventSO : WorldEventSO
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
+            land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
+            land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
+
             activeLands++;
         }
 
@@ -43,7 +54,7 @@ public class ZonesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in affectedLands)
         {
@@ -51,6 +62,9 @@ public class ZonesWorldEventSO : WorldEventSO
 
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
+
+            land.EnemySpawner.OnEnemySpawned -= EnemySpawner_OnEnemySpawned;
+            land.EnemySpawner.OnEnemyDeath -= EnemySpawner_OnEnemyDeath;
         }
         affectedLands.Clear();
 
@@ -59,6 +73,11 @@ public class ZonesWorldEventSO : WorldEventSO
             GameObject.Destroy(sphere);
         }
         debugSpheres.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>
@@ -107,5 +126,21 @@ public class ZonesWorldEventSO : WorldEventSO
         {
             eventManager.ClearEvent();
         }
+    }
+
+    private void EnemySpawner_OnEnemySpawned(Enemy enemy)
+    {
+        enemiesRemaining++;
+        totalEnemiesToKill++;
+    }
+    private void EnemySpawner_OnEnemyDeath(Enemy enemy)
+    {
+        enemiesRemaining--;
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }
