@@ -36,7 +36,7 @@ public class PlayerUI : MonoBehaviour
     private Vector2 normalPosition;
     private Vector2 centeredPosition;
 
-    private bool isMaximized = false; //maximized is when component is activated.
+    private bool isMaximized = false; //maximized is when viewing full map (switches from minimap to map view)
     [SerializeField] Vector2 maximizedSize = new Vector2(300, 300);
     [SerializeField] int maximizedZoom = 80;
     [Range(0.0f, 1.0f)][SerializeField] private float minimap_opacity = 0.75f;
@@ -91,6 +91,7 @@ public class PlayerUI : MonoBehaviour
 
         virtualCamera = minimapCamera.GetComponent<CinemachineVirtualCamera>();
         thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        virtualCamera.Follow = player.transform;
 
         mask = GetComponentInChildren<Mask>();
         image = mask.GetComponentInChildren<RawImage>();
