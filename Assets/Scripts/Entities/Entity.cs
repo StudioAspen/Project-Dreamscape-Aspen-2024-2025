@@ -278,6 +278,54 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </list>
     /// </remarks>
     public Action<Entity> OnKillEntity = delegate { }; // passes the victim entity
+    /// <summary>
+    /// Action that is invoked when the entity gets stunned.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity stunner</c>: The entity that was responsible for the stun.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Entity stunDuration</c>: The duration of the stun.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, float> OnEntityStunned = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity stuns another entity.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity stunner</c>: The entity that was responsible for the stun.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Entity stunDuration</c>: The duration of the stun.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, float> OnStunEntity = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity is launched.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity launcher</c>: The entity that was responsible for the launch.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Vector3 launchDirection</c>: The launch direction.</description></item>
+    /// <item><description><c>float launchForce</c>: The launch force.</description></item>
+    /// <item><description><c>float stunDuration</c>: The stun duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, Vector3, float, float> OnEntityLaunched = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity launches another entity.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity launcher</c>: The entity that was responsible for the launch.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Vector3 launchDirection</c>: The launch direction.</description></item>
+    /// <item><description><c>float launchForce</c>: The launch force.</description></item>
+    /// <item><description><c>float stunDuration</c>: The stun duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, Vector3, float, float> OnLaunchEntity = delegate { };
     private protected GameObject lastHitSource;
     #endregion
 
@@ -1257,16 +1305,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If the current state is the death state or already the launch state, it does nothing.
     /// Override this function to modify the blocking states.
     /// </summary>
+    /// /// <param name="launcher">The entity responsible for the launch.</param>
     /// <param name="direction">The direction in which to apply the launch force.</param>
     /// <param name="force">The force of the launch.</param>
     /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
-    public virtual void TryChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    public virtual void TryChangeToLaunchState(Entity launcher, Vector3 direction, float force, float stunDuration)
     {
-        if (CurrentState == EntityDeathState) return;
         if (CurrentState == EntityLaunchState) return;
 
-        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
-        ChangeState(EntityLaunchState);
+        ForceChangeToLaunchState(launcher, direction, force, stunDuration);
     }
 
     /// <summary>
@@ -1274,15 +1321,19 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If the current state is the death state, it does nothing.
     /// Override this function to modify the blocking states.
     /// </summary>
+    /// <param name="launcher">The entity responsible for the launch.</param>
     /// <param name="direction">The direction in which to apply the launch force.</param>
     /// <param name="force">The force of the launch.</param>
     /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
-    public virtual void ForceChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    public virtual void ForceChangeToLaunchState(Entity launcher, Vector3 direction, float force, float stunDuration)
     {
         if (CurrentState == EntityDeathState) return;
 
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
         ChangeState(EntityLaunchState, true);
+
+        OnEntityLaunched.Invoke(launcher, this, direction, force, stunDuration);
+        if (launcher != null) launcher.OnLaunchEntity.Invoke(launcher, this, direction, force, stunDuration);
     }
 
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
@@ -1359,7 +1410,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             Vector3 direction = (entityHit.GetColliderCenterPosition() - center).normalized;
 
-            entityHit.ForceChangeToLaunchState(direction, launchForce, stunDuration);
+            entityHit.ForceChangeToLaunchState(attacker, direction, launchForce, stunDuration);
         }
     }
 
