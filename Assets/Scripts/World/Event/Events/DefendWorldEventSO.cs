@@ -75,4 +75,10 @@ public class DefendWorldEventSO : WorldEventSO
 
         eventManager.FailEvent();
     }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
+    }
 }

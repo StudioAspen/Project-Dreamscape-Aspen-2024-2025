@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 // All lands will light up. When the player steps on a land it will go away. All lands will spawn enemies.
@@ -14,6 +15,8 @@ public class VisitAllWorldEventSO : WorldEventSO
     private List<Player> players = new List<Player>();
 
     private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
+
+    private int totalLands;
 
     private protected override void OnStarted()
     {
@@ -40,6 +43,8 @@ public class VisitAllWorldEventSO : WorldEventSO
             visitIndicatorsDictionary.Add(land.GridPosition,
                 CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, 10f, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
+
+        totalLands = visitIndicatorsDictionary.Count;
     }
 
     private protected override void OnCleared()
@@ -78,5 +83,11 @@ public class VisitAllWorldEventSO : WorldEventSO
                 visitIndicatorsDictionary.Remove(playerGridPosition);
             }
         }
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{visitIndicatorsDictionary.Count}/{totalLands}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

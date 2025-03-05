@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class WorldEventSO : ScriptableObject
@@ -20,9 +21,8 @@ public abstract class WorldEventSO : ScriptableObject
 
     [field: Header("Display")]
     [field: SerializeField] public string EventName { get; private set; } = "Event";
+    [field: SerializeField] public string EventProgressionUIName { get; private set; } = "Event";
     [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
-    [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
-    private WorldEventUI eventUI;
 
     /// <summary>
     /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
@@ -43,18 +43,6 @@ public abstract class WorldEventSO : ScriptableObject
     public void Start()
     {
         OnStarted();
-
-        if (EventUIPrefab != null)
-        {
-            Transform eventDisplayUITransform = GameObject.FindObjectOfType<EventDisplayUI>(true).transform;
-            if (eventDisplayUITransform == null)
-            {
-                Debug.LogError("Main Canvas not found, cannot instantiate event UI");
-                return;
-            }
-
-            eventUI = GameObject.Instantiate(EventUIPrefab, eventDisplayUITransform);
-        }
     }
 
     /// <summary>
@@ -69,8 +57,6 @@ public abstract class WorldEventSO : ScriptableObject
     public void Clear()
     {
         OnCleared();
-
-        if (eventUI != null) GameObject.Destroy(eventUI.gameObject);
     }
 
     /// <summary>
@@ -167,5 +153,27 @@ public abstract class WorldEventSO : ScriptableObject
             land.EnemySpawner.StopSpawner();
         }
         activeSpawnerLands.Clear();
+    }
+
+    /// <summary>
+    /// Updates the event UI elements. Called by EventProgressionUI script.
+    /// </summary>
+    /// <param name="feedbackText"></param>
+    /// <param name="nameText"></param>
+    public abstract void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText);
+
+    /// <summary>
+    /// Formats a float timer into mm:ss string
+    /// </summary>
+    /// <param name="timer">The float timer to format.</param>
+    /// <returns>The formatted mm:ss string</returns>
+    public static string GetFormattedFloatTimer(float timer)
+    {
+        // Convert to minutes and seconds
+        int minutes = Mathf.FloorToInt(timer / 60);
+        int seconds = Mathf.FloorToInt(timer % 60);
+
+        // Format as mm:ss
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
