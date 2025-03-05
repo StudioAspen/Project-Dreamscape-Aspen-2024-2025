@@ -31,8 +31,6 @@ public class PlayerPreferences : MonoBehaviour
       SetMasterVolume(MasterVolume);
       SetCameraSensitivity(CameraSensitivity);
       SetQualityLevel(QualityLevel);
-
-      // Setup event connections
    }
 
    public void SetVSync(bool newValue) {
