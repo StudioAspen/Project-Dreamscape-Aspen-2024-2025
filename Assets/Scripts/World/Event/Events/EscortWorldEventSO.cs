@@ -39,7 +39,7 @@ public class EscortWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -54,7 +54,7 @@ public class EscortWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         if (EscortEventEntity == null) return;
 
@@ -76,7 +76,7 @@ public class EscortWorldEventSO : WorldEventSO
     /// <param name="newLand">The new land the escort entity has moved to.</param>
     private void OnEscortEntityChangeLand(LandManager newLand)
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         StartEnemySpawnerWithCurrency(newLand, false);
     }
@@ -85,7 +85,7 @@ public class EscortWorldEventSO : WorldEventSO
     {
         EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         eventManager.FailEvent();
     }
@@ -103,5 +103,11 @@ public class EscortWorldEventSO : WorldEventSO
                 escortPreviousLand = currentLand;
             }
         }
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

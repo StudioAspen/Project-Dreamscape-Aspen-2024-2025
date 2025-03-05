@@ -16,6 +16,7 @@ public class Slime : Enemy
     [field: SerializeField] public float SmallMaxHealth { get; private set; } = 0.5f;
     [field: SerializeField] public int OriginalBaseMaxHealth { get; private set; } = 50;
     public bool IsSmall { get; private set; } = false;
+    public bool IsClone { get; private set; } = false;
     private float timeSinceLastDamage;
 
     [field: Header("Slime: Animation")]
@@ -279,6 +280,14 @@ public class Slime : Enemy
     }
 
     /// <summary>
+    /// Updates the IsClone flag to true.
+    /// </summary>
+    public void UpdateCloneFlag()
+    {
+        IsClone = true;
+    }
+
+    /// <summary>
     /// Keeps track of how long the small slime has went without taken damage to grow
     /// </summary>
     private void HandleGrowthConditionWhenSmall()
@@ -297,5 +306,29 @@ public class Slime : Enemy
         {
             timeSinceLastDamage += LocalDeltaTime;
         }
+    }
+
+    /// <summary>
+    /// Used to check if an entity is a slime and small.
+    /// </summary>
+    /// <param name="entity">The entity to check</param>
+    /// <returns></returns>
+    public static bool IsEntityASmallSlime(Entity entity)
+    {
+        Slime slime = entity as Slime;
+        if(slime == null) return false;
+        return slime.IsSmall;
+    }
+
+    /// <summary>
+    /// Used to check if an entity is a cloned slime.
+    /// </summary>
+    /// <param name="entity">The entity to check</param>
+    /// <returns></returns>
+    public static bool IsEntityACloneSlime(Entity entity)
+    {
+        Slime slime = entity as Slime;
+        if (slime == null) return false;
+        return slime.IsClone;
     }
 }

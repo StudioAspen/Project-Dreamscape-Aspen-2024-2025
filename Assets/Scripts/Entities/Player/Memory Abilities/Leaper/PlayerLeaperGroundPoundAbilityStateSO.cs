@@ -75,7 +75,7 @@ public class PlayerLeaperGroundPoundAbilityStateSO : PlayerAbilityStateSO
 
             CustomDebug.InstantiateTemporarySphere(player.transform.position, AOERadius, 0.25f, new Color(1f, 0, 0, 0.2f));
 
-            CameraShakeManager.Instance.ShakeCamera(15f, 1f);
+            CameraShakeManager.Instance.ShakeCamera(15f,1f, 1f);
         }
     }
 }

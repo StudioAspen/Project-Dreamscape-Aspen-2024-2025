@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class AspectButtonUI : MonoBehaviour
 {
     private GameManager gameManager;
-    private AspectsTreeUIPanel aspectsTreeUI;
+    private AspectsUIPanel aspectsTreeUI;
     private AspectsManager aspectsManager;
     private AspectNodeNode aspectNode;
 
@@ -20,7 +20,7 @@ public class AspectButtonUI : MonoBehaviour
     /// <param name="treeUI">The AspectsTreeUI instance.</param>
     /// <param name="aspectsManager">The AspectsManager instance.</param>
     /// <param name="aspectNode">The AspectNodeNode instance.</param>
-    public void Init(GameManager gameManager, AspectsTreeUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
+    public void Init(GameManager gameManager, AspectsUIPanel treeUI, AspectsManager aspectsManager, AspectNodeNode aspectNode)
     {
         this.gameManager = gameManager;
         aspectsTreeUI = treeUI;
@@ -49,7 +49,7 @@ public class AspectButtonUI : MonoBehaviour
 
         aspectsManager.ConsumeAspectToken();
 
-        aspectsTreeUI.UpdateTree();
+        //aspectsTreeUI.UpdateTree();
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class AspectButtonUI : MonoBehaviour
     public void UpdateDisplayContents()
     {
         // only the next possible nodes will be interactable and on the same level as the first applied multi-node level node
-        button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);
+        //button.interactable = aspectsManager.CurrentAspectTree.GetNextUnappliedNodes().Contains(aspectNode) && aspectsManager.AspectTokens > 0 && aspectsManager.CurrentAspectTree.CanMultiNodeLevelNodeBeChosen(aspectNode);
         // make the button green if its been applied already
         buttonImage.color = aspectNode.IsApplied ? Color.green : buttonImage.color;
 

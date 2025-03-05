@@ -5,9 +5,9 @@ public class EntityDeathState : EntityBaseState
 {
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DeathDuration { get; private set; } = 1f;
-    private float timer;
+    private protected float timer;
 
-    private bool isDestroyed;
+    private protected bool isDestroyed;
 
     public override void OnEnter()
     {
