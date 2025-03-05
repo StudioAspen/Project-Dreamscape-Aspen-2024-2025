@@ -1960,6 +1960,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2091894983123498305, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
         type: 3}
+      propertyPath: materializeVFXPrefab
+      value: 
+      objectReference: {fileID: 1927549556296071580, guid: 7eff473a91796d4438a0a784e014ef1d,
+        type: 3}
+    - target: {fileID: 2091894983123498305, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
+        type: 3}
       propertyPath: <EnemyPrefabs>k__BackingField.Array.size
       value: 2
       objectReference: {fileID: 0}
