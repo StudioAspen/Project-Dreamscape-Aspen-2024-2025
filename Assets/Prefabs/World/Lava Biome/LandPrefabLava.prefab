@@ -8,6 +8,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2301924996432201334, guid: d4925ffd511a4194d864679bdf163929,
+        type: 3}
+      propertyPath: materializeVFXPrefab
+      value: 
+      objectReference: {fileID: 1927549556296071580, guid: c650152e5091197448bd754795a93834,
+        type: 3}
     - target: {fileID: 4959315643009346531, guid: d4925ffd511a4194d864679bdf163929,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 907070687069301345}
   - component: {fileID: 1927549556296071580}
   m_Layer: 0
-  m_Name: Materialize Effect
+  m_Name: Lava Materialize Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _vfxObjects:
   - {fileID: 3279437287530622221}
-  _materializeMaterial: {fileID: 2100000, guid: 70a71abd73665304b997060e2d92f1fc,
+  _materializeMaterial: {fileID: 2100000, guid: e4d7a840f90cbd946910eb4933db66bc,
     type: 2}
   OnMaterializationComplete:
     m_PersistentCalls:
