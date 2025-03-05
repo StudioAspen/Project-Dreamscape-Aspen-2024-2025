@@ -104,4 +104,10 @@ public class EscortWorldEventSO : WorldEventSO
             }
         }
     }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
+    }
 }
