@@ -118,7 +118,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
     public void StartEnemySpawnersWithCurrency(List<LandManager> lands, bool willRestockCurrency = true)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithCurrency(land, willRestockCurrency);
         }
@@ -133,7 +133,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
     public void StartEnemySpawnersWithDuration(List<LandManager> lands, float duration)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithDuration(land, duration);
         }
@@ -157,7 +157,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     public void StopActiveEnemySpawners()
     {
-        foreach (LandManager land in activeSpawnerLands)
+        foreach (LandManager land in new List<LandManager>(activeSpawnerLands))
         {
             if (land == null) continue;
             if (land.EnemySpawner == null) continue;

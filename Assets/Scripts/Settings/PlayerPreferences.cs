@@ -16,14 +16,9 @@ public class PlayerPreferences : MonoBehaviour
    public event Action<float> OnCameraSensitivityChanged;
 
    private void Awake() {
-      if (Instance == null) {
-         Instance = this;
-         DontDestroyOnLoad(gameObject);
-      } else {
-         Destroy(gameObject);
-      }
-      
-   }
+        if (Instance != null) Destroy(Instance.gameObject);
+        Instance = this;
+    }
 
    private void Start() {
       // Set VSync and Volume

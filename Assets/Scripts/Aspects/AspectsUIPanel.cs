@@ -77,6 +77,9 @@ public class AspectsUIPanel : UIPanel
             aspectOptions[i].Init(false, this, randomTree, aspectsManager, gameManager, i);
             availableAspects.Remove(randomTree);
         }
+
+
+        if(aspectsManager.AreAllEquippedAspectsCompleted()) gameManager.ChangeState(GameState.BIOME_SELECTION);
     }
 
     public void SelectOptionUI(int index)

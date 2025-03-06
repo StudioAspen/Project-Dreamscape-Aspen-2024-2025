@@ -31,7 +31,7 @@ public class ZonesWorldEventSO : WorldEventSO
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
         affectedLands = GetRandom3x3Land();
-        foreach(LandManager land in affectedLands)
+        foreach(LandManager land in new List<LandManager>(affectedLands))
         {
             if (land.Level <= 0) continue;
 
@@ -56,7 +56,7 @@ public class ZonesWorldEventSO : WorldEventSO
     {
         StopActiveEnemySpawners();
 
-        foreach (LandManager land in affectedLands)
+        foreach (LandManager land in new List<LandManager>(affectedLands))
         {
             land.EnemySpawner.DeactivateAllEnemies();
 

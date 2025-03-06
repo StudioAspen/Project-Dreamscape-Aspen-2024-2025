@@ -59,6 +59,12 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         aspectNodes = new();
         isCompleted = aspectTree.IsCompleted();
 
+        if (this.aspectsManager.AreAllEquippedAspectsCompleted())
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+            return;
+        }
+
         diamondImage.sprite = aspectTree.AspectSprite;
         titleText.text = $"{aspectTree.DisplayName}";
         descriptionText.text = $"{(isCompleted ? "Completed\n" : "")}{aspectTree.Description}";
@@ -83,10 +89,12 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         }
         else
         {
+            leftContentButton.interactable = aspectTree.CanMultiNodeLevelNodeBeChosen(nextNodes[0]);
             leftUpgradeText.text = $"{nextNodes[0].DisplayName}";
-            leftDescriptionText.text = $"{nextNodes[0].Description}";
+            leftDescriptionText.text = $"{(leftContentButton.interactable ? "" : "Locked\n")}{nextNodes[0].Description}";
+            rightContentButton.interactable = aspectTree.CanMultiNodeLevelNodeBeChosen(nextNodes[1]);
             rightUpgradeText.text = $"{nextNodes[1].DisplayName}";
-            rightDescriptionText.text = $"{nextNodes[1].Description}";
+            rightDescriptionText.text = $"{(rightContentButton.interactable ? "" : "Locked\n")}{nextNodes[1].Description}";
             aspectNodes.Add(nextNodes[0]);
             aspectNodes.Add(nextNodes[1]);
         }
@@ -195,6 +203,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
 
         if (!representsRuntimeInstance)
         {
@@ -218,6 +227,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
 
         if (!representsRuntimeInstance)
         {
@@ -288,6 +298,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
         //Debug.Log("Left select");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
@@ -297,6 +308,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
         //Debug.Log("Left deselect");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
@@ -306,6 +318,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
         //Debug.Log("Right select");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
@@ -315,6 +328,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
         //Debug.Log("Right deselect");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
