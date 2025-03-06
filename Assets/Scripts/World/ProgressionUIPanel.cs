@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class ProgressionUIPanel : UIPanel
 {
     private ProgressionManager progressionManager;
-    private InputManager inputManager;  //needed to know which control scheme is being used.
 
     [Header("References")]
     [SerializeField] private TMP_Text empowerTokensText;
@@ -19,7 +18,6 @@ public class ProgressionUIPanel : UIPanel
     private void Awake()
     {
         progressionManager = FindObjectOfType<ProgressionManager>();
-        inputManager = FindObjectOfType<InputManager>(); //inputmanger ref
     }
 
     private void Update()
@@ -33,8 +31,8 @@ public class ProgressionUIPanel : UIPanel
 
     private void HandleTokensTexts()
     {
-        string empowerKey = inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "A" : "M1";
-        string weakenKey = inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "B" : "M2";
+        string empowerKey = gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "A" : "M1";
+        string weakenKey = gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "B" : "M2";
 
         empowerTokensText.text = $"{empowerKey} - Empower: {progressionManager.EmpowerTokens}";
         weakenTokensText.text = $"{weakenKey} - Weaken: {progressionManager.WeakenTokens}";
@@ -47,14 +45,14 @@ public class ProgressionUIPanel : UIPanel
     {
         if (progressionManager.CanProceedFromEmpowerment())
         {
-            string continueKey = inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "Y" : "E";
+            string continueKey = gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "Y" : "E";
             continueText.text = $"{continueKey} - Continue";
         }
     }
 
     private void HandleResetText()
     {
-        string resetKey = inputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "X" : "R";
+        string resetKey = gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "X" : "R";
         resetText.text = $"{resetKey} - Reset";
     }
 }

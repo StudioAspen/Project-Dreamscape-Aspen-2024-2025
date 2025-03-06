@@ -42,7 +42,7 @@ public class PlayerUI : MonoBehaviour
     [Range(0.0f, 1.0f)][SerializeField] private float minimap_opacity = 0.75f;
     private float originalZoom;
 
-    [SerializeField] private Camera minimapCamera; //Top down camera that follows player (keeps them at center).
+    private Camera minimapCamera; //Top down camera that follows player (keeps them at center).
     private CinemachineVirtualCamera virtualCamera;
     private Cinemachine3rdPersonFollow thirdPersonFollow;
 
@@ -62,6 +62,7 @@ public class PlayerUI : MonoBehaviour
         aspectsManager = player.GetComponent<AspectsManager>();
         memorySystem = player.GetComponent<MemorySystem>();
         gameManager = FindAnyObjectByType<GameManager>();
+        minimapCamera = GameObject.FindGameObjectWithTag("Minimap Cam").GetComponent<Camera>();
 
         player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
         player.OnEntityHeal += Player_OnEntityHeal;
