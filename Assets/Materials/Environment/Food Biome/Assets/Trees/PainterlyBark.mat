@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5917417932430353559
+--- !u!114 &-2959660348010492001
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DreamLeavesMat1
-  m_Shader: {fileID: -6465566751694194690, guid: 1f1bb5fc28db2be47a3672eac5e49fb1,
+  m_Name: PainterlyBark
+  m_Shader: {fileID: -6465566751694194690, guid: 77df61da0fd3c414c92a1f6e7d3b5f64,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -62,15 +62,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 8a545cb0c6656af4e955c6f1a51447b6, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 38615d6e088440d40a7e9ea245651d69, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyTexture:
+        m_Texture: {fileID: 2800000, guid: cf4910eb96e0aa642bd5ddfb052edd52, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
@@ -95,10 +103,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Add_Secondary_Tint: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Alpha_Clip_Threshold: 0.74
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -111,40 +117,39 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _Flip_Light_Direction: 0
-    - _Fluffy_Scale: 0.008
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Gradient_Fuzziness: 1.11
-    - _Gradient_Noise: 2.71
-    - _Light_Scattering: 1
-    - _Max_Alpha_Value: 1
     - _Metallic: 0
+    - _MinShadowStrength: 0
+    - _NormalScale: 2
+    - _NormalStrength: 0.637
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RotateUV: 1.76
-    - _Rustle_Rate: 0.3
-    - _Secondary_Tint_Strength: 0.39
-    - _Smoothness: 0
+    - _Scale: 1
+    - _ShadowBlend: 0.5
+    - _ShadowCutoff: 0.3
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SpecularBlend: 0.5
+    - _SpecularCutoff: 0.6
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _Steps: 13.43
     - _Surface: 0
-    - _Wind_Strength: 1
+    - _USENORMALMAP: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DiffuseColor: {r: 0.8, g: 0.8, b: 0.8, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Emission_Color: {r: 0.4113207, g: 0, b: 0.4811321, a: 0}
-    - _Secondary_Tint: {r: 0.6613391, g: 0, b: 0.7735849, a: 0}
+    - _ShadowColor: {r: 0.6, g: 0.6, b: 0.6, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Texture_Tint: {r: 0.85490197, g: 0, b: 1, a: 0}
-    - _Tiling: {r: 5, g: 5, b: 0, a: 0}
+    - _SpecularColor: {r: 0.8584906, g: 0.8584906, b: 0.8584906, a: 0}
   m_BuildTextureStacks: []
