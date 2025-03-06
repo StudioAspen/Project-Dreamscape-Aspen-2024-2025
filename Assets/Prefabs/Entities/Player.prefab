@@ -1433,8 +1433,6 @@ MonoBehaviour:
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-  hitNumbersPrefab: {fileID: 6939789949637470670, guid: 04c7b0df8d3f17841a7271e2169bccf0,
-    type: 3}
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
@@ -9414,11 +9412,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1329834440275588174, guid: 56283617f2ac55948adb96bb76132f78,
-        type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1819267110015381236, guid: 56283617f2ac55948adb96bb76132f78,
         type: 3}

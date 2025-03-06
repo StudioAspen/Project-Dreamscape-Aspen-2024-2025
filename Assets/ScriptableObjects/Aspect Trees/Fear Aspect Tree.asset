@@ -50,7 +50,7 @@ MonoBehaviour:
   Parent: {fileID: -5092554926121242106}
   Children:
   - {fileID: 1864611941190978949}
-  <DisplayName>k__BackingField: Health Increase
+  <DisplayName>k__BackingField: 'Basic Stat Upgrade '
   <Description>k__BackingField: Increases player health by 50
   <StatusEffect>k__BackingField: {fileID: 11400000, guid: a0fd25768d3b5ef46a82d6bbf54955c4,
     type: 2}
@@ -147,9 +147,13 @@ MonoBehaviour:
   Parent: {fileID: -3918194093017296719}
   Children:
   - {fileID: -6323877592038428020}
-  <DisplayName>k__BackingField: Fear
-  <Description>k__BackingField: Aspect Node Description
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <DisplayName>k__BackingField: Ghastly Grievance
+  <Description>k__BackingField: "Switching inputs in a combo (X\u2192Y or Y\u2192X)
+    will launch a large, piercing skull that moves forward from where the player
+    is facing and applies a skull debuff to any enemies hit by the skull.\r\nEnemies
+    with this skull debuff will be executed upon reaching 10% health."
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 554ddfbd3af2a83478970fab9ed42aba,
+    type: 2}
 --- !u!114 &-3918194093017296719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,9 +202,11 @@ MonoBehaviour:
   Children:
   - {fileID: -5092554926121242106}
   - {fileID: 2763769569843930792}
-  <DisplayName>k__BackingField: Fear
-  <Description>k__BackingField: Aspect Node Description
-  <ComboData>k__BackingField: {fileID: 0}
+  <DisplayName>k__BackingField: Intimidating Fear Combo
+  <Description>k__BackingField: "Grounded X\u2192X\u2192Y\u2192Y\r\nLarge slam on
+    the ground that launches enemies away, stunning them\r\n"
+  <ComboData>k__BackingField: {fileID: 11400000, guid: e8cdc0955bbe20449b75994e182b9b72,
+    type: 2}
 --- !u!114 &-3194902288124324442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -323,8 +329,8 @@ MonoBehaviour:
   Parent: {fileID: -6323877592038428020}
   Children:
   - {fileID: 4095001867604409900}
-  <DisplayName>k__BackingField: Fear
-  <Description>k__BackingField: Aspect Node Description
+  <DisplayName>k__BackingField: 'Unique Stat Upgrade '
+  <Description>k__BackingField: Debuffs last longer on all enemies
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &2763769569843930792
 MonoBehaviour:
@@ -373,7 +379,7 @@ MonoBehaviour:
   Parent: {fileID: -3918194093017296719}
   Children:
   - {fileID: -6323877592038428020}
-  <DisplayName>k__BackingField: Fear
+  <DisplayName>k__BackingField: Unimplemented
   <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
@@ -427,6 +433,7 @@ MonoBehaviour:
   Children:
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
-  <DisplayName>k__BackingField: Fear
-  <Description>k__BackingField: Aspect Node Description
+  <DisplayName>k__BackingField: Second New Combo
+  <Description>k__BackingField: "During Dash\u2192X\u2192Y\r\nA quick, whirling spin
+    that launches and stuns enemies caught in it\r\n"
   <ComboData>k__BackingField: {fileID: 0}

@@ -59,23 +59,15 @@ public class PlayerPreferences : MonoBehaviour
       switch (QualityLevel) {
          case 0:
             return "Potato";
-         break;
          case 1:
             return "Low";
-         break;
          case 2:
             return "Medium";
-         break;
          case 3:
             return "High";
-         break;
          case 4:
             return "Very High";
-         break;
       }
       throw new ArgumentOutOfRangeException(nameof(QualityLevel), "Quality level must be between 0 and 4.");
    }
-
-
-
 }

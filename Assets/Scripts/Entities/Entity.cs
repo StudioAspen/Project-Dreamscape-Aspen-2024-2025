@@ -1078,13 +1078,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Kills the entity by dealing maximum damage to itself.
+    /// Kills the entity by setting current health to 0.
     /// Doesn't work if the entity has max health set to 0.
     /// </summary>
     /// /// <param name="sourceObject">The source object that killed the entity.</param>
     public void Kill(GameObject sourceObject)
     {
-        TakeDamage(int.MaxValue, transform.position, sourceObject);
+        CurrentHealth = 0;
+        OnDeath();
     }
 
     /// <summary>

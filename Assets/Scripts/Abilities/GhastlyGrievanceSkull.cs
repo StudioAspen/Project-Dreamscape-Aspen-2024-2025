@@ -9,18 +9,19 @@ namespace Dreamscape.Abilities
         [Header("Settings")]
         [SerializeField] private GhastlyGrievanceStatusEffectSO ghastlyGrievanceStatusEffect;
         [SerializeField] private float speed = 5f;
-        [SerializeField] private float maxDistance = 50f;
-        [SerializeField] private float aoeRadius = 5f;
-        [SerializeField] private float damageMultiplier = 1f;
+        [SerializeField] private float maxDistance = 10f;
 
         private Coroutine moveCoroutine;
+        private HashSet<Entity> skulledEntities = new();
 
         private protected override void OnSpawn()
         {
+            skulledEntities.Clear();
+
             transform.position = casterEntity.GetColliderCenterPosition();
 
             if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-            moveCoroutine = StartCoroutine(FireballMove(casterEntity.transform.forward));
+            moveCoroutine = StartCoroutine(MoveCoroutine(casterEntity.transform.forward));
         }
 
         private protected override void OnOnDisable()
@@ -28,14 +29,7 @@ namespace Dreamscape.Abilities
 
         }
 
-        void OnDrawGizmos()
-        {
-            //Visualize AOE radius in the editor
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, aoeRadius);
-        }
-
-        private IEnumerator FireballMove(Vector3 direction)
+        private IEnumerator MoveCoroutine(Vector3 direction)
         {
             float distanceTraveled = 0f;
 
@@ -50,8 +44,9 @@ namespace Dreamscape.Abilities
                 yield return null;
             }
 
-            Explode();
             moveCoroutine = null;
+
+            DestroyAndRelease();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -63,24 +58,11 @@ namespace Dreamscape.Abilities
             if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
             if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
 
-            Explode();
-        }
+            if(skulledEntities.Contains(hitEntity)) return;
+            skulledEntities.Add(hitEntity);
 
-        private void Explode()
-        {
-            List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(transform.position, aoeRadius, false);
-
-            foreach (Entity entity in entitiesHit)
-            {
-                if (entity.Team == casterEntity.Team) return;
-
-                casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damageMultiplier), transform.position);
-            }
-
-            //insert explosion vfx here:
-            CustomDebug.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
-
-            DestroyAndRelease();
+            EntityStatusEffector.TryApplyStatusEffect(hitEntity.gameObject, ghastlyGrievanceStatusEffect, casterEntity.gameObject);
+            Debug.Log($"Ghastly grievanced {hitEntity.gameObject.name}");
         }
     }
 }

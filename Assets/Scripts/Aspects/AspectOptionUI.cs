@@ -46,6 +46,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private bool isSingle;
     private bool isSelected;
+    private bool isCompleted;
 
     public void Init(bool isRuntimeInstance, AspectsUIPanel aspectsUIPanel, AspectTree aspectTree, AspectsManager aspectsManager, GameManager gameManager, int index)
     {
@@ -56,12 +57,21 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         this.gameManager = gameManager;
         optionsIndex = index;
         aspectNodes = new();
+        isCompleted = aspectTree.IsCompleted();
 
         diamondImage.sprite = aspectTree.AspectSprite;
         titleText.text = $"{aspectTree.DisplayName}";
-        descriptionText.text = $"{aspectTree.Description}";
+        descriptionText.text = $"{(isCompleted ? "Completed\n" : "")}{aspectTree.Description}";
 
         textStartColor = aspectTree.AspectTextColor;
+
+        if (isCompleted)
+        {
+            ResetToDefault();
+            if (aspectsUIPanel.IsSelectingAspect) aspectsUIPanel.DeselectOptionUI();
+            if (isSelected) OnSelect(null);
+            return;
+        }
 
         List<AspectNodeNode> nextNodes = aspectTree.GetNextUnappliedNodes();
         isSingle = nextNodes.Count != 2;
@@ -144,6 +154,8 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void OptionsButton_OnClick()
     {
+        if (isCompleted) return;
+
         if (aspectsUIPanel.IsSelectingAspect)
         {
             aspectsUIPanel.DeselectOptionUI();
@@ -158,6 +170,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
 
         if (!representsRuntimeInstance)
@@ -180,6 +193,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
 
         if (!representsRuntimeInstance)
@@ -202,6 +216,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
 
         if (!representsRuntimeInstance)
@@ -253,6 +268,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Single select");
         singleContentButton.transform.DOKill();
@@ -261,6 +277,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Single deselect");
         singleContentButton.transform.DOKill();
@@ -269,6 +286,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Left select");
         leftContentButton.transform.DOKill();
@@ -277,6 +295,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Left deselect");
         leftContentButton.transform.DOKill();
@@ -285,6 +304,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Right select");
         rightContentButton.transform.DOKill();
@@ -293,6 +313,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Right deselect");
         rightContentButton.transform.DOKill();
@@ -338,12 +359,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         rightUpgradeText.color = Color.clear;
         rightDescriptionText.color = Color.clear;
 
-        singleUpgradeText.transform.localScale = Vector3.one;
-        singleDescriptionText.transform.localScale = Vector3.one;
-        leftUpgradeText.transform.localScale = Vector3.one;
-        leftDescriptionText.transform.localScale = Vector3.one;
-        rightUpgradeText.transform.localScale = Vector3.one;
-        rightDescriptionText.transform.localScale = Vector3.one;
+        singleContentButton.transform.localScale = Vector3.one;
+        leftContentButton.transform.localScale = Vector3.one;
+        rightContentButton.transform.localScale = Vector3.one;
 
         titleText.gameObject.SetActive(false);
         descriptionText.gameObject.SetActive(false);

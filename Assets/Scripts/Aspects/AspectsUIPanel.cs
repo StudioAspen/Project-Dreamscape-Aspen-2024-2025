@@ -55,11 +55,6 @@ public class AspectsUIPanel : UIPanel
         if (aspectsManager == null) return;
 
         tokensText.text = $"{aspectsManager.AspectTokens}";
-
-        // Fix null selected
-        if (gameManager.CurrentState != GameState.ASPECT_SELECTION) return;
-        GameObject selectedGameObject = EventSystem.current.currentSelectedGameObject;
-        if (selectedGameObject == null && gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD) EventSystem.current.SetSelectedGameObject(aspectOptions[1].gameObject);
     }
 
     private void AssignRandomAspectOptions()

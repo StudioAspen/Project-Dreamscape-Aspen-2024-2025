@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dreamscape.Abilities;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,7 +9,11 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
     private PlayerCombat playerCombat;
 
     [field: Header("Aspect of Fear Passive A: Settings")]
-    [field: SerializeField] public BurningRageStatusEffectSO BurningRageStack { get; private set; }
+    [field: SerializeField] public GhastlyGrievanceSkull GhastlyGrievanceSkullPrefab { get; private set; }
+
+    [field: Header("Aspect of Fear Passive A Expanded: Settings")]
+    [field: SerializeField] public float DamageUpPerSkulledEntity { get; private set; } = 0f;
+    private int skulledEntityCount;
 
     private void OnValidate()
     {
@@ -27,7 +32,21 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
+        skulledEntityCount = 0;
+
         playerCombat.OnAttackInputSwitched += PlayerCombat_OnAttackInputSwitched;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        // Debug
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());
+            skull.Init(entity);
+        }
     }
 
     public override void Cancel()
@@ -35,13 +54,15 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
         base.Cancel();
 
         playerCombat.OnAttackInputSwitched -= PlayerCombat_OnAttackInputSwitched;
+
+        entity.DamageModifier.ClearMultipliersFromSource(this);
     }
 
     private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
         AspectOfFearPassiveAStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfFearPassiveAStatusEffectSO;
 
-        BurningRageStack = overridingStatusEffect.BurningRageStack;
+        GhastlyGrievanceSkullPrefab = overridingStatusEffect.GhastlyGrievanceSkullPrefab;
     }
 
     private void PlayerCombat_OnAttackInputSwitched(ComboAction previousAttackAction, ComboAction newAttackAction)
@@ -50,5 +71,21 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
 
         // Launch a piercing skull that moves forward from where the player is facing
         // and applies a skull debuff to any enemies hit by the skull
+        GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());
+        skull.Init(entity);
+    }
+
+    /// <summary>
+    /// Adds to the skulled entity count.
+    /// </summary>
+    public void AddSkulledEntity(int count)
+    {
+        if (DamageUpPerSkulledEntity <= 0f) return;
+
+        skulledEntityCount += count;
+        entity.DamageModifier.ClearMultipliersFromSource(this);
+        
+        if(skulledEntityCount >= 0) entity.DamageModifier.AddMultiplier(1f + skulledEntityCount * DamageUpPerSkulledEntity, this);
+        Debug.Log($"Skulled entity count: {skulledEntityCount}, with damage modifier: {entity.DamageModifier.GetTotalMultiplier()}");
     }
 }
