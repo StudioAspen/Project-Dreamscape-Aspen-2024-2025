@@ -8,13 +8,7 @@ public class StatPanel : MonoBehaviour
     // public Stat stat;
     [SerializeField] private Stat stat;
     [SerializeField] private TMP_Text StatPanelText;
- 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -24,11 +18,11 @@ public class StatPanel : MonoBehaviour
     private void UpdateDisplayText()
     {
         // for debugging
-        if (stat == null || StatPanelText == null)
-        {
-            Debug.Log("Stat: " + stat + "StatPanelText: " + StatPanelText);
-            return;
-        }
+        // if (stat == null || StatPanelText == null)
+        // {
+        //     Debug.Log("Stat: " + stat + "StatPanelText: " + StatPanelText);
+        //     return;
+        // }
 
         float baseValue = stat.BaseValue;
         float flatIncrease = stat.GetTotalFlatIncreass();
