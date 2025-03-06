@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class LandPlacementUIPanel : UIPanel
 {
-
     [Header("References")]
     [SerializeField] private TMP_Text landPlacementText;
 

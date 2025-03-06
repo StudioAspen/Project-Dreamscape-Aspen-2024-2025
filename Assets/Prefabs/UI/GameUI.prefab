@@ -430,11 +430,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandEmpowermentUIPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 437933590835551885, guid: 34e64382503536249a5b13e715b66c5a,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 928246222418900925, guid: 34e64382503536249a5b13e715b66c5a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -535,11 +530,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3987319752493192334, guid: 34e64382503536249a5b13e715b66c5a,
-        type: 3}
-      propertyPath: resetText
-      value: 
-      objectReference: {fileID: 1030816815186789280}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -555,18 +545,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9704770b878f6e14eaaafc2981e2ab71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1030816815186789280 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4224399877886247129, guid: 34e64382503536249a5b13e715b66c5a,
-    type: 3}
-  m_PrefabInstance: {fileID: 3814028953076122489}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &4039707036047914180 stripped
@@ -688,41 +666,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandPlacementUIPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 7381863932719247587, guid: f38e328eb35ba644aa26985287e04665,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5846276402027858975, guid: f38e328eb35ba644aa26985287e04665, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7381863932719247587, guid: f38e328eb35ba644aa26985287e04665,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2575568220165844378}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f38e328eb35ba644aa26985287e04665, type: 3}
---- !u!1 &6411614192377690173 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7381863932719247587, guid: f38e328eb35ba644aa26985287e04665,
-    type: 3}
-  m_PrefabInstance: {fileID: 4506703555481684190}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2575568220165844378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6411614192377690173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 935b9a00ac51115419b9abb1e4398d20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <DefaultSelectedObject>k__BackingField: {fileID: 0}
-  landPlacementText: {fileID: 8878139977608766224}
 --- !u!224 &7025736035944878457 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6848684975116392871, guid: f38e328eb35ba644aa26985287e04665,
@@ -735,22 +683,10 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4506703555481684190}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6411614192377690173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 935b9a00ac51115419b9abb1e4398d20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8878139977608766224 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5025588670894795726, guid: f38e328eb35ba644aa26985287e04665,
-    type: 3}
-  m_PrefabInstance: {fileID: 4506703555481684190}
-  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 935b9a00ac51115419b9abb1e4398d20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6027295804437302053
