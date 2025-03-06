@@ -41,6 +41,16 @@ public class PlayerCombat : MonoBehaviour
     /// </list>
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
+    /// <summary>
+    /// Action that is invoked when the player switches attack inputs (X->Y or Y->X).
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>ComboAction previousAttackAction</c> The previous attack action before switching</description></item>
+    /// <item><description><c>ComboAction newAttackAction</c> The new attack action that was switched to</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<ComboAction, ComboAction> OnAttackInputSwitched = delegate { };
 
     private void Awake()
     {
@@ -240,11 +250,11 @@ public class PlayerCombat : MonoBehaviour
         
         if (lastAction == ComboAction.ATTACK1 && secondLastAction == ComboAction.ATTACK2)
         {
-            Debug.Log("Detected switch: Y-> X");
+            OnAttackInputSwitched.Invoke(secondLastAction, lastAction);
         }
         else if (lastAction == ComboAction.ATTACK2 && secondLastAction == ComboAction.ATTACK1)
         {
-            Debug.Log("Detected switch: X -> Y");
+            OnAttackInputSwitched.Invoke(secondLastAction, lastAction);
         }
     }
 
