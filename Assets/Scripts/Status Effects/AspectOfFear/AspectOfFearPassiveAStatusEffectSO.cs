@@ -6,10 +6,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Aspect of Fear Passive A", menuName = "Status Effect/Aspects/Aspect of Fear/Passive A")]
 public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
 {
-    private PlayerCombat playerCombat;
+    private Player player;
+    private PlayerInputReader playerInputReader;
 
     [field: Header("Aspect of Fear Passive A: Settings")]
     [field: SerializeField] public GhastlyGrievanceSkull GhastlyGrievanceSkullPrefab { get; private set; }
+    [field: SerializeField] public float SwitchInputDetectionMaxDuration { get; private set; } = 0.5f;
+    private float switchInputDetectionTimer;
+    private ComboAction previousInput;
 
     [field: Header("Aspect of Fear Passive A Expanded: Settings")]
     [field: SerializeField] public float DamageUpPerSkulledEntity { get; private set; } = 0f;
@@ -24,25 +28,35 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
     {
         base.OnApply();
 
-        playerCombat = entity.GetComponent<PlayerCombat>();
-        if (playerCombat == null)
+        player = entity as Player;
+        if (player == null)
         {
-            Debug.LogError($"{name}: Player combat not found on entity: {entity.name}");
+            Debug.LogError($"{name}: Not a player: {entity.name}");
+            RemoveSelf(); // If theres no playerCombat, remove this passive
+            return;
+        }
+
+        playerInputReader = player.GetComponent<PlayerInputReader>();
+        if (playerInputReader == null)
+        {
+            Debug.LogError($"{name}: playerInputReader not found on entity: {entity.name}");
             RemoveSelf(); // If theres no playerCombat, remove this passive
             return;
         }
 
         skulledEntityCount = 0;
 
-        playerCombat.OnAttackInputSwitched += PlayerCombat_OnAttackInputSwitched;
+        playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
     }
 
     public override void Update()
     {
         base.Update();
 
+        HandleSwitchInputTimer();
+
         // Debug
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());
             skull.Init(entity);
@@ -53,7 +67,7 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
     {
         base.Cancel();
 
-        playerCombat.OnAttackInputSwitched -= PlayerCombat_OnAttackInputSwitched;
+        playerInputReader.OnComboAction -= PlayerInputReader_OnComboAction;
 
         entity.DamageModifier.ClearMultipliersFromSource(this);
     }
@@ -65,10 +79,36 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
         GhastlyGrievanceSkullPrefab = overridingStatusEffect.GhastlyGrievanceSkullPrefab;
     }
 
-    private void PlayerCombat_OnAttackInputSwitched(ComboAction previousAttackAction, ComboAction newAttackAction)
+    private void PlayerInputReader_OnComboAction(ComboAction newAction)
     {
-        Debug.Log($"Detected attack action switch from {previousAttackAction} to {newAttackAction}");
+        if (switchInputDetectionTimer > SwitchInputDetectionMaxDuration)
+        {
+            switchInputDetectionTimer = 0;
+            return;
+        }
 
+        if(previousInput == ComboAction.ATTACK1 && newAction == ComboAction.ATTACK2)
+        {
+            OnAttackInputSwitched();
+        }
+        else if(previousInput == ComboAction.ATTACK2 && newAction == ComboAction.ATTACK1)
+        {
+            OnAttackInputSwitched();
+        }
+
+        switchInputDetectionTimer = 0;
+        previousInput = newAction;
+    }
+
+    private void HandleSwitchInputTimer()
+    {
+        if (player.CurrentState == player.PlayerAttackState) return;
+        if (switchInputDetectionTimer > SwitchInputDetectionMaxDuration) return;
+        switchInputDetectionTimer += Time.deltaTime;
+    }
+
+    private void OnAttackInputSwitched()
+    {
         // Launch a piercing skull that moves forward from where the player is facing
         // and applies a skull debuff to any enemies hit by the skull
         GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());

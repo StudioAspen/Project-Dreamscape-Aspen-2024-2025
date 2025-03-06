@@ -537,6 +537,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         HandleVerticalVelocity();
 
         SlideOffOtherEntities();
+        CheckAndSeparateFromEntities();
     }
 
     private void FixedUpdate()
@@ -567,6 +568,30 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
         CurrentState?.OnOnControllerColliderHit(hit);
+    }
+
+    private void CheckAndSeparateFromEntities()
+    {
+        // Capsule dimensions
+        float radius = CharacterController.radius;
+        float height = CharacterController.height;
+        Vector3 center = transform.position + CharacterController.center; // World space center
+
+        // Calculate the top and bottom points of the capsule
+        Vector3 point1 = center + Vector3.up * (height / 2 - radius); // Top
+        Vector3 point2 = center - Vector3.up * (height / 2 - radius); // Bottom
+
+        // Perform the overlap check
+        Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius, LayerMask.GetMask("Entity"));
+
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.gameObject.TryGetComponent(out Entity otherEntity))
+            {
+                Vector3 directionAwayFromOther = transform.position - otherEntity.transform.position;
+                CharacterController.Move(directionAwayFromOther.normalized * LocalDeltaTime);
+            }
+        }
     }
 
     private void OnAnimatorMove()
@@ -706,6 +731,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual void ApplyGravity()
     {
         CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+
+        // Kill if below the map
+        if(transform.position.y < -100f)
+        {
+            Kill(lastHitSource);
+        }
     }
 
     /// <summary>

@@ -41,16 +41,6 @@ public class PlayerCombat : MonoBehaviour
     /// </list>
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
-    /// <summary>
-    /// Action that is invoked when the player switches attack inputs (X->Y or Y->X).
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>ComboAction previousAttackAction</c> The previous attack action before switching</description></item>
-    /// <item><description><c>ComboAction newAttackAction</c> The new attack action that was switched to</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<ComboAction, ComboAction> OnAttackInputSwitched = delegate { };
 
     private void Awake()
     {
@@ -107,8 +97,6 @@ public class PlayerCombat : MonoBehaviour
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
         if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
-
-        DetectInputSwitch();
         
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
@@ -235,27 +223,6 @@ public class PlayerCombat : MonoBehaviour
     public void StartDelayedComboListsReset(float delay)
     {
         delayedComboResetTimer = delay;
-    }
-    
-    /// <summary>
-    /// Detects input switch from X to Y and vice versa
-    /// </summary>
-    private void DetectInputSwitch()
-    {
-        if (CurrentInputsList.Count < 2) return;
-
-        // Getting the last two inputs from the list
-        ComboAction lastAction = CurrentInputsList[CurrentInputsList.Count - 1];
-        ComboAction secondLastAction = CurrentInputsList[CurrentInputsList.Count - 2];
-        
-        if (lastAction == ComboAction.ATTACK1 && secondLastAction == ComboAction.ATTACK2)
-        {
-            OnAttackInputSwitched.Invoke(secondLastAction, lastAction);
-        }
-        else if (lastAction == ComboAction.ATTACK2 && secondLastAction == ComboAction.ATTACK1)
-        {
-            OnAttackInputSwitched.Invoke(secondLastAction, lastAction);
-        }
     }
 
     /// <summary>

@@ -30,7 +30,8 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
         base.OnApply();
 
         currentStacks = 1;
-        markerInstance = Instantiate(Marker, entity.GetEntityTopPosition(), Quaternion.identity, entity.transform);
+        markerInstance = Instantiate(Marker, entity.GetEntityTopPosition() + Vector3.up, Quaternion.identity, entity.transform);
+        markerInstance.transform.localScale = (0.05f + 0.05f * currentStacks) * Vector3.one;
 
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
 
@@ -72,6 +73,7 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
 
         if (currentStacks >= MaxStacks) return; // Don't increase current stacks if already at maxstacks
         currentStacks++;
+        if(markerInstance != null) markerInstance.transform.localScale = (0.05f + 0.05f * currentStacks) * Vector3.one;
     }
 
     private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)

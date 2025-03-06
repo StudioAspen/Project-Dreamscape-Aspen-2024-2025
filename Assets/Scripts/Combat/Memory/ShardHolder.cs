@@ -30,6 +30,7 @@ public class ShardHolder : MonoBehaviour
 
     private void Entity_OnEntityDeath(GameObject killer)
     {
+        if (killer == null) return;
         if(!killer.TryGetComponent(out MemorySystem memorySystem)) return; // Player must last hit the enemy to get shard drop
         if (Slime.IsEntityACloneSlime(entity)) return; // Cloned slimes won't drop
 
