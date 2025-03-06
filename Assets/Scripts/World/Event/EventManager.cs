@@ -178,6 +178,7 @@ public class EventManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.K))
         {
+            Debug.LogWarning("Cheat: Insta clearing event");
             ClearEvent();
         }
     }
