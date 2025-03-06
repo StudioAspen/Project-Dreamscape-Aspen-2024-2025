@@ -5,12 +5,10 @@ using TMPro;
 
 public class StatPanel : MonoBehaviour 
 {
+    // public Stat stat;
     [SerializeField] private Stat stat;
-    [SerializeField] private TextMeshPro StatPanelText;
-
-
-
-
+    [SerializeField] private TMP_Text StatPanelText;
+ 
     // Start is called before the first frame update
     void Start()
     {
