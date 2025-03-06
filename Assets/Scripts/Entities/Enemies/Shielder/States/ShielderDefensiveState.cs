@@ -68,6 +68,8 @@ public class ShielderDefensiveState : ShielderBaseState
 
     private void Shielder_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
+        if (source == null) return;
+
         if(!source.TryGetComponent(out Entity attacker))
         {
             return;

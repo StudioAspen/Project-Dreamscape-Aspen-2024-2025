@@ -93,10 +93,14 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
         // Steal stats
         entity.DamageModifier.AddMultiplier(1f + victim.DamageModifier.GetFloatValue() * OnKillStatStealFraction, this);
+        //Debug.Log($"Stole {victim.gameObject.name}'s damage modifier, +{1f + victim.DamageModifier.GetFloatValue() * OnKillStatStealFraction}%");
         entity.DamageModifier.AddMultiplier(1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction, this);
+        //Debug.Log($"Stole {victim.gameObject.name}'s speed modifier, +{1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction}%");
 
+        //Debug.Log($"Extended buff duration from {StackTimerReset - timer} to {StackTimerReset - (timer - OnKillBuffExtension)}");
         timer -= OnKillBuffExtension; // Extend buff duration
         entity.SizeScale.AddMultiplier(OnKillSizeGrowth, this);
+        //Debug.Log($"Added size scale multiplier {OnKillSizeGrowth}");
     }
 
     private void AddStack()
@@ -105,7 +109,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         timer = 0f;
         currentStacks++;
 
-        Debug.Log("STACKS = " + currentStacks);
         if(currentStacks >= MaxStacks)
         {
             OnMaxStacksReached();
@@ -114,8 +117,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
     private void ResetStacks()
     {
-        Debug.Log("Reset buffs");
-
         timer = 0f;
         currentStacks = 0;
 
@@ -130,9 +131,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
     private void HandleStacks()
     {
-        if (currentStacks <= 0) return;
-
-        timer += entity.LocalDeltaTime;
+        if(timer <= StackTimerReset) timer += entity.LocalDeltaTime;
         if(timer > StackTimerReset)
         {
             ResetStacks();
@@ -142,8 +141,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
     private void OnMaxStacksReached()
     {
-        Debug.Log("max stacks");
-
         // create a list of non-active buffs that are not currently active
         List<Buff> nonActiveBuffs = new List<Buff>();
         foreach(Buff buff in System.Enum.GetValues(typeof(Buff)))
@@ -166,7 +163,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         // then refresh timer, stacks, and duration of buffs
         buffStatPairs[selectedBuff].AddMultiplier(StatBuffs[selectedBuff], this);
         activeBuffs.Add(selectedBuff);
-        Debug.Log($"Aspect of Fear Passive B: Applied {selectedBuff} {StatBuffs[selectedBuff]}x");
 
         timer = 0f;
         currentStacks = 0;

@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
+using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))] // Stores the blend tree
@@ -1366,6 +1367,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         OnEntityLaunched.Invoke(launcher, this, direction, force, stunDuration);
         if (launcher != null) launcher.OnLaunchEntity.Invoke(launcher, this, direction, force, stunDuration);
+
+        if(stunDuration > 0)
+        {
+            OnEntityStunned.Invoke(launcher, this, stunDuration);
+            if (launcher != null) launcher.OnStunEntity.Invoke(launcher, this, stunDuration);
+        }
     }
 
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
