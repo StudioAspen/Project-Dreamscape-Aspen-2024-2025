@@ -60,6 +60,7 @@ public class ProgressionManager : MonoBehaviour
         // Cheat for completing all quests
         if (Input.GetKeyDown(KeyCode.J))
         {
+            Debug.LogWarning("Chear: Insta completing all quests");
             for(int i = 0; i < QUEST_COUNT; i++)
             {
                 if (CurrentQuests[i] == null) continue;
