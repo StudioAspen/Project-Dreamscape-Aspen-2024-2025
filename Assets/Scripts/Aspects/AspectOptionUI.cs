@@ -17,14 +17,20 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public Button OptionsButton { get; private set; }
     private int optionsIndex;
 
-    [Header("References")]
+    [Header("Diamond")]
     [SerializeField] private Image diamondImage;
     [SerializeField] private RectTransform diamondEndTransform;
+
+    [Header("Aspect Title/Description")]
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
+
+    [Header("Single Content")]
     [SerializeField] private Button singleContentButton;
     [SerializeField] private TMP_Text singleUpgradeText;
     [SerializeField] private TMP_Text singleDescriptionText;
+
+    [Header("Double Branch Content")]
     [SerializeField] private GameObject doubleContentObject;
     [SerializeField] private Button leftContentButton;
     [SerializeField] private TMP_Text leftUpgradeText;
