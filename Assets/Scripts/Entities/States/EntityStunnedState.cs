@@ -35,9 +35,12 @@ public class EntityStunnedState : EntityBaseState
         }
     }
 
-    public void StunEntity(float duration)
+    public void StunEntity(Entity stunner, float duration)
     {
         stunDuration = duration;
         entity.ChangeState(entity.EntityStunnedState, true);
+
+        entity.OnEntityStunned.Invoke(stunner, entity, duration);
+        if(stunner != null) stunner.OnStunEntity.Invoke(stunner, entity, duration);
     }
 }

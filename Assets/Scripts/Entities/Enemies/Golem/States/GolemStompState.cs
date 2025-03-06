@@ -70,7 +70,7 @@ public class GolemStompState : GolemBaseState
                 if (!entitiesHitByShockwave.Add(entityHit)) continue; // If entity already hit by shockwave, skip to next iteration. Else, add entity to entitiesHitByShockwave
 
                 Vector3 direction = (entityHit.GetColliderCenterPosition() - golem.transform.position).normalized;
-                entityHit.TryChangeToLaunchState(direction, AOELaunchForce, AOEStunDuration);
+                entityHit.TryChangeToLaunchState(golem, direction, AOELaunchForce, AOEStunDuration);
                 if (entityHit.Team == golem.Team) continue; // skip friendly entities, but still add them to hitEntities to launch them
 
                 golem.DealDamageToOtherEntity(entityHit,

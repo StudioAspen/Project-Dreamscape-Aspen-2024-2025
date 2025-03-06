@@ -38,7 +38,8 @@ public class MaterializeVFX : MonoBehaviour, IPoolableObject
             // Play the VFX object
             vfxObject.Play();
         }
-        
+
+        if (meshRenderer == null) return;
         StartCoroutine(MaterializeSkinnedMesh(meshRenderer, willInvokeCallback, texture));
     }
     
@@ -51,7 +52,8 @@ public class MaterializeVFX : MonoBehaviour, IPoolableObject
             // Play the VFX object
             vfxObject.Play();
         }
-        
+
+        if (meshRenderer == null) return;
         StartCoroutine(MaterializeMesh(meshRenderer, willInvokeCallback, texture));
     }
 
