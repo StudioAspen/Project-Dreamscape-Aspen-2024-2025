@@ -17,5 +17,12 @@ MonoBehaviour:
   <Stackable>k__BackingField: 1
   <MaxStacks>k__BackingField: 5
   <StackTimerReset>k__BackingField: 3
-  <SpeedModifierBuff>k__BackingField: 10
-  <DamageModifierBuff>k__BackingField: 100
+  <StatBuffs>k__BackingField:
+    _serializedList:
+    - Key: 0
+      Value: 1.25
+    - Key: 1
+      Value: 1.25
+  <OnKillBuffExtension>k__BackingField: 0
+  <OnKillStatStealFraction>k__BackingField: 0
+  <OnKillSizeGrowth>k__BackingField: 0

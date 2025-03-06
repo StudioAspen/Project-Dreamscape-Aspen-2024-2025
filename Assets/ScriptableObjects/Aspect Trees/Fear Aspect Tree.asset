@@ -101,7 +101,8 @@ MonoBehaviour:
   <Description>k__BackingField: "Killing an enemy during your stat buff will\r\nGrants
     portion of enemy stats, further boosting your temporary buff\r\nExtends your
     buff\u2019s duration\r\nPhysically grows the player\u2019s scale\r\n"
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: a852b42469e39194ca9048da38c2a70f,
+    type: 2}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -385,10 +386,11 @@ MonoBehaviour:
   Children:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Intimidation
-  <Description>k__BackingField: "Stunning enemies grants the player fear stacks that
-    last for x seconds. This timer gets reset each time a stack is added\r. Once
-    the player reaches 3, gain a significant temporary stat \rboost"
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <Description>k__BackingField: Stunning enemies grants the player fear stacks that
+    last for x seconds. This timer gets reset each time a stack is added. At X stacks,
+    gain buffs.
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: b942d46754e6cea4c96fb1be83bd039f,
+    type: 2}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,4 +445,5 @@ MonoBehaviour:
   <DisplayName>k__BackingField: Second New Combo
   <Description>k__BackingField: "During Dash\u2192X\u2192Y\r\nA quick, whirling spin
     that launches and stuns enemies caught in it\r\n"
-  <ComboData>k__BackingField: {fileID: 0}
+  <ComboData>k__BackingField: {fileID: 11400000, guid: 97ae1355d2427534bb0490559d8e4657,
+    type: 2}

@@ -300,6 +300,15 @@ public class PlayerCombat : MonoBehaviour
     }
 
     /// <summary>
+    /// Clears the weapon's hit list.
+    /// Called by an animation event.
+    /// </summary>
+    public void ClearHits()
+    {
+        Weapon.ClearObjectHitList();
+    }
+
+    /// <summary>
     /// Allows the next combo to be executed mid-animation.
     /// Called by an animation event.
     /// </summary>
