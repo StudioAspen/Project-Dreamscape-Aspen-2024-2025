@@ -80,10 +80,9 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
     {
         if (entity.CurrentHealth < Mathf.RoundToInt(entity.MaxHealth.GetFloatValue() * GetFinalExecuteThreshold()))
         {
-            Debug.Log($"{entity.gameObject.name} reached {GetFinalExecuteThreshold()} threshold of health, executing");
-            entity.Kill(source);
-
+            //Debug.Log($"{entity.gameObject.name} reached {GetFinalExecuteThreshold()} threshold of health, executing");
             TryExecutionAOEExplosion(entity.CurrentHealth, entity.GetColliderCenterPosition());
+            entity.Kill(source);
         }
     }
 
@@ -108,17 +107,11 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
         List<Entity> nearbyEntities = Entity.GetEntitiesThroughAOE(center, ExecutionExplosionRadius, false);
         foreach(Entity nearbyEntity in nearbyEntities)
         {
+            if(entity == nearbyEntity) continue;
             if(entity.Team != nearbyEntity.Team) continue; // if not an ally
-            
-            if(source.TryGetComponent(out Entity sourceEntity))
-            {
-                sourceEntity.DealDamageToOtherEntity(nearbyEntity, damage, nearbyEntity.CharacterController.ClosestPoint(center), false);
-            }
-            else
-            {
-                nearbyEntity.TakeDamage(damage, nearbyEntity.CharacterController.ClosestPoint(center), source, false);
-            }
+            Debug.Log($"Nearby entity {nearbyEntity.gameObject.name}");
+            nearbyEntity.TakeDamage(damage, nearbyEntity.CharacterController.ClosestPoint(center), source, false);
         }
-        CustomDebug.InstantiateTemporarySphere(center, ExecutionExplosionRadius, 0.5f, new Color(0, 0, 0, 0.2f));
+        CustomDebug.InstantiateTemporarySphere(center, ExecutionExplosionRadius, 0.5f, new Color(0, 0, 0, 0.5f));
     }
 }
