@@ -244,4 +244,14 @@ public class AspectTree : NodeGraph
         // if the node is at the same y as the applied node at the first multi-node level, it can be chosen and isnt locked out
         return currentNodePosition.y == appliedNodeY;
     }
+
+    /// <summary>
+    /// Checks if the tree as all upgrades exhausted
+    /// </summary>
+    /// <returns>Whether the tree is completed</returns>
+    public bool IsCompleted()
+    {
+        List<AspectNodeNode> nextNodes = GetNextUnappliedNodes();
+        return nextNodes == null || nextNodes.Count == 0;
+    }
 }

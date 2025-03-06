@@ -295,7 +295,7 @@ public class EnemySpawner : MonoBehaviour
         Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * radius;
         Vector3 randomPosition = new Vector3(
             baseSpawnPoint.position.x + randomOffset.x,
-            baseSpawnPoint.position.y,
+            baseSpawnPoint.position.y + 0.25f,
             baseSpawnPoint.position.z + randomOffset.y
         );
 

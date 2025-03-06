@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public abstract class WorldEventSO : ScriptableObject
@@ -20,9 +21,8 @@ public abstract class WorldEventSO : ScriptableObject
 
     [field: Header("Display")]
     [field: SerializeField] public string EventName { get; private set; } = "Event";
+    [field: SerializeField] public string EventProgressionUIName { get; private set; } = "Event";
     [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
-    [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
-    private WorldEventUI eventUI;
 
     /// <summary>
     /// Initializes the WorldEventSO with the specified event manager, world manager, and events config scriptable object.
@@ -43,18 +43,6 @@ public abstract class WorldEventSO : ScriptableObject
     public void Start()
     {
         OnStarted();
-
-        if (EventUIPrefab != null)
-        {
-            Transform eventDisplayUITransform = GameObject.FindObjectOfType<EventDisplayUI>(true).transform;
-            if (eventDisplayUITransform == null)
-            {
-                Debug.LogError("Main Canvas not found, cannot instantiate event UI");
-                return;
-            }
-
-            eventUI = GameObject.Instantiate(EventUIPrefab, eventDisplayUITransform);
-        }
     }
 
     /// <summary>
@@ -69,8 +57,6 @@ public abstract class WorldEventSO : ScriptableObject
     public void Clear()
     {
         OnCleared();
-
-        if (eventUI != null) GameObject.Destroy(eventUI.gameObject);
     }
 
     /// <summary>
@@ -100,6 +86,9 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
     public void StartEnemySpawnerWithCurrency(LandManager land, bool willRestockCurrency = true)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         EnemySpawner enemySpawner = land.EnemySpawner;
         enemySpawner.StartSpawnerWithCurrency(willRestockCurrency);
         activeSpawnerLands.Add(land);
@@ -113,6 +102,9 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="duration">The duration of how long the enemies will spawn for.</param>
     public void StartEnemySpawnerWithDuration(LandManager land, float duration)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         EnemySpawner enemySpawner = land.EnemySpawner;
         enemySpawner.StartSpawnerWithDuration(duration);
         activeSpawnerLands.Add(land);
@@ -126,7 +118,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
     public void StartEnemySpawnersWithCurrency(List<LandManager> lands, bool willRestockCurrency = true)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithCurrency(land, willRestockCurrency);
         }
@@ -141,7 +133,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
     public void StartEnemySpawnersWithDuration(List<LandManager> lands, float duration)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithDuration(land, duration);
         }
@@ -153,6 +145,9 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="land">The land to stop spawning.</param>
     public void StopEnemySpawner(LandManager land)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         land.EnemySpawner.StopSpawner();
         activeSpawnerLands.Remove(land);
     }
@@ -162,10 +157,47 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     public void StopActiveEnemySpawners()
     {
-        foreach (LandManager land in activeSpawnerLands)
+        foreach (LandManager land in new List<LandManager>(activeSpawnerLands))
         {
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
             land.EnemySpawner.StopSpawner();
         }
         activeSpawnerLands.Clear();
+    }
+
+    /// <summary>
+    /// Stops and clears all enemy spawners regardless of them being active.
+    /// </summary>
+    public void StopAllEnemySpawners()
+    {
+        foreach(LandManager land in new List<LandManager>(worldManager.SpawnedLands.Values))
+        {
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
+            land.EnemySpawner.StopSpawner();
+        }
+    }
+
+    /// <summary>
+    /// Updates the event UI elements. Called by EventProgressionUI script.
+    /// </summary>
+    /// <param name="feedbackText"></param>
+    /// <param name="nameText"></param>
+    public abstract void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText);
+
+    /// <summary>
+    /// Formats a float timer into mm:ss string
+    /// </summary>
+    /// <param name="timer">The float timer to format.</param>
+    /// <returns>The formatted mm:ss string</returns>
+    public static string GetFormattedFloatTimer(float timer)
+    {
+        // Convert to minutes and seconds
+        int minutes = Mathf.FloorToInt(timer / 60);
+        int seconds = Mathf.FloorToInt(timer % 60);
+
+        // Format as mm:ss
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

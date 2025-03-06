@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class UIManager : MonoBehaviour
 {
@@ -68,6 +69,25 @@ public class UIManager : MonoBehaviour
         else
         {
             EventSystem.current.SetSelectedGameObject(null);
+        }
+    }
+
+    private void Update()
+    {
+        HandleNullSelected();
+    }
+
+    /// <summary>
+    /// When the selected gameObject is null when in controller mode, tries to set the selected object to the default one
+    /// </summary>
+    private void HandleNullSelected()
+    {
+        GameObject selectedGameObject = EventSystem.current.currentSelectedGameObject;
+        //Debug.Log($"Selected: {selectedGameObject}");
+        if (gameInputManager.CurrentControlScheme == InputManager.ControlScheme.KEYBOARD_MOUSE) return;
+        if(selectedGameObject == null)
+        {
+            EventSystem.current.SetSelectedGameObject(gamePanels[gameManager.CurrentState].DefaultSelectedObject);
         }
     }
 }

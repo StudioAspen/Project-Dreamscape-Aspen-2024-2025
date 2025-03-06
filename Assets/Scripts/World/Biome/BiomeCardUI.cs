@@ -10,6 +10,7 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Header("References")]
     [SerializeField] private Button button;
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private Image biomeIconImage;
     [SerializeField] private GameObject backgroundGlow;
 
     public Biome CurrentBiome { get; private set; }
@@ -55,6 +56,7 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         CurrentBiome = biome;
 
         nameText.text = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].BiomeName;
+        biomeIconImage.sprite = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].IconSprite;
     }
 
     private void OnClickCard()

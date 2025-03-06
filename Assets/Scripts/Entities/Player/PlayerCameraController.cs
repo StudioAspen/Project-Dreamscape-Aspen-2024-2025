@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
 {
+    
+    
     private GameManager gameManager;
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
@@ -25,12 +27,14 @@ public class PlayerCameraController : MonoBehaviour
         DisableCameraInputs();
 
         Player.OnPlayerLoaded += Player_OnPlayerLoaded;
+        PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
         Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
+        PlayerPreferences.Instance.OnCameraSensitivityChanged -= SetCameraSensitivity;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -65,4 +69,13 @@ public class PlayerCameraController : MonoBehaviour
     {
         inputProvider.enabled = false;
     }
+
+    private void SetCameraSensitivity(float sensitivity) {
+        CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
+        if (pov != null) {
+            pov.m_HorizontalAxis.m_MaxSpeed = sensitivity;
+            pov.m_VerticalAxis.m_MaxSpeed = sensitivity;
+        }
+    }
+    
 }

@@ -71,7 +71,7 @@ public class PlayerChargerChargeAbilityStateSO : PlayerAbilityStateSO
             CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
 
             Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - player.transform.position;
-            enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
+            enemyEntity.TryChangeToLaunchState(player, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
             player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactDamageMultiplier), hit.point, false);
 
