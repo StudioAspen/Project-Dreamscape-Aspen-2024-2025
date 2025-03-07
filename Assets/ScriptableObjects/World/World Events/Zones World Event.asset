@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a922ac5e86b64586752ca388d24a0, type: 3}
   m_Name: Zones World Event
   m_EditorClassIdentifier: 
-  <EventName>k__BackingField: Zones
+  <EventName>k__BackingField: Outbreak
   <EventProgressionUIName>k__BackingField: DEFEAT ENEMIES IN ZONES
-  <Description>k__BackingField: A 3x3 of lands are highlighted on the map. Enemies
-    will only spawn from those lands, once they are all defeated trigger EOW.
-  <ZonesEventDummyVariable>k__BackingField: 0
+  <Description>k__BackingField: Defeat all enemies that spawn from the epicenter
+    and its surrounding lands!
+  <EventUIPrefab>k__BackingField: {fileID: 0}
+  <BaseSpawnAmount>k__BackingField: 2
+  MaxSearchLayer: 29
+  <BaseSpawnInterval>k__BackingField: 3

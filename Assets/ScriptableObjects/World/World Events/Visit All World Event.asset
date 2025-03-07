@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f7769a507ce93409b5128b6143854d, type: 3}
   m_Name: Visit All World Event
   m_EditorClassIdentifier: 
-  <EventName>k__BackingField: Visit All
+  <EventName>k__BackingField: Wanderlust
   <EventProgressionUIName>k__BackingField: VISIT ALL LIT LANDS
-  <Description>k__BackingField: All lands will light up. When the player steps on
-    a land it will go away. All lands will spawn enemies. Once all the lands have
-    been touched by the player, trigger EOW.
-  <VisitAllEventDummyVariable>k__BackingField: 0
+  <Description>k__BackingField: Visit each land highlighted on the map!
+  <BaseSpawnAmount>k__BackingField: 2
+  <CountModifier>k__BackingField: 7.95
+  <YIntercept>k__BackingField: 9
+  <RadiusDecayRate>k__BackingField: 0.096
+  <MinimumRadius>k__BackingField: 3
+  <BaseSpawnInterval>k__BackingField: 3

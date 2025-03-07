@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: Survival World Event
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Survival
+  <Description>k__BackingField: Survive enemy hordes until time runs out!
   <EventProgressionUIName>k__BackingField: SURVIVE THE WAVE
-  <Description>k__BackingField: All lands spawn enemies for a certain amount of time,
-    if the player survives that amount of time trigger EOW.
-  <SurvivalEventDuration>k__BackingField: 120
+  <EventUIPrefab>k__BackingField: {fileID: -5187403306162484141, guid: 7427f1bb30894524295051769597dc83,
+    type: 3}
+  <BaseSpawnAmount>k__BackingField: 2
+  <BaseTimeLimit>k__BackingField: 40
+  <TimeIncrement>k__BackingField: 10
+  <BaseIntervals>k__BackingField: 5
