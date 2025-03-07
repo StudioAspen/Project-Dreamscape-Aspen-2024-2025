@@ -5,7 +5,7 @@ public class SlimeDeathState : EntityDeathState
 {
     private Slime slime;
 
-    private float currentTime;
+    private bool hasSplit;
 
     public override void Init(Entity entity)
     {
@@ -17,16 +17,35 @@ public class SlimeDeathState : EntityDeathState
     public override void OnEnter()
     {
         base.OnEnter();
+
+        hasSplit = false;
     }
 
     public override void OnExit()
     {
         base.OnExit();
+    }
 
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        if(timer > DeathDuration / 2 && !hasSplit)
+        {
+            hasSplit = true;
+            Split();
+        }
+    }
+
+    /// <summary>
+    /// Splits the slime by spawning smaller duplicates through its enemy spawner
+    /// </summary>
+    private void Split()
+    {
         // small slimes dont split, they die
         if (slime.IsSmall) return;
 
-        Enemy slimeEnemyPrefab = GetEnemyPrefabFromCurrentType();
+        Enemy slimeEnemyPrefab = slime.Spawner.GetPrefabFromEnemyInstance(slime);
         if (slimeEnemyPrefab == null) return;
 
         for (int i = 0; i < slime.SplitCount; i++)
@@ -46,28 +65,8 @@ public class SlimeDeathState : EntityDeathState
                 continue;
             }
             duplicateSlime.SetSmall(true);
+            duplicateSlime.UpdateCloneFlag();
             duplicateSlime.HealToFull(false);
         }
-    }
-
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-
-    // nothing changed from the duplicate elite variant script
-    private Enemy GetEnemyPrefabFromCurrentType()
-    {
-        foreach (Enemy enemyPrefab in slime.Spawner.NeutralEnemyPrefabs)
-        {
-            if (enemyPrefab.GetType() == slime.GetType())
-            {
-                return enemyPrefab;
-            }
-        }
-
-        Debug.LogWarning("Could not find enemy prefab from current type.");
-
-        return null;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 public class AspectsManager : MonoBehaviour
@@ -9,7 +10,6 @@ public class AspectsManager : MonoBehaviour
 
     [field: SerializeField] public List<AspectTree> AllAspectTrees { get; private set; } = new List<AspectTree>();
     public AspectTree[] EquippedAspectTrees { get; private set; } = new AspectTree[3];
-    public AspectTree CurrentAspectTree { get; private set; }
     public int AspectTokens { get; private set; } = 0;
 
     /// <summary>
@@ -25,10 +25,6 @@ public class AspectsManager : MonoBehaviour
     private void Awake()
     {
         levelSystem = GetComponent<LevelSystem>();
-
-        SetCurrentAspectTree(AllAspectTrees[0]);
-        AddAspectTree(AllAspectTrees[1]);
-        AddAspectTree(AllAspectTrees[2]);
     }
 
     private void OnEnable()
@@ -49,42 +45,77 @@ public class AspectsManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
             AspectTokens++;
+            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
         }
     }
 
-    /// <summary>
-    /// Sets the current aspect tree to the specified runtime instance of the aspect tree.
-    /// </summary>
-    /// <param name="aspectTree">The aspect tree to set as the current aspect tree.</param>
-    public void SetCurrentAspectTree(AspectTree aspectTree)
+    public AspectTree AddAspectTree(AspectTree newTree)
     {
-        CurrentAspectTree = aspectTree.CreateRuntimeInstance();
+        // Check to see if you already have the aspect type
+        for (int i = 0; i < EquippedAspectTrees.Length; i++)
+        {
+            if (EquippedAspectTrees[i] == null) continue;
+            if (EquippedAspectTrees[i].DisplayName == newTree.DisplayName)
+            {
+                Debug.LogWarning($"Can't add aspect tree {newTree.name}. You cannot have more than one of the same aspect.");
+                return null;
+            }
+        }
 
-        AddAspectTree(aspectTree);
-
-        //Debug.Log($"Set current aspect tree to {CurrentAspectTree.name}");
-    }
-
-    public void AddAspectTree(AspectTree newTree)
-    {
         for (int i = 0; i < EquippedAspectTrees.Length; i++)
         {
             if (EquippedAspectTrees[i] != null) continue;
-
             AspectTree runtimeTree = newTree.CreateRuntimeInstance();
             EquippedAspectTrees[i] = runtimeTree;
             OnAspectTreeAdded.Invoke(runtimeTree);
-
-            return;
+            return runtimeTree;
         }
 
         Debug.LogWarning($"Can't add aspect tree {newTree.name}. You can only have up to 3 aspects.");
+        return null;
     }
 
     public void ConsumeAspectToken()
     {
         AspectTokens--;
+    }
+
+    public List<AspectTree> GetAvailableNonEquippedAspects()
+    {
+        List<string> equippedAspectsDisplayNames = new();
+        for(int i = 0; i < EquippedAspectTrees.Length; i++)
+        {
+            if (EquippedAspectTrees[i] == null) continue;
+            equippedAspectsDisplayNames.Add(EquippedAspectTrees[i].DisplayName);
+        }
+
+        List<AspectTree> availableAspects = new List<AspectTree>(AllAspectTrees);
+        foreach(AspectTree aspectTree in new List<AspectTree>(availableAspects))
+        {
+            if (equippedAspectsDisplayNames.Contains(aspectTree.DisplayName)) availableAspects.Remove(aspectTree);
+        }
+
+        return availableAspects;
+    }
+
+    public bool AreAllEquippedAspectsCompleted()
+    {
+        bool areAllAspectsCompleted = true;
+        for (int i = 0; i < EquippedAspectTrees.Length; i++)
+        {
+            AspectTree tree = EquippedAspectTrees[i];
+            if (tree == null)
+            {
+                areAllAspectsCompleted = false;
+                break;
+            }
+            if (!tree.IsCompleted())
+            {
+                areAllAspectsCompleted = false;
+                break;
+            }
+        }
+        return areAllAspectsCompleted;
     }
 }

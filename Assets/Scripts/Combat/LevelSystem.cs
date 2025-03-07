@@ -54,6 +54,8 @@ public class LevelSystem : MonoBehaviour
 
     private void Entity_OnKillEntity(Entity victim)
     {
+        if (Slime.IsEntityACloneSlime(victim)) return; // Cloned slimes dont drop exp
+
         Enemy victimAsEnemy = victim as Enemy;
         int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
 

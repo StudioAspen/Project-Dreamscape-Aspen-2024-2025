@@ -82,22 +82,6 @@ public class Golem : Enemy
         GolemStompState.GroundImpactShockwave();
     }
 
-    public void ShakeCam()
-    {
-        if(camShakeCoroutine != null) StopCoroutine(camShakeCoroutine);
-        camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale.GetFloatValue()));
-    }
-
-    private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay)
-    {
-        for (int i = 0; i < numShakes; i++)
-        {
-            CameraShakeManager.Instance.ShakeCamera(Random.Range(4f,8f), shakeDelay);    
-            yield return new WaitForSeconds(shakeDelay);
-        }
-        camShakeCoroutine = null;
-    }
-    
     /// <summary>
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>

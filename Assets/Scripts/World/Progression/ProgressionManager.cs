@@ -43,13 +43,13 @@ public class ProgressionManager : MonoBehaviour
     private void GameManager_OnGameStateChanged(GameState newState)
     {
         // If just entering playmode for the first time (ignores pause/unpause and other game state changes)
-        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.ASPECT_SELECTION)
+        if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.EVENT_SELECTION)
         {
             CreateNewQuests();
         }
 
         // If clearing the event
-        if (newState == GameState.BIOME_SELECTION && gameManager.PreviousState == GameState.PLAYING)
+        if (newState == GameState.ASPECT_SELECTION && gameManager.PreviousState == GameState.PLAYING)
         {
             CleanUpQuests();
         }
@@ -60,6 +60,7 @@ public class ProgressionManager : MonoBehaviour
         // Cheat for completing all quests
         if (Input.GetKeyDown(KeyCode.J))
         {
+            Debug.LogWarning("Chear: Insta completing all quests");
             for(int i = 0; i < QUEST_COUNT; i++)
             {
                 if (CurrentQuests[i] == null) continue;

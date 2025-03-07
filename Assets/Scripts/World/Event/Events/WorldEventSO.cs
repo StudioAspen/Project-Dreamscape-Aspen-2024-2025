@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class WorldEventSO : ScriptableObject
+public abstract class WorldEventSO : ScriptableObject
 {
     /// <summary>
     /// The event manager that manages the event.
@@ -13,18 +14,15 @@ public class WorldEventSO : ScriptableObject
     /// The world manager that manages the lands and grid. Use this to access information about lands.
     /// </summary>
     private protected WorldManager worldManager;
-
     /// <summary>
-    /// The list of enemy spawning coroutines that are currently running.
-    /// Add coroutines that are started through the eventManager mono behaviour here.
+    /// A list of lands that have active spawners.
     /// </summary>
-    private protected List<Coroutine> enemySpawningCoroutines = new List<Coroutine>();
+    private protected List<LandManager> activeSpawnerLands = new List<LandManager>();
 
     [field: Header("Display")]
     [field: SerializeField] public string EventName { get; private set; } = "Event";
+    [field: SerializeField] public string EventProgressionUIName { get; private set; } = "Event";
     [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of the event.";
-    [field: SerializeField] public WorldEventUI EventUIPrefab { get; private set; }
-    private WorldEventUI eventUI;
 
     [field: Header("Enemy Spawners")] 
 
@@ -53,27 +51,12 @@ public class WorldEventSO : ScriptableObject
     public void Start()
     {
         OnStarted();
-
-        if (EventUIPrefab != null)
-        {
-            Transform eventDisplayUITransform = GameObject.FindObjectOfType<EventDisplayUI>(true).transform;
-            if (eventDisplayUITransform == null)
-            {
-                Debug.LogError("Main Canvas not found, cannot instantiate event UI");
-                return;
-            }
-
-            eventUI = GameObject.Instantiate(EventUIPrefab, eventDisplayUITransform);
-        }
     }
 
     /// <summary>
     /// Called once when starting the event.
     /// </summary>
-    private protected virtual void OnStarted()
-    {
-
-    }
+    private protected abstract void OnStarted();
 
     /// <summary>
     /// Clears the event.
@@ -82,84 +65,149 @@ public class WorldEventSO : ScriptableObject
     public void Clear()
     {
         OnCleared();
-
-        if (eventUI != null) GameObject.Destroy(eventUI.gameObject);
     }
 
     /// <summary>
     /// Called once when the event is cleared.
     /// </summary>
-    private protected virtual void OnCleared()
+    private protected abstract void OnCleared();
+
+    /// <summary>
+    /// Upates the event.
+    /// Called by the event manager.
+    /// </summary>
+    public void Update()
     {
-        
+        OnUpdate();
     }
 
     /// <summary>
     /// Called every frame to update the event.
     /// </summary>
-    public virtual void OnUpdate() { }
+    private protected abstract void OnUpdate();
 
     /// <summary>
     /// Spawns enemies with currency on the specified land.
-    /// Populates the enemySpawningCoroutines list with the coroutine from the land's enemy spawner.
+    /// Adds the land to the activeSpawnerLands list for tracking.
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
-    /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public void StartEnemySpawnerWithCurrency(LandManager land, float interval, int spawnAmount, bool willRefillCurrency = true)
+    /// <param name="interval"></param>
+    /// <param name="spawnAmount"></param>
+    /// <param name="willRestockCurrency">Whether to restock currency.</param>
+    public void StartEnemySpawnerWithCurrency(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithCurrencyCoroutine(interval, spawnAmount, willRefillCurrency)));
+        enemySpawner.StartSpawnerWithCurrency(spawnIntervalRange, spawnAmount, willRestockCurrency);
+        activeSpawnerLands.Add(land);
     }
 
     /// <summary>
     /// Spawns enemies with a specified duration on the specified land.
-    /// Populates the enemySpawningCoroutines list with the coroutine from the land's enemy spawner.
+    /// Adds the land to the activeSpawnerLands list for tracking.
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
     /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnerWithDuration(LandManager land, int intervals, int spawnAmount, float duration)
+    public void StartEnemySpawnerWithDuration(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawningCoroutines.Add(eventManager.StartCoroutine(enemySpawner.SpawnWithDurationCoroutine(intervals, spawnAmount, duration)));
+        enemySpawner.StartSpawnerWithDuration(spawnIntervalRange, spawnAmount, duration);
+        activeSpawnerLands.Add(land);
     }
 
     /// <summary>
     /// Spawns enemies with currency on the specified lands.
-    /// Populates the enemySpawningCoroutines list with the coroutines from each land's enemy spawner.
+    /// Adds the lands to the activeSpawnerLands list for tracking.
     /// </summary>
     /// <param name="lands">The list of lands to spawn enemies on.</param>
-    /// /// <param name="willRefillCurrency">Whether to refill currency.</param>
-    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, float interval, int spawnAmount, bool willRefillCurrency = true)
+    /// <param name="willRestockCurrency">Whether to restock currency.</param>
+    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
-            StartEnemySpawnerWithCurrency(land, interval, spawnAmount, willRefillCurrency);
+            StartEnemySpawnerWithCurrency(land, spawnIntervalRange, spawnAmount, willRestockCurrency);
         }
     }
 
     /// <summary>
     /// Spawns enemies with a specified duration on the specified lands.
     /// Populates the enemySpawningCoroutines list with the coroutines from each land's enemy spawner.
+    /// Adds the lands to the activeSpawnerLands list for tracking.
     /// </summary>
     /// /// <param name="lands">The list of lands to spawn enemies on.</param>
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnersWithDuration(List<LandManager> lands, int intervals, int spawnAmount, float duration)
+    public void StartEnemySpawnersWithDuration(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
-            StartEnemySpawnerWithDuration(land, intervals, spawnAmount, duration);
+            StartEnemySpawnerWithDuration(land, spawnIntervalRange, spawnAmount, duration);
         }
     }
 
     /// <summary>
-    /// Stops and clears all enemy spawning coroutines, stopping all enemy spawning on all lands.
+    /// Stops land from spawning enemies and removes it from the active lands list.
     /// </summary>
-    public void StopEnemySpawners()
+    /// <param name="land">The land to stop spawning.</param>
+    public void StopEnemySpawner(LandManager land)
     {
-        foreach (Coroutine coroutine in enemySpawningCoroutines)
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
+        land.EnemySpawner.StopSpawner();
+        activeSpawnerLands.Remove(land);
+    }
+
+    /// <summary>
+    /// Stops and clears all active spawner lands.
+    /// </summary>
+    public void StopActiveEnemySpawners()
+    {
+        foreach (LandManager land in new List<LandManager>(activeSpawnerLands))
         {
-            if (coroutine != null) eventManager.StopCoroutine(coroutine);
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
+            land.EnemySpawner.StopSpawner();
         }
-        enemySpawningCoroutines.Clear();
+        activeSpawnerLands.Clear();
+    }
+
+    /// <summary>
+    /// Stops and clears all enemy spawners regardless of them being active.
+    /// </summary>
+    public void StopAllEnemySpawners()
+    {
+        foreach(LandManager land in new List<LandManager>(worldManager.SpawnedLands.Values))
+        {
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
+            land.EnemySpawner.StopSpawner();
+        }
+    }
+
+    /// <summary>
+    /// Updates the event UI elements. Called by EventProgressionUI script.
+    /// </summary>
+    /// <param name="feedbackText"></param>
+    /// <param name="nameText"></param>
+    public abstract void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText);
+
+    /// <summary>
+    /// Formats a float timer into mm:ss string
+    /// </summary>
+    /// <param name="timer">The float timer to format.</param>
+    /// <returns>The formatted mm:ss string</returns>
+    public static string GetFormattedFloatTimer(float timer)
+    {
+        // Convert to minutes and seconds
+        int minutes = Mathf.FloorToInt(timer / 60);
+        int seconds = Mathf.FloorToInt(timer % 60);
+
+        // Format as mm:ss
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

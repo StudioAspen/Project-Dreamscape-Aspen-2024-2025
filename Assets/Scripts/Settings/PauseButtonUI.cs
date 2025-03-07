@@ -10,7 +10,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Button button;
     private TMP_Text buttonText;
 
-    private string originalText = "";
+    public string originalText { get; private set; }
     private Color originalColor;
 
     public Action OnButtonClicked = delegate { };
@@ -77,9 +77,8 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         DisableSelectedIndicator();
     }
 
-    private void EnableSelectedIndicator()
-    {
-        buttonText.text = $"> {originalText} <";
+    private void EnableSelectedIndicator() {
+        buttonText.text = $"> {buttonText.text} <";
         buttonText.color = pauseUI.ButtonHighlightColor;
     }
 
@@ -98,4 +97,9 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         return button.interactable;
     }
+
+    public void SetOriginalText(string origTxt) {
+        originalText = origTxt;
+    }
+    
 }

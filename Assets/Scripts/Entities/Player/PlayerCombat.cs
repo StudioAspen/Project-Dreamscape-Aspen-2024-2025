@@ -17,7 +17,7 @@ public class PlayerCombat : MonoBehaviour
     [field: Header("Combo")]
     [SerializeField] private float nonAttackComboResetDelay = 1f;
     [field: SerializeField] public float AttackComboResetDelay { get; private set; } = 0.1f;
-    private Coroutine delayedComboResetCoroutine;
+    private float delayedComboResetTimer;
     public List<ComboAction> CurrentInputsList { get; private set; } = new List<ComboAction>();
     private List<ComboDataSO> potentialCombos = new List<ComboDataSO>();
     private List<ComboDataSO> predictedCombos = new List<ComboDataSO>();
@@ -71,11 +71,12 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         HandleWeaponTriggers();
+        HandleDelayedComboReset();
     }
 
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        CameraShakeManager.Instance.ShakeCamera(5f, 0.1f, 0.25f);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
@@ -96,7 +97,7 @@ public class PlayerCombat : MonoBehaviour
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
         if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
-
+        
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
         {
@@ -104,7 +105,7 @@ public class PlayerCombat : MonoBehaviour
             CurrentInputsList.Add(incomingAction);
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
-
+        
         if (IsAttackAction(incomingAction))
         {
             bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
@@ -139,6 +140,7 @@ public class PlayerCombat : MonoBehaviour
     /// <param name="validCombos">The list of valid combos.</param>
     private void GenerateComboLists(List<ComboDataSO> validCombos)
     {
+        
         potentialCombos = new List<ComboDataSO>();
         predictedCombos = new List<ComboDataSO>();
         foreach (ComboDataSO weaponCombo in validCombos)
@@ -153,7 +155,7 @@ public class PlayerCombat : MonoBehaviour
     /// </summary>
     public void ResetCombos()
     {
-        if (delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
+        delayedComboResetTimer = 0;
 
         CurrentInputsList.Clear();
         potentialCombos.Clear();
@@ -220,33 +222,20 @@ public class PlayerCombat : MonoBehaviour
     /// /// <param name="delay">The delay until the combo lists are reset.</param>
     public void StartDelayedComboListsReset(float delay)
     {
-        if(delayedComboResetCoroutine != null) StopCoroutine(delayedComboResetCoroutine);
-        delayedComboResetCoroutine = StartCoroutine(DelayedComboResetCoroutine(delay));
+        delayedComboResetTimer = delay;
     }
 
-    private IEnumerator DelayedComboResetCoroutine(float delay)
+    /// <summary>
+    /// Handles delayed combo resets by updating a timer
+    /// </summary>
+    private void HandleDelayedComboReset()
     {
-        float elapsedTime = 0;
-        while(elapsedTime < delay)
-        {
-            elapsedTime += player.LocalDeltaTime;
-            yield return null;
+        if (delayedComboResetTimer <= 0) return;
+        if (player.CurrentState == player.PlayerAttackState) return;
+        if (player.CurrentState == player.PlayerChargeState) return;
 
-            if (player.CurrentState == player.PlayerAttackState)
-            {
-                delayedComboResetCoroutine = null;
-                yield break;
-            }
-            if (player.CurrentState == player.PlayerChargeState)
-            {
-                delayedComboResetCoroutine = null;
-                yield break;
-            }
-        }
-
-        ResetCombos();
-
-        delayedComboResetCoroutine = null;
+        delayedComboResetTimer -= Time.deltaTime;
+        if(delayedComboResetTimer <= 0) ResetCombos();
     }
 
     /// <summary>
@@ -275,6 +264,15 @@ public class PlayerCombat : MonoBehaviour
     public void EndHit()
     {
         Weapon.DisableTriggers();
+    }
+
+    /// <summary>
+    /// Clears the weapon's hit list.
+    /// Called by an animation event.
+    /// </summary>
+    public void ClearHits()
+    {
+        Weapon.ClearObjectHitList();
     }
 
     /// <summary>

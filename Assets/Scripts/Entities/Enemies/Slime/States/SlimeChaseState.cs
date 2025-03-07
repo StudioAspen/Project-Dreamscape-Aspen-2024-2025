@@ -16,7 +16,7 @@ public class SlimeChaseState : EnemyChaseState
     private Vector3 currentHopDestination;
     private Vector3 directionToHopDestination;
 
-    private float attackCooldownTimer = Mathf.Infinity;
+    private float attackCooldownTimer;
 
     public override void Init(Entity entity)
     {
@@ -35,6 +35,8 @@ public class SlimeChaseState : EnemyChaseState
         base.OnEnter();
 
         slime.SetSpeedModifier(0f);
+
+        attackCooldownTimer = 0;
     }
 
     public override void OnExit()

@@ -39,7 +39,8 @@ namespace Dreamscape.Abilities
                 Entity.DamageEnemyEntitiesWithAOE(casterEntity, weapon.TipTransform.position, explosionRadius, damageMultiplier, willTryStagger);
             }
 
-            CustomDebug.InstantiateTemporarySphere(weapon.TipTransform.position, explosionRadius, 1, Color.red);
+            CameraShakeManager.Instance.ShakeCamera(10f, 1f, 0.75f);
+            CustomDebug.InstantiateTemporarySphere(weapon.TipTransform.position, explosionRadius, 1, new Color(1f, 0, 0, 0.25f));
             DestroyAndRelease();
         }
 

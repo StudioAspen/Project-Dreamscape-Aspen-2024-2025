@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace Dreamscape.Abilities
 {
@@ -56,12 +55,25 @@ namespace Dreamscape.Abilities
 
         private void OnTriggerEnter(Collider other)
         {
+            CheckForEntityHit(other);
+            CheckForWallHit(other);
+        }
+
+        private void CheckForEntityHit(Collider other)
+        {
             Entity hitEntity = other.GetComponent<Entity>();
             if (hitEntity == null) hitEntity = other.GetComponentInParent<Entity>();
             if (hitEntity == null) return;
 
             if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
             if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
+
+            Explode();
+        }
+
+        private void CheckForWallHit(Collider other)
+        {
+            if (other.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
 
             Explode();
         }

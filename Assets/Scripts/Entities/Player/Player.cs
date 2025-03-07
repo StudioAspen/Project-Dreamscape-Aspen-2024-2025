@@ -143,7 +143,7 @@ public class Player : Entity
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
     {
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        CameraShakeManager.Instance.ShakeCamera(5f,0.1f, 0.25f);
     }
 
     /// <summary>

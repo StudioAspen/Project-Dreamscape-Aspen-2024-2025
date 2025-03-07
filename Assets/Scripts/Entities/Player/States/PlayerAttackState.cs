@@ -107,7 +107,7 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
         if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        if(playerCombat.Weapon.gameObject.activeSelf) playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
     }
 
     public override void OnUpdate()
@@ -196,7 +196,7 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(ComboData.StunDuration);
+        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(player, ComboData.StunDuration);
 
         TryLaunchVictim(victim, damage);
         TryAirComboVictim(victim, damage);
@@ -212,7 +212,7 @@ public class PlayerAttackState : PlayerBaseState
         if (!ComboData.WillLaunchUpwards) return;
         if (victim.WillDieFromDamage(damage)) return;
 
-        victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class PlayerAttackState : PlayerBaseState
         if (victim.IsGrounded) return;
 
         if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
-        else victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        else victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
 
         if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
         else player.ResetYVelocity();
@@ -277,10 +277,7 @@ public class PlayerAttackState : PlayerBaseState
         AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
         if (abilityComboData == null) return;
 
-        ObjectPooler spawner = GameObject.Find("AbilitiesPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        CastedAbility spawnedAbility = spawner.SpawnObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
         spawnedAbility.Init(player);
     }
 }
