@@ -84,7 +84,7 @@ public class VisitAllWorldEventSO : WorldEventSO
           if (visitIndicatorsDictionary.ContainsKey(land.GridPosition))
             continue;
 
-          StartEnemySpawnerWithCurrency(land, BaseSpawnInterval, BaseSpawnAmount);
+          StartEnemySpawnerWithCurrency(land, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
           // Since we're using the land level as a power, we need to ensure it's always >= 0
           int absLandLevel = land.Level + 5;

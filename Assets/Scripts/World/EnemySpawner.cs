@@ -108,15 +108,23 @@ public class EnemySpawner : MonoBehaviour
         List<(Enemy, float)> enemyRemainingCurrencyQueue = GetEnemyPrefabQueue(startingCurrency);
 
         float randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
+        int spawned = 0;
+
         foreach ((Enemy enemyPrefab, float remainingCurrency) in enemyRemainingCurrencyQueue)
         {
-            for (int i = 0; i < spawnAmount; i++)
-            {
-              SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
-              currentRemainingCurrency = remainingCurrency;
-            }
+            SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
+            currentRemainingCurrency = remainingCurrency;
             
-            yield return new WaitForSeconds(randomDelay);
+            if(spawned < spawnAmount)
+            {
+              spawned++;
+              yield return null;
+            }
+            else
+            {
+              spawned = 0;
+              yield return new WaitForSeconds(randomDelay);
+            }
         }
         currentSpawnerCoroutine = null;
     }
@@ -133,8 +141,8 @@ public class EnemySpawner : MonoBehaviour
         List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, spawnIntervalRange, spawnAmount);
         foreach ((Enemy enemyPrefab, float delay) in enemySpawnDelayQueue)
         {
-            yield return new WaitForSeconds(delay);
             SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
+            yield return new WaitForSeconds(delay);
         }
         currentSpawnerCoroutine = null;
     }

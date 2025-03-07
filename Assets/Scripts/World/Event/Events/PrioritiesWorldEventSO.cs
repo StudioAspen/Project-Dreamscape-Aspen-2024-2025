@@ -58,7 +58,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         totalEnemiesToKill = 0;
 
         // Spawn enemies on all lands
-        StartEnemySpawnersWithCurrency(spawnedLands, BaseSpawnInterval, BaseSpawnAmount);
+        StartEnemySpawnersWithCurrency(spawnedLands, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
         int topLandsAmount = 1 + Mathf.FloorToInt((spawnedLands.Count - 1) / LandsPerTopLand);
 
@@ -71,7 +71,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
             // Each top land will use ALL of its currency to spawn many enemies as possible all at once.
             for(int i = 0; i < SpawnBursts; i++)
-              StartEnemySpawnerWithCurrency(land, 0, BaseSpawnAmount);
+              StartEnemySpawnerWithCurrency(land, Vector2.zero, BaseSpawnAmount);
 
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
