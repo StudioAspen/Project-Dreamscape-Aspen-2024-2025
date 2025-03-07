@@ -86,7 +86,7 @@ public class ChargerChargeState : ChargerBaseState
                 CameraShakeManager.Instance.ShakeCamera(2f, 1f,0.25f);
 
                 Vector3 launchDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
-                friendlyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
+                friendlyEntity.TryChangeToLaunchState(charger, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
             }
 
             if (charger.DidHitEnemyEntity(hit, out Entity enemyEntity))
@@ -94,7 +94,7 @@ public class ChargerChargeState : ChargerBaseState
                 CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
 
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
-                enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
+                enemyEntity.TryChangeToLaunchState(charger, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
                 charger.DealDamageToOtherEntity(enemyEntity, charger.CalculateDamage(ChargeContactDamageMultiplier), hit.ClosestPoint(charger.GetColliderCenterPosition()), false);
 

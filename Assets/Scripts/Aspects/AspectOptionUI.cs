@@ -17,14 +17,20 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public Button OptionsButton { get; private set; }
     private int optionsIndex;
 
-    [Header("References")]
+    [Header("Diamond")]
     [SerializeField] private Image diamondImage;
     [SerializeField] private RectTransform diamondEndTransform;
+
+    [Header("Aspect Title/Description")]
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
+
+    [Header("Single Content")]
     [SerializeField] private Button singleContentButton;
     [SerializeField] private TMP_Text singleUpgradeText;
     [SerializeField] private TMP_Text singleDescriptionText;
+
+    [Header("Double Branch Content")]
     [SerializeField] private GameObject doubleContentObject;
     [SerializeField] private Button leftContentButton;
     [SerializeField] private TMP_Text leftUpgradeText;
@@ -46,6 +52,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private bool isSingle;
     private bool isSelected;
+    private bool isCompleted;
 
     public void Init(bool isRuntimeInstance, AspectsUIPanel aspectsUIPanel, AspectTree aspectTree, AspectsManager aspectsManager, GameManager gameManager, int index)
     {
@@ -56,12 +63,27 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         this.gameManager = gameManager;
         optionsIndex = index;
         aspectNodes = new();
+        isCompleted = aspectTree.IsCompleted();
+
+        if (this.aspectsManager.AreAllEquippedAspectsCompleted())
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+            return;
+        }
 
         diamondImage.sprite = aspectTree.AspectSprite;
         titleText.text = $"{aspectTree.DisplayName}";
-        descriptionText.text = $"{aspectTree.Description}";
+        descriptionText.text = $"{(isCompleted ? "Completed\n" : "")}{aspectTree.Description}";
 
         textStartColor = aspectTree.AspectTextColor;
+
+        if (isCompleted)
+        {
+            ResetToDefault();
+            if (aspectsUIPanel.IsSelectingAspect) aspectsUIPanel.DeselectOptionUI();
+            if (isSelected) OnSelect(null);
+            return;
+        }
 
         List<AspectNodeNode> nextNodes = aspectTree.GetNextUnappliedNodes();
         isSingle = nextNodes.Count != 2;
@@ -73,10 +95,12 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         }
         else
         {
+            leftContentButton.interactable = aspectTree.CanMultiNodeLevelNodeBeChosen(nextNodes[0]);
             leftUpgradeText.text = $"{nextNodes[0].DisplayName}";
-            leftDescriptionText.text = $"{nextNodes[0].Description}";
+            leftDescriptionText.text = $"{(leftContentButton.interactable ? "" : "Locked\n")}{nextNodes[0].Description}";
+            rightContentButton.interactable = aspectTree.CanMultiNodeLevelNodeBeChosen(nextNodes[1]);
             rightUpgradeText.text = $"{nextNodes[1].DisplayName}";
-            rightDescriptionText.text = $"{nextNodes[1].Description}";
+            rightDescriptionText.text = $"{(rightContentButton.interactable ? "" : "Locked\n")}{nextNodes[1].Description}";
             aspectNodes.Add(nextNodes[0]);
             aspectNodes.Add(nextNodes[1]);
         }
@@ -144,6 +168,8 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void OptionsButton_OnClick()
     {
+        if (isCompleted) return;
+
         if (aspectsUIPanel.IsSelectingAspect)
         {
             aspectsUIPanel.DeselectOptionUI();
@@ -158,6 +184,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
 
         if (!representsRuntimeInstance)
@@ -180,7 +207,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
 
         if (!representsRuntimeInstance)
         {
@@ -202,7 +231,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentClick(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
 
         if (!representsRuntimeInstance)
         {
@@ -253,6 +284,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Single select");
         singleContentButton.transform.DOKill();
@@ -261,6 +293,7 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnSingleContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
         //Debug.Log("Single deselect");
         singleContentButton.transform.DOKill();
@@ -269,7 +302,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
         //Debug.Log("Left select");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
@@ -277,7 +312,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnLeftContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!leftContentButton.interactable) return;
         //Debug.Log("Left deselect");
         leftContentButton.transform.DOKill();
         leftContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
@@ -285,7 +322,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentSelect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
         //Debug.Log("Right select");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1.1f, 0.1f).SetUpdate(true);
@@ -293,7 +332,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnRightContentDeselect(BaseEventData eventData)
     {
+        if (isCompleted) return;
         if (!aspectsUIPanel.IsSelectingAspect) return;
+        if (!rightContentButton.interactable) return;
         //Debug.Log("Right deselect");
         rightContentButton.transform.DOKill();
         rightContentButton.transform.DOScale(1f, 0.1f).SetUpdate(true);
@@ -338,12 +379,9 @@ public class AspectOptionUI : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         rightUpgradeText.color = Color.clear;
         rightDescriptionText.color = Color.clear;
 
-        singleUpgradeText.transform.localScale = Vector3.one;
-        singleDescriptionText.transform.localScale = Vector3.one;
-        leftUpgradeText.transform.localScale = Vector3.one;
-        leftDescriptionText.transform.localScale = Vector3.one;
-        rightUpgradeText.transform.localScale = Vector3.one;
-        rightDescriptionText.transform.localScale = Vector3.one;
+        singleContentButton.transform.localScale = Vector3.one;
+        leftContentButton.transform.localScale = Vector3.one;
+        rightContentButton.transform.localScale = Vector3.one;
 
         titleText.gameObject.SetActive(false);
         descriptionText.gameObject.SetActive(false);

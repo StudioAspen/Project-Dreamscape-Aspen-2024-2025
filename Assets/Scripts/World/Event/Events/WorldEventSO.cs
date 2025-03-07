@@ -96,9 +96,12 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
     public void StartEnemySpawnerWithCurrency(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
     {
-      EnemySpawner enemySpawner = land.EnemySpawner;
-      enemySpawner.StartSpawnerWithCurrency(spawnIntervalRange, spawnAmount, willRestockCurrency);
-      activeSpawnerLands.Add(land);
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
+        EnemySpawner enemySpawner = land.EnemySpawner;
+        enemySpawner.StartSpawnerWithCurrency(spawnIntervalRange, spawnAmount, willRestockCurrency);
+        activeSpawnerLands.Add(land);
     }
 
     /// <summary>
@@ -109,6 +112,9 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="duration">The duration of how long the enemies will spawn for.</param>
     public void StartEnemySpawnerWithDuration(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         EnemySpawner enemySpawner = land.EnemySpawner;
         enemySpawner.StartSpawnerWithDuration(spawnIntervalRange, spawnAmount, duration);
         activeSpawnerLands.Add(land);
@@ -122,7 +128,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
     public void StartEnemySpawnersWithCurrency(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithCurrency(land, spawnIntervalRange, spawnAmount, willRestockCurrency);
         }
@@ -137,7 +143,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
     public void StartEnemySpawnersWithDuration(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
-        foreach (LandManager land in lands)
+        foreach (LandManager land in new List<LandManager>(lands))
         {
             StartEnemySpawnerWithDuration(land, spawnIntervalRange, spawnAmount, duration);
         }
@@ -149,6 +155,9 @@ public abstract class WorldEventSO : ScriptableObject
     /// <param name="land">The land to stop spawning.</param>
     public void StopEnemySpawner(LandManager land)
     {
+        if (land == null) return;
+        if (land.EnemySpawner == null) return;
+
         land.EnemySpawner.StopSpawner();
         activeSpawnerLands.Remove(land);
     }
@@ -158,11 +167,26 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     public void StopActiveEnemySpawners()
     {
-        foreach (LandManager land in activeSpawnerLands)
+        foreach (LandManager land in new List<LandManager>(activeSpawnerLands))
         {
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
             land.EnemySpawner.StopSpawner();
         }
         activeSpawnerLands.Clear();
+    }
+
+    /// <summary>
+    /// Stops and clears all enemy spawners regardless of them being active.
+    /// </summary>
+    public void StopAllEnemySpawners()
+    {
+        foreach(LandManager land in new List<LandManager>(worldManager.SpawnedLands.Values))
+        {
+            if (land == null) continue;
+            if (land.EnemySpawner == null) continue;
+            land.EnemySpawner.StopSpawner();
+        }
     }
 
     /// <summary>
