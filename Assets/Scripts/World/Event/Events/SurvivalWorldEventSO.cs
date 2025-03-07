@@ -51,9 +51,10 @@ public class SurvivalWorldEventSO : WorldEventSO
 
       // Calculate the time limit based the number of spawned lands, the Base Time Limit, and the Time Increment.
       float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((spawnedLands.Count - 1) / 2) * TimeIncrement);
-
+      
+      float interval = timeLimit / BaseIntervals;
       // Spawn enemies on all lands for the duration of the event
-      StartEnemySpawnersWithDuration(spawnedLands, BaseIntervals, spawnAmount, timeLimit);
+      StartEnemySpawnersWithDuration(spawnedLands, new Vector2(interval, interval), spawnAmount, timeLimit);
 
       RemainingTime = timeLimit;
     }

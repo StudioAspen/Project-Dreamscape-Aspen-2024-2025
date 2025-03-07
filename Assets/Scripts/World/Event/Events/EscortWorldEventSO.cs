@@ -56,7 +56,7 @@ public class EscortWorldEventSO : WorldEventSO
       land.EnemySpawner.MaterializeEntity(EscortEventEntity);
 
       // The land the escort entity spawns on will spawn enemies
-      StartEnemySpawnerWithCurrency(land, BaseSpawnInterval, BaseSpawnAmount);
+      StartEnemySpawnerWithCurrency(land, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
       // Get a destination land. 
       Vector2Int originPosition = land.GridPosition;
@@ -119,7 +119,7 @@ public class EscortWorldEventSO : WorldEventSO
     {
         StopActiveEnemySpawners();
 
-        StartEnemySpawnerWithCurrency(newLand, BaseSpawnInterval, BaseSpawnAmount, false);
+        StartEnemySpawnerWithCurrency(newLand, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount, false);
     }
 
     private void EscortEventEntity_OnEntityDeath(GameObject killerObject)

@@ -94,7 +94,8 @@ public class DefendWorldEventSO : WorldEventSO
       // Calculate the time limit based the number of active lands, the Base Time Limit, the Time Increment, and the End Layer.
       float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((activeLands.Count - 1) / (EndLayer + 1)) * TimeIncrement);
 
-      StartEnemySpawnersWithDuration(activeLands, BaseIntervals, spawnAmount, timeLimit);
+      float interval = timeLimit / BaseIntervals;
+      StartEnemySpawnersWithDuration(activeLands, new Vector2(interval, interval), spawnAmount, timeLimit);
 
       RemainingTime = timeLimit;
     }
