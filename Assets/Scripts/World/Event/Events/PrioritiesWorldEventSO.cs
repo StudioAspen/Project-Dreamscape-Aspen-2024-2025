@@ -64,6 +64,11 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
         // Get all spawned lands on the map
         List<LandManager> spawnedLands = worldManager.SpawnedLands.Values.ToList();
+        enemiesRemaining = 0;
+        totalEnemiesToKill = 0;
+
+        // Spawn enemies on all lands
+        StartEnemySpawnersWithCurrency(spawnedLands, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
         int topLandsAmount = 1 + Mathf.FloorToInt((spawnedLands.Count - 1) / LandsPerTopLand);
 
