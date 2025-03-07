@@ -101,7 +101,7 @@ public class DefendWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
           land.EnemySpawner.DeactivateAllEnemies();
@@ -114,7 +114,7 @@ public class DefendWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         if(DefendEventEntity == null) return;
 
@@ -132,8 +132,14 @@ public class DefendWorldEventSO : WorldEventSO
     {
         DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
 
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         eventManager.FailEvent();
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

@@ -129,7 +129,7 @@ public class EventManager : MonoBehaviour
         CurrentEvent.Start();
         OnEventChanged?.Invoke(CurrentEvent);
 
-        gameManager.ChangeState(GameState.ASPECT_SELECTION);
+        gameManager.ChangeState(GameState.PLAYING);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public class EventManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
         
-        CurrentEvent?.OnUpdate();
+        CurrentEvent?.Update();
 
         if(Input.GetKeyDown(KeyCode.K))
         {
@@ -190,7 +190,7 @@ public class EventManager : MonoBehaviour
     {
         CurrentEvent?.Clear();
 
-        gameManager.ChangeState(GameState.BIOME_SELECTION);
+        gameManager.ChangeState(GameState.ASPECT_SELECTION);
     }
 
     /// <summary>

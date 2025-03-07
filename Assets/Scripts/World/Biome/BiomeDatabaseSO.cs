@@ -9,7 +9,6 @@ public enum Biome
     DREAM,
     FIRE,
     FOOD,
-    OTHER_BIOME
 }
 
 [CreateAssetMenu(fileName = "Biome Database", menuName = "World/Biome Database")]
@@ -21,7 +20,7 @@ public class BiomeDatabaseSO : ScriptableObject
         [field: Header("Display")]
         [field: SerializeField] public string BiomeName { get; private set; } = "Biome Name";
         [field: SerializeField, TextArea(3, 20)] public string Description { get; private set; } = "Description of biome.";
-        [field: SerializeField] public Color BiomeColor { get; private set; } = Color.black;
+        [field: SerializeField] public Sprite IconSprite { get; private set; }
 
         [field: Header("Config")]
         [field: SerializeField] public List<LandManager> PossibleLands { get; private set; } = new List<LandManager>();

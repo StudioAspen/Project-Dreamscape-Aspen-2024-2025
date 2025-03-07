@@ -1,0 +1,392 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1375455546543868242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 996196499046856993}
+  - component: {fileID: 1703248199759994415}
+  - component: {fileID: 539428438630419172}
+  - component: {fileID: 6991639948442149311}
+  m_Layer: 0
+  m_Name: PurpleFireAura
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &996196499046856993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375455546543868242}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!2083052967 &1703248199759994415
+VisualEffect:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375455546543868242}
+  m_Enabled: 1
+  m_Asset: {fileID: 8926484042661614526, guid: efc1ca91bf26aa642819dc3fe03a900b, type: 3}
+  m_InitialEventName: OnPlay
+  m_InitialEventNameOverriden: 0
+  m_StartSeed: 0
+  m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
+  m_ResourceVersion: 1
+  m_PropertySheet:
+    m_Float:
+      m_Array:
+      - m_Value: 2.73
+        m_Name: New float
+        m_Overridden: 1
+      - m_Value: 2.85
+        m_Name: size2
+        m_Overridden: 1
+      - m_Value: 0.06
+        m_Name: distortion
+        m_Overridden: 1
+      - m_Value: 1
+        m_Name: Voronoi Strength
+        m_Overridden: 1
+      - m_Value: 2.88
+        m_Name: Voronoi Density
+        m_Overridden: 1
+      - m_Value: 2000
+        m_Name: Spawn Rate
+        m_Overridden: 1
+      - m_Value: 2
+        m_Name: Color Intensity
+        m_Overridden: 1
+      - m_Value: 0.056
+        m_Name: Positional Blend
+        m_Overridden: 1
+    m_Vector2f:
+      m_Array:
+      - m_Value: {x: 5, y: 11}
+        m_Name: Gradient Scale Range
+        m_Overridden: 1
+      - m_Value: {x: 0.01, y: 0.16}
+        m_Name: Distortion Range
+        m_Overridden: 1
+      - m_Value: {x: 0.2, y: 0.4}
+        m_Name: Set Size Range
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1.5}
+        m_Name: Lifetime Range
+        m_Overridden: 1
+      - m_Value: {x: 0, y: -0.1}
+        m_Name: Gradient Speed
+        m_Overridden: 1
+      - m_Value: {x: -0.01, y: -0.01}
+        m_Name: Voronoi Speed
+        m_Overridden: 1
+      - m_Value: {x: 2.04, y: 3}
+        m_Name: Voronoi Density Range
+        m_Overridden: 1
+      - m_Value: {x: 0.4, y: 4}
+        m_Name: Voronoi Strength Range
+        m_Overridden: 1
+    m_Vector3f:
+      m_Array:
+      - m_Value: {x: 0.5, y: 1, z: 0.5}
+        m_Name: scale
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0.1, z: 0}
+        m_Name: position
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1.25, z: 1}
+        m_Name: scale 1
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 1.08, z: 0}
+        m_Name: position2
+        m_Overridden: 1
+      - m_Value: {x: -0.3, y: 0.2, z: -0.3}
+        m_Name: MaxVeloicty
+        m_Overridden: 1
+      - m_Value: {x: 0.3, y: 0.5, z: 0.3}
+        m_Name: MinVelocity
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: New Transform_position
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: New Transform_angles
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1, z: 1}
+        m_Name: New Transform_scale
+        m_Overridden: 1
+      - m_Value: {x: -0, y: 0, z: 0}
+        m_Name: Transform_angles
+        m_Overridden: 1
+      - m_Value: {x: 0, y: 0, z: 0}
+        m_Name: Transform_position
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1, z: 1}
+        m_Name: Transform_scale
+        m_Overridden: 1
+    m_Vector4f:
+      m_Array:
+      - m_Value: {x: 1, y: 0, z: 0, w: 0}
+        m_Name: New Color
+        m_Overridden: 1
+      - m_Value: {x: 0.31132078, y: 0, z: 0.01297165, w: 0}
+        m_Name: emmision
+        m_Overridden: 1
+      - m_Value: {x: 2.9862616, y: 1.715573, z: 1.5917338, w: 1}
+        m_Name: color
+        m_Overridden: 1
+      - m_Value: {x: 5.3403134, y: 0, z: 0.3634766, w: 0}
+        m_Name: aura
+        m_Overridden: 1
+    m_Uint:
+      m_Array: []
+    m_Int:
+      m_Array: []
+    m_Matrix4x4f:
+      m_Array: []
+    m_AnimationCurve:
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0.006839946
+            value: 0.9939209
+            inSlope: 0.04974442
+            outSlope: 0.04974442
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1.0004369
+            value: 0.0011087209
+            inSlope: -2.5794158
+            outSlope: -2.5794158
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: Alpha Curve
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 0.25305176
+            inSlope: 2
+            outSlope: 2
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        m_Name: Size over Lifetime
+        m_Overridden: 1
+    m_Gradient:
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 1, g: 0, b: 0, a: 0}
+          key1: {r: 1.3350785, g: 0.8352542, b: 0, a: 1}
+          key2: {r: 2, g: 1.3089926, b: 0, a: 0.8}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 11975
+          ctime1: 58824
+          ctime2: 65535
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 6554
+          atime2: 52428
+          atime3: 65535
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: 1
+          m_NumColorKeys: 2
+          m_NumAlphaKeys: 4
+        m_Name: New Gradient
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 1.5885367, g: 1.2167671, b: 0, a: 1}
+          key1: {r: 0.6509804, g: 0.085855514, b: 0, a: 1}
+          key2: {r: 0, g: 0, b: 0, a: 1}
+          key3: {r: 0.1400542, g: 0.114289515, b: 0.11550355, a: 1}
+          key4: {r: 0, g: 0, b: 0, a: 1}
+          key5: {r: 0, g: 0, b: 0, a: 1}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 38689
+          ctime2: 65535
+          ctime3: 60798
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 39874
+          atime2: 65535
+          atime3: 65535
+          atime4: 65535
+          atime5: 65535
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: 1
+          m_NumColorKeys: 3
+          m_NumAlphaKeys: 3
+        m_Name: Color Gradient
+        m_Overridden: 1
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 0.17552903, g: 0, b: 2.120822, a: 1}
+          key1: {r: 0, g: 0.16831604, b: 2.120822, a: 1}
+          key2: {r: 0, g: 0, b: 0, a: 1}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 20529
+          ctime2: 54744
+          ctime3: 54744
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 39874
+          atime2: 65535
+          atime3: 65535
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: 1
+          m_NumColorKeys: 3
+          m_NumAlphaKeys: 3
+        m_Name: Emission Gradient
+        m_Overridden: 1
+    m_NamedObject:
+      m_Array:
+      - m_Value: {fileID: 4777371684598551356, guid: 2be0c0643d1b0f54e92d2c57b2545ce5,
+          type: 3}
+        m_Name: New Mesh
+        m_Overridden: 1
+      - m_Value: {fileID: 2800000, guid: ed10ac9bd412aca4db7b2c89f7b66660, type: 3}
+        m_Name: New Texture2D
+        m_Overridden: 1
+      - m_Value: {fileID: 0}
+        m_Name: New SkinnedMeshRenderer
+        m_Overridden: 1
+      - m_Value: {fileID: 2800000, guid: 6e29ef6d05f720543af9195d1217f2eb, type: 3}
+        m_Name: New Texture2D 1
+        m_Overridden: 1
+      - m_Value: {fileID: 0}
+        m_Name: SkinnedMeshRenderer
+        m_Overridden: 1
+      - m_Value: {fileID: 2800000, guid: ed10ac9bd412aca4db7b2c89f7b66660, type: 3}
+        m_Name: Main Texture
+        m_Overridden: 1
+    m_Bool:
+      m_Array: []
+--- !u!73398921 &539428438630419172
+VFXRenderer:
+  serializedVersion: 1
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375455546543868242}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!114 &6991639948442149311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375455546543868242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings: []
+  m_VisualEffect: {fileID: 1703248199759994415}

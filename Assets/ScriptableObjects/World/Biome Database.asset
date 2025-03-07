@@ -18,30 +18,28 @@ MonoBehaviour:
     _serializedList:
     - Key: 0
       Value:
-        <BiomeName>k__BackingField: Dream Forest
+        <BiomeName>k__BackingField: Dream
         <Description>k__BackingField: Description of biome.
-        <BiomeColor>k__BackingField: {r: 0.85098046, g: 0.8235295, b: 0.91372555,
-          a: 1}
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: f38ac8696b55cd84fa1153baa6329aed,
+          type: 3}
         <PossibleLands>k__BackingField:
         - {fileID: 6052383663745716427, guid: 84f5487d103e0ed41913fa09e986aca4, type: 3}
+        - {fileID: 3081110013812948682, guid: df77b620737507142b13a21ed6399b9a, type: 3}
     - Key: 1
       Value:
-        <BiomeName>k__BackingField: Volcanic
+        <BiomeName>k__BackingField: Lava
         <Description>k__BackingField: Description of biome.
-        <BiomeColor>k__BackingField: {r: 0.9568628, g: 0.8000001, b: 0.8000001, a: 1}
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: 96efedc18e27db442a8e16fb100b5bc1,
+          type: 3}
         <PossibleLands>k__BackingField:
         - {fileID: 6052383663745716427, guid: 1c648dc8b09af594891c9968c44bee10, type: 3}
     - Key: 2
       Value:
         <BiomeName>k__BackingField: Food
         <Description>k__BackingField: Description of biome.
-        <BiomeColor>k__BackingField: {r: 1, g: 0.8313726, b: 0.9568628, a: 1}
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: 8c1929517bab2744e8955dff0c97f357,
+          type: 3}
         <PossibleLands>k__BackingField:
         - {fileID: 6052383663745716427, guid: 7ea2171c6d75cc34589a2d7db4df99be, type: 3}
-    - Key: 3
-      Value:
-        <BiomeName>k__BackingField: Other
-        <Description>k__BackingField: Description of biome.
-        <BiomeColor>k__BackingField: {r: 0.6431373, g: 0.8117648, b: 0.8745099, a: 1}
-        <PossibleLands>k__BackingField: []
+        - {fileID: 1761470350273787396, guid: 5c6ff3304b2249c4ea556fe2e11f9f19, type: 3}
   checkForAnyErrors: 0

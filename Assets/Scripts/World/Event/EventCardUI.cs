@@ -39,7 +39,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         eventManager = FindObjectOfType<EventManager>();
 
-        startingPosition = transform.position;
+        startingPosition = transform.localPosition;
 
         ResetCard();
     }
@@ -80,7 +80,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DisableSelectedIndicator();
         InstantlyFlipCard(false);
 
-        transform.position = startingPosition;
+        transform.localPosition = startingPosition;
         transform.localScale = Vector3.one;
     }
 
@@ -220,7 +220,7 @@ public class EventCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DOTween.Kill(transform);
 
         // Move the card to the end position (starting original position)
-        return transform.DOMove(startingPosition, duration).SetUpdate(true).SetEase(ease);
+        return transform.DOLocalMove(startingPosition, duration).SetUpdate(true).SetEase(ease);
     }
     #endregion
 }

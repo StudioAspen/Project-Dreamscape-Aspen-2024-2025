@@ -5,8 +5,10 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
 
-[RequireComponent(typeof(Animator), typeof(AnimationClipOutput), typeof(AnimatorOutput)),
-RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))] // Stores the blend tree
+[RequireComponent(typeof(AnimatorOutput))] // Plays the blend tree animator's animations
+[RequireComponent(typeof(AnimationClipOutput))] // Plays one shot animations
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
@@ -995,10 +997,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (damage <= 0) return;
 
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
+        HitNumbers hitNumber = ObjectPoolerManager.Instance.SpawnPooledObject<HitNumbers>(ObjectPoolerManager.Instance.HitNumbersPrefab.gameObject);
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 

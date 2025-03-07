@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 // 3 Lands of the highest Level are selected.
@@ -28,32 +29,21 @@ public class PrioritiesWorldEventSO : WorldEventSO
     [field: Tooltip("The number of times each top land's Enemy Spawner will refill its currency and spawn as many enemies as possible. Default value: 1")]
     [field: SerializeField] public int SpawnBursts { get; private set; } = 1;
 
+    /// <summary>
+    /// The time that must elapse between spawning enemies during non-timed events. Default value: 3.0 seconds.
+    /// </summary>
+    [field: Tooltip("The time that must elapse between spawning enemies during non-time events. Default value: 3.0 seconds")]
+    [field: Range(3f, 30f)]
+    [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
+
     private List<LandManager> topLands = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
     private Dictionary<Enemy, Marker> enemyMarkers = new();
 
-    /// <summary>
-    /// Triggers when a priorities enemy spawns.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
-    /// <item><description><c>Enemy spawnedEnemy</c>: The enemy spawned.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<EnemySpawner, Enemy> OnPrioritiesEnemySpawned = delegate { };
-    /// <summary>
-    /// Triggers when a priorities spawned enemy dies.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>EnemySpawner spawner</c>: The enemy spawner that spawned the enemy.</description></item>
-    /// <item><description><c>Enemy killedEnemy</c>: The enemy killed.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<EnemySpawner, Enemy> OnPrioritiesEnemyDeath = delegate { };
+    private int enemiesRemaining;
+    private int totalEnemiesToKill;
 
     private protected override void OnStarted()
     {
@@ -64,6 +54,11 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
         // Get all spawned lands on the map
         List<LandManager> spawnedLands = worldManager.SpawnedLands.Values.ToList();
+        enemiesRemaining = 0;
+        totalEnemiesToKill = 0;
+
+        // Spawn enemies on all lands
+        StartEnemySpawnersWithCurrency(spawnedLands, BaseSpawnInterval, BaseSpawnAmount);
 
         int topLandsAmount = 1 + Mathf.FloorToInt((spawnedLands.Count - 1) / LandsPerTopLand);
 
@@ -97,7 +92,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach(LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -127,6 +122,11 @@ public class PrioritiesWorldEventSO : WorldEventSO
             GameObject.Destroy(marker.gameObject);
         }
         enemyMarkers.Clear();
+    }
+
+    private protected override void OnUpdate()
+    {
+        
     }
 
     /// <summary>
@@ -163,7 +163,8 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private void EnemySpawner_OnEnemySpawned(Enemy enemySpawned)
     {
-        OnPrioritiesEnemySpawned.Invoke(enemySpawned.Spawner, enemySpawned);
+        enemiesRemaining++;
+        totalEnemiesToKill++;
 
         Marker enemyMarker = Instantiate(MarkerPrefab, enemySpawned.GetEntityTopPosition() + 2f * Vector3.up, Quaternion.identity, enemySpawned.transform);
         enemyMarkers.Add(enemySpawned, enemyMarker);
@@ -171,12 +172,18 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
     private void EnemySpawner_OnEnemyDeath(Enemy enemy)
     {
-        OnPrioritiesEnemyDeath.Invoke(enemy.Spawner, enemy);
+        enemiesRemaining--;
 
         if (enemyMarkers.ContainsKey(enemy))
         {
             Destroy(enemyMarkers[enemy].gameObject);
             enemyMarkers.Remove(enemy);
         }
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

@@ -51,6 +51,7 @@ MonoBehaviour:
   Children:
   - {fileID: 1864611941190978949}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5359809309940247393
 MonoBehaviour:
@@ -96,6 +97,7 @@ MonoBehaviour:
   Parent: {fileID: 4095001867604409900}
   Children: []
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-5092554926121242106
 MonoBehaviour:
@@ -145,6 +147,7 @@ MonoBehaviour:
   Children:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &-3918194093017296719
 MonoBehaviour:
@@ -195,6 +198,7 @@ MonoBehaviour:
   - {fileID: -5092554926121242106}
   - {fileID: 2763769569843930792}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <ComboData>k__BackingField: {fileID: 0}
 --- !u!114 &-3194902288124324442
 MonoBehaviour:
@@ -240,6 +244,7 @@ MonoBehaviour:
   Parent: {fileID: 4095001867604409900}
   Children: []
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -262,10 +267,13 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
-  <DisplayName>k__BackingField: Aspect Tree
-  <Description>k__BackingField: Description
+  <DisplayName>k__BackingField: Aspect of Hope
+  <Description>k__BackingField: Embrace the light and look towards the dawn with
+    the power of hope. Strike down your opponents with the power of light, and become
+    an unstoppable force.
   <AspectSprite>k__BackingField: {fileID: 21300000, guid: 68c66bb3807bd764888c469e47f6ee57,
     type: 3}
+  <AspectTextColor>k__BackingField: {r: 1, g: 0.7490196, b: 0, a: 1}
 --- !u!114 &1864611941190978949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +322,7 @@ MonoBehaviour:
   Children:
   - {fileID: 4095001867604409900}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &2763769569843930792
 MonoBehaviour:
@@ -363,6 +372,7 @@ MonoBehaviour:
   Children:
   - {fileID: -6323877592038428020}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <StatusEffect>k__BackingField: {fileID: 0}
 --- !u!114 &4095001867604409900
 MonoBehaviour:
@@ -416,4 +426,5 @@ MonoBehaviour:
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
   <DisplayName>k__BackingField: Hope
+  <Description>k__BackingField: Aspect Node Description
   <ComboData>k__BackingField: {fileID: 0}

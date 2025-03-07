@@ -103,7 +103,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5202f2a2ba48b96438fc36f9e6e93552, type: 3}
---- !u!4 &5251464455993549464 stripped
+--- !u!4 &5722468070231410044 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5202f2a2ba48b96438fc36f9e6e93552,
     type: 3}
@@ -170,7 +170,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 124e793e5d66f4c4c9716e9b6325d6ff,
         type: 3}
       propertyPath: m_Name
-      value: dreamscapetree2_RobertMeeks Variant
+      value: Tree3
       objectReference: {fileID: 0}
     - target: {fileID: 4571791078191367265, guid: 124e793e5d66f4c4c9716e9b6325d6ff,
         type: 3}
@@ -190,9 +190,41 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 124e793e5d66f4c4c9716e9b6325d6ff,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5251464455993549464}
-    m_AddedComponents: []
+      addedObject: {fileID: 5722468070231410044}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 124e793e5d66f4c4c9716e9b6325d6ff,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3806233401258931287}
   m_SourcePrefab: {fileID: 100100000, guid: 124e793e5d66f4c4c9716e9b6325d6ff, type: 3}
+--- !u!1 &7194436397104837642 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 124e793e5d66f4c4c9716e9b6325d6ff,
+    type: 3}
+  m_PrefabInstance: {fileID: 8004774610880825691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &3806233401258931287
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7194436397104837642}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!4 &7537923402164825776 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 124e793e5d66f4c4c9716e9b6325d6ff,

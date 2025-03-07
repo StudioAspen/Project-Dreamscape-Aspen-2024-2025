@@ -60,7 +60,7 @@ public class SurvivalWorldEventSO : WorldEventSO
 
     private protected override void OnCleared()
     {
-        StopEnemySpawners();
+        StopActiveEnemySpawners();
 
         foreach (LandManager land in worldManager.SpawnedLands.Values)
         {
@@ -68,7 +68,7 @@ public class SurvivalWorldEventSO : WorldEventSO
         }
     }
 
-    public override void OnUpdate()
+    private protected override void OnUpdate()
     {
         RemainingTime -= Time.deltaTime;
 
@@ -78,5 +78,11 @@ public class SurvivalWorldEventSO : WorldEventSO
             eventManager.ClearEvent();
             return;
         }
+    }
+
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    {
+        feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
+        nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

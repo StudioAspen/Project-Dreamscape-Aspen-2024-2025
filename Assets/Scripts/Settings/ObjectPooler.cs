@@ -1,23 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UIElements;
 
 public class ObjectPooler : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private GameObject objectPrefab;
+    private GameObject objectPrefab;
 
     private ObjectPool<GameObject> objectPool;
 
-    [Header("Settings")]
-    [SerializeField] private int defaultCapacity = 100;
-    [SerializeField] private int maxSize = 150;
-
-    private void Awake()
+    public void Init(GameObject objectPrefab, int capacity, int maxSize)
     {
-        objectPool = new ObjectPool<GameObject>(CreateObject, OnGetFromPool, OnReleaseToPool, OnDestroyObject, true, defaultCapacity, maxSize);
+        this.objectPrefab = objectPrefab;
+        objectPool = new ObjectPool<GameObject>(CreateObject, OnGetFromPool, OnReleaseToPool, OnDestroyObject, true, capacity, maxSize);
     }
 
     private GameObject CreateObject()
@@ -44,28 +39,6 @@ public class ObjectPooler : MonoBehaviour
     }
 
     #region Factory
-    public T SpawnObject<T>(GameObject newPrefab, Vector3? position = null, Transform parent = null) where T : Component
-    {
-        objectPrefab = newPrefab;
-        GameObject spawnedObject = objectPool.Get();
-
-        // Set position if provided, otherwise default to zero
-        spawnedObject.transform.position = position ?? Vector3.zero;
-
-        // Set parent if provided
-        if (parent != null)
-        {
-            spawnedObject.transform.SetParent(parent);
-        }
-
-        Physics.SyncTransforms();
-
-        T component = spawnedObject.GetComponent<T>();
-        Debug.Assert(component != null, $"Prefab is missing {typeof(T)} component");
-
-        return component;
-    }
-
     public T SpawnObject<T>(Vector3? position = null, Transform parent = null) where T : Component
     {
         GameObject spawnedObject = objectPool.Get();
