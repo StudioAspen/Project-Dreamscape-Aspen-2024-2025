@@ -24,13 +24,20 @@ public class StatPanel : MonoBehaviour
         //     return;
         // }
 
-        float baseValue = stat.BaseValue;
-        float flatIncrease = stat.GetTotalFlatIncreass();
-        float totalMultipliers = stat.GetTotalMultiplier();
+        // float baseValue = stat.BaseValue;
+        // float flatIncrease = stat.GetTotalFlatIncreass();
+        // float totalMultipliers = stat.GetTotalMultiplier();
 
 
-        string displayText = $"Base Value: {baseValue}\n" +
-                             $"Total Multipliers: {string.Join(", ", totalMultipliers)}\n" +
+        string displayText = $"Base Value: {stat.baseValue}\n" +
+                             $"MaxHealth: {stat.MaxHealth}" +
+                             $"StatusSpeedModifier: {stat.StatusSpeedModifier}" +
+                             $"DamageModifier: {stat.DamageModifier}" +
+                             $"DebufSpeedMultiplier: {stat.DebufSpeedMultiplier}" +
+                             $"LocalTimeScale: {stat.LocalTimeScale}" +
+                             $"SizeScale: {stat.SizeScale}" + 
+
+                             $"Total Multipliers: {totalMultipliers}\n" +
                              $"Flat Increase: {flatIncrease}";
 
         StatPanelText.text = displayText;
