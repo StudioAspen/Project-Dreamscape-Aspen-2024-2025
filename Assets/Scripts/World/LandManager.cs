@@ -26,6 +26,11 @@ public class LandManager : MonoBehaviour
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
     [SerializeField] private int minLevel = -5;
     [SerializeField] private int maxLevel = 10;
+    
+    /// <summary>
+    /// Used for random selections.
+    /// </summary>
+    public float Weight => 1f/(1f + maxLevel - Level);
 
     /// <summary>
     /// Initializes the LandManager with the given grid position.

@@ -45,8 +45,8 @@ public class AspectsManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
             AspectTokens++;
+            Debug.LogWarning($"Cheat: Aspect Manager added 1 aspect token, total: {AspectTokens}");
         }
     }
 
@@ -97,5 +97,25 @@ public class AspectsManager : MonoBehaviour
         }
 
         return availableAspects;
+    }
+
+    public bool AreAllEquippedAspectsCompleted()
+    {
+        bool areAllAspectsCompleted = true;
+        for (int i = 0; i < EquippedAspectTrees.Length; i++)
+        {
+            AspectTree tree = EquippedAspectTrees[i];
+            if (tree == null)
+            {
+                areAllAspectsCompleted = false;
+                break;
+            }
+            if (!tree.IsCompleted())
+            {
+                areAllAspectsCompleted = false;
+                break;
+            }
+        }
+        return areAllAspectsCompleted;
     }
 }

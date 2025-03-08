@@ -14,7 +14,6 @@ public class PauseUIPanel : UIPanel
     [SerializeField] private GameObject pauseMenuObject;
     [SerializeField] private GameObject optionsMenuObject;
     
-    
     [Header("Pause Menu Buttons")]
     [SerializeField] private PauseButtonUI resumeButton;
     [SerializeField] private PauseButtonUI optionsButton;
@@ -122,6 +121,8 @@ public class PauseUIPanel : UIPanel
     {
         pauseMenuObject.SetActive(false);
         optionsMenuObject.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(volumeSlider.gameObject);
+        ChangeDefaultSelectedObject(volumeSlider.gameObject);
     }
 
     private void SaveButton_OnButtonClicked()
@@ -164,6 +165,8 @@ public class PauseUIPanel : UIPanel
     private void OptionsConfirmButton_OnButtonClicked() {
         pauseMenuObject.SetActive(true);
         optionsMenuObject.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
+        RestoreDefaultSelectedObject();
     }
 
     private void OnVolumeSliderValueChanged(float newValue) {

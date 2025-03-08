@@ -46,9 +46,6 @@ public class PlayerUI : MonoBehaviour
         aspectsManager = player.GetComponent<AspectsManager>();
         memorySystem = player.GetComponent<MemorySystem>();
 
-        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        player.OnEntityHeal += Player_OnEntityHeal;
-
         aspectsManager.OnAspectTreeAdded += AspectsManager_OnAspectTreeAdded;
 
         memorySystem.OnNewShardTypeAdded += MemorySystem_OnNewShardTypeAdded;
@@ -59,7 +56,6 @@ public class PlayerUI : MonoBehaviour
 
     private void Start()
     {
-        UpdateHealthBar(player.CurrentHealth);
         UpdateAspectsIcons();
     }
 
@@ -67,29 +63,17 @@ public class PlayerUI : MonoBehaviour
     {
         UpdateCombatUI();
         UpdateExpBar();
+        UpdateHealthBar();
     }
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        player.OnEntityHeal += Player_OnEntityHeal;
-
         aspectsManager.OnAspectTreeAdded -= AspectsManager_OnAspectTreeAdded;
 
         memorySystem.OnNewShardTypeAdded -= MemorySystem_OnNewShardTypeAdded;
         memorySystem.OnShardAdded -= MemorySystem_OnShardAdded;
         memorySystem.OnMemoryBarFull -= MemorySystem_OnMemoryBarFull;
         memorySystem.OnMemoryAbilityActivated -= MemorySystem_OnMemoryAbilityActivated;
-    }
-
-    private void Player_OnEntityHeal(Entity entity, int healAmount)
-    {
-        UpdateHealthBar(player.CurrentHealth);
-    }
-
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        UpdateHealthBar(player.CurrentHealth);
     }
 
     private void AspectsManager_OnAspectTreeAdded(AspectTree newTree)
@@ -149,13 +133,13 @@ public class PlayerUI : MonoBehaviour
         shardBarTransforms.Clear();
     }
 
-    private void UpdateHealthBar(int newCurrentHealth)
+    private void UpdateHealthBar()
     {
-        float healthFraction = newCurrentHealth / player.MaxHealth.GetFloatValue();
-        healthFraction = Mathf.Clamp(healthFraction, 0f, 1f);
+        int playerHealth = Mathf.Clamp(player.CurrentHealth, 0, player.MaxHealth.GetIntValue());
+        float healthFraction = playerHealth / (float)player.MaxHealth.GetIntValue();
         healthBar.value = healthFraction;
 
-        healthText.text = $"{newCurrentHealth}/{player.MaxHealth.GetFloatValue()}";
+        healthText.text = $"{playerHealth}/{player.MaxHealth.GetIntValue()}";
     }
 
     private void UpdateExpBar()

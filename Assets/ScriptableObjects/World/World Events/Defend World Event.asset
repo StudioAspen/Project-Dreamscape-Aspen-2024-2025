@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EventName>k__BackingField: Defend
   <EventProgressionUIName>k__BackingField: PROTECT THE OBJECT
-  <Description>k__BackingField: A stationary object will placed at the center of
-    the land for 1 minute, Every 30 seconds it will go to a neighboring land. All
-    lands will spawn enemies, if the object survives, trigger EOW.
-  <DefendEventDuration>k__BackingField: 60
-  <DefendEventMaxHealth>k__BackingField: 200
+  <Description>k__BackingField: Protect the [Defend Entity] until time runs out!
+  <EventUIPrefab>k__BackingField: {fileID: 597010184163234115, guid: a36730bfe74a18e49a364614fc6e99e6,
+    type: 3}
+  <BaseSpawnAmount>k__BackingField: 2
+  <BaseTimeLimit>k__BackingField: 40
+  <TimeIncrement>k__BackingField: 20
+  <EndLayer>k__BackingField: 2
+  <CheckLayer0>k__BackingField: 1
+  <BaseIntervals>k__BackingField: 3
   <DefendEventEntityPrefab>k__BackingField: {fileID: -6622033700469236084, guid: 283748bb881c25f47834dfa195740453,
     type: 3}
+  <DefendEventMaxHealth>k__BackingField: 200

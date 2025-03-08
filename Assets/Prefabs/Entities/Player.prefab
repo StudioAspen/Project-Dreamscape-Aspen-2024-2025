@@ -1430,11 +1430,9 @@ MonoBehaviour:
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <BaseDamageRange>k__BackingField: {x: 5, y: 10}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
-  hitNumbersPrefab: {fileID: 6939789949637470670, guid: 04c7b0df8d3f17841a7271e2169bccf0,
-    type: 3}
   UseRootMotion: 0
   <LocalTimeScale>k__BackingField:
     <BaseValue>k__BackingField: 1
@@ -1612,8 +1610,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <AllAspectTrees>k__BackingField:
-  - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
   - {fileID: 11400000, guid: a28dd62f121619a46a6b807c141ad513, type: 2}
+  - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
   - {fileID: 11400000, guid: 49ebe326734cd8c4cb1f39ce5baa7131, type: 2}
 --- !u!143 &7237775664649881152
 CharacterController:
@@ -9414,11 +9412,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1329834440275588174, guid: 56283617f2ac55948adb96bb76132f78,
-        type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1819267110015381236, guid: 56283617f2ac55948adb96bb76132f78,
         type: 3}
