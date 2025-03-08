@@ -30,7 +30,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
@@ -98,7 +98,7 @@ Material:
     - _Add_Secondary_Tint: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Alpha_Clip_Threshold: 0.74
+    - _Alpha_Clip_Threshold: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -118,12 +118,12 @@ Material:
     - _GlossyReflections: 0
     - _Gradient_Fuzziness: 1.11
     - _Gradient_Noise: 2.71
-    - _Light_Scattering: 1
+    - _Light_Scattering: 2.93
     - _Max_Alpha_Value: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _QueueControl: 0
+    - _QueueControl: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RotateUV: 1.76
@@ -145,6 +145,6 @@ Material:
     - _Emission_Color: {r: 0.4113207, g: 0, b: 0.4811321, a: 0}
     - _Secondary_Tint: {r: 0.6613391, g: 0, b: 0.7735849, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Texture_Tint: {r: 0.85490197, g: 0, b: 1, a: 0}
+    - _Texture_Tint: {r: 0.8549018, g: 0, b: 1, a: 0}
     - _Tiling: {r: 5, g: 5, b: 0, a: 0}
   m_BuildTextureStacks: []
