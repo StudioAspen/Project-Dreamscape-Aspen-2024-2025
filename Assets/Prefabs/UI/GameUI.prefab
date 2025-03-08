@@ -68,7 +68,7 @@ MonoBehaviour:
     - Key: 2
       Value: {fileID: 6243583481103204946}
     - Key: 3
-      Value: {fileID: 2984576699651723288}
+      Value: {fileID: 8715865554161124221}
     - Key: 4
       Value: {fileID: 269064859338479607}
     - Key: 5
@@ -430,11 +430,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandEmpowermentUIPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 437933590835551885, guid: 34e64382503536249a5b13e715b66c5a,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 928246222418900925, guid: 34e64382503536249a5b13e715b66c5a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -671,35 +666,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: LandPlacementUIPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 7381863932719247587, guid: f38e328eb35ba644aa26985287e04665,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5846276402027858975, guid: f38e328eb35ba644aa26985287e04665, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f38e328eb35ba644aa26985287e04665, type: 3}
---- !u!114 &2984576699651723288 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1720480282607343814, guid: f38e328eb35ba644aa26985287e04665,
-    type: 3}
-  m_PrefabInstance: {fileID: 4506703555481684190}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 089d0b9c400c7e641b011d3bc0213529, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &7025736035944878457 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6848684975116392871, guid: f38e328eb35ba644aa26985287e04665,
     type: 3}
   m_PrefabInstance: {fileID: 4506703555481684190}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8715865554161124221 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5080058779491339171, guid: f38e328eb35ba644aa26985287e04665,
+    type: 3}
+  m_PrefabInstance: {fileID: 4506703555481684190}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935b9a00ac51115419b9abb1e4398d20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6027295804437302053
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -787,6 +776,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderOriginalColor>k__BackingField.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderOriginalColor>k__BackingField.b
+      value: 0.972549
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderOriginalColor>k__BackingField.g
+      value: 0.7607843
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderOriginalColor>k__BackingField.r
+      value: 0.80784315
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderHighlightColor>k__BackingField.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderHighlightColor>k__BackingField.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderHighlightColor>k__BackingField.g
+      value: 0.9386792
+      objectReference: {fileID: 0}
+    - target: {fileID: 5516224551491992307, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: <SliderHighlightColor>k__BackingField.r
+      value: 0.9523061
       objectReference: {fileID: 0}
     - target: {fileID: 6802992187618466094, guid: b0a829d76639fe2488fd029069edc4c6,
         type: 3}
@@ -893,11 +922,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseUIPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 7374850743803701376, guid: b0a829d76639fe2488fd029069edc4c6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8405598298585338313, guid: b0a829d76639fe2488fd029069edc4c6,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -916,6 +940,16 @@ PrefabInstance:
     - target: {fileID: 8405598298585338313, guid: b0a829d76639fe2488fd029069edc4c6,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474287849274198622, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474287849274198622, guid: b0a829d76639fe2488fd029069edc4c6,
+        type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1200,10 +1234,75 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2486561259701492948, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2486561259701492948, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2486561259701492948, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2486561259701492948, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2752618863810208662, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2752618863810208662, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2752618863810208662, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2752618863810208662, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2952021310492031058, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
         type: 3}
       propertyPath: m_Name
       value: PlayUIPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2952021310492031058, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685195609982809427, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685195609982809427, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685195609982809427, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685195609982809427, guid: 6b66e5bfb0777724991ed0a10f05cdf2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

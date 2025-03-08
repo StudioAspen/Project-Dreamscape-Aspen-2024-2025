@@ -13,6 +13,7 @@ public class MaxHealthIncreaseStatusEffectSO : StatusEffectSO
     {
         base.OnApply();
         entity.MaxHealth.AddFlatAmount(healthIncrease, this);
+        entity.Heal(healthIncrease);
     }
 
     public override void Cancel()

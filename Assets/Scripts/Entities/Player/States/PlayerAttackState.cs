@@ -196,7 +196,7 @@ public class PlayerAttackState : PlayerBaseState
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(ComboData.StunDuration);
+        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(player, ComboData.StunDuration);
 
         TryLaunchVictim(victim, damage);
         TryAirComboVictim(victim, damage);
@@ -212,7 +212,7 @@ public class PlayerAttackState : PlayerBaseState
         if (!ComboData.WillLaunchUpwards) return;
         if (victim.WillDieFromDamage(damage)) return;
 
-        victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
     }
 
     /// <summary>
@@ -226,7 +226,7 @@ public class PlayerAttackState : PlayerBaseState
         if (victim.IsGrounded) return;
 
         if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
-        else victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        else victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
 
         if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
         else player.ResetYVelocity();

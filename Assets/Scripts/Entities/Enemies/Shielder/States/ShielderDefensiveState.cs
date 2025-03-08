@@ -68,6 +68,8 @@ public class ShielderDefensiveState : ShielderBaseState
 
     private void Shielder_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
+        if (source == null) return;
+
         if(!source.TryGetComponent(out Entity attacker))
         {
             return;
@@ -80,7 +82,7 @@ public class ShielderDefensiveState : ShielderBaseState
             return;
         }
 
-        attacker.ForceChangeToLaunchState(Vector3.zero, 0, shielder.ShielderShieldBashState.ShieldBashStunTime);
+        attacker.ForceChangeToLaunchState(shielder, Vector3.zero, 0, shielder.ShielderShieldBashState.ShieldBashStunTime);
         shielder.ChangeState(shielder.ShielderPowerAttackState);
     }
 }

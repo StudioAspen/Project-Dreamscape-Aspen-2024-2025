@@ -68,11 +68,13 @@ public class EnemySpawner : MonoBehaviour
     /// Starts the enemy spawner coroutine with currency.
     /// Stops any existing spawning coroutine.
     /// </summary>
+    /// <param name="spawnIntervalRange"></param>
+    /// <param name="spawnAmount"></param>
     /// <param name="willRestockCurrency">Whether to restock currency</param>
-    public void StartSpawnerWithCurrency(bool willRestockCurrency = true)
+    public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
     {
-        StopSpawner();
-        currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency));
+      StopSpawner();
+      currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
     }
 
     /// <summary>
@@ -80,10 +82,10 @@ public class EnemySpawner : MonoBehaviour
     /// Stops any existing spawning coroutine.
     /// </summary>
     /// <param name="duration">The duration to spawn enemies for.</param>
-    public void StartSpawnerWithDuration(float duration)
+    public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
-        StopSpawner();
-        currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(duration));
+      StopSpawner();
+      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, spawnAmount, duration));
     }
 
     /// <summary>
@@ -100,15 +102,29 @@ public class EnemySpawner : MonoBehaviour
     /// Stores the remaining currency.
     /// <param name="startingCurrency">The starting currency</param>
     /// </summary>
-    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency)
+    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency, Vector2 spawnIntervalRange, int spawnAmount)
     {
         currentRemainingCurrency = startingCurrency;
         List<(Enemy, float)> enemyRemainingCurrencyQueue = GetEnemyPrefabQueue(startingCurrency);
+
+        float randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
+        int spawned = 0;
+
         foreach ((Enemy enemyPrefab, float remainingCurrency) in enemyRemainingCurrencyQueue)
         {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(enemySpawnIntervalRange.x, enemySpawnIntervalRange.y));
             SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
             currentRemainingCurrency = remainingCurrency;
+            
+            if(spawned < spawnAmount)
+            {
+              spawned++;
+              yield return null;
+            }
+            else
+            {
+              spawned = 0;
+              yield return new WaitForSeconds(randomDelay);
+            }
         }
         currentSpawnerCoroutine = null;
     }
@@ -117,14 +133,16 @@ public class EnemySpawner : MonoBehaviour
     /// Spawns enemies for a specified duration.
     /// This does not use currency.
     /// </summary>
+    /// <param name="spawnIntervalRange">The random range for the spawning interval.</param>
+    /// <param name="spawnAmount">The number of enemies to spawn per interval.</param>
     /// <param name="duration">The duration of the spawning process.</param>
-    private IEnumerator SpawnWithDurationCoroutine(float duration)
+    private IEnumerator SpawnWithDurationCoroutine(Vector2 spawnIntervalRange, int spawnAmount, float duration)
     {
-        List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, enemySpawnIntervalRange);
+        List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, spawnIntervalRange, spawnAmount);
         foreach ((Enemy enemyPrefab, float delay) in enemySpawnDelayQueue)
         {
-            yield return new WaitForSeconds(delay);
             SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
+            yield return new WaitForSeconds(delay);
         }
         currentSpawnerCoroutine = null;
     }
@@ -168,7 +186,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="totalDuration">The total duration to spawn the enemies</param>
     /// <param name="spawnIntervalRange">The random range of spawn intervals</param>
     /// <returns>The list of enemies and their spawn delay or empty list if a warning was thrown.</returns>
-    private List<(Enemy, float)> GetEnemyPrefabQueue(float totalDuration, Vector2 spawnIntervalRange)
+    private List<(Enemy, float)> GetEnemyPrefabQueue(float totalDuration, Vector2 spawnIntervalRange, int spawnAmount = 1)
     {
         if (enemySpawnChanceDictionary == null || enemySpawnChanceDictionary.Count == 0)
         {
@@ -182,6 +200,8 @@ public class EnemySpawner : MonoBehaviour
 
         while (remainingDuration > randomDelay)
         {
+          for(int i = 0; i < spawnAmount; i++)
+          {
             Enemy enemyPrefab = GetRandomEnemyPrefab();
             if (enemyPrefab == null)
             {
@@ -189,9 +209,11 @@ public class EnemySpawner : MonoBehaviour
                 return new List<(Enemy, float)>();
             }
 
-            randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
-            enemySpawnDelayQueue.Add((enemyPrefab, randomDelay));
+            // add the first enemy in the batch with the interval, but set every interval after to be 0.1 seconds
+            enemySpawnDelayQueue.Add((enemyPrefab, i == 0 ? randomDelay : 0.1f));
+
             remainingDuration -= randomDelay;
+          }
         }
 
         return enemySpawnDelayQueue;
@@ -295,7 +317,7 @@ public class EnemySpawner : MonoBehaviour
         Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * radius;
         Vector3 randomPosition = new Vector3(
             baseSpawnPoint.position.x + randomOffset.x,
-            baseSpawnPoint.position.y,
+            baseSpawnPoint.position.y + 0.25f,
             baseSpawnPoint.position.z + randomOffset.y
         );
 

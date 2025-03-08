@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DisplayName>k__BackingField: Status Effect
   <Description>k__BackingField: Status effect description
-  <Stackable>k__BackingField: 0
-  <Duration>k__BackingField: 1
-  <DamageThreshold>k__BackingField: 0.1
+  <Stackable>k__BackingField: 1
+  <Duration>k__BackingField: 7.5
+  <Marker>k__BackingField: {fileID: 5737244519772739166, guid: 46f2e65b43c4bba49bbc48c4ec4adb2f,
+    type: 3}
+  <BaseExecuteThreshold>k__BackingField: 0.1
+  <ExecuteThresholdPerStack>k__BackingField: 0.05
+  <MaxStacks>k__BackingField: 3
+  <ExecuteThresholdPerExtraDebuff>k__BackingField: 0
+  <ExecutionExplosionRadius>k__BackingField: 0

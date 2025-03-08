@@ -37,6 +37,8 @@ public class EventSelectUIPanel : UIPanel
 
     private Coroutine startCardsAnimationCoroutine;
 
+    private Type previousEvent = null;
+
     // UI scene loads last so Awake is safe here
     private void Awake()
     {
@@ -136,6 +138,14 @@ public class EventSelectUIPanel : UIPanel
     {
         List<Type> potentialEvents = new List<Type>(eventManager.EventsDictionary.Keys);
 
+        // Prevent players from selecting the same event two waves in a row.
+        if (previousEvent != null) 
+        {
+          Debug.Log($"Previous Event: {previousEvent.Name}\n Now Removing {previousEvent.Name}...");
+          Type type = potentialEvents.Find(x => x == previousEvent);
+          potentialEvents.Remove(type);
+        }
+
         foreach (EventCardUI card in eventCards)
         {
             int randomIndex = UnityEngine.Random.Range(0, potentialEvents.Count);
@@ -153,6 +163,8 @@ public class EventSelectUIPanel : UIPanel
         DisableCardButtons();
 
         PlayExitAnimation(clickedCard);
+
+        previousEvent = clickedCard.CurrentEventType;
     }
 
     /// <summary>

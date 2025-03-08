@@ -97,7 +97,7 @@ public class PlayerCombat : MonoBehaviour
 
         // if the incoming action is not an attack action, the combo list is reset after a delay.
         if (!IsAttackAction(incomingAction)) StartDelayedComboListsReset(nonAttackComboResetDelay);
-
+        
         // if the incoming action doesn't create any valid combos, the combo list is restarted with only the new action.
         if (predictedCombos.Count == 0)
         {
@@ -105,7 +105,7 @@ public class PlayerCombat : MonoBehaviour
             CurrentInputsList.Add(incomingAction);
             GenerateComboLists(Weapon.GetCombos(!player.IsGrounded));
         }
-
+        
         if (IsAttackAction(incomingAction))
         {
             bool successfullyExecutedCombo = TryExecuteCombo(ComboDataSO.GetLongestCombo(potentialCombos));
@@ -140,6 +140,7 @@ public class PlayerCombat : MonoBehaviour
     /// <param name="validCombos">The list of valid combos.</param>
     private void GenerateComboLists(List<ComboDataSO> validCombos)
     {
+        
         potentialCombos = new List<ComboDataSO>();
         predictedCombos = new List<ComboDataSO>();
         foreach (ComboDataSO weaponCombo in validCombos)
@@ -263,6 +264,15 @@ public class PlayerCombat : MonoBehaviour
     public void EndHit()
     {
         Weapon.DisableTriggers();
+    }
+
+    /// <summary>
+    /// Clears the weapon's hit list.
+    /// Called by an animation event.
+    /// </summary>
+    public void ClearHits()
+    {
+        Weapon.ClearObjectHitList();
     }
 
     /// <summary>
