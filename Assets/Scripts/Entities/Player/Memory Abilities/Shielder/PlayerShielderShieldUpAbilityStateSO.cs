@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Shielder Memory Shield Up Ability", menuName = "Memory Abilities/Shielder/Shield Up")]
-public class PlayerLeaperShieldUpAbilityStateSO : PlayerAbilityStateSO
+public class PlayerShielderShieldUpAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
-    public TemporaryUnbreakableShieldStatusEffectSO UnbreakableShieldStatusEffect { get; private set; }
-    private TemporaryUnbreakableShieldStatusEffectSO statusEffectInstance;
-    [field: SerializeField] public float DurationMultiplier { get; private set; } = 1f;
+    [field: SerializeField] public TemporaryUnbreakableShieldStatusEffectSO UnbreakableShieldStatusEffect { get; private set; }
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float AnimationDuration { get; private set; } = 1f;
+
+
+
+    private float timer;
     public override bool CanUseAbility(Player player)
     {
         bool cannotUseAbility =
@@ -27,23 +31,24 @@ public class PlayerLeaperShieldUpAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        // Apply the unbreakable shield status effect to the player
-        statusEffectInstance = Instantiate(UnbreakableShieldStatusEffect);
-        statusEffectInstance.OverrideDuration(statusEffectInstance.Duration * DurationMultiplier);
-        statusEffectInstance.Init(player.GetComponent<EntityStatusEffector>(), player.gameObject);
+        timer = 0;
+        player.PlayOneShotAnimation(AnimationClip, AnimationDuration);
     }
 
     public override void OnExit()
     {
-        if (statusEffectInstance != null)
-        {
-            statusEffectInstance.Cancel();
-            statusEffectInstance = null;
-        }
+        EntityStatusEffector.TryApplyStatusEffect(player.gameObject, UnbreakableShieldStatusEffect, player.gameObject);
     }
 
     public override void OnUpdate()
     {
+        timer += player.LocalDeltaTime;
+        if (timer > AnimationDuration)
+        {
+            player.ChangeState(player.DefaultState, true);
+            return;
+        }
+        
     }
 
 

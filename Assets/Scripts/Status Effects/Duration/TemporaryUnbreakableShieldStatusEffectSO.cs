@@ -7,7 +7,6 @@ using UnityEngine;
 public class TemporaryUnbreakableShieldStatusEffectSO : DurationStatusEffectSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public float DurationMultiplier { get; private set; } = 5f;
 
     [field: SerializeField] public ShieldVFX ShieldVFXPrefab { get; private set; }
 
@@ -20,6 +19,8 @@ public class TemporaryUnbreakableShieldStatusEffectSO : DurationStatusEffectSO
         shieldVFXInstance.Init(entity.GetColliderLargestSize() / 2, entity.transform, entity.GetColliderCenterPosition() - entity.transform.position);
         shieldVFXInstance.PlayStartAnimation();
 
+        entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
+
     }
 
     private protected override void OnExpire()
@@ -29,6 +30,8 @@ public class TemporaryUnbreakableShieldStatusEffectSO : DurationStatusEffectSO
         entity.MaxHealth.ClearBuffsFromSource(this);
 
         if (shieldVFXInstance != null) shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
+
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
 
     }
 
@@ -41,7 +44,14 @@ public class TemporaryUnbreakableShieldStatusEffectSO : DurationStatusEffectSO
 
         if (shieldVFXInstance != null) shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
 
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
 
+
+    }
+
+    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    {
+        entity.Heal(damage); 
     }
 
 
