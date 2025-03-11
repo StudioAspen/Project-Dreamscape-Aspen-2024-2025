@@ -54,13 +54,6 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
         base.Update();
 
         HandleSwitchInputTimer();
-
-        // Debug
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());
-            skull.Init(entity);
-        }
     }
 
     public override void Cancel()
