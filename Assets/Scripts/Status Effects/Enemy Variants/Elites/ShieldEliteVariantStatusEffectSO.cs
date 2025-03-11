@@ -12,6 +12,8 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         base.OnApply();
 
+        enemy.SetInvincible(true);
+
         enemy.OnEntityTakeDamage += Enemy_OnEntityTakeDamage;
 
         shieldVFXInstance = Instantiate(ShieldVFXPrefab, enemy.GetColliderCenterPosition(), Quaternion.identity);
@@ -38,7 +40,7 @@ public class ShieldEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         enemy.OnEntityTakeDamage -= Enemy_OnEntityTakeDamage; // Remove the event listener because this only happens once
 
-        enemy.HealToFull(false); // Update current health to full
+        enemy.SetInvincible(false);
 
         shieldVFXInstance.PlayEndAnimation(() => Destroy(shieldVFXInstance.gameObject));
     }
