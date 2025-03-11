@@ -206,6 +206,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </remarks>
     public Action<Vector3> OnAirborne = delegate { };
     private bool prevIsGrounded;
+    private bool isKilledFromBeingOutOfBounds;
 
     /// <summary>
     /// Invokes the vertical movement events based on the current grounded state.
@@ -479,10 +480,12 @@ public class Entity : MonoBehaviour, IPoolableObject
         prevIsGrounded = true;
         inAirTimer = 0f;
         fallVelocityApplied = false;
+        isKilledFromBeingOutOfBounds = false;
 
         lastHitSource = null;
 
         CurrentHealth = MaxHealth.GetIntValue();
+        SetInvincible(false);
 
         IgnoreOtherEntityCollisions(false);
 
@@ -744,8 +747,9 @@ public class Entity : MonoBehaviour, IPoolableObject
         CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
 
         // Kill if below the map
-        if(transform.position.y < -100f)
+        if(transform.position.y < -100f && !isKilledFromBeingOutOfBounds)
         {
+            isKilledFromBeingOutOfBounds = true;
             Kill(lastHitSource);
         }
     }
