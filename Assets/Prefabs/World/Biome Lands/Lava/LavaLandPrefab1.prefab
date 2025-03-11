@@ -553,6 +553,9 @@ Transform:
   - {fileID: 2011804285991382876}
   - {fileID: 964402423074326289}
   - {fileID: 1505267864197498430}
+  - {fileID: 4154448739773721905}
+  - {fileID: 5253321857577729284}
+  - {fileID: 2432500128993793407}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6052383663745716427
@@ -1210,6 +1213,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_DeadTree3 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 2735202410661295331, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4085009225137356536, guid: fbf8cbe9edda31e4795af5475ad05747,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1259,6 +1267,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851865625671247804, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1344,10 +1357,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2398240321468828174, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1433,6 +1456,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3913374491515868644, guid: a4c339956407fee45b2dfc853407c35b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4396861173905002334, guid: a4c339956407fee45b2dfc853407c35b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1447,6 +1475,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_MediumRock (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604203636298517297, guid: a4c339956407fee45b2dfc853407c35b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1729,17 +1762,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: f842c072bffb43b42ac59d3089fd66b2,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f842c072bffb43b42ac59d3089fd66b2,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f842c072bffb43b42ac59d3089fd66b2,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f842c072bffb43b42ac59d3089fd66b2,
         type: 3}
@@ -2220,6 +2253,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_DeadTree3 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 2735202410661295331, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4085009225137356536, guid: fbf8cbe9edda31e4795af5475ad05747,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -2285,6 +2323,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7851865625671247804, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2308,6 +2351,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree3 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2735202410661295331, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4085009225137356536, guid: fbf8cbe9edda31e4795af5475ad05747,
         type: 3}
@@ -2378,6 +2426,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851865625671247804, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2677,6 +2730,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_SmallRock (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -2742,6 +2800,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2765,6 +2828,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_SmallRock (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
@@ -2831,6 +2899,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2854,6 +2927,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_SmallRock (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
@@ -2905,6 +2983,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2928,6 +3011,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree2 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257128867039476761, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663073577303591768, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8334111410416817989, guid: 242a5536a5f0b0f43adb10e39bd5760c,
         type: 3}
@@ -3337,6 +3430,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_SmallRock (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3387,6 +3485,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3397,6 +3500,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
     type: 3}
   m_PrefabInstance: {fileID: 3694787205771135750}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3869207858549665306
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3999374681703134211}
+    m_Modifications:
+    - target: {fileID: 110658283149822555, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Name
+      value: Geyser (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1939340573646255524, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5149517
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5892a1d460987cf4683947acec977768, type: 3}
+--- !u!4 &5253321857577729284 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+    type: 3}
+  m_PrefabInstance: {fileID: 3869207858549665306}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3940957356226354912
 PrefabInstance:
@@ -3410,6 +3612,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_Bone (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1504040046465990735, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2067212620684064482, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
@@ -3475,6 +3682,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 4.448
+      objectReference: {fileID: 0}
+    - target: {fileID: 7376198844974046228, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 9033510245837356481, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
@@ -3565,10 +3777,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2398240321468828174, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8692439982121176678, guid: fc32c099964bea343ae7de6c802cc34a,
         type: 3}
@@ -3603,6 +3825,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_SmallRock (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
@@ -3669,6 +3896,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3692,6 +3924,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree2 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257128867039476761, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663073577303591768, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8334111410416817989, guid: 242a5536a5f0b0f43adb10e39bd5760c,
         type: 3}
@@ -3781,6 +4023,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree2 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257128867039476761, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663073577303591768, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8334111410416817989, guid: 242a5536a5f0b0f43adb10e39bd5760c,
         type: 3}
@@ -3916,10 +4168,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2398240321468828174, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree1 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2998418855608239041, guid: fc32c099964bea343ae7de6c802cc34a,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3944,6 +4206,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_SmallRock (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
@@ -4010,6 +4277,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4020,6 +4292,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
     type: 3}
   m_PrefabInstance: {fileID: 4899949877688375020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4968083329468317231
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3999374681703134211}
+    m_Modifications:
+    - target: {fileID: 110658283149822555, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Name
+      value: Geyser
+      objectReference: {fileID: 0}
+    - target: {fileID: 1939340573646255524, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.5905814
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5149517
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.9093902
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5892a1d460987cf4683947acec977768, type: 3}
+--- !u!4 &4154448739773721905 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+    type: 3}
+  m_PrefabInstance: {fileID: 4968083329468317231}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5064804830474738100
 PrefabInstance:
@@ -4043,6 +4414,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7257128867039476761, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663073577303591768, guid: 242a5536a5f0b0f43adb10e39bd5760c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8334111410416817989, guid: 242a5536a5f0b0f43adb10e39bd5760c,
         type: 3}
@@ -4133,6 +4514,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_Bone (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1504040046465990735, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2067212620684064482, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4183,6 +4569,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7376198844974046228, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 9033510245837356481, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -4211,6 +4602,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_Bone (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1504040046465990735, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2067212620684064482, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
@@ -4277,6 +4673,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 6.648
       objectReference: {fileID: 0}
+    - target: {fileID: 7376198844974046228, guid: a412a867535e1da45b8d66fbf1d4d522,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 9033510245837356481, guid: a412a867535e1da45b8d66fbf1d4d522,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -4292,6 +4693,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2067212620684064482, guid: a412a867535e1da45b8d66fbf1d4d522,
     type: 3}
   m_PrefabInstance: {fileID: 6529516252376515755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6671033449739175521
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3999374681703134211}
+    m_Modifications:
+    - target: {fileID: 110658283149822555, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Name
+      value: Geyser (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1939340573646255524, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.77
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5149517
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5892a1d460987cf4683947acec977768, type: 3}
+--- !u!4 &2432500128993793407 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9031331788138976030, guid: 5892a1d460987cf4683947acec977768,
+    type: 3}
+  m_PrefabInstance: {fileID: 6671033449739175521}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7021658940055899864
 PrefabInstance:
@@ -4380,6 +4880,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lava_SmallRock
       objectReference: {fileID: 0}
+    - target: {fileID: 1429856810912397754, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5402013562972361271, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4429,6 +4934,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7158486655381358159, guid: 312f8b4cfafcbfa46bd2f8b33ec81def,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4499,6 +5009,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3913374491515868644, guid: a4c339956407fee45b2dfc853407c35b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4396861173905002334, guid: a4c339956407fee45b2dfc853407c35b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4513,6 +5028,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_MediumRock (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604203636298517297, guid: a4c339956407fee45b2dfc853407c35b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4537,6 +5057,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Lava_DeadTree3 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2735202410661295331, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4085009225137356536, guid: fbf8cbe9edda31e4795af5475ad05747,
         type: 3}
@@ -4602,6 +5127,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851865625671247804, guid: fbf8cbe9edda31e4795af5475ad05747,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
