@@ -43,17 +43,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.6445725
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.14143471
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.35998446
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
@@ -63,17 +63,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
@@ -90,12 +90,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5168086541899665819, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
         type: 3}
       propertyPath: m_Name
       value: Follower
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5866666021909216657, guid: 78dc46b83c3abee47ba85b3bc8bdd8de,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 78dc46b83c3abee47ba85b3bc8bdd8de, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
