@@ -4415,12 +4415,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_DeltaTimeMode: 0
-  m_ConstantDeltaTime: 0.03
+  m_DeltaTimeMode: 2
+  m_ConstantDeltaTime: 0.033333335
   m_Iterations: 1
   m_SleepThreshold: 0.005
   m_GravityAligner: {fileID: 0}
-  m_Gravity: {x: 0, y: -0.75, z: 0}
+  m_Gravity: {x: 0, y: -1.75, z: 0}
   m_ForceModule: {fileID: 0}
   m_ForceScale: 0.5
   m_SimulateSpace: {fileID: 0}

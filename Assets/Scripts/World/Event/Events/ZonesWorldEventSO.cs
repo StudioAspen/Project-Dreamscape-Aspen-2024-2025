@@ -47,14 +47,13 @@ public class ZonesWorldEventSO : WorldEventSO
         foreach(LandManager land in affectedLands)
         {
             // if (land.Level <= 0) continue;
-
-            StartEnemySpawnerWithCurrency(land, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
-
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
             land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
             land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
+
+            StartEnemySpawnerWithCurrency(land, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
             activeLands++;
         }
@@ -72,7 +71,9 @@ public class ZonesWorldEventSO : WorldEventSO
         foreach (LandManager land in new List<LandManager>(affectedLands))
         {
             land.EnemySpawner.DeactivateAllEnemies();
-
+        }
+        foreach (LandManager land in new List<LandManager>(affectedLands))
+        {
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
 

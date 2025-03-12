@@ -91,10 +91,10 @@ public abstract class WorldEventSO : ScriptableObject
     /// Adds the land to the activeSpawnerLands list for tracking.
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
-    /// <param name="interval"></param>
+    /// <param name="spawnIntervalRange"></param>
     /// <param name="spawnAmount"></param>
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
-    public void StartEnemySpawnerWithCurrency(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
+    public void StartEnemySpawnerWithCurrency(LandManager land, Vector2 spawnIntervalRange, int spawnAmount = 1, bool willRestockCurrency = true)
     {
         if (land == null) return;
         if (land.EnemySpawner == null) return;
@@ -110,13 +110,13 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="land">The land to spawn enemies on.</param>
     /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnerWithDuration(LandManager land, Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    public void StartEnemySpawnerWithDuration(LandManager land, Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
         if (land == null) return;
         if (land.EnemySpawner == null) return;
 
         EnemySpawner enemySpawner = land.EnemySpawner;
-        enemySpawner.StartSpawnerWithDuration(spawnIntervalRange, spawnAmount, duration);
+        enemySpawner.StartSpawnerWithDuration(spawnIntervalRange, duration, spawnAmount);
         activeSpawnerLands.Add(land);
     }
 
@@ -126,7 +126,7 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="lands">The list of lands to spawn enemies on.</param>
     /// <param name="willRestockCurrency">Whether to restock currency.</param>
-    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
+    public void StartEnemySpawnersWithCurrency(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount = 1, bool willRestockCurrency = true)
     {
         foreach (LandManager land in new List<LandManager>(lands))
         {
@@ -141,11 +141,11 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     /// /// <param name="lands">The list of lands to spawn enemies on.</param>
     /// /// <param name="duration">The duration of how long the enemies will spawn for.</param>
-    public void StartEnemySpawnersWithDuration(List<LandManager> lands, Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    public void StartEnemySpawnersWithDuration(List<LandManager> lands, Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
         foreach (LandManager land in new List<LandManager>(lands))
         {
-            StartEnemySpawnerWithDuration(land, spawnIntervalRange, spawnAmount, duration);
+            StartEnemySpawnerWithDuration(land, spawnIntervalRange, duration, spawnAmount);
         }
     }
 
