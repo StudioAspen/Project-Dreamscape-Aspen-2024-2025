@@ -69,10 +69,6 @@ public class PrioritiesWorldEventSO : WorldEventSO
         {
             if (land.Level <= 0) continue;
 
-            // Each top land will use ALL of its currency to spawn many enemies as possible all at once.
-            for(int i = 0; i < SpawnBursts; i++)
-              StartEnemySpawnerWithCurrency(land, Vector2.zero, BaseSpawnAmount);
-
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
@@ -80,6 +76,10 @@ public class PrioritiesWorldEventSO : WorldEventSO
             land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
 
             land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
+
+            // Each top land will use ALL of its currency to spawn many enemies as possible all at once.
+            for(int i = 0; i < SpawnBursts; i++)
+              StartEnemySpawnerWithCurrency(land, Vector2.zero, BaseSpawnAmount);
 
             activeLands++;
         }
