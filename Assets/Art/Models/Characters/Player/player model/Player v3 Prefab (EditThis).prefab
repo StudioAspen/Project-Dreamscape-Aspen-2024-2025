@@ -4017,6 +4017,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5870774935794643641}
+  - component: {fileID: 5589569319064075060}
   m_Layer: 0
   m_Name: rig
   m_TagString: Untagged
@@ -4041,6 +4042,76 @@ Transform:
   - {fileID: 3706357364380321362}
   m_Father: {fileID: 2725540357861909793}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5589569319064075060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5522841515820688473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa2b9bccfefda549bd1cf67fd922ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RootBones:
+  - {fileID: 7411297624214825726}
+  - {fileID: 5746933593236614438}
+  - {fileID: 3002044192737708129}
+  - {fileID: 5030745162416139535}
+  - {fileID: 140508698896252746}
+  - {fileID: 8615070228224102682}
+  - {fileID: 5286595560425551703}
+  - {fileID: 5286595560425551703}
+  - {fileID: 5453570380550845789}
+  - {fileID: 3036993780189815116}
+  - {fileID: 6170966738619805717}
+  - {fileID: 5133260495812010047}
+  m_EndBones: []
+  m_Material: {fileID: 11400000, guid: e4a32aa64f78bd746868a8e572bf8bf7, type: 2}
+  m_StartDepth: 0
+  m_SiblingConstraints: 0
+  m_ClosedSiblings: 0
+  m_SiblingRotationConstraints: 1
+  m_LengthUnification: 0
+  m_CollisionLayers:
+    serializedVersion: 2
+    m_Bits: 65600
+  m_ExtraColliders: []
+  m_Radius: 0
+  m_RadiusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_DeltaTimeMode: 0
+  m_ConstantDeltaTime: 0.03
+  m_Iterations: 1
+  m_SleepThreshold: 0.005
+  m_GravityAligner: {fileID: 0}
+  m_Gravity: {x: 0, y: -0.75, z: 0}
+  m_ForceModule: {fileID: 0}
+  m_ForceScale: 0.5
+  m_SimulateSpace: {fileID: 0}
 --- !u!1 &5534829280112495936
 GameObject:
   m_ObjectHideFlags: 0
@@ -5936,8 +6007,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7587704061600296100}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.08359761, z: 3.2916846}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.08359766, z: 3.2916837}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6018,6 +6089,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 454195991047243508}
+  - component: {fileID: 4882485154683385184}
   m_Layer: 0
   m_Name: head
   m_TagString: Untagged
@@ -6033,8 +6105,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7671425891811500052}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: -0.00000008429368, z: -0.00000008429368, w: 0.7071067}
-  m_LocalPosition: {x: 9.341594e-15, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0.00000013240823, z: -0.00000013240823, w: 0.7071068}
+  m_LocalPosition: {x: -5.0437763e-16, y: 0.00000014628151, z: 0.00000032821353}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6054,6 +6126,33 @@ Transform:
   - {fileID: 7411297624214825726}
   m_Father: {fileID: 8297939939898689476}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1773428102 &4882485154683385184
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7671425891811500052}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
+  m_RotationAtRest: {x: 90, y: 0, z: 0}
+  m_TranslationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_RotationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_Active: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 2014128740162076053}
+    weight: 1
 --- !u!1 &7764670084637000901
 GameObject:
   m_ObjectHideFlags: 0
