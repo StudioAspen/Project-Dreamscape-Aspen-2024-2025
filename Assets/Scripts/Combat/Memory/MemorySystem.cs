@@ -70,11 +70,6 @@ public class MemorySystem : MonoBehaviour
         player = GetComponent<Player>();
     }
 
-    private void OnDestroy()
-    {
-
-    }
-
     /// <summary>
     /// Tries to activate a memory ability based on the shard counts
     /// </summary>

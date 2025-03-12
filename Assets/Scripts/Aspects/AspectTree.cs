@@ -9,8 +9,9 @@ public class AspectTree : NodeGraph
 {
     [field: Header("Display")]
     [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Tree";
-    [field: SerializeField] public string Description { get; private set; } = "Description";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Description";
     [field: SerializeField] public Sprite AspectSprite { get; private set; }
+    [field: SerializeField] public Color AspectTextColor { get; private set; } = Color.white;
 
     /// <summary>
     /// Makes a runtime copy of this aspect tree so that it can be modified without affecting the original.
@@ -242,5 +243,15 @@ public class AspectTree : NodeGraph
 
         // if the node is at the same y as the applied node at the first multi-node level, it can be chosen and isnt locked out
         return currentNodePosition.y == appliedNodeY;
+    }
+
+    /// <summary>
+    /// Checks if the tree as all upgrades exhausted
+    /// </summary>
+    /// <returns>Whether the tree is completed</returns>
+    public bool IsCompleted()
+    {
+        List<AspectNodeNode> nextNodes = GetNextUnappliedNodes();
+        return nextNodes == null || nextNodes.Count == 0;
     }
 }

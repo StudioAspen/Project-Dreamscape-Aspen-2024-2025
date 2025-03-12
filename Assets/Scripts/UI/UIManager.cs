@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class UIManager : MonoBehaviour
 {
@@ -22,6 +23,12 @@ public class UIManager : MonoBehaviour
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         gameInputManager.OnControlSchemeChanged += GameInputManager_OnControlSchemeChanged;
+
+        // Init all the panels
+        foreach(UIPanel panel in gamePanels.Values)
+        {
+            panel.Init(this, gameInputManager);
+        }
 
         // Manually call the event handlers to set up the initial state
         GameManager_OnGameStateChanged(gameManager.CurrentState);
@@ -63,5 +70,24 @@ public class UIManager : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
+    }
+
+    private void Update()
+    {
+        HandleNullSelected();
+    }
+
+    /// <summary>
+    /// When the selected gameObject is null when in controller mode, tries to set the selected object to the default one
+    /// </summary>
+    private void HandleNullSelected()
+    {
+        if (gameInputManager.CurrentControlScheme == InputManager.ControlScheme.KEYBOARD_MOUSE) return;
+
+        GameObject currentSelectedObject = EventSystem.current.currentSelectedGameObject;
+        UIPanel currentPanel = gamePanels[gameManager.CurrentState];
+        if (currentSelectedObject != null && currentSelectedObject.transform.IsChildOf(currentPanel.transform)) return;
+
+        EventSystem.current.SetSelectedGameObject(currentPanel.DefaultSelectedObject);
     }
 }

@@ -10,11 +10,11 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Header("References")]
     [SerializeField] private Button button;
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private Image biomeIconImage;
     [SerializeField] private GameObject backgroundGlow;
 
     public Biome CurrentBiome { get; private set; }
 
-    public bool IsReady => worldManager != null;
     private bool isSelected;
 
     // Awake is safe here since UI scene loads last
@@ -25,7 +25,6 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Start()
     {
-
         button.onClick.AddListener(OnClickCard);
     }
 
@@ -56,6 +55,7 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         CurrentBiome = biome;
 
         nameText.text = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].BiomeName;
+        biomeIconImage.sprite = worldManager.BiomeDatabase.BiomesDictionary[CurrentBiome].IconSprite;
     }
 
     private void OnClickCard()

@@ -37,6 +37,8 @@ public class EventSelectUIPanel : UIPanel
 
     private Coroutine startCardsAnimationCoroutine;
 
+    private Type previousEvent = null;
+
     // UI scene loads last so Awake is safe here
     private void Awake()
     {
@@ -102,7 +104,6 @@ public class EventSelectUIPanel : UIPanel
 
         Vector3 bottomLeftPositionOffScreen = new Vector3(-Camera.main.pixelWidth, -Camera.main.pixelHeight, 0);
 
-        print(eventCards[0].gameObject.transform.position);
         // Kill all previous tweens on the event cards and return them to their starting states
         for (int i = 0; i < eventCards.Count; i++)
         {
@@ -112,7 +113,6 @@ public class EventSelectUIPanel : UIPanel
             // Move the cards off screen
             eventCards[i].transform.position = bottomLeftPositionOffScreen;
         }
-        print(eventCards[0].gameObject.transform.position);
 
         for (int i = 0; i < eventCards.Count; i++)
         {
@@ -127,7 +127,6 @@ public class EventSelectUIPanel : UIPanel
 
             yield return new WaitForSecondsRealtime(flipDurationBetweenCards);
         }
-        print(eventCards[0].gameObject.transform.position);
 
         startCardsAnimationCoroutine = null;
     }
@@ -138,6 +137,14 @@ public class EventSelectUIPanel : UIPanel
     private void AssignRandomEventsToCards()
     {
         List<Type> potentialEvents = new List<Type>(eventManager.EventsDictionary.Keys);
+
+        // Prevent players from selecting the same event two waves in a row.
+        if (previousEvent != null) 
+        {
+          Debug.Log($"Previous Event: {previousEvent.Name}\n Now Removing {previousEvent.Name}...");
+          Type type = potentialEvents.Find(x => x == previousEvent);
+          potentialEvents.Remove(type);
+        }
 
         foreach (EventCardUI card in eventCards)
         {
@@ -156,6 +163,8 @@ public class EventSelectUIPanel : UIPanel
         DisableCardButtons();
 
         PlayExitAnimation(clickedCard);
+
+        previousEvent = clickedCard.CurrentEventType;
     }
 
     /// <summary>

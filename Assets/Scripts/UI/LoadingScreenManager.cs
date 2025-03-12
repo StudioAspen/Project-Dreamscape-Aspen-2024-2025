@@ -20,7 +20,6 @@ public class LoadingScreenManager : MonoBehaviour
     [SerializeField] private float sliderSmoothSpeed = 3f;
 
     [Header("Config")]
-    [SerializeField] private float afterLoadDelay = 1f;
     [SerializeField] private float maxLoadDurationBeforeFail = 30f;
 
     private void Awake()

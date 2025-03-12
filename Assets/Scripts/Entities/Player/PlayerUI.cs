@@ -9,12 +9,23 @@ using UnityEngine.UI;
 public class PlayerUI : MonoBehaviour
 {
     private Player player;
+    private MomentumSystem momentumSystem;
+    private ChainingSystem chainingSystem;
+    private LevelSystem levelSystem;
     private AspectsManager aspectsManager;
     private MemorySystem memorySystem;
+
+    [Header("Combat")]
+    [SerializeField] private TMP_Text momentumText;
+    [SerializeField] private TMP_Text chainText;
 
     [Header("Health")]
     [SerializeField] private Slider healthBar;
     [SerializeField] private TMP_Text healthText;
+
+    [Header("Experience")]
+    [SerializeField] private Slider expBar;
+    [SerializeField] private TMP_Text levelText;
 
     [Header("Aspects")]
     [SerializeField] private Image[] aspectsIcons = new Image[3];
@@ -29,11 +40,11 @@ public class PlayerUI : MonoBehaviour
     private void Awake()
     {
         player = FindObjectOfType<Player>();
+        momentumSystem = player.GetComponent<MomentumSystem>();
+        chainingSystem = player.GetComponent<ChainingSystem>();
+        levelSystem = player.GetComponent<LevelSystem>();
         aspectsManager = player.GetComponent<AspectsManager>();
         memorySystem = player.GetComponent<MemorySystem>();
-
-        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        player.OnEntityHeal += Player_OnEntityHeal;
 
         aspectsManager.OnAspectTreeAdded += AspectsManager_OnAspectTreeAdded;
 
@@ -45,31 +56,24 @@ public class PlayerUI : MonoBehaviour
 
     private void Start()
     {
-        UpdateHealthBar(player.CurrentHealth);
         UpdateAspectsIcons();
+    }
+
+    private void Update()
+    {
+        UpdateCombatUI();
+        UpdateExpBar();
+        UpdateHealthBar();
     }
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        player.OnEntityHeal += Player_OnEntityHeal;
-
         aspectsManager.OnAspectTreeAdded -= AspectsManager_OnAspectTreeAdded;
 
         memorySystem.OnNewShardTypeAdded -= MemorySystem_OnNewShardTypeAdded;
         memorySystem.OnShardAdded -= MemorySystem_OnShardAdded;
         memorySystem.OnMemoryBarFull -= MemorySystem_OnMemoryBarFull;
         memorySystem.OnMemoryAbilityActivated -= MemorySystem_OnMemoryAbilityActivated;
-    }
-
-    private void Player_OnEntityHeal(Entity entity, int healAmount)
-    {
-        UpdateHealthBar(player.CurrentHealth + healAmount);
-    }
-
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        UpdateHealthBar(player.CurrentHealth - damage);
     }
 
     private void AspectsManager_OnAspectTreeAdded(AspectTree newTree)
@@ -129,13 +133,25 @@ public class PlayerUI : MonoBehaviour
         shardBarTransforms.Clear();
     }
 
-    private void UpdateHealthBar(int newCurrentHealth)
+    private void UpdateHealthBar()
     {
-        float healthFraction = newCurrentHealth / player.MaxHealth.GetFloatValue();
-        healthFraction = Mathf.Clamp(healthFraction, 0f, 1f);
+        int playerHealth = Mathf.Clamp(player.CurrentHealth, 0, player.MaxHealth.GetIntValue());
+        float healthFraction = playerHealth / (float)player.MaxHealth.GetIntValue();
         healthBar.value = healthFraction;
 
-        healthText.text = $"{newCurrentHealth}/{player.MaxHealth.GetFloatValue()}";
+        healthText.text = $"{playerHealth}/{player.MaxHealth.GetIntValue()}";
+    }
+
+    private void UpdateExpBar()
+    {
+        expBar.value = (float)levelSystem.CurrentEXP / levelSystem.MaxEXP;
+        levelText.text = $"{levelSystem.Level}";
+    }
+
+    private void UpdateCombatUI()
+    {
+        momentumText.text = $"MOMENTUM: {momentumSystem.Momentum}";
+        chainText.text = $"CHAIN: {chainingSystem.ChainCount}";
     }
 
     private void UpdateAspectsIcons()

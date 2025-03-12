@@ -82,22 +82,6 @@ public class Golem : Enemy
         GolemStompState.GroundImpactShockwave();
     }
 
-    public void ShakeCam()
-    {
-        if(camShakeCoroutine != null) StopCoroutine(camShakeCoroutine);
-        camShakeCoroutine = StartCoroutine(CamShakeCoroutine(8, .1f / LocalTimeScale.GetFloatValue()));
-    }
-
-    private IEnumerator CamShakeCoroutine(int numShakes, float shakeDelay)
-    {
-        for (int i = 0; i < numShakes; i++)
-        {
-            CameraShakeManager.Instance.ShakeCamera(Random.Range(4f,8f), shakeDelay);    
-            yield return new WaitForSeconds(shakeDelay);
-        }
-        camShakeCoroutine = null;
-    }
-    
     /// <summary>
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
@@ -114,8 +98,6 @@ public class Golem : Enemy
         if (CurrentState == EntityDeathState) return;
 
         int newDamage = dmg;
-
-        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
 
         if (CanBeStaggered())
         {
@@ -138,12 +120,13 @@ public class Golem : Enemy
             }
         }
 
-        CurrentHealth -= newDamage;
+        if(!IsInvicible) CurrentHealth -= newDamage;
+        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
         lastHitSource = source;
         
         //after calculating current health, check if the entity has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }
