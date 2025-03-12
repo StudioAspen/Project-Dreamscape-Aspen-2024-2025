@@ -627,6 +627,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CharacterController.Move(desiredAnimationMovement);
     }
+
     private void OnDrawGizmos()
     {
         CurrentState?.OnDrawGizmos();
