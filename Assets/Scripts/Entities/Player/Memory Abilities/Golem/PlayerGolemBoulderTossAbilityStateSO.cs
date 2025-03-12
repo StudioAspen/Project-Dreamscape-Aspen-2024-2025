@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections;
+using System.Runtime.InteropServices;
 using Dreamscape.Abilities;
 using UnityEngine;
 
@@ -15,13 +16,16 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
     [field: SerializeField] public PlayerGolemWindDownAbilityStateSO WindDownState { get; private set; }
     [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
-    [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 3f;
-    [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
+    [field: SerializeField] public float SpeedModifier { get; private set; } = 0f;
+    [field: SerializeField] public float TossDuration { get; private set; } = 20f;
     [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
     [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
     
     [field: SerializeField] public GameObject BoulderPrefab { get; private set; }
+    [field: SerializeField] public float BoulderSpawnDelay { get; private set; } = 1 + (45 / 60f); // Boulder spawn delay should be how long after the throw animation under normal time until boulder prefab spawns
+
+    private Coroutine spawnBoulderCoroutine;
 
     private float timer;
 
@@ -45,17 +49,19 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     {
         player.PlayOneShotAnimation(ChargeAnimationClip);
 
-        player.SetSpeedModifier(ChargeSpeedModifier);
+        // player.SetSpeedModifier(SpeedModifier);
 
-
-        UnleashBoulder();
+        spawnBoulderCoroutine = player.StartCoroutine(UnleashBoulder());
 
         timer = 0f;
     }
 
     public override void OnExit()
     {
-       
+        if (spawnBoulderCoroutine != null) {
+            player.StopCoroutine(spawnBoulderCoroutine);
+            spawnBoulderCoroutine = null;
+        }
     }
 
     public override void OnUpdate()
@@ -63,7 +69,7 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
         player.ApplyGravity();
 
         timer += player.LocalDeltaTime;
-        if (timer > ChargeDuration)
+        if (timer > TossDuration)
         {
             player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
             return;
@@ -72,28 +78,16 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
         player.ApplyRotationToNextMovement();
         player.LookAt(player.transform.position + player.TargetForwardDirection, ChargeRotationSpeed);
 
-        player.UpdateHorizontalVelocity(player.transform.forward);
+        // player.UpdateHorizontalVelocity(player.transform.forward);
         player.ApplyHorizontalVelocity();
     }
 
-    private void UnleashBoulder() {
+    private IEnumerator UnleashBoulder() {
+        yield return new WaitForSeconds(BoulderSpawnDelay / player.LocalTimeScale.GetFloatValue());
+        // player.SetSpeedModifier(1f);
         CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(BoulderPrefab);
         spawnedAbility.Init(player);
     }
 
-    // public override void OnOnControllerColliderHit(ControllerColliderHit hit)
-    // {
-    //     if (player.DidHitEnemyEntity(hit.collider, out Entity enemyEntity))
-    //     {
-    //         CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
-    //
-    //         Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - player.transform.position;
-    //         enemyEntity.TryChangeToLaunchState(player, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
-    //
-    //         player.DealDamageToOtherEntity(enemyEntity, player.CalculateDamage(ChargeContactDamageMultiplier), hit.point, false);
-    //
-    //         //player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
-    //         return;
-    //     }
-    // }
+   
 }

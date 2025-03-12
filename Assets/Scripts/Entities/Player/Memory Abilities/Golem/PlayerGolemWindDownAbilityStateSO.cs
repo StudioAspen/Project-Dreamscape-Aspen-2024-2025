@@ -30,7 +30,7 @@ public class PlayerGolemWindDownAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnExit()
     {
-        player.SetSpeedModifier(0f);
+        
     }
 
     public override void OnUpdate()
@@ -44,9 +44,6 @@ public class PlayerGolemWindDownAbilityStateSO : PlayerAbilityStateSO
             player.ChangeState(player.DefaultState);
             return;
         }
-
-        float easedSpeedModifier = DOVirtual.EasedValue(BoulderTossState.ChargeSpeedModifier, 0, timer/WindDownDuration, Ease.OutQuad);
-        player.SetSpeedModifier(easedSpeedModifier);
 
         player.ApplyRotationToNextMovement();
         player.LookAt(player.transform.position + player.TargetForwardDirection, BoulderTossState.ChargeRotationSpeed);

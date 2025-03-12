@@ -25,7 +25,7 @@ public class PlayerGolemTargetDetectedAbilityStateSO : PlayerAbilityStateSO
     {
         player.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
-        player.SetSpeedModifier(0f);
+        // player.SetSpeedModifier(0f);
 
         timer = 0f;
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,22 @@ namespace Dreamscape.Abilities
     public class Boulder : CastedAbility, IPoolableObject
     {
         [Header("Settings")]
-        [SerializeField] private float speed = 5f;
-        [SerializeField] private float maxDistance = 50f;
-        [SerializeField] private float aoeRadius = 5f;
+        [SerializeField] private float forwardSpeed = 5f;
+        [SerializeField] private float aoeRadius = 2f;
         [SerializeField] private float damageMultiplier = 1f;
+        [SerializeField] private float boulderLifetime = 12f;
+        [SerializeField] private float bounceSpeed = 2f;
+        [SerializeField] private float bounceHeight = 2f;
+        [SerializeField] private float spawnForwardOffset = 2f;
+        [SerializeField] private float groundOffset = .5f;
 
+        [SerializeField] private float playerBounceCooldown = 1f;
+        [SerializeField] private float wallBounceCooldown = .15f;
+        
+        private Vector3 direction;
+        private float bounceTimer = 0f;
+        private float wallBounceTimer = 0f;
+        
         private Coroutine moveCoroutine;
 
         private protected override void OnSpawn()
@@ -19,7 +31,9 @@ namespace Dreamscape.Abilities
             transform.position = casterEntity.GetColliderCenterPosition();
 
             if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-            moveCoroutine = StartCoroutine(BoulderMove(casterEntity.transform.forward));
+            direction = casterEntity.transform.forward;
+            transform.position += (direction * spawnForwardOffset) + (Vector3.up * groundOffset);
+            moveCoroutine = StartCoroutine(BoulderMove());
         }
 
         private protected override void OnOnDisable()
@@ -33,30 +47,67 @@ namespace Dreamscape.Abilities
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, aoeRadius);
         }
+        
+        private IEnumerator BoulderMove() {
+            float currentTimeElapsed = 0f;
+            float verticalVelocity = 0f;
+            bool isFalling = true;
+            bounceTimer = playerBounceCooldown;
 
-        private IEnumerator BoulderMove(Vector3 direction)
-        {
-            float distanceTraveled = 0f;
+            while (currentTimeElapsed < boulderLifetime) {
+                // Move forward
+                Vector3 nextPosition = transform.position + (direction * (forwardSpeed * Time.deltaTime));
 
-            while (distanceTraveled < maxDistance)
-            {
-                Vector3 moveDistanceThisFrame = speed * Time.deltaTime * direction.normalized;
+                // Apply gravity if falling
+                if (isFalling) {
+                    verticalVelocity -= 9.81f * Time.deltaTime;
+                }
 
-                transform.Translate(moveDistanceThisFrame);
+                // Ground collision check with offset
+                if (Physics.Raycast(nextPosition + Vector3.up * 1f, Vector3.down, out RaycastHit hit, 1.5f, LayerMask.GetMask("Ground"))) {
+                    if (nextPosition.y + verticalVelocity * Time.deltaTime <= hit.point.y + groundOffset) {
+                        // Snap to ground with offset
+                        nextPosition.y = hit.point.y + groundOffset;
 
-                distanceTraveled += moveDistanceThisFrame.magnitude;
+                        if (isFalling) {
+                            // Apply bounce
+                            verticalVelocity = Mathf.Sqrt(2f * 9.81f * bounceHeight);
+                            isFalling = false;
+                        }
+                    }
+                } else {
+                    isFalling = true;
+                }
+
+                // Apply vertical movement
+                nextPosition.y += verticalVelocity * Time.deltaTime;
+
+                // Update position
+                transform.position = nextPosition;
+                
+                // Update time elapsed
+                currentTimeElapsed += Time.deltaTime;
+                // print(currentTimeElapsed + " / " + boulderLifetime);
+                
+                // Update bounce timer
+                bounceTimer = (bounceTimer > 0f) ? bounceTimer - Time.deltaTime : 0f;
+                wallBounceTimer = (wallBounceTimer > 0f) ? wallBounceTimer - Time.deltaTime : 0f;
 
                 yield return null;
             }
-
+            
             Explode();
-            moveCoroutine = null;
+            if (moveCoroutine != null) moveCoroutine = null;
+            if (gameObject) {
+                DestroyAndRelease();
+            }
         }
+
 
         private void OnTriggerEnter(Collider other)
         {
             CheckForEntityHit(other);
-            CheckForWallHit(other);
+            CheckForBarrierHit(other);
         }
 
         private void CheckForEntityHit(Collider other)
@@ -64,21 +115,38 @@ namespace Dreamscape.Abilities
             Entity hitEntity = other.GetComponent<Entity>();
             if (hitEntity == null) hitEntity = other.GetComponentInParent<Entity>();
             if (hitEntity == null) return;
-
+            
             if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
-            if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
-
+            if (hitEntity.Team == casterEntity.Team) { // if theyre on the same team
+                if (bounceTimer == 0f) {
+                    bounceTimer = playerBounceCooldown;
+                    direction = Vector3.Reflect(casterEntity.transform.forward, direction);
+                }
+                return;
+            }
             Explode();
         }
-
-        private void CheckForWallHit(Collider other)
+        
+        
+        
+        private void CheckForBarrierHit(Collider other)
         {
             if (other.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
-
-            Explode();
+            if (!other.CompareTag("Border")) return;
+            if (wallBounceTimer != 0f) return;
+            Debug.DrawRay(transform.position, direction * 10f, Color.green, 100f);
+            if (Physics.Raycast(transform.position, direction, out var hit, 10f))
+            { 
+                direction = Vector3.Reflect(direction, hit.normal);
+                wallBounceTimer = wallBounceCooldown;
+            } else { // in case the raycast fails to detect anything
+                direction = -direction;
+            }
         }
 
-        private void Explode()
+
+
+        private void Explode(bool finalExplosion = false)
         {
             List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(transform.position, aoeRadius, false);
 
@@ -91,8 +159,9 @@ namespace Dreamscape.Abilities
 
             //insert explosion vfx here:
             CustomDebug.InstantiateTemporarySphere(transform.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
-
-            DestroyAndRelease();
         }
+
+       
+        
     }
 }
