@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Achieve X Enemies Defeated Airborne Progression Quest", menuName = "World/Progression Quest/Achieve X Enemies Defeated Airborne")]
 public class AchieveXEnemiesDefeatedAirborneProgressionQuestSO : ProgressionQuestSO
 {
-
     private Player player;
 
     [field: Header("Config")]
