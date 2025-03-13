@@ -95,7 +95,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: charger-rig
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5866666021909216657, guid: c76c41a3254ce1f4795e88d95f0c02d7,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: c76c41a3254ce1f4795e88d95f0c02d7, type: 3}
     m_RemovedGameObjects:
     - {fileID: -8700617353114198275, guid: c76c41a3254ce1f4795e88d95f0c02d7, type: 3}
     - {fileID: 5233112405309087440, guid: c76c41a3254ce1f4795e88d95f0c02d7, type: 3}
