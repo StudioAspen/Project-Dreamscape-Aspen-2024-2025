@@ -12,13 +12,13 @@ namespace Dreamscape.Abilities
         [SerializeField] private float aoeRadius = 2f;
         [SerializeField] private float damageMultiplier = 1f;
         [SerializeField] private float boulderLifetime = 12f;
-        [SerializeField] private float bounceSpeed = 2f;
         [SerializeField] private float bounceHeight = 2f;
         [SerializeField] private float spawnForwardOffset = 2f;
-        [SerializeField] private float groundOffset = .5f;
+        [SerializeField] private float groundOffset = .75f;
 
         [SerializeField] private float playerBounceCooldown = 1f;
         [SerializeField] private float wallBounceCooldown = .15f;
+        [SerializeField] private float boulderUnleashDelay = 1.5f;
         
         private Vector3 direction;
         private float bounceTimer = 0f;
@@ -32,7 +32,7 @@ namespace Dreamscape.Abilities
 
             if (moveCoroutine != null) StopCoroutine(moveCoroutine);
             direction = casterEntity.transform.forward;
-            transform.position += (direction * spawnForwardOffset) + (Vector3.up * groundOffset);
+            transform.position += (direction * spawnForwardOffset) + (Vector3.up * (groundOffset + bounceHeight));
             moveCoroutine = StartCoroutine(BoulderMove());
         }
 
@@ -49,6 +49,8 @@ namespace Dreamscape.Abilities
         }
         
         private IEnumerator BoulderMove() {
+            yield return new WaitForSeconds(boulderUnleashDelay);
+            
             float currentTimeElapsed = 0f;
             float verticalVelocity = 0f;
             bool isFalling = true;
@@ -118,10 +120,12 @@ namespace Dreamscape.Abilities
             
             if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
             if (hitEntity.Team == casterEntity.Team) { // if theyre on the same team
+                
                 if (bounceTimer == 0f) {
                     bounceTimer = playerBounceCooldown;
-                    direction = Vector3.Reflect(casterEntity.transform.forward, direction);
-                }
+                    Vector3 hitNormal = (transform.position - new Vector3(hitEntity.transform.position.x, transform.position.y, hitEntity.transform.position.z) ).normalized;
+                    direction = Vector3.Reflect(direction, hitNormal);
+                } 
                 return;
             }
             Explode();
@@ -135,6 +139,7 @@ namespace Dreamscape.Abilities
             if (!other.CompareTag("Border")) return;
             if (wallBounceTimer != 0f) return;
             Debug.DrawRay(transform.position, direction * 10f, Color.green, 100f);
+
             if (Physics.Raycast(transform.position, direction, out var hit, 10f))
             { 
                 direction = Vector3.Reflect(direction, hit.normal);
@@ -146,7 +151,7 @@ namespace Dreamscape.Abilities
 
 
 
-        private void Explode(bool finalExplosion = false)
+        private void Explode()
         {
             List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(transform.position, aoeRadius, false);
 

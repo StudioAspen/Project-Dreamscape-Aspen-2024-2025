@@ -46,9 +46,7 @@ public class PlayerGolemWindDownAbilityStateSO : PlayerAbilityStateSO
         }
 
         player.ApplyRotationToNextMovement();
-        player.LookAt(player.transform.position + player.TargetForwardDirection, BoulderTossState.ChargeRotationSpeed);
+        player.LookAt(player.transform.position + player.TargetForwardDirection, BoulderTossState.rotationSpeed);
 
-        player.UpdateHorizontalVelocity(player.transform.forward);
-        player.ApplyHorizontalVelocity();
     }
 }

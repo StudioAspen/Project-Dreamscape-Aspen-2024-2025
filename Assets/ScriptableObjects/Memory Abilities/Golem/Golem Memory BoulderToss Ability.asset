@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01aae37d06431462395b0176a7280379, type: 3}
   m_Name: Golem Memory BoulderToss Ability
   m_EditorClassIdentifier: 
-  <ChargeAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 44c22c2b34f33034686d82f9c2172611,
+  <ChargeAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: f73bebfe4cd25ff4ab1d41b229320d44,
     type: 3}
   <WindDownState>k__BackingField: {fileID: 11400000, guid: 2c6526782d0434f74b4a9aa61a4f3974,
     type: 2}
   <ChargeContactDamageMultiplier>k__BackingField: 2
   <SpeedModifier>k__BackingField: 0.1
   <TossDuration>k__BackingField: 2
-  <ChargeRotationSpeed>k__BackingField: 5
+  <rotationSpeed>k__BackingField: 5
   <ChargeOnImpactLaunchForce>k__BackingField: 10
   <ChargeStunDuration>k__BackingField: 4
   <BoulderPrefab>k__BackingField: {fileID: 6420299173227819955, guid: d8eae578074e942209d52abfe0cd2e32,

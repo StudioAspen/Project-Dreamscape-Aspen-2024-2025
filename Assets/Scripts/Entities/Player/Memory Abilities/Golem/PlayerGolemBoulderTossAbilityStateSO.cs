@@ -18,7 +18,7 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
     [field: SerializeField] public float SpeedModifier { get; private set; } = 0f;
     [field: SerializeField] public float TossDuration { get; private set; } = 20f;
-    [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float rotationSpeed { get; private set; } = 5f;
     [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
     
@@ -49,8 +49,6 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     {
         player.PlayOneShotAnimation(ChargeAnimationClip);
 
-        // player.SetSpeedModifier(SpeedModifier);
-
         spawnBoulderCoroutine = player.StartCoroutine(UnleashBoulder());
 
         timer = 0f;
@@ -76,10 +74,7 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
         }
 
         player.ApplyRotationToNextMovement();
-        player.LookAt(player.transform.position + player.TargetForwardDirection, ChargeRotationSpeed);
-
-        // player.UpdateHorizontalVelocity(player.transform.forward);
-        player.ApplyHorizontalVelocity();
+        player.LookAt(player.transform.position + player.TargetForwardDirection);
     }
 
     private IEnumerator UnleashBoulder() {

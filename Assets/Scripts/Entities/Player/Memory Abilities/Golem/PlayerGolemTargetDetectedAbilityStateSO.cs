@@ -25,8 +25,6 @@ public class PlayerGolemTargetDetectedAbilityStateSO : PlayerAbilityStateSO
     {
         player.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
-        // player.SetSpeedModifier(0f);
-
         timer = 0f;
     }
 
@@ -40,14 +38,13 @@ public class PlayerGolemTargetDetectedAbilityStateSO : PlayerAbilityStateSO
         player.ApplyGravity();
 
         timer += player.LocalDeltaTime;
+        player.LookAt(player.transform.position + player.TargetForwardDirection);
 
         if (timer > TargetDetectedDuration)
         {
             player.PlayerAbilityState.TryChangeAbilityState(BoulderTossState, true);
             return;
         }
-
-        //player.ApplyRotationToNextMovement();
-        //player.RotateToTargetRotation();
+        
     }
 }

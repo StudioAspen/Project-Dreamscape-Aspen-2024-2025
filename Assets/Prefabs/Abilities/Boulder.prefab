@@ -52,11 +52,12 @@ MonoBehaviour:
   aoeRadius: 3
   damageMultiplier: 2
   boulderLifetime: 15
-  bounceSpeed: 2
   bounceHeight: 2
   spawnForwardOffset: 0
-  groundOffset: 1
+  groundOffset: 0.75
   playerBounceCooldown: 1.5
+  wallBounceCooldown: 0.15
+  boulderUnleashDelay: 0.5
 --- !u!33 &5035700606803297
 MeshFilter:
   m_ObjectHideFlags: 0
