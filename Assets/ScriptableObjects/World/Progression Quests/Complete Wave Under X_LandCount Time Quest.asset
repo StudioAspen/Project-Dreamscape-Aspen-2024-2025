@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ff4992d53c3b0438e4dd89fd0545fe, type: 3}
-  m_Name: Dummy Momentum Quest
+  m_Script: {fileID: 11500000, guid: ca6a781e2d00ba2439ee388da0369af4, type: 3}
+  m_Name: Complete Wave Under X_LandCount Time Quest
   m_EditorClassIdentifier: 
-  <ObjectiveText>k__BackingField: Achieve momentum of 1
-  <CompletionReward>k__BackingField: 0
-  <MomentumGoal>k__BackingField: 1
+  <ObjectiveText>k__BackingField: Complete a wave under 20 * land count seconds
+  <CompletionReward>k__BackingField: 1
+  <TimeMultiplier>k__BackingField: 20
