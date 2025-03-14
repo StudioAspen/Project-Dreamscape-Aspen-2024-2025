@@ -21,9 +21,6 @@ public class BiomeSelectUIPanel : UIPanel
 
     public void OnEnable()
     {
-        // If the cards are not ready dont do anything
-        if (!biomeCards[0].IsReady) return;
-
         AssignRandomBiomesToCards();
 
         EnableCards();
