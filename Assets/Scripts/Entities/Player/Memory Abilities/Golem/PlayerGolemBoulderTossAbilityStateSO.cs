@@ -16,14 +16,16 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
     [field: SerializeField] public PlayerGolemWindDownAbilityStateSO WindDownState { get; private set; }
     [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
-    [field: SerializeField] public float SpeedModifier { get; private set; } = 0f;
     [field: SerializeField] public float TossDuration { get; private set; } = 20f;
-    [field: SerializeField] public float rotationSpeed { get; private set; } = 5f;
     [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
     [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
     
     [field: SerializeField] public GameObject BoulderPrefab { get; private set; }
     [field: SerializeField] public float BoulderSpawnDelay { get; private set; } = 1 + (45 / 60f); // Boulder spawn delay should be how long after the throw animation under normal time until boulder prefab spawns
+
+    [SerializeField] public float BounceHeight { get; private set; } = 2f;
+    [SerializeField] public float SpawnForwardOffset { get; private set; } = 0f;
+    [SerializeField] public float GroundOffset { get; private set; } = .75f;
 
     private Coroutine spawnBoulderCoroutine;
 
@@ -80,7 +82,9 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
     private IEnumerator UnleashBoulder() 
     {
         yield return new WaitForSeconds(BoulderSpawnDelay / player.LocalTimeScale.GetFloatValue());
-        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(BoulderPrefab);
+        Boulder spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<Boulder>(BoulderPrefab, player.GetColliderCenterPosition() + (player.transform.forward * SpawnForwardOffset) + (Vector3.up * (GroundOffset + BounceHeight)) );
+        spawnedAbility.SetBounceHeight(BounceHeight);
+        spawnedAbility.SetGroundOffset(GroundOffset);
         spawnedAbility.Init(player);
     }
 

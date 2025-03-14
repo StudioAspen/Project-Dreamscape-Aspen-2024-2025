@@ -12,9 +12,7 @@ public class Boulder : CastedAbility, IPoolableObject
     [SerializeField] private float aoeRadius = 2f;
     [SerializeField] private float damageMultiplier = 1f;
     [SerializeField] private float boulderLifetime = 12f;
-    [SerializeField] private float bounceHeight = 2f;
-    [SerializeField] private float spawnForwardOffset = 2f;
-    [SerializeField] private float groundOffset = .75f;
+    
     [SerializeField] private float playerBounceCooldown = 1f;
     [SerializeField] private float wallBounceCooldown = .15f;
     [SerializeField] private float boulderUnleashDelay = 1.5f;
@@ -22,8 +20,9 @@ public class Boulder : CastedAbility, IPoolableObject
     private Vector3 direction;
     private float bounceTimer = 0f;
     private float wallBounceTimer = 0f;
+    private float bounceHeight = 2f, groundOffset = .75f;
 
-    private Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
     private Coroutine moveCoroutine;
 
     private void Awake() 
@@ -33,12 +32,8 @@ public class Boulder : CastedAbility, IPoolableObject
     }
 
     private protected override void OnSpawn() {
-        rigidbody.position = casterEntity.GetColliderCenterPosition();
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-
         direction = casterEntity.transform.forward;
-        rigidbody.position += (direction * spawnForwardOffset) + (Vector3.up * (groundOffset + bounceHeight));
-
         moveCoroutine = StartCoroutine(BoulderMove());
     }
 
@@ -174,6 +169,17 @@ public class Boulder : CastedAbility, IPoolableObject
         // Insert explosion VFX here:
         CustomDebug.InstantiateTemporarySphere(rigidbody.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
+
+    public void SetBounceHeight(float newHeight) {
+        bounceHeight = newHeight;
+    }
+
+    public void SetGroundOffset(float newOffset) {
+        groundOffset = newOffset;
+    }
+    
+    
+    
 }
 
 }
