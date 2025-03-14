@@ -6,14 +6,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Use Every Combo You Have Quest", menuName = "World/Progression Quest/Use Every Combo You Have")]
 public class UseEveryComboYouHaveQuestSO : ProgressionQuestSO
 {
-    private ChainingSystem chainingSystem;
+    private Player player;
     private Weapon weapon;
     private List<ComboDataSO> combos;
     private HashSet<ComboDataSO> combosExecuted;
 
     private protected override void OnActivated()
     {
-        chainingSystem = FindObjectOfType<ChainingSystem>();
+        player = FindObjectOfType<Player>();
         weapon = FindObjectOfType<Weapon>();
         combos = weapon.Combos;
         combosExecuted = new HashSet<ComboDataSO>();
@@ -21,11 +21,21 @@ public class UseEveryComboYouHaveQuestSO : ProgressionQuestSO
 
     private protected override void OnCleanUp()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     private protected override void OnUpdate()
     {
-        
+        currentCombo = player.PlayerAttackState.ComboData;
+
+        if (!combosExecuted.Contains(currentCombo))
+        {
+            combosExecuted.Add(currentCombo);
+        }
+
+        if (combosExecuted.Count == combos.Count)
+        {
+            Complete();
+        }
     }
 }
