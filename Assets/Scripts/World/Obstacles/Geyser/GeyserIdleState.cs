@@ -1,30 +1,3 @@
-﻿using UnityEngine;
-
-public class GeyserIdleState : GeyserBaseState
-{
-    [field: Header("Config")]
-    [field: SerializeField] public Vector2 DurationRange { get; private set; } = new Vector2(3f, 15f);
-    private float timer;
-    private float randomDuration;
-
-    public override void OnEnter()
-    {
-        timer = 0f;
-        randomDuration = Random.Range(DurationRange.x, DurationRange.y);
-    }
-
-    public override void OnExit()
-    {
-        
-    }
-
-    public override void OnUpdate()
-    {
-        timer += Time.deltaTime;
-        if(timer > randomDuration)
-        {
-            geyser.ChangeState(geyser.GeyserWarningState);
-            return;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ee2efa9b6385eaa3602c08dbe752b6dbc19893b1ef4d3587ce40e307e6eb80d8
+size 679

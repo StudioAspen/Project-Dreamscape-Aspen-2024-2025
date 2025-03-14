@@ -1,30 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-
-public class EventDisplayUI : MonoBehaviour
-{
-    private EventManager eventManager;
-    private TMP_Text titleText;
-
-    // Awake is safe because UI scene loads last
-    private void Awake()
-    {
-        eventManager = FindObjectOfType<EventManager>();
-        titleText = GetComponentInChildren<TMP_Text>();
-
-        eventManager.OnEventChanged += EventManager_OnEventChanged;
-    }
-
-    private void OnDestroy()
-    {
-        eventManager.OnEventChanged -= EventManager_OnEventChanged;
-    }
-
-    private void EventManager_OnEventChanged(WorldEventSO newEvent)
-    {
-        titleText.text = $"{newEvent.EventName} Event";
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:49067b1395067f090ae86092985cb28376d7ee35dca238eabc5f3e2ad007c6b1
+size 742

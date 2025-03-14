@@ -1,9 +1,3 @@
-﻿using UnityEngine;
-using Dreamscape.Abilities;
-
-[CreateAssetMenu(fileName = "AbilityCombo", menuName = "Combo/Ability", order = 1)]
-public class AbilityComboDataSO : ComboDataSO
-{
-    [field: Header("Ability Options")]
-    [field: SerializeField] public CastedAbility AbilityPrefab { get; private set; }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:115488a2c27d7020d8a55e66253a7d88c8257223092f05ac662771026a3d3e43
+size 309

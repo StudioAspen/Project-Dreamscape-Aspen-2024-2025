@@ -1,24 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Max Health Increase", menuName = "Status Effect/Max Health Increase")]
-public class MaxHealthIncreaseStatusEffectSO : StatusEffectSO
-{
-    [field: Header("Max Health Increase Effect: Settings")]
-    [SerializeField] private int healthIncrease;
-    //its just a flat increase right now i hope thats like.. what they wanted LOL i mean thats all it said on the design doc
-    private protected override void OnApply()
-    {
-        base.OnApply();
-        entity.MaxHealth.AddFlatAmount(healthIncrease, this);
-        entity.Heal(healthIncrease);
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-        entity.MaxHealth.ClearFlatIncreaseFromSource(this);
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:fe749d10b5e1ed8e7f6591a46bbd13ae135e5cbc4c91fc437b114fa763d86ba1
+size 820

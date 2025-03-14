@@ -1,25 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-
-public class LandPlacementUIPanel : UIPanel
-{
-    [Header("References")]
-    [SerializeField] private TMP_Text landPlacementText;
-
-    private void Awake()
-    {
-    }
-
-    private void Update()
-    {
-        HandleLandPlacementText();
-    }
-
-    private void HandleLandPlacementText()
-    {
-        string landPlacementKey = gameInputManager.CurrentControlScheme == InputManager.ControlScheme.GAMEPAD ? "A" : "M1";
-        landPlacementText.text = $"{landPlacementKey} - Place Land";
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:54dc24ac6f1e6241221bcbfe03b40e1d29157bf20eecb117a2304f32e72883de
+size 586

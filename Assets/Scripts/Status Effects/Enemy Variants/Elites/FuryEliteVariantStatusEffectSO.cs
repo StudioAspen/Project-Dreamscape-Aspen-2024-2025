@@ -1,22 +1,3 @@
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Fury Elite Variant", menuName = "Status Effect/Enemy Variants/Elite/Fury")]
-public class FuryEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
-{
-    [field: Header("Config")]
-    [field: SerializeField] public float TimeScaleMultiplier { get; private set; } = 1.5f;
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        enemy.LocalTimeScale.AddMultiplier(TimeScaleMultiplier, this);
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        enemy.LocalTimeScale.ClearBuffsFromSource(this);
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:df6d0f87f5e9e287e251bbd4a5cb70bae779116c72e8c1743d0791dbf115e3e6
+size 605

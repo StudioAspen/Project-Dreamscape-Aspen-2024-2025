@@ -1,34 +1,3 @@
-/*******************************************************************************
-The content of this file includes portions of the proprietary AUDIOKINETIC Wwise
-Technology released in source code form as part of the game integration package.
-The content of this file may not be used without valid licenses to the
-AUDIOKINETIC Wwise Technology.
-Note that the use of the game engine is subject to the Unity(R) Terms of
-Service at https://unity3d.com/legal/terms-of-service
- 
-License Usage
- 
-Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
-this file in accordance with the end user license agreement provided with the
-software or, alternatively, in accordance with the terms contained
-in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2024 Audiokinetic Inc.
-*******************************************************************************/
-
-/// @brief Represents Wwise states as Unity assets.
-public class WwiseStateReference : WwiseGroupValueObjectReference
-{
-	[AkShowOnly]
-	[UnityEngine.SerializeField]
-	private WwiseStateGroupReference WwiseStateGroupReference;
-
-	public override WwiseObjectType WwiseObjectType { get { return WwiseObjectType.State; } }
-
-	public override WwiseObjectReference GroupObjectReference
-	{
-		get { return WwiseStateGroupReference; }
-		set { WwiseStateGroupReference = value as WwiseStateGroupReference; }
-	}
-
-	public override WwiseObjectType GroupWwiseObjectType { get { return WwiseObjectType.StateGroup; } }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:320ac8a88e11fa64ad83e18784b4784e21efa3a64a40fbb33c5fa269c6fd778d
+size 1490

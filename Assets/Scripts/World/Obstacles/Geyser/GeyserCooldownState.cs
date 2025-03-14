@@ -1,28 +1,3 @@
-﻿using UnityEngine;
-
-public class GeyserCooldownState : GeyserBaseState
-{
-    [field: Header("Config")]
-    [field: SerializeField] public float Duration { get; private set; } = 1f;
-    private float timer;
-
-    public override void OnEnter()
-    {
-        timer = 0f;
-    }
-
-    public override void OnExit()
-    {
-
-    }
-
-    public override void OnUpdate()
-    {
-        timer += Time.deltaTime;
-        if (timer > Duration)
-        {
-            geyser.ChangeState(geyser.GeyserIdleState);
-            return;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d42c17a83f5e2d7befe8657035206762abd3760f827326ab18968570b87aeb77
+size 535

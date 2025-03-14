@@ -1,16 +1,3 @@
-/*******************************************************************************
-The content of this file includes portions of the proprietary AUDIOKINETIC Wwise
-Technology released in source code form as part of the game integration package.
-The content of this file may not be used without valid licenses to the AUDIOKINETIC
-Wwise Technology.
-Note that the use of the game engine is subject to the Unity Terms of Service
-at https://unity3d.com/legal/terms-of-service.
- 
-License Usage
- 
-Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
-this file in accordance with the end user license agreement provided with the
-software or, alternatively, in accordance with the terms contained
-in a written agreement between you and Audiokinetic Inc.
-Copyright (c) <COPYRIGHTYEAR> Audiokinetic Inc.
-*******************************************************************************/
+version https://git-lfs.github.com/spec/v1
+oid sha256:465e80e1f263f4778e5e7b0f04f6de9be5e23562929e2b900a8b7eab24309cef
+size 896

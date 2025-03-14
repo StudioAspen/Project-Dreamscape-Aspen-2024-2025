@@ -1,19 +1,3 @@
-﻿using System;
-
-namespace AYellowpaper.SerializedCollections.KeysGenerators
-{
-    [AttributeUsage(AttributeTargets.Class)]
-    public class KeyListGeneratorAttribute : Attribute
-    {
-        public readonly string Name;
-        public readonly Type TargetType;
-        public readonly bool NeedsWindow;
-
-        public KeyListGeneratorAttribute(string name, Type targetType, bool needsWindow = true)
-        {
-            Name = name;
-            TargetType = targetType;
-            NeedsWindow = needsWindow;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:52b468d9cd20b606b86d654e4758008ec93b91e24fa5899098788c2bece99a34
+size 531

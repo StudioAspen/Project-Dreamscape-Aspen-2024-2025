@@ -1,20 +1,3 @@
-﻿using System;
-
-namespace AYellowpaper.SerializedCollections.KeysGenerators
-{
-    public class KeyListGeneratorData
-    {
-        public string Name { get; set; }
-        public Type TargetType { get; set; }
-        public Type GeneratorType { get; set; }
-        public bool NeedsWindow { get; set; }
-
-        public KeyListGeneratorData(string name, Type targetType, Type populatorType, bool needsWindow)
-        {
-            Name = name;
-            TargetType = targetType;
-            GeneratorType = populatorType;
-            NeedsWindow = needsWindow;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:b08d3349ac9e86bd7bf46d5c117a3d74e2973d644c3ebc9ff09889b749049a15
+size 580

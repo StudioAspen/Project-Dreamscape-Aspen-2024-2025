@@ -1,23 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace AYellowpaper.SerializedCollections.Editor.Data
-{
-    [System.Serializable]
-    internal class ElementData
-    {
-        [SerializeField]
-        private bool _isListToggleActive = false;
-
-        public ElementSettings Settings { get; }
-        public bool ShowAsList => Settings.HasListDrawerToggle && IsListToggleActive;
-        public bool IsListToggleActive { get => _isListToggleActive; set => _isListToggleActive = value; }
-        public DisplayType EffectiveDisplayType => ShowAsList ? DisplayType.List : Settings.DisplayType;
-
-        public ElementData(ElementSettings elementSettings)
-        {
-            Settings = elementSettings;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1d8c06b025befbd4a2db8f3dd1eece3a4f3f61acbc3e51c987cbfc5798b2ed4b
+size 756

@@ -1,24 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1fd497529b47e749823ab83b5615ecb, type: 3}
-  m_Name: Priorities World Event
-  m_EditorClassIdentifier: 
-  <EventName>k__BackingField: Priorities
-  <EventProgressionUIName>k__BackingField: KILL MARKED ENEMIES
-  <Description>k__BackingField: Defeat all enemies that spawn from the strongest
-    lands!
-  <EventUIPrefab>k__BackingField: {fileID: 0}
-  <BaseSpawnAmount>k__BackingField: 10
-  <MarkerPrefab>k__BackingField: {fileID: 5737244519772739166, guid: a911826ee3396584ab37238cee82882d,
-    type: 3}
-  <LandsPerTopLand>k__BackingField: 4
-  <SpawnBursts>k__BackingField: 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:e500ac6faec5bb715ad3b64bde294f6b92e6d05df934da2bf7144e46dcdc8a2d
+size 880

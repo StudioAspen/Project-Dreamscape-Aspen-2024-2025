@@ -1,13 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Dreamscape.TileEditor
-{
-    ///-/////////////////////////////////////////////////////////////////////////
-    ///
-    public class DTETile : MonoBehaviour
-    {
-        // No code needed. Simply used to differnetiate between preview and normal tiles.
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:7267bf62aeb63e1918fcedce96181423b593c3354dc6bedccd828d1046ffe791
+size 349

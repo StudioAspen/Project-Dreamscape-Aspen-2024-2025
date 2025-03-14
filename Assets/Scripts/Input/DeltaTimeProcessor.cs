@@ -1,26 +1,3 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-#if UNITY_EDITOR
-using UnityEditor;
-[InitializeOnLoad]
-#endif
-
-public class DeltaTimeProcessor : InputProcessor<Vector2>
-{
-#if UNITY_EDITOR
-    static DeltaTimeProcessor()
-    {
-        Initialize();
-    }
-#endif
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void Initialize()
-    {
-        InputSystem.RegisterProcessor<DeltaTimeProcessor>();
-    }
-
-    public override Vector2 Process(Vector2 value, InputControl control)
-    {
-        return value * Time.deltaTime;
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:765031c11f750bc090600303645164c84c9bf1ffe65d241358b8f656018ef19b
+size 571

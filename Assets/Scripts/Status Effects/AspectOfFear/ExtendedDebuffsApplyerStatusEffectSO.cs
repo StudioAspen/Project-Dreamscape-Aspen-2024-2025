@@ -1,29 +1,3 @@
-﻿using UnityEngine;
-
-[CreateAssetMenu(fileName = "Extended Debuffs Applyer", menuName = "Status Effect/Aspect of Fear/Extended Debuffs Applyer")]
-public class ExtendedDebuffsApplyerStatusEffectSO : StatusEffectSO
-{
-    [field: Header("Settings")]
-    [field: SerializeField] public float ExtendedDebuffsMultiplier { get; private set; } = 1.25f;
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        entity.DebuffApplyDurationMultiplier.AddMultiplier(ExtendedDebuffsMultiplier, this);
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        entity.DebuffApplyDurationMultiplier.ClearBuffsFromSource(this);
-    }
-
-    private protected override void OnStack(StatusEffectSO newStatusEffect)
-    {
-        ExtendedDebuffsApplyerStatusEffectSO overridingStatusEffect = newStatusEffect as ExtendedDebuffsApplyerStatusEffectSO;
-
-        ExtendedDebuffsMultiplier = overridingStatusEffect.ExtendedDebuffsMultiplier;
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d2f4024411e28f2c2c4b4e82b489042fa90129a479fd7e349ee170579d11bfc8
+size 973

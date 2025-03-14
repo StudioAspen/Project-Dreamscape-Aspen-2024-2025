@@ -1,15 +1,3 @@
-using System.Globalization;
-using UnityEditor;
-
-namespace AYellowpaper.SerializedCollections.Editor.Search
-{
-    public class StringMatcher : Matcher
-    {
-        public override bool IsMatch(SerializedProperty property)
-        {
-            if ((property.propertyType is SerializedPropertyType.String or SerializedPropertyType.Character) && property.stringValue.Contains(SearchString, System.StringComparison.OrdinalIgnoreCase))
-                return true;
-            return false;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:dbd6a83b30adfc0ae2dd5b5bcec4bed0ea176c9746be9a8a25a403146395a973
+size 504

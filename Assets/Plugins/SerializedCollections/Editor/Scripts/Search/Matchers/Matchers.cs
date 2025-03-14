@@ -1,30 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace AYellowpaper.SerializedCollections.Editor.Search
-{
-    public static class Matchers
-    {
-        public static IEnumerable<Matcher> RegisteredMatchers => _registeredMatchers;
-
-        private static List<Matcher> _registeredMatchers = new List<Matcher>();
-
-        static Matchers()
-        {
-            _registeredMatchers.Add(new NumericMatcher());
-            _registeredMatchers.Add(new StringMatcher());
-            _registeredMatchers.Add(new EnumMatcher());
-        }
-
-        public static void AddMatcher(Matcher matcher)
-        {
-            _registeredMatchers.Add(matcher);
-        }
-
-        public static bool RemoveMatcher(Matcher matcher)
-        {
-            return _registeredMatchers.Remove(matcher);
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:e987e7028e88ce0e81a842be85062aee721643aac724fa6f3480615a3b5441da
+size 831

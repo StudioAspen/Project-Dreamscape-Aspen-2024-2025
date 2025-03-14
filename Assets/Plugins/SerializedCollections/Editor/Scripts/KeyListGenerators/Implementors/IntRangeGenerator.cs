@@ -1,24 +1,3 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
-
-namespace AYellowpaper.SerializedCollections.KeysGenerators
-{
-    [KeyListGenerator("Int Range", typeof(int))]
-    public class IntRangeGenerator : KeyListGenerator
-    {
-        [SerializeField]
-        private int _startValue = 1;
-        [SerializeField]
-        private int _endValue = 10;
-
-        public override IEnumerable GetKeys(Type type)
-        {
-            int dir = Math.Sign(_endValue - _startValue);
-            dir = dir == 0 ? 1 : dir;
-            for (int i = _startValue; i != _endValue; i += dir)
-                yield return i;
-            yield return _endValue;
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:b3a52f49fe042f8efe5c0f24702e44c03fdf9d8479f4d1512aba6604b85d7a8c
+size 668

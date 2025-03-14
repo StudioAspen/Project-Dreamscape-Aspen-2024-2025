@@ -1,10 +1,3 @@
-﻿using UnityEngine;
-
-[CreateAssetMenu(fileName = "Global Physics Config", menuName = "Configs/Global Physics Config")]
-public class GlobalPhysicsConfigSO : ScriptableObject
-{
-    [field: SerializeField] public float Gravity { get; private set; } = -20f;
-    [field: SerializeField] public float GroundedYVelocity { get; private set; } = -5f;
-    [field: SerializeField] public float FallingStartingYVelocity { get; private set; } = 0f;
-    [field: SerializeField] public LayerMask GroundLayer { get; private set; }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:2bd6140cffa90aa8062eceb4648eca78d82b0caca242b9055d0d11a8841a2e31
+size 518

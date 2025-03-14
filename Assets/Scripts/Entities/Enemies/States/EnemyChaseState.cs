@@ -1,32 +1,3 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
-
-[System.Serializable]
-public class EnemyChaseState : EnemyBaseState
-{
-    public override void OnEnter()
-    {
-        enemy.PlayDefaultAnimation();
-
-        enemy.SetSpeedModifier(1f);
-    }
-
-    public override void OnExit()
-    {
-
-    }
-
-    public override void OnUpdate()
-    {
-        enemy.ApplyGravity();
-
-        if (enemy.Target == null)
-        {
-            enemy.ChangeState(enemy.DefaultState);
-            return;
-        }
-
-        enemy.SetDestination(enemy.Target.transform.position);
-        enemy.MoveTowardsDestination();
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:3d21f8c4e1c4b9fc974e4842129e9338687ed72f0a479ced22f304a5c4d889b3
+size 596

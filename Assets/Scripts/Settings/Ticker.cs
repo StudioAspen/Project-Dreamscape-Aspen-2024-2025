@@ -1,33 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
-
-public class Ticker : MonoBehaviour
-{
-    public static Ticker Instance;
-
-    [SerializeField] private float tickDuration = 0.2f;
-    private float tickTimer;
-
-    public Action OnTick = delegate { };
-
-    private void Awake()
-    {
-        if (Instance != null) Destroy(Instance.gameObject); 
-        Instance = this;
-    }
-
-    private void Update()
-    {
-        tickTimer += Time.deltaTime;
-
-        if(tickTimer > tickDuration)
-        {
-            tickTimer = 0f;
-
-            OnTick?.Invoke();
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:2fc50284167a27e0e509c2a3401294881b6d5ace0c2a5c136cf69e63c8ad12c7
+size 640

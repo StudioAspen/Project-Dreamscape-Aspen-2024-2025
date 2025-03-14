@@ -1,23 +1,3 @@
-﻿using DG.Tweening;
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Vampiric Elite Variant", menuName = "Status Effect/Enemy Variants/Elite/Vampiric")]
-public class VampiricEliteVariantStatusEffectSO: EliteVariantStatusEffectSO
-{
-    [field: Header("Lifesteal")]
-    [field: SerializeField] public LifeStealStatusEffectSO LifeStealStatusEffect { get; private set; }
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        entityStatusEffectorOwner.ApplyStatusEffect(LifeStealStatusEffect, entity.gameObject);
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        entityStatusEffectorOwner.RemoveStatusEffect(LifeStealStatusEffect.GetType(), true);
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d02a9c0e3b01bf71d6655aaad5348877621276caced8a55af4c81b71447aa207
+size 714

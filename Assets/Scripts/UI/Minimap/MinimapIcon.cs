@@ -1,18 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MinimapIcon : MonoBehaviour
-{
-    private Quaternion startRotation;
-
-    private void Awake()
-    {
-        startRotation = transform.rotation;
-    }
-
-    private void LateUpdate()
-    {
-        transform.rotation = startRotation; // Force the icon to always face the camera
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d49520edf0c523118959a5da5722f69f02b7aebcf7362174cb0107ef1a610d47
+size 376

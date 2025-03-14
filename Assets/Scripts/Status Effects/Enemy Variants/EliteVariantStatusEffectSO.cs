@@ -1,26 +1,3 @@
-﻿using UnityEngine;
-
-public class EliteVariantStatusEffectSO : VariantStatusEffectSO
-{
-    [field: Header("Elite Variant Config")]
-    [field: SerializeField] public Material EliteMaterial { get; private set; }
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        entityRendererManager = enemy.GetComponent<EntityRendererManager>();
-        if (entityRendererManager != null)
-        {
-            entityRendererManager.RemoveAllMaterials();
-            entityRendererManager.AddMaterial(EliteMaterial);
-        }
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        if (entityRendererManager != null) entityRendererManager.RestoreOriginalMaterials();
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d03a40c870ff963fa414d346d8122feb89f41c9ec22d2c16e67fa5162612a064
+size 721

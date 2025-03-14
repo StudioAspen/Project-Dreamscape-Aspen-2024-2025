@@ -1,32 +1,3 @@
-﻿using UnityEngine;
-
-[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Permanent Global Damage Upgrade")]
-public class PermanentGlobalDamageEffectSO : StatusEffectSO
-{
-    [field: Header("Permanent Damage Upgrade Status Effect: Settings")]
-    [field: SerializeField] public float GlobalDamageMultiplierIncrease { get; private set; } = 1.1f;
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease, this); // apply the new damage multiplier
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        entity.DamageModifier.ClearBuffsFromSource(this); // undo the damage multiplier
-    }
-
-    private protected override void OnStack(StatusEffectSO newStatusEffect)
-    {
-        PermanentGlobalDamageEffectSO overridingStatusEffect = newStatusEffect as PermanentGlobalDamageEffectSO;
-
-        entity.DamageModifier.ClearBuffsFromSource(this); // undo the damage multiplier
-        GlobalDamageMultiplierIncrease *= overridingStatusEffect.GlobalDamageMultiplierIncrease; // update the damage multiplier
-        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease, this); // apply the new damage multiplier
-    }
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:98ee5b31a5bb8704f05453b10463efcc8d54066fa7ad8110bee7924e03c7e78b
+size 1258

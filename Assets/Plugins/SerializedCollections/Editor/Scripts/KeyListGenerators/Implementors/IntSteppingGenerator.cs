@@ -1,26 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace AYellowpaper.SerializedCollections.KeysGenerators
-{
-    [KeyListGenerator("Int Stepping", typeof(int))]
-    public class IntSteppingGenerator : KeyListGenerator
-    {
-        [SerializeField]
-        private int _startIndex = 0;
-        [SerializeField]
-        private int _stepDistance = 10;
-        [SerializeField, Min(0)]
-        private int _stepCount = 1;
-
-        public override IEnumerable GetKeys(Type type)
-        {
-            for (int i = 0; i <= _stepCount; i++)
-            {
-                yield return _startIndex + i * _stepDistance;
-            }
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:feb59a214c1da769ef1d14b54a4ff16d7f35cd1c3de695508a52ce320e63c5f7
+size 690

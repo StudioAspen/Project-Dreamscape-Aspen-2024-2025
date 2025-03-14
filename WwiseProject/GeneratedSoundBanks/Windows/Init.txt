@@ -1,25 +1,3 @@
-State Group	ID	Name			Wwise Object Path	Notes
-	261089142	GameMode			\Default Work Unit\GameMode	
-	835576787	Biome			\Default Work Unit\Biome	
-	1548586727	MenuState			\Default Work Unit\MenuState	
-
-State	ID	Name	State Group			Notes
-	748895195	None	GameMode			
-	2280308571	ActiveGameplay	GameMode			
-	2716678721	Victory	GameMode			
-	3705726509	Title	GameMode			
-	540301611	Lava	Biome			
-	748895195	None	Biome			
-	813526661	DreamForest	Biome			
-	3031504781	Food	Biome			
-	748895195	None	MenuState			
-	1858159279	OutsideMenu	MenuState			
-	3374585465	InMenu	MenuState			
-
-Audio Bus	ID	Name			Wwise Object Path	Notes
-	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
-
-Audio Devices	ID	Name	Type				Notes
-	2317455096	No_Output	No Output			
-	3859886410	System	System			
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:04a57a128951326b91510f9eceb2e3e2540c1977cf565ac8488783c51b564d44
+size 781

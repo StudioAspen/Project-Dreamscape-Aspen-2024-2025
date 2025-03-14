@@ -1,30 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using UnityEngine;
-using UnityEngine.VFX;
-
-public class Geyser : Obstacle
-{
-    [field: Header("Geyser: States")]
-    [field: SerializeField] public GeyserIdleState GeyserIdleState { get; private set; }
-    [field: SerializeField] public GeyserWarningState GeyserWarningState { get; private set; }
-    [field: SerializeField] public GeyserEruptingState GeyserEruptingState { get; private set; }
-    [field: SerializeField] public GeyserCooldownState GeyserCooldownState { get; private set; }
-
-    private protected override void OnAwake()
-    {
-        
-    }
-
-    private protected override void OnStart()
-    {
-        
-    }
-
-    private protected override void OnUpdate()
-    {
-
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:7004cc570be143ce120a995166cc9efd715d9d1b7a1612e23edaeb8a940c5acd
+size 803

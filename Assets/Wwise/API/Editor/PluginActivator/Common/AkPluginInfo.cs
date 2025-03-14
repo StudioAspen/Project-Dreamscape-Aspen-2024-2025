@@ -1,35 +1,3 @@
-/*******************************************************************************
-The content of this file includes portions of the proprietary AUDIOKINETIC Wwise
-Technology released in source code form as part of the game integration package.
-The content of this file may not be used without valid licenses to the
-AUDIOKINETIC Wwise Technology.
-Note that the use of the game engine is subject to the Unity(R) Terms of
-Service at https://unity3d.com/legal/terms-of-service
- 
-License Usage
- 
-Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
-this file in accordance with the end user license agreement provided with the
-software or, alternatively, in accordance with the terms contained
-in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2024 Audiokinetic Inc.
-*******************************************************************************/
-
-#if UNITY_EDITOR
-internal class AkPluginInfo
-{
-	public uint PluginID;
-	public string DllName;
-	public string StaticLibName;
-
-	public override int GetHashCode()
-	{
-		return PluginID.GetHashCode();
-	}
-
-	public override bool Equals(object obj)
-	{
-		return PluginID.Equals(obj);
-	}
-}
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:1a52c03d0075b9283a4952567169c1c3182e4731ac99011d6e8c14fb8e8e73b9
+size 1175

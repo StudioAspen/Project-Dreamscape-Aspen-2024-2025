@@ -1,27 +1,3 @@
-﻿using UnityEngine;
-
-public class ComboAspectNodeNode : AspectNodeNode
-{
-    [field: Header("Combo")]
-    [field: SerializeField] public ComboDataSO ComboData { get; private set; }
-
-    public override void ApplyAspect(AspectsManager aspectsManager)
-    {
-        base.ApplyAspect(aspectsManager);
-
-        if (ComboData == null)
-        {
-            Debug.LogError($"No ComboData found in {name}");
-            return;
-        }
-
-        Weapon ownerWeapon = aspectsManager.GetComponentInChildren<Weapon>();
-        if (ownerWeapon == null)
-        {
-            Debug.LogError($"No weapon found in children of {aspectsManager.gameObject.name}");
-            return;
-        }
-        
-        ownerWeapon.AddCombo(ComboData);
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:7680bd615fbb43c92268a7fb5ac79b71391637c8a58f30839cada5a41a80e954
+size 739

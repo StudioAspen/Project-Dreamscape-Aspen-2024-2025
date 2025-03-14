@@ -1,32 +1,3 @@
-﻿using UnityEngine;
-
-[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Permanent Speed")]
-public class PermanentSpeedStatusEffectSO : StatusEffectSO
-{
-    [field: Header("Permanent Speed Status Effect: Settings")]
-    [field: SerializeField] public float SpeedMultiplier { get; private set; } = 1.1f;
-
-    private protected override void OnApply()
-    {
-        base.OnApply();
-
-        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // apply the new speed multiplier
-    }
-
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // undo the speed multiplier
-    }
-
-    private protected override void OnStack(StatusEffectSO newStatusEffect)
-    {
-        PermanentSpeedStatusEffectSO overridingStatusEffect = newStatusEffect as PermanentSpeedStatusEffectSO;
-
-        entity.StatusSpeedModifier.ClearBuffsFromSource(this); // undo the speed multiplier
-        SpeedMultiplier *= overridingStatusEffect.SpeedMultiplier; // update the speed multiplier
-        entity.StatusSpeedModifier.AddMultiplier(SpeedMultiplier, this); // reapply the new updated speed multiplier
-    }
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:fb7e88bc557cdacc4aa65309137b5d142350e40fb42097e6cf330963a5a8e0c1
+size 1170

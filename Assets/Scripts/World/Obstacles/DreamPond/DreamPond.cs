@@ -1,30 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class DreamPond : MonoBehaviour
-{
-    [SerializeField] private float speedMultiplier = 0.7f;
-
-    private List<Entity> slowedEntities = new List<Entity>();
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.TryGetComponent(out Entity entity))
-        {
-            if (slowedEntities.Contains(entity)) return;
-            entity.StatusSpeedModifier.AddMultiplier(speedMultiplier, this);
-            slowedEntities.Add(entity);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent(out Entity entity))
-        {
-            if (!slowedEntities.Contains(entity)) return;
-            entity.StatusSpeedModifier.ClearBuffsFromSource(this);
-            slowedEntities.Remove(entity);
-        }
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1998ed4c9058e3f368a32479827db5205fd8e606c670a73af0685c5dd79a58be
+size 855

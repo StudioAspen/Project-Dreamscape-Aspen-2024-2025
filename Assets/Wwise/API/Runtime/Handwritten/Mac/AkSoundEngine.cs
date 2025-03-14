@@ -1,31 +1,3 @@
-/*******************************************************************************
-The content of this file includes portions of the proprietary AUDIOKINETIC Wwise
-Technology released in source code form as part of the game integration package.
-The content of this file may not be used without valid licenses to the
-AUDIOKINETIC Wwise Technology.
-Note that the use of the game engine is subject to the Unity(R) Terms of
-Service at https://unity3d.com/legal/terms-of-service
- 
-License Usage
- 
-Licensees holding valid licenses to the AUDIOKINETIC Wwise Technology may use
-this file in accordance with the end user license agreement provided with the
-software or, alternatively, in accordance with the terms contained
-in a written agreement between you and Audiokinetic Inc.
-Copyright (c) 2024 Audiokinetic Inc.
-*******************************************************************************/
-
-﻿public partial class AkSoundEngine
-{
-#if UNITY_EDITOR_OSX || (UNITY_STANDALONE_OSX && !UNITY_EDITOR)
-	/// <summary>
-	///     Converts "AkOSChar*" C-strings to C# strings.
-	/// </summary>
-	/// <param name="ptr">"AkOSChar*" memory pointer passed to C# as an IntPtr.</param>
-	/// <returns>Converted string.</returns>
-	public static string StringFromIntPtrOSString(System.IntPtr ptr)
-	{
-		return StringFromIntPtrString(ptr);
-	}
-#endif
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:58a8bc5748da2a5dfd0721da6680a9a92a7bfea3e035f0fa9064e4bb74c55c93
+size 1325

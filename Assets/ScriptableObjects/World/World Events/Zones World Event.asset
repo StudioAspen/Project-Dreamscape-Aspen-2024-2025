@@ -1,22 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e6a922ac5e86b64586752ca388d24a0, type: 3}
-  m_Name: Zones World Event
-  m_EditorClassIdentifier: 
-  <EventName>k__BackingField: Outbreak
-  <EventProgressionUIName>k__BackingField: DEFEAT ENEMIES IN ZONES
-  <Description>k__BackingField: Defeat all enemies that spawn from the epicenter
-    and its surrounding lands!
-  <EventUIPrefab>k__BackingField: {fileID: 0}
-  <BaseSpawnAmount>k__BackingField: 2
-  MaxSearchLayer: 29
-  <BaseSpawnInterval>k__BackingField: 3
+version https://git-lfs.github.com/spec/v1
+oid sha256:2935792a2c2a18b48ad5a7085e0ea1e270f3a32ea500d7286c7b289b0a83cf1e
+size 769
