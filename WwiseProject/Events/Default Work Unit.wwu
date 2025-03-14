@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" SchemaVersion="119">
 	<Events>
-		<WorkUnit Name="Default Work Unit" ID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="Player" ID="{1EAEC283-F837-4B3E-92F8-1EFBA1876839}" ShortID="1003538488">
+					<ChildrenList>
+						<Event Name="PlayerLand" ID="{1CEF4750-DF12-4B26-A222-5C55BF893853}">
+							<ChildrenList>
+								<Action Name="" ID="{9EED8F6A-9F02-40A2-97C7-709E914A122A}" ShortID="1063135668">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PlayerLand" ID="{73A207DA-2AEC-431D-9925-CF4E88FCE920}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PlayerDash" ID="{C571672B-4205-4D66-96B5-18BD0FD9FDA1}">
+							<ChildrenList>
+								<Action Name="" ID="{A1A65B6F-D25F-47A8-A778-FDDFC7CCA42D}" ShortID="85701687">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PlayerDash" ID="{935353AD-4733-414C-BA67-7D7F36DD4AC4}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PlayerJump" ID="{3ED57EB6-0E74-4150-893F-B227877D53EF}">
+							<ChildrenList>
+								<Action Name="" ID="{1A44F3F7-F024-4BE5-99C9-6940190EA301}" ShortID="218567128">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="PlayerJump" ID="{996AF6D1-781C-43B8-AF0E-E732F8C377A8}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="WeaponSwing" ID="{D7AB3E65-0F0C-4DF5-985F-AD2740936A7C}">
+							<ChildrenList>
+								<Action Name="" ID="{0EC870AC-3669-4707-9567-13B55929EC83}" ShortID="915012927">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="BaseWeaponSwing" ID="{B73573F2-81E8-41EC-9E06-9422458E6825}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Folder Name="Footsteps" ID="{ACDDE4F4-737C-4591-961D-24623F73A119}" ShortID="605997793">
+							<ChildrenList>
+								<Event Name="PlayerFootstepSolidLeft" ID="{1A7CE6FE-C4BB-47B0-8CAE-006B3E7AD83D}">
+									<ChildrenList>
+										<Action Name="" ID="{B208B0BA-70E0-4F4E-8795-F9146BD83D63}" ShortID="646573525">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="PlayerFootstepSolidLeft" ID="{18CA0C5A-868D-40F0-BA5F-A7C64CD08C61}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+								<Event Name="PlayerFootstepSolidRight" ID="{64545EEE-2759-4B3D-9D62-EE1AEB4C0C08}">
+									<ChildrenList>
+										<Action Name="" ID="{09CAD574-C01D-4E38-B8C4-9CADA26B59DA}" ShortID="3041978">
+											<ReferenceList>
+												<Reference Name="Target">
+													<ObjectRef Name="PlayerFootstepSolidRight" ID="{23138999-6D66-493F-B63D-F93200FE128B}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+												</Reference>
+											</ReferenceList>
+										</Action>
+									</ChildrenList>
+								</Event>
+							</ChildrenList>
+						</Folder>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
 	</Events>
 </WwiseDocument>

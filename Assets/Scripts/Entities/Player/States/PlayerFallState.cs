@@ -13,7 +13,7 @@ public class PlayerFallState : PlayerBaseState
 
     public override void OnExit()
     {
-       
+        AkSoundEngine.PostEvent("PlayerLand", player.gameObject);
     }
 
     public override void OnUpdate()

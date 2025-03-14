@@ -14,6 +14,7 @@ public class PlayerJumpState : PlayerBaseState
     public override void OnEnter()
     {
         player.PlayOneShotAnimation(AnimationClip);
+        AkSoundEngine.PostEvent("PlayerJump", player.gameObject);
 
         Jump();
 

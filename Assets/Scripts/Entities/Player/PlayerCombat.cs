@@ -66,6 +66,7 @@ public class PlayerCombat : MonoBehaviour
         player.OnAirborne += Player_OnAirborne;
 
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
+        Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void OnDisable()
@@ -87,6 +88,11 @@ public class PlayerCombat : MonoBehaviour
     private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
         CameraShakeManager.Instance.ShakeCamera(5f, 0.1f, 0.25f);
+    }
+
+    private void Weapon_OnWeaponStartSwing(Entity attacker)
+    {
+        AkSoundEngine.PostEvent("WeaponSwing", gameObject);
     }
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)

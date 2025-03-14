@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{7F428FB7-7960-4BD3-8490-5095204CF32E}" SchemaVersion="119">
 	<SoundBanks>
-		<WorkUnit Name="Default Work Unit" ID="{7F428FB7-7960-4BD3-8490-5095204CF32E}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{7F428FB7-7960-4BD3-8490-5095204CF32E}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="EvanTestSoundbank" ID="{2DD448C1-0369-4F56-B1C0-3467FE5EEDC9}">
+					<ObjectInclusionList>
+						<ObjectRef Name="PlayerDash" ID="{935353AD-4733-414C-BA67-7D7F36DD4AC4}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="BaseWeaponSwing" ID="{B73573F2-81E8-41EC-9E06-9422458E6825}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="PlayerLand" ID="{73A207DA-2AEC-431D-9925-CF4E88FCE920}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="PlayerJump" ID="{996AF6D1-781C-43B8-AF0E-E732F8C377A8}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Player" ID="{1EAEC283-F837-4B3E-92F8-1EFBA1876839}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="WeaponSwing" ID="{D7AB3E65-0F0C-4DF5-985F-AD2740936A7C}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
 	</SoundBanks>
 </WwiseDocument>

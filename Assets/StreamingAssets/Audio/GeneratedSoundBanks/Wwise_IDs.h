@@ -11,10 +11,20 @@
 
 namespace AK
 {
+    namespace EVENTS
+    {
+        static const AkUniqueID PLAYERDASH = 2525052962U;
+        static const AkUniqueID PLAYERFOOTSTEPSOLIDLEFT = 732023582U;
+        static const AkUniqueID PLAYERFOOTSTEPSOLIDRIGHT = 3581650749U;
+        static const AkUniqueID PLAYERJUMP = 4008126242U;
+        static const AkUniqueID PLAYERLAND = 846198821U;
+        static const AkUniqueID WEAPONSWING = 899748333U;
+    } // namespace EVENTS
+
     namespace BANKS
     {
         static const AkUniqueID INIT = 1355168291U;
-        static const AkUniqueID UNITYTEST = 3507849816U;
+        static const AkUniqueID EVANTESTSOUNDBANK = 1198232180U;
     } // namespace BANKS
 
     namespace BUSSES
