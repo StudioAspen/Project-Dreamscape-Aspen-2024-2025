@@ -1,11 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class Player : Entity
 {

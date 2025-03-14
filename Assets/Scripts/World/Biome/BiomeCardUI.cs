@@ -15,7 +15,6 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public Biome CurrentBiome { get; private set; }
 
-    public bool IsReady => worldManager != null;
     private bool isSelected;
 
     // Awake is safe here since UI scene loads last

@@ -82,12 +82,12 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void HandleNullSelected()
     {
-        GameObject selectedGameObject = EventSystem.current.currentSelectedGameObject;
-        //Debug.Log($"Selected: {selectedGameObject}");
         if (gameInputManager.CurrentControlScheme == InputManager.ControlScheme.KEYBOARD_MOUSE) return;
-        if(selectedGameObject == null)
-        {
-            EventSystem.current.SetSelectedGameObject(gamePanels[gameManager.CurrentState].DefaultSelectedObject);
-        }
+
+        GameObject currentSelectedObject = EventSystem.current.currentSelectedGameObject;
+        UIPanel currentPanel = gamePanels[gameManager.CurrentState];
+        if (currentSelectedObject != null && currentSelectedObject.transform.IsChildOf(currentPanel.transform)) return;
+
+        EventSystem.current.SetSelectedGameObject(currentPanel.DefaultSelectedObject);
     }
 }
