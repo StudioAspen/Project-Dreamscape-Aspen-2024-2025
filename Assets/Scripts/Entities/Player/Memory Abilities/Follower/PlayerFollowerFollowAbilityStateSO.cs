@@ -26,7 +26,7 @@ public class PlayerFollowerFollowAbilityStateSO : PlayerAbilityStateSO
     public override void OnEnter()
     {
         // plays an animation of throwing hammer 
-        player.PlayOneShotAnimation(HammerAnimationClip);
+        //player.PlayOneShotAnimation(HammerAnimationClip);
 
         // start the hammer attack
         FollowerHammerAbility hammer = Instantiate(PrefabHammerAttack);
