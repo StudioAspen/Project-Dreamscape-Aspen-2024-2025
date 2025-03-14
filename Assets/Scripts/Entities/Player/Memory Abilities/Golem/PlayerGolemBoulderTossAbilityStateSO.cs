@@ -77,9 +77,9 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
         player.LookAt(player.transform.position + player.TargetForwardDirection);
     }
 
-    private IEnumerator UnleashBoulder() {
+    private IEnumerator UnleashBoulder() 
+    {
         yield return new WaitForSeconds(BoulderSpawnDelay / player.LocalTimeScale.GetFloatValue());
-        // player.SetSpeedModifier(1f);
         CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(BoulderPrefab);
         spawnedAbility.Init(player);
     }

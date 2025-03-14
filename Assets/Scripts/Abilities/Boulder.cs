@@ -32,8 +32,7 @@ public class Boulder : CastedAbility, IPoolableObject
         if (rigidbody == null) Debug.LogError("Boulder requires a Rigidbody component!");
     }
 
-    private protected override void OnSpawn() 
-    {
+    private protected override void OnSpawn() {
         rigidbody.position = casterEntity.GetColliderCenterPosition();
         if (moveCoroutine != null) StopCoroutine(moveCoroutine);
 
