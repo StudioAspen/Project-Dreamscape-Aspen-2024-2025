@@ -1423,7 +1423,7 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-  baseSpeed: 3
+  baseSpeed: 7
   rotationSpeed: 10
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -1456,9 +1456,9 @@ MonoBehaviour:
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
-  groundedAcceleration: 4
+  groundedAcceleration: 5
   <PlayerSprintState>k__BackingField:
-    <SprintSpeedModifier>k__BackingField: 1.66
+    <SprintSpeedModifier>k__BackingField: 1.5
     IsSprinting: 0
   <PlayerDashState>k__BackingField:
     dashTrailParticle: {fileID: 8508715176541134875}
@@ -1467,7 +1467,7 @@ MonoBehaviour:
     <DashDuration>k__BackingField: 0.25
     <InitialDashVelocity>k__BackingField: 75
     <SprintDurationAfterDash>k__BackingField: 2
-    <DashCooldown>k__BackingField: 1
+    <DashCooldown>k__BackingField: 0.75
   <PlayerJumpState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
       type: 3}
