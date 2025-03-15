@@ -3,31 +3,40 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static InputManager;
 
 public class PlayerCameraController : MonoBehaviour
 {
+
+    private InputManager inputManager;
     private GameManager gameManager;
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
         vCam = GetComponent<CinemachineVirtualCamera>();
         inputProvider = GetComponent<CinemachineInputProvider>();
+    }
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        inputManager = FindAnyObjectByType<InputManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        Player.OnPlayerInstantiated += Player_OnPlayerSpawned;
-
         DisableCameraInputs();
+
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded;
+        PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
+        PlayerPreferences.Instance.OnCameraSensitivityChanged -= SetCameraSensitivity;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
@@ -42,11 +51,9 @@ public class PlayerCameraController : MonoBehaviour
         }
     }
 
-    private void Player_OnPlayerSpawned(Player spawnedPlayer)
+    private void Player_OnPlayerLoaded(Player player)
     {
-        Player.OnPlayerInstantiated -= Player_OnPlayerSpawned;
-
-        AttachToTarget(spawnedPlayer.transform);
+        AttachToTarget(player.transform);
     }
 
     private void AttachToTarget(Transform targetTransform)
@@ -64,4 +71,14 @@ public class PlayerCameraController : MonoBehaviour
     {
         inputProvider.enabled = false;
     }
+
+    private void SetCameraSensitivity(float sensitivity) {
+        CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
+        if (pov != null) 
+        {
+            pov.m_HorizontalAxis.m_MaxSpeed = sensitivity;
+            pov.m_VerticalAxis.m_MaxSpeed = sensitivity;
+        }
+    }
+    
 }

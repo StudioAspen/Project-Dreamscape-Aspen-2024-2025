@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerChargeState : PlayerBaseState
 {
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+
     private PlayerCombat playerCombat;
 
     public ChargeAttackActivatedStatusEffectSO ChargeActivatedStatusEffect { get; private set; }
@@ -11,7 +14,7 @@ public class PlayerChargeState : PlayerBaseState
     public float Timer { get; private set; }
     private float duration;
 
-    private protected override void Init(Entity entity)
+    public override void Init(Entity entity)
     {
         base.Init(entity);
 
@@ -39,7 +42,7 @@ public class PlayerChargeState : PlayerBaseState
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Charge");
+        player.PlayOneShotAnimation(AnimationClip);
 
         player.SetSpeedModifier(0);
 
@@ -62,8 +65,6 @@ public class PlayerChargeState : PlayerBaseState
         Timer += player.LocalDeltaTime;
 
         player.ApplyGravity();
-
-        player.TransitionToAnimation("Charge");
 
         if (player.MoveDirection != Vector3.zero)
         {
@@ -89,6 +90,7 @@ public class PlayerChargeState : PlayerBaseState
     {
         if (!EntityStatusEffector.HasStatusEffect<ChargeAttackActivatedStatusEffectSO>(player.gameObject)) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
         if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
 
         return true;
@@ -105,6 +107,7 @@ public class PlayerChargeState : PlayerBaseState
         if (player.CurrentState == player.PlayerAttackState) return false;
         if (player.CurrentState == player.PlayerDashState) return false;
         if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
 
         return true;
     }

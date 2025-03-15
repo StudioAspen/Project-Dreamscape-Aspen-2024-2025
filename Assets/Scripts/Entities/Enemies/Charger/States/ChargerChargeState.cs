@@ -5,9 +5,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
 public class ChargerChargeState : ChargerBaseState
 {
-    [field: Header("Charger: Charge Settings")]
     [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
     [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
     [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
@@ -27,7 +27,7 @@ public class ChargerChargeState : ChargerBaseState
 
     public override void OnEnter() 
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
         
         charger.SetSpeedModifier(ChargeSpeedModifier);
 
@@ -75,7 +75,7 @@ public class ChargerChargeState : ChargerBaseState
         {
             if (charger.DidHitWall(hit))
             {
-                CameraShakeManager.Instance.ShakeCamera(3f, 0.5f);
+                CameraShakeManager.Instance.ShakeCamera(3f, 1f, 0.5f);
 
                 charger.ChangeState(charger.ChargerDazedState);
                 return;
@@ -83,18 +83,18 @@ public class ChargerChargeState : ChargerBaseState
 
             if (charger.DidHitFriendlyEntity(hit, out Entity friendlyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 1f,0.25f);
 
                 Vector3 launchDirection = friendlyEntity.GetColliderCenterPosition() - charger.transform.position;
-                friendlyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
+                friendlyEntity.TryChangeToLaunchState(charger, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
             }
 
             if (charger.DidHitEnemyEntity(hit, out Entity enemyEntity))
             {
-                CameraShakeManager.Instance.ShakeCamera(2f, 0.25f);
+                CameraShakeManager.Instance.ShakeCamera(2f, 1f, 0.25f);
 
                 Vector3 launchDirection = enemyEntity.GetColliderCenterPosition() - charger.transform.position;
-                enemyEntity.TryChangeToLaunchState(launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
+                enemyEntity.TryChangeToLaunchState(charger, launchDirection, ChargeOnImpactLaunchForce, ChargeStunDuration);
 
                 charger.DealDamageToOtherEntity(enemyEntity, charger.CalculateDamage(ChargeContactDamageMultiplier), hit.ClosestPoint(charger.GetColliderCenterPosition()), false);
 

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class GolemReadyAttackState : GolemBaseState
 {
-    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float StompReadyDuration { get; private set; } = 2f;
     [field: SerializeField] public float GroundSmashReadyDuration { get; private set; } = 1f;
     [field: SerializeField] public float CloseRangeCutoff { get; private set; } = 2f;
@@ -15,7 +16,6 @@ public class GolemReadyAttackState : GolemBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("AttackWarning");
         golem.SetSpeedModifier(0f);
 
         if (golem.Target != null)
@@ -26,6 +26,8 @@ public class GolemReadyAttackState : GolemBaseState
         closeRange = (golem.Target != null ? targetDistance <= CloseRangeCutoff : false);
         readyDuration = Random.Range(0.5f * (closeRange ? GroundSmashReadyDuration : StompReadyDuration), 1.25f * (closeRange ? GroundSmashReadyDuration : StompReadyDuration));
         readyTimer = 0f;
+
+        enemy.PlayOneShotAnimation(AnimationClip, readyDuration);
     }
 
     public override void OnExit()

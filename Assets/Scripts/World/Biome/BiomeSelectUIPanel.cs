@@ -14,16 +14,13 @@ public class BiomeSelectUIPanel : UIPanel
     [Header("References")]
     [SerializeField] private List<BiomeCardUI> biomeCards;
 
-    private void Awake()
+    private void Start()
     {
         
     }
 
     public void OnEnable()
     {
-        // If the cards are not ready dont do anything
-        if (!biomeCards[0].IsReady) return;
-
         AssignRandomBiomesToCards();
 
         EnableCards();

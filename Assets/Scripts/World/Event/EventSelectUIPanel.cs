@@ -7,6 +7,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class EventSelectUIPanel : UIPanel
 {
@@ -34,6 +35,11 @@ public class EventSelectUIPanel : UIPanel
     private Color backgroundStartingColor;
     private Color titleTextStartingColor;
 
+    private Coroutine startCardsAnimationCoroutine;
+
+    private Type previousEvent = null;
+
+    // UI scene loads last so Awake is safe here
     private void Awake()
     {
         eventManager = FindObjectOfType<EventManager>();
@@ -53,9 +59,6 @@ public class EventSelectUIPanel : UIPanel
 
     public void OnEnable()
     {
-        // If the cards are not ready dont do anything
-        if (!eventCards[0].IsReady) return;
-
         AssignRandomEventsToCards();
 
         // Kill all previous tweens on the title and return it to its starting state
@@ -71,7 +74,7 @@ public class EventSelectUIPanel : UIPanel
 
         // Fade in background
         background.DOColor(backgroundStartingColor, backgroundFadeInDuration).SetUpdate(true).SetEase(Ease.InCubic);
-        
+
         // Play the flipping cards animation
         PlayStartCardsAnimation();
     }
@@ -91,40 +94,41 @@ public class EventSelectUIPanel : UIPanel
     /// </summary>
     private void PlayStartCardsAnimation()
     {
+        if(startCardsAnimationCoroutine != null) StopCoroutine(startCardsAnimationCoroutine);
+        startCardsAnimationCoroutine = StartCoroutine(StartCardsAnimationCoroutine());
+    }
+
+    private IEnumerator StartCardsAnimationCoroutine()
+    {
+        yield return null; // Wait a frame so that cards can initialize
+
+        Vector3 bottomLeftPositionOffScreen = new Vector3(-Camera.main.pixelWidth, -Camera.main.pixelHeight, 0);
+
         // Kill all previous tweens on the event cards and return them to their starting states
         for (int i = 0; i < eventCards.Count; i++)
         {
             DOTween.Kill(eventCards[i]);
             eventCards[i].ResetCard();
-        }
 
-        Vector3 bottomLeftPositionOffScreen = new Vector3(-Camera.main.pixelWidth, -Camera.main.pixelHeight, 0);
+            // Move the cards off screen
+            eventCards[i].transform.position = bottomLeftPositionOffScreen;
+        }
 
         for (int i = 0; i < eventCards.Count; i++)
         {
-            // Move the cards off screen
-            eventCards[i].transform.position = bottomLeftPositionOffScreen;
-
-            int localIndex = i;
-
+            Sequence sequence = DOTween.Sequence().SetUpdate(true).SetId(eventCards[i]);
+            sequence.Append(eventCards[i].MoveToStartingPosition(cardDealDuration, Ease.OutCubic).SetUpdate(true));
+            sequence.Append(eventCards[i].FlipCard(enterCardsFlipDuration, true).SetUpdate(true));
             if (i == eventCards.Count - 1)
             {
-                PlayCardAnimationByIndex(localIndex, EnableCardButtons);
-                break;
+                sequence.OnComplete(EnableCardButtons);
             }
+            sequence.Play();
 
-            PlayCardAnimationByIndex(localIndex);
+            yield return new WaitForSecondsRealtime(flipDurationBetweenCards);
         }
 
-        void PlayCardAnimationByIndex(int index, Action onCompleteCallback = null)
-        {
-            DOVirtual.DelayedCall(index * flipDurationBetweenCards, () =>
-            {
-                eventCards[index].MoveToStartingPosition(cardDealDuration, Ease.OutCubic, () => {
-                    eventCards[index].FlipCard(enterCardsFlipDuration, true, onCompleteCallback);
-                });
-            }).SetId(eventCards[index]);
-        }
+        startCardsAnimationCoroutine = null;
     }
 
     /// <summary>
@@ -133,6 +137,14 @@ public class EventSelectUIPanel : UIPanel
     private void AssignRandomEventsToCards()
     {
         List<Type> potentialEvents = new List<Type>(eventManager.EventsDictionary.Keys);
+
+        // Prevent players from selecting the same event two waves in a row.
+        if (previousEvent != null) 
+        {
+          Debug.Log($"Previous Event: {previousEvent.Name}\n Now Removing {previousEvent.Name}...");
+          Type type = potentialEvents.Find(x => x == previousEvent);
+          potentialEvents.Remove(type);
+        }
 
         foreach (EventCardUI card in eventCards)
         {
@@ -151,6 +163,8 @@ public class EventSelectUIPanel : UIPanel
         DisableCardButtons();
 
         PlayExitAnimation(clickedCard);
+
+        previousEvent = clickedCard.CurrentEventType;
     }
 
     /// <summary>
@@ -164,7 +178,7 @@ public class EventSelectUIPanel : UIPanel
             if (card == clickedCard) continue;
 
             // Flip and slide down the non-selected cards
-            card.FlipCard(nonSelectedCardsExitFlipDuration, false, () =>
+            card.FlipCard(nonSelectedCardsExitFlipDuration, false).OnComplete(() =>
             {
                 card.transform.DOMoveY(-Camera.main.pixelHeight, cardSlideDownDuration).SetUpdate(true).SetEase(Ease.InOutBack);
             });
@@ -185,7 +199,7 @@ public class EventSelectUIPanel : UIPanel
                 {
                     background.DOColor(Color.clear, backgroundFadeOutDuration).SetUpdate(true).SetEase(Ease.InCubic); // Fade out the background
 
-                    clickedCard.FlipCard(selectedCardExitFlipDuration, false, () => // Flip it
+                    clickedCard.FlipCard(selectedCardExitFlipDuration, false).OnComplete(() =>
                     {
                         // Slide it down
                         clickedCard.transform.DOMoveY(-Camera.main.pixelHeight, cardSlideDownDuration).SetUpdate(true).SetEase(Ease.InOutBack).OnComplete(() =>

@@ -40,17 +40,22 @@ public class LevelSystem : MonoBehaviour
         CurrentEXP = 0;
         MaxEXP = CalculateMaxEXP();
         AddEXP(0);
+    }
 
+    private void OnEnable()
+    {
         entity.OnKillEntity += Entity_OnKillEntity;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnKillEntity -= Entity_OnKillEntity;
     }
 
     private void Entity_OnKillEntity(Entity victim)
     {
+        if (Slime.IsEntityACloneSlime(victim)) return; // Cloned slimes dont drop exp
+
         Enemy victimAsEnemy = victim as Enemy;
         int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
 

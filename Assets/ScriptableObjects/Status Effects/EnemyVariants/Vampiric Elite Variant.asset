@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87578fd996c07b4409e015bd34a605a8, type: 3}
+  m_Name: Vampiric Elite Variant
+  m_EditorClassIdentifier: 
+  <DisplayName>k__BackingField: Status Effect
+  <Description>k__BackingField: Status effect description
+  <Stackable>k__BackingField: 0
+  <Name>k__BackingField: Vampiric
+  <MaxHealthMultiplier>k__BackingField: 1.2
+  <EXPValueMultiplier>k__BackingField: 1.5
+  <SizeMultiplier>k__BackingField: 1.2
+  <DamageMultiplier>k__BackingField: 1.25
+  <EliteMaterial>k__BackingField: {fileID: 2100000, guid: 84dd501f71aa1a5429b562db552b4e82,
+    type: 2}
+  <LifeStealStatusEffect>k__BackingField: {fileID: 11400000, guid: 5e2c24e8c786be6408439a7634738417,
+    type: 2}

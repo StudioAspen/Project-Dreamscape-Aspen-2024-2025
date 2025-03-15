@@ -13,11 +13,14 @@ public class EntityStatusEffector : MonoBehaviour
     private void Awake()
     {
         entity = GetComponent<Entity>();
+    }
 
+    private void OnEnable()
+    {
         entity.OnEntityDestroyed += Entity_OnEntityDestroyed;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         entity.OnEntityDestroyed -= Entity_OnEntityDestroyed;
     }
@@ -105,12 +108,16 @@ public class EntityStatusEffector : MonoBehaviour
     /// Tries to apply a status effect to the target GameObject.
     /// If the target has an EntityStatusEffector component, the status effect will be applied.
     /// </summary>
-    public static void TryApplyStatusEffect(GameObject target, StatusEffectSO statusEffect, GameObject source)
+    /// <param name="target">The target gameObject to apply the status effect to.</param>
+    /// <param name="statusEffect">The status effect to apply.</param>
+    /// <param name="source">The source responsible for applying the effect.</param>
+    /// <returns>The status effect applied or null if failed</returns>
+    public static StatusEffectSO TryApplyStatusEffect(GameObject target, StatusEffectSO statusEffect, GameObject source)
     {
         EntityStatusEffector statusEffector = target.GetComponent<EntityStatusEffector>();
-        if (statusEffector == null) return;
+        if (statusEffector == null) return null;
 
-        statusEffector.ApplyStatusEffect(statusEffect, source);
+        return statusEffector.ApplyStatusEffect(statusEffect, source);
     }
 
     /// <summary>

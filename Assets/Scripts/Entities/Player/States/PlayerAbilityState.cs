@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerAbilityState : PlayerBaseState
 {
     public PlayerAbilityStateSO AbilityState { get; private set; }
@@ -44,11 +45,6 @@ public class PlayerAbilityState : PlayerBaseState
         player.ChangeState(this, true);
 
         return true;
-    }
-
-    public void SetAbilityAnimationSpeed(float speed)
-    {
-        player.GetComponent<Animator>().SetFloat("AbilityAnimationSpeed", speed);
     }
 
     public override void OnEnter()

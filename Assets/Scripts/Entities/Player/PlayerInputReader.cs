@@ -36,13 +36,14 @@ public class PlayerInputReader : MonoBehaviour
 
     private void Awake()
     {
-        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
         player = GetComponent<Player>();
         memorySystem = player.GetComponent<MemorySystem>();
     }
 
     private void OnEnable()
     {
+        playerControls = FindObjectOfType<GameInputManager>().PlayerControls;
+        
         playerControls.Gameplay.Movement.performed += PlayerControls_OnMovementPerformed;
         playerControls.Gameplay.Movement.canceled += PlayerControls_OnMovementCanceled;
 

@@ -26,6 +26,11 @@ public class LandManager : MonoBehaviour
     [field: SerializeField] public int LevelDifference { get; private set; } = 0;
     [SerializeField] private int minLevel = -5;
     [SerializeField] private int maxLevel = 10;
+    
+    /// <summary>
+    /// Used for random selections.
+    /// </summary>
+    public float Weight => 1f/(1f + maxLevel - Level);
 
     /// <summary>
     /// Initializes the LandManager with the given grid position.
@@ -40,16 +45,17 @@ public class LandManager : MonoBehaviour
 
     private void Awake()
     {
-        worldManager = FindObjectOfType<WorldManager>();
         EnemySpawner = GetComponent<EnemySpawner>();
         navMeshSurface = GetComponent<NavMeshSurface>();
+    }
+
+    private void Start()
+    {
+        worldManager = FindObjectOfType<WorldManager>();
 
         // Give the body a random 90 degree rotation
         bodyContentTransform.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 4) * 90f, 0);
-    }
 
-    void Start()
-    {
         Level = 1;
 
         levelText.text = $"{Level}";

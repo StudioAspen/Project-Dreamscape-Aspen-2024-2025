@@ -1,31 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class Player : Entity
 {
     private PlayerInputReader playerInputReader;
 
     /// <summary>
-    /// Action that is invoked when the player is first instantiated.
+    /// Action that is invoked when the player is loaded.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The instantiated player</description></item>
+    /// <item><description><c>Player player</c>: The loaded player.</description></item>
     /// </list>
     /// </remarks>
-    public static Action<Player> OnPlayerInstantiated = delegate { };
+    public static Action<Player> OnPlayerLoaded = delegate { };
     /// <summary>
     /// Action that is invoked when the player is destroyed.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item><description><c>Player player</c>: The destroyed player</description></item>
+    /// <item><description><c>Player player</c>: The destroyed player.</description></item>
     /// </list>
     /// </remarks>
     public static Action<Player> OnPlayerDestroyed = delegate { };
@@ -45,31 +40,31 @@ public class Player : Entity
 
     #region States 
     [field: Header("Player: States")]
-    public PlayerIdleState PlayerIdleState { get; private set; }
-    public PlayerWalkState PlayerWalkState { get; private set; }
-    public PlayerSprintState PlayerSprintState { get; private set; }
-    public PlayerDashState PlayerDashState { get; private set; }
-    public PlayerJumpState PlayerJumpState { get; private set; }
-    public PlayerFallState PlayerFallState { get; private set; }
-    public PlayerSlideState PlayerSlideState { get; private set; }
-    public PlayerAttackState PlayerAttackState { get; private set; }
-    public PlayerChargeState PlayerChargeState { get; private set; }
-    public PlayerAbilityState PlayerAbilityState { get; private set; }
+    [field: SerializeField] public PlayerIdleState PlayerIdleState { get; private set; }
+    [field: SerializeField] public PlayerWalkState PlayerWalkState { get; private set; }
+    [field: SerializeField] public PlayerSprintState PlayerSprintState { get; private set; }
+    [field: SerializeField] public PlayerDashState PlayerDashState { get; private set; }
+    [field: SerializeField] public PlayerJumpState PlayerJumpState { get; private set; }
+    [field: SerializeField] public PlayerFallState PlayerFallState { get; private set; }
+    [field: SerializeField] public PlayerSlideState PlayerSlideState { get; private set; }
+    [field: SerializeField] public PlayerAttackState PlayerAttackState { get; private set; }
+    [field: SerializeField] public PlayerChargeState PlayerChargeState { get; private set; }
+    [field: SerializeField] public PlayerAbilityState PlayerAbilityState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        PlayerIdleState = EntityBaseState.InitializeOrCreate<PlayerIdleState>(this);
-        PlayerWalkState = EntityBaseState.InitializeOrCreate<PlayerWalkState>(this);
-        PlayerSprintState = EntityBaseState.InitializeOrCreate<PlayerSprintState>(this);
-        PlayerDashState = EntityBaseState.InitializeOrCreate<PlayerDashState>(this);
-        PlayerJumpState = EntityBaseState.InitializeOrCreate<PlayerJumpState>(this);
-        PlayerFallState = EntityBaseState.InitializeOrCreate<PlayerFallState>(this);
-        PlayerSlideState = EntityBaseState.InitializeOrCreate<PlayerSlideState>(this);
-        PlayerAttackState = EntityBaseState.InitializeOrCreate<PlayerAttackState>(this);
-        PlayerChargeState = EntityBaseState.InitializeOrCreate<PlayerChargeState>(this);
-        PlayerAbilityState = EntityBaseState.InitializeOrCreate<PlayerAbilityState>(this);
+        PlayerIdleState.Init(this);
+        PlayerWalkState.Init(this);
+        PlayerSprintState.Init(this);
+        PlayerDashState.Init(this);
+        PlayerJumpState.Init(this);
+        PlayerFallState.Init(this);
+        PlayerSlideState.Init(this);
+        PlayerAttackState.Init(this);
+        PlayerChargeState.Init(this);
+        PlayerAbilityState.Init(this);
     }
 
     public override void ChangeState(EntityBaseState state, bool willForceChange = false)
@@ -100,12 +95,11 @@ public class Player : Entity
     {
         base.OnAwake();
 
+        OnPlayerLoaded.Invoke(this);
+
         playerInputReader = GetComponent<PlayerInputReader>();
 
-        OnPlayerInstantiated?.Invoke(this);
-
         OnEntityTakeDamage += Player_OnEntityTakeDamage;
-        OnEntityDestroyed += Player_OnEntityDestroyed;
     }
 
     private protected override void OnDeath()
@@ -135,16 +129,16 @@ public class Player : Entity
         PlayerDashState.HandleDashTrail();
     }
 
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
+    public override void Die()
     {
-        CameraShakeManager.Instance.ShakeCamera(5f, 0.25f);
+        base.Die();
+
+        OnPlayerDestroyed.Invoke(this);
     }
 
-    private void Player_OnEntityDestroyed(Entity destroyedEntity, GameObject killer)
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject sourceObject)
     {
-        OnEntityDestroyed -= Player_OnEntityDestroyed;
-
-        OnPlayerDestroyed?.Invoke(this);
+        CameraShakeManager.Instance.ShakeCamera(5f,0.1f, 0.25f);
     }
 
     /// <summary>
@@ -265,6 +259,7 @@ public class Player : Entity
         if (CurrentState == PlayerChargeState) return;
         if (CurrentState == PlayerAttackState) return;
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
 
         ChangeState(EntityStaggeredState, true);
     }
@@ -295,7 +290,7 @@ public class Player : Entity
     /// <param name="replacementClipName">The name of the clip to replace.</param>
     public void ReplaceOneShotAnimationClip(AnimationClip oneShotClip, string replacementClipName)
     {
-        if (animator == null)
+        if (blendTreeAnimator == null)
         {
             Debug.LogError("Animator is not assigned!");
             return;
@@ -308,7 +303,7 @@ public class Player : Entity
         }
 
         // Get the runtime animator controller
-        var runtimeAnimatorController = animator.runtimeAnimatorController;
+        var runtimeAnimatorController = blendTreeAnimator.runtimeAnimatorController;
         if (runtimeAnimatorController == null)
         {
             Debug.LogError("Animator has no RuntimeAnimatorController assigned!");
@@ -339,6 +334,6 @@ public class Player : Entity
         overrideController[replacementClip] = oneShotClip;
 
         // Assign the override controller to the animator
-        animator.runtimeAnimatorController = overrideController;
+        blendTreeAnimator.runtimeAnimatorController = overrideController;
     }
 }

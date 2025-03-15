@@ -12,26 +12,29 @@ public class Charger : Enemy
     [SerializeField] private float superArmorDamageReduction = 0.5f; // takes (100 - superArmorDamageReduction)% of damage when hit
 
     #region States
-    public ChargerWanderState ChargerWanderState { get; private set; }
-    public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
-    public ChargerChargeState ChargerChargeState { get; private set; }
-    public ChargerWindDownState ChargerWindDownState { get; private set; }
-    public ChargerDazedState ChargerDazedState { get; private set; }
-    public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
-    public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: Header("Charger: States")]
+    [field: SerializeField] public ChargerWanderState ChargerWanderState { get; private set; }
+    [field: SerializeField] public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
+    [field: SerializeField] public ChargerChargeState ChargerChargeState { get; private set; }
+    [field: SerializeField] public ChargerWindDownState ChargerWindDownState { get; private set; }
+    [field: SerializeField] public ChargerDazedState ChargerDazedState { get; private set; }
+    [field: SerializeField] public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
+    [field: SerializeField] public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: SerializeField] public ChargerStaggeredState ChargerStaggeredState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        ChargerWanderState = EntityBaseState.InitializeOrCreate<ChargerWanderState>(this);
-        ChargerTargetDetectedState = EntityBaseState.InitializeOrCreate<ChargerTargetDetectedState>(this);
-        ChargerChargeState = EntityBaseState.InitializeOrCreate<ChargerChargeState>(this);
-        ChargerDazedState = EntityBaseState.InitializeOrCreate<ChargerDazedState>(this);
-        ChargerWindDownState = EntityBaseState.InitializeOrCreate<ChargerWindDownState>(this);
-        ChargerJabbingAttackState = EntityBaseState.InitializeOrCreate<ChargerJabbingAttackState>(this);
-        ChargerJabRecoverState = EntityBaseState.InitializeOrCreate<ChargerJabRecoverState>(this);
-        EntityStaggeredState = EntityBaseState.InitializeOrCreate<ChargerStaggeredState>(this);
+        ChargerWanderState.Init(this);
+        ChargerTargetDetectedState.Init(this);
+        ChargerChargeState.Init(this);
+        ChargerDazedState.Init(this);
+        ChargerWindDownState.Init(this);
+        ChargerJabbingAttackState.Init(this);
+        ChargerJabRecoverState.Init(this);
+        ChargerStaggeredState.Init(this);
+        EntityStaggeredState = ChargerStaggeredState;
     }
     #endregion
 
@@ -43,8 +46,6 @@ public class Charger : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -74,11 +75,6 @@ public class Charger : Enemy
         // dont inherit base to leave target assignment to certain states
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnOnDrawGizmos()
     {
         base.OnOnDrawGizmos();
@@ -86,7 +82,7 @@ public class Charger : Enemy
 #if UNITY_EDITOR
         Gizmos.color = Color.red;
         CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomDebug.DrawWireCircle(transform.position, GetComponentInChildren<ChargerTargetDetectedState>().NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCircle(transform.position, ChargerTargetDetectedState.NearbyAttackRadiusThreshold);
         CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
 #endif
     }
@@ -97,41 +93,36 @@ public class Charger : Enemy
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
     {
         if (CurrentState == EntityDeathState) return;
 
-        int newDamage = dmg;
+        int newDamage = damage;
 
         if(HasSuperArmorActive())
         {
-            if(dmg >= staggerDamageThreshold)
+            if(damage >= staggerDamageThreshold)
             {
-                ChangeState(EntityStaggeredState, true);
+                if(willTryStagger) ChangeState(EntityStaggeredState, true);
             }
             else
             {
-                newDamage = Mathf.RoundToInt(superArmorDamageReduction * dmg);
+                newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
             }
         }
-        else
-        {
-            if(CanBeStaggered())
-            {
-                ChangeState(EntityStaggeredState, true);
-            }
-        }
+
+        if (willTryStagger) TryChangeStaggeredState();
+
+        if(!IsInvicible) CurrentHealth -= newDamage;
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-
-        CurrentHealth -= newDamage;
 
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }
@@ -164,18 +155,14 @@ public class Charger : Enemy
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
     /// <returns>True if the Charger can be staggered, false otherwise.</returns>
-    private bool CanBeStaggered()
+    public override bool CanBeStaggered()
     {
+        if (HasSuperArmorActive()) return false;
+
         return CurrentState == ChargerWanderState
             || CurrentState == ChargerDazedState
             || CurrentState == ChargerWindDownState
             || CurrentState == ChargerJabRecoverState;
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        EndHit();
     }
 
     public void StartHit()

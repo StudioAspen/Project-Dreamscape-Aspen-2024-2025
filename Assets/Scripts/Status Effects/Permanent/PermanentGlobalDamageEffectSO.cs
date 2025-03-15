@@ -10,23 +10,23 @@ public class PermanentGlobalDamageEffectSO : StatusEffectSO
     {
         base.OnApply();
 
-        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease); // apply the new damage multiplier
+        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease, this); // apply the new damage multiplier
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        entity.DamageModifier.RemoveMultiplier(GlobalDamageMultiplierIncrease); // undo the damage multiplier
+        entity.DamageModifier.ClearBuffsFromSource(this); // undo the damage multiplier
     }
 
     private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
         PermanentGlobalDamageEffectSO overridingStatusEffect = newStatusEffect as PermanentGlobalDamageEffectSO;
 
-        entity.DamageModifier.RemoveMultiplier(GlobalDamageMultiplierIncrease); // undo the damage multiplier
+        entity.DamageModifier.ClearBuffsFromSource(this); // undo the damage multiplier
         GlobalDamageMultiplierIncrease *= overridingStatusEffect.GlobalDamageMultiplierIncrease; // update the damage multiplier
-        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease); // apply the new damage multiplier
+        entity.DamageModifier.AddMultiplier(GlobalDamageMultiplierIncrease, this); // apply the new damage multiplier
     }
 }
 

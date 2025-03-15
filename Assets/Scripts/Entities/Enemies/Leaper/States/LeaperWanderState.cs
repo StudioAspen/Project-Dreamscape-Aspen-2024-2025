@@ -2,12 +2,11 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.AI;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class LeaperWanderState : LeaperBaseState
 {
-    [field: Header("Config")]
     [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
     [field: SerializeField] public float WanderHopHeight { get; private set; } = 2f;
@@ -18,7 +17,7 @@ public class LeaperWanderState : LeaperBaseState
 
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         leaper.SetSpeedModifier(0f);
 
@@ -43,7 +42,6 @@ public class LeaperWanderState : LeaperBaseState
                 leaper.ChangeState(leaper.EnemyChaseState);
                 return;
             }
-
             wanderTimeElapsed += leaper.LocalDeltaTime;
         }
 
@@ -57,7 +55,7 @@ public class LeaperWanderState : LeaperBaseState
 
             leaper.Hop(currentWanderDestination, WanderHopHeight);
 
-            leaper.TransitionToAnimation("JumpingUp");
+            leaper.PlayOneShotAnimation(leaper.JumpAnimationClip);
         }
         
         leaper.SetSpeedModifier(leaper.IsGrounded ? 0f : 1f);

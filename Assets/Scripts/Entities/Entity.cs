@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
+using UPlayable.AnimationMixer;
+using static UnityEngine.EventSystems.EventTrigger;
 
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))] // Stores the blend tree
+[RequireComponent(typeof(AnimatorOutput))] // Plays the blend tree animator's animations
+[RequireComponent(typeof(AnimationClipOutput))] // Plays one shot animations
 public class Entity : MonoBehaviour, IPoolableObject
 {
     #region References
     public CharacterController CharacterController { get; protected set; }
-    private protected Animator animator;
+    private protected Animator blendTreeAnimator;
+    private protected AnimationClipOutput playablesOneShotClipManager;
+    private protected AnimatorOutput blendTreeAnimatorManager;
 
     [field: Header("Entity: References")]
     [field: SerializeField] public GlobalPhysicsConfigSO PhysicsConfig { get; private set; }
@@ -18,7 +26,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Health Variables
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: SerializeField, Tooltip("Max health for entity. Set to 0 for invicibility.")] public Stat MaxHealth { get; protected set; }
+    [field: SerializeField] public Stat MaxHealth { get; protected set; }
+    public bool IsInvicible { get; protected set; }
+
+    /// <summary>
+    /// Sets the invicibility status of the entity.
+    /// </summary>
+    /// <param name="isInvicible"></param>
+    public void SetInvincible(bool isInvicible)
+    {
+        IsInvicible = isInvicible;
+    }
     #endregion
 
     #region Speed Variables
@@ -29,7 +47,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
-    public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
+    [field: SerializeField]public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
     public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion
@@ -150,6 +168,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
+    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
@@ -187,6 +206,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </remarks>
     public Action<Vector3> OnAirborne = delegate { };
     private bool prevIsGrounded;
+    private bool isKilledFromBeingOutOfBounds;
 
     /// <summary>
     /// Invokes the vertical movement events based on the current grounded state.
@@ -270,6 +290,54 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </list>
     /// </remarks>
     public Action<Entity> OnKillEntity = delegate { }; // passes the victim entity
+    /// <summary>
+    /// Action that is invoked when the entity gets stunned.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity stunner</c>: The entity that was responsible for the stun.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Entity stunDuration</c>: The duration of the stun.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, float> OnEntityStunned = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity stuns another entity.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity stunner</c>: The entity that was responsible for the stun.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Entity stunDuration</c>: The duration of the stun.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, float> OnStunEntity = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity is launched.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity launcher</c>: The entity that was responsible for the launch.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Vector3 launchDirection</c>: The launch direction.</description></item>
+    /// <item><description><c>float launchForce</c>: The launch force.</description></item>
+    /// <item><description><c>float stunDuration</c>: The stun duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, Vector3, float, float> OnEntityLaunched = delegate { };
+    /// <summary>
+    /// Action that is invoked when the entity launches another entity.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity launcher</c>: The entity that was responsible for the launch.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity that was launched.</description></item>
+    /// <item><description><c>Vector3 launchDirection</c>: The launch direction.</description></item>
+    /// <item><description><c>float launchForce</c>: The launch force.</description></item>
+    /// <item><description><c>float stunDuration</c>: The stun duration.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, Vector3, float, float> OnLaunchEntity = delegate { };
     private protected GameObject lastHitSource;
     #endregion
 
@@ -298,16 +366,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region States
-    [field: Header("Entity: States")]
     public EntityBaseState CurrentState { get; protected set; }
     public EntityBaseState PreviousState { get; protected set; }
     public EntityBaseState DefaultState { get; protected set; }
 
-    public EntityEmptyState EntityEmptyState { get; protected set; }
-    public EntityStaggeredState EntityStaggeredState { get; protected set; }
-    public EntityDeathState EntityDeathState { get; protected set; }
-    public EntityLaunchState EntityLaunchState { get; protected set; }
-    public EntitySpawnState EntitySpawnState { get; protected set; }
+    [field: Header("Entity: States")]
+    [field: SerializeField] public EntityEmptyState EntityEmptyState { get; protected set; }
+    [field: SerializeField] public EntityStaggeredState EntityStaggeredState { get; protected set; }
+    [field: SerializeField] public EntityDeathState EntityDeathState { get; protected set; }
+    [field: SerializeField] public EntityLaunchState EntityLaunchState { get; protected set; }
+    [field: SerializeField] public EntityStunnedState EntityStunnedState { get; protected set; }
+    [field: SerializeField] public EntitySpawnState EntitySpawnState { get; protected set; }
 
     /// <summary>
     /// Initializes the states for the entity.
@@ -317,11 +386,12 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void InitializeStates()
     {
         //makes new state scripts for the entity to use
-        EntityEmptyState = EntityBaseState.InitializeOrCreate<EntityEmptyState>(this);
-        EntityDeathState = EntityBaseState.InitializeOrCreate<EntityDeathState>(this);
-        EntityLaunchState = EntityBaseState.InitializeOrCreate<EntityLaunchState>(this);
-        EntityStaggeredState = EntityBaseState.InitializeOrCreate<EntityStaggeredState>(this);
-        EntitySpawnState = EntityBaseState.InitializeOrCreate<EntitySpawnState>(this);
+        EntityEmptyState.Init(this);
+        EntityDeathState.Init(this);
+        EntityLaunchState.Init(this);
+        EntityStaggeredState.Init(this);
+        EntityStunnedState.Init(this);
+        EntitySpawnState.Init(this);
     }
 
     /// <summary>
@@ -372,7 +442,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     private void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        blendTreeAnimator = GetComponent<Animator>();
+        playablesOneShotClipManager = GetComponent<AnimationClipOutput>();
+        blendTreeAnimatorManager = GetComponent<AnimatorOutput>();
 
         //We have to make custom OnAwake and OnStart functions
         //because you cannot override the regular Awake() and Start() methods
@@ -408,10 +480,12 @@ public class Entity : MonoBehaviour, IPoolableObject
         prevIsGrounded = true;
         inAirTimer = 0f;
         fallVelocityApplied = false;
+        isKilledFromBeingOutOfBounds = false;
 
         lastHitSource = null;
 
         CurrentHealth = MaxHealth.GetIntValue();
+        SetInvincible(false);
 
         IgnoreOtherEntityCollisions(false);
 
@@ -453,7 +527,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void Update()
     {
-        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
+        HandleSize();
+
         OnUpdate();
     }
 
@@ -468,7 +543,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         //the states are regular C# scripts because if we did another Monobehavior, it'd add a second call to Update which isn't really necessary n takes extra resources..
         CurrentState?.OnUpdate();
 
-        HandleAnimations();
+        HandleBlendTreeAnimation();
         EvaluateMovementSpeed();
 
         HandleGrounded();
@@ -476,6 +551,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         HandleVerticalVelocity();
 
         SlideOffOtherEntities();
+        CheckAndSeparateFromEntities();
     }
 
     private void FixedUpdate()
@@ -508,6 +584,30 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState?.OnOnControllerColliderHit(hit);
     }
 
+    private void CheckAndSeparateFromEntities()
+    {
+        // Capsule dimensions
+        float radius = CharacterController.radius;
+        float height = CharacterController.height;
+        Vector3 center = transform.position + CharacterController.center; // World space center
+
+        // Calculate the top and bottom points of the capsule
+        Vector3 point1 = center + Vector3.up * (height / 2 - radius); // Top
+        Vector3 point2 = center - Vector3.up * (height / 2 - radius); // Bottom
+
+        // Perform the overlap check
+        Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius, LayerMask.GetMask("Entity"));
+
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.gameObject.TryGetComponent(out Entity otherEntity))
+            {
+                Vector3 directionAwayFromOther = transform.position - otherEntity.transform.position;
+                CharacterController.Move(directionAwayFromOther.normalized * LocalDeltaTime);
+            }
+        }
+    }
+
     private void OnAnimatorMove()
     {
         OnOnAnimatorMove();
@@ -522,7 +622,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         if (!UseRootMotion) return;
 
         float modelScale = model.localScale.x;
-        Vector3 desiredAnimationMovement = modelScale * animator.deltaPosition;
+        Vector3 desiredAnimationMovement = modelScale * blendTreeAnimator.deltaPosition;
         desiredAnimationMovement.y = 0f;
 
         CharacterController.Move(desiredAnimationMovement);
@@ -530,6 +630,8 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void OnDrawGizmos()
     {
+        CurrentState?.OnDrawGizmos();
+
         OnOnDrawGizmos();
     }
 
@@ -644,6 +746,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     public virtual void ApplyGravity()
     {
         CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
+
+        // Kill if below the map
+        if(transform.position.y < -100f && !isKilledFromBeingOutOfBounds)
+        {
+            isKilledFromBeingOutOfBounds = true;
+            Kill(lastHitSource);
+        }
     }
 
     /// <summary>
@@ -767,15 +876,62 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Handles the animations of the entity.
+    /// Handles the blend tree animation of the entity.
     /// Sets the MovementSpeed parameter for the FlatMovement blend tree
     /// </summary>
-    private protected virtual void HandleAnimations()
+    private protected virtual void HandleBlendTreeAnimation()
     {
         totalSpeedModifierForAnimation = Mathf.Lerp(totalSpeedModifierForAnimation, SpeedModifier, 7.5f * LocalDeltaTime);
 
-        animator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
-        animator.speed = LocalTimeScale.GetFloatValue();
+        blendTreeAnimator.SetFloat("MovementSpeed", totalSpeedModifierForAnimation);
+        blendTreeAnimator.speed = LocalTimeScale.GetFloatValue();
+    }
+
+    /// <summary>
+    /// Plays a one shot animation using Playables API. If you want to return to the default blend tree, you must call PlayDefaultAnimation().
+    /// </summary>
+    /// <param name="animationClip">The clip to play.</param>
+    /// <param name="clipDuration">The duration you want to force the clip into. The default is the regular clip length.</param>
+    /// <param name="transitionDuration">The fade duration.</param>
+    public void PlayOneShotAnimation(AnimationClip animationClip, float clipDuration = 0f, float transitionDuration = 0.1f)
+    {
+        if(animationClip == null)
+        {
+            Debug.LogWarning("Cant play null one shot animation");
+            return;
+        }
+
+        if(playablesOneShotClipManager == null)
+        {
+            return;
+        }
+
+        if (!playablesOneShotClipManager.IsReady()) return;
+
+        playablesOneShotClipManager.ToClip = animationClip;
+
+        float speed = (clipDuration <= 0f) ? 1f : animationClip.length / clipDuration;
+        speed = speed * LocalTimeScale.GetFloatValue();
+        playablesOneShotClipManager.SetSpeed(speed);
+
+        playablesOneShotClipManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
+
+        playablesOneShotClipManager.Play();
+    }
+
+    /// <summary>
+    /// Plays the default blend tree animation
+    /// </summary>
+    /// <param name="transitionDuration">The fade duration to the animation</param>
+    public void PlayDefaultAnimation(float transitionDuration = 0.1f)
+    {
+        if (blendTreeAnimatorManager == null) return;
+        if (blendTreeAnimatorManager.AnimationControll == null) return;
+        if (!blendTreeAnimatorManager.IsReady()) return;
+
+        blendTreeAnimatorManager.SetSpeed(LocalTimeScale.GetFloatValue());
+        blendTreeAnimatorManager.SetTransitionDuration(transitionDuration / LocalTimeScale.GetFloatValue());
+        blendTreeAnimatorManager.Play();
     }
 
     /// <summary>
@@ -826,11 +982,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Clamps the current health between 0 and MaxHealth. Makes sure the entity cannot have more health than its max health and cannot have negative health.
+    /// Changes the entity's scale based on the SizeScale value
     /// </summary>
-    private void HandleHealth()
+    private void HandleSize()
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth.GetIntValue());
+        transform.localScale = SizeScale.GetFloatValue() * Vector3.one;
     }
 
     /// <summary>
@@ -860,19 +1016,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (CurrentState == EntityDeathState) return;
 
-        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
-
         if(willTryStagger) TryChangeStaggeredState();
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
-        CurrentHealth -= damage;
+        if(!IsInvicible) CurrentHealth -= damage;
+
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
 
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
+            CurrentHealth = 0;
             OnDeath();
         }
     }
@@ -908,8 +1065,20 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void TryChangeStaggeredState()
     {
         if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
+        if (!CanBeStaggered()) return;
 
         ChangeState(EntityStaggeredState, true);
+    }
+
+    /// <summary>
+    /// Determines if the entity can get staggered.
+    /// Override this method to prevent stagger depending on current state.
+    /// </summary>
+    /// <returns>Whether the entity can be staggered</returns>
+    public virtual bool CanBeStaggered()
+    {
+        return true;
     }
 
     /// <summary>
@@ -923,10 +1092,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if (damage <= 0) return;
 
-        ObjectPooler spawner = GameObject.Find("HitNumberPooler").GetComponent<ObjectPooler>();
-        if (spawner == null) return;
-
-        HitNumbers hitNumber = spawner.SpawnObject<HitNumbers>();
+        HitNumbers hitNumber = ObjectPoolerManager.Instance.SpawnPooledObject<HitNumbers>(ObjectPoolerManager.Instance.HitNumbersPrefab.gameObject);
 
         Vector3 hitNumberFloatDirection = hitPoint - transform.position;
 
@@ -937,14 +1103,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Increases the current health of the entity by the specified amount.
     /// </summary>
     /// <param name="health">The amount of health to add.</param>
-    public void Heal(int health)
+    /// <param name="willSpawnHitNumbers">Whether to spawn hit numbers</param>
+    public void Heal(int health, bool willSpawnHitNumbers = false)
     {
         OnEntityHeal?.Invoke(this, health);
 
         CurrentHealth += health;
         if(CurrentHealth > MaxHealth.GetIntValue()) CurrentHealth = MaxHealth.GetIntValue();
 
-        AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
+        if(willSpawnHitNumbers) AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
     }
 
     /// <summary>
@@ -959,13 +1126,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
-    /// Kills the entity by dealing maximum damage to itself.
+    /// Kills the entity by setting current health to 0.
     /// Doesn't work if the entity has max health set to 0.
     /// </summary>
     /// /// <param name="sourceObject">The source object that killed the entity.</param>
     public void Kill(GameObject sourceObject)
     {
-        TakeDamage(int.MaxValue, transform.position, sourceObject);
+        CurrentHealth = 0;
+        OnDeath();
     }
 
     /// <summary>
@@ -985,16 +1153,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     public void SetSpeedModifier(float speed)
     {
         SpeedModifier = speed;
-    }
-
-    /// <summary>
-    /// Transitions the animator to the specified animation using the specified transition duration and layer.
-    /// </summary>
-    /// <param name="animation">The name of the animation to transition to.</param>
-    /// <param name="transitionDuration">The duration of the transition.</param>
-    public void TransitionToAnimation(string animation, float transitionDuration = 0.1f, int layer = 0)
-    {
-        animator.CrossFadeInFixedTime(animation, transitionDuration, layer);
     }
 
     /// <summary>
@@ -1143,6 +1301,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     }
 
     /// <summary>
+    /// Gets the top point of the entity.
+    /// </summary>
+    /// <returns>The the top point of the entity.</returns>
+    public Vector3 GetEntityTopPosition()
+    {
+        return transform.position + 2f * (GetColliderCenterPosition() - transform.position);
+    }
+
+    /// <summary>
     /// Gets the largest size of the collider attached to the entity.
     /// </summary>
     /// <returns>The largest size of the collider.</returns>
@@ -1187,16 +1354,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If the current state is the death state or already the launch state, it does nothing.
     /// Override this function to modify the blocking states.
     /// </summary>
+    /// /// <param name="launcher">The entity responsible for the launch.</param>
     /// <param name="direction">The direction in which to apply the launch force.</param>
     /// <param name="force">The force of the launch.</param>
     /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
-    public virtual void TryChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    public virtual void TryChangeToLaunchState(Entity launcher, Vector3 direction, float force, float stunDuration)
     {
-        if (CurrentState == EntityDeathState) return;
         if (CurrentState == EntityLaunchState) return;
 
-        EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
-        ChangeState(EntityLaunchState);
+        ForceChangeToLaunchState(launcher, direction, force, stunDuration);
     }
 
     /// <summary>
@@ -1204,15 +1370,25 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// If the current state is the death state, it does nothing.
     /// Override this function to modify the blocking states.
     /// </summary>
+    /// <param name="launcher">The entity responsible for the launch.</param>
     /// <param name="direction">The direction in which to apply the launch force.</param>
     /// <param name="force">The force of the launch.</param>
     /// <param name="stunDuration">The duration of the stun caused by the launch.</param>
-    public virtual void ForceChangeToLaunchState(Vector3 direction, float force, float stunDuration)
+    public virtual void ForceChangeToLaunchState(Entity launcher, Vector3 direction, float force, float stunDuration)
     {
         if (CurrentState == EntityDeathState) return;
 
         EntityLaunchState.SetLaunchSettings(direction, force, stunDuration);
         ChangeState(EntityLaunchState, true);
+
+        OnEntityLaunched.Invoke(launcher, this, direction, force, stunDuration);
+        if (launcher != null) launcher.OnLaunchEntity.Invoke(launcher, this, direction, force, stunDuration);
+
+        if(stunDuration > 0)
+        {
+            OnEntityStunned.Invoke(launcher, this, stunDuration);
+            if (launcher != null) launcher.OnStunEntity.Invoke(launcher, this, stunDuration);
+        }
     }
 
     /// Retrieves a list of entities within a specified area of effect (AOE) centered at the given hit position.
@@ -1289,7 +1465,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             Vector3 direction = (entityHit.GetColliderCenterPosition() - center).normalized;
 
-            entityHit.ForceChangeToLaunchState(direction, launchForce, stunDuration);
+            entityHit.ForceChangeToLaunchState(attacker, direction, launchForce, stunDuration);
         }
     }
 

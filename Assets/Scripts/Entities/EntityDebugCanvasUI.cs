@@ -14,20 +14,19 @@ public class EntityDebugCanvasUI : MonoBehaviour
     [SerializeField] private TMP_Text entityStateText;
     [SerializeField] private TMP_Text entityNameText;
 
-    private void Awake()
+    private void Start()
     {
         entity = GetComponentInParent<Entity>();
         entityStatusEffector = entity.GetComponent<EntityStatusEffector>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-        entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
-        entity.OnEntityHeal += Entity_OnEntityHeal;
+#if !UNITY_EDITOR
+        entityNameText.color = Color.black;
+#endif
     }
 
     private void OnDestroy()
     {
-        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
-        entity.OnEntityHeal -= Entity_OnEntityHeal;
     }
 
     private void OnEnable()
@@ -85,16 +84,12 @@ public class EntityDebugCanvasUI : MonoBehaviour
     {
         transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
 
+        healthBarUI.SetHealthBar(entity.CurrentHealth, entity.MaxHealth.GetIntValue());
+
+#if UNITY_EDITOR
         entityStateText.text = entity.CurrentState.GetType().ToString();
-    }
-
-    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        healthBarUI.SetHealthBar(entity.CurrentHealth - damage, entity.MaxHealth.GetIntValue());
-    }
-
-    private void Entity_OnEntityHeal(Entity healedEntity, int healValue)
-    {
-        healthBarUI.SetHealthBar(entity.CurrentHealth + healValue, entity.MaxHealth.GetIntValue());
+#else
+        entityStateText.text = "";
+#endif
     }
 }

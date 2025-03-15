@@ -59,6 +59,12 @@ public class FogEffectFeature : ScriptableRendererFeature
             var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
             var fogEffect = stack.GetComponent<FogEffectComponent>();
 
+            if (fogEffect == null || !fogEffect.IsActive())
+            {
+                CommandBufferPool.Release(cmd);
+                return;
+            }
+
             if (fogEffect != null && fogEffect.IsActive())
             {
                 material.SetColor("_PFogColor", fogEffect.primaryFogColor.value);

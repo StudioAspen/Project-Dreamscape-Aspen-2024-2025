@@ -13,7 +13,7 @@ public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     {
         base.OnApply();
 
-        enemyPrefab = GetEnemyPrefabFromCurrentType();
+        enemyPrefab = enemy.Spawner.GetPrefabFromEnemyInstance(enemy);
 
         enemy.OnEntityDeath += Enemy_OnEntityDeath;
     }
@@ -42,24 +42,5 @@ public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
             Vector3 spawnPosition = enemy.transform.position + offset;
             enemy.Spawner.SpawnEnemy(enemyPrefab, spawnPosition);
         }
-    }
-
-    /// <summary>
-    /// Retrieves the enemy prefab from the current type.
-    /// </summary>
-    /// <returns>The enemy prefab if found, otherwise null.</returns>
-    private Enemy GetEnemyPrefabFromCurrentType()
-    {
-        foreach (Enemy enemyPrefab in enemy.Spawner.NeutralEnemyPrefabs)
-        {
-            if (enemyPrefab.GetType() == enemy.GetType())
-            {
-                return enemyPrefab;
-            }
-        }
-
-        Debug.LogWarning("Could not find enemy prefab from current type.");
-
-        return null;
     }
 }
