@@ -4,13 +4,16 @@ using UnityEngine;
 [System.Serializable]
 public class Stat : ISerializationCallbackReceiver
 {
+    [field: SerializeField] public string DisplayName { get; private set; } = "Stat";
     public class Buffs
     {
         public List<float> Multipliers = new();
         public float FlatIncrease;
+
     }
 
     [field: SerializeField] public float BaseValue { get; private set; }
+    
     private Dictionary<object, Buffs> buffsDictionary = new();
 
     public Stat(float baseValue)
