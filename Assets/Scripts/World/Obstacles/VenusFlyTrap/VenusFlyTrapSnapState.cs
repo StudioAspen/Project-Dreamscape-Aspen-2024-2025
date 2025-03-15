@@ -65,6 +65,7 @@ public class VenusFlyTrapSnapState : VenusFlyTrapBaseState
 
         if (!trappedEntities.ContainsKey(hitEntity))
         {
+            Debug.Log($"Entity {hitEntity.name} entered the trap");
             trappedEntities.Add(hitEntity, 0);
         }
     }
@@ -76,6 +77,7 @@ public class VenusFlyTrapSnapState : VenusFlyTrapBaseState
 
         if (trappedEntities.ContainsKey(hitEntity))
         {
+            Debug.Log($"Entity {hitEntity.name} exited the trap");
             trappedEntities.Remove(hitEntity);
         }
     }
