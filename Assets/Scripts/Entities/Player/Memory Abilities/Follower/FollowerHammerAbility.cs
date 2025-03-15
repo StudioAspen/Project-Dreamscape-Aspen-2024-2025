@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using Dreamscape.Abilities;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 public class FollowerHammerAbility : CastedAbility
 {
-    [field: SerializeField] public float TargetDetectedAOE { get; private set; } = 50f;
-    [field: SerializeField] public float MoveSpeed { get; private set; } = 3f; // how fast the hammer moves towards the enemy
-    [field: SerializeField] public float MoveDuration { get; private set; } = 2f; // time to reach the target
+    [SerializeField] public float TargetDetectedAOE { get; private set; } = 50f;
+    [SerializeField] public float MoveSpeed { get; private set; } = 3f; // how fast the hammer moves towards the enemy
+    [SerializeField] public float MoveDuration { get; private set; } = 2f; // time to reach the target
+    [SerializeField] private float damageMultiplier = 1f; // dmg hammer does
 
     private List<Entity> enemyList;
     private int currentEnemyIndex = 0; // to track which enemy we are targeting
@@ -58,6 +60,37 @@ public class FollowerHammerAbility : CastedAbility
 
         // If all enemies are targeted, destroy the hammer or finish the ability
         OnOnDisable();
+    }
+
+    private void Explode(Collider other)
+    {
+        Entity enemy = other.GetComponent<Entity>();
+        if (enemy.Team == casterEntity.Team) return;
+        casterEntity.DealDamageToOtherEntity(enemy, casterEntity.CalculateDamage(damageMultiplier), transform.position);
+    }
+
+    private void CheckForEntityHit(Collider other)
+    {
+        Entity hitEntity = other.GetComponent<Entity>();
+        if (hitEntity == null) hitEntity = other.GetComponentInParent<Entity>();
+        if (hitEntity == null) return;
+
+        if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
+        if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
+
+        Explode(other);
+    }
+
+    private void CheckForWallHit(Collider other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
+        Explode(other);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        CheckForEntityHit(other);
+        CheckForWallHit(other);
     }
 
     private protected override void OnOnDisable()
