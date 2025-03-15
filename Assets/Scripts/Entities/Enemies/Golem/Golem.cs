@@ -120,13 +120,13 @@ public class Golem : Enemy
             }
         }
 
-        CurrentHealth -= newDamage;
+        if(!IsInvicible) CurrentHealth -= newDamage;
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
         lastHitSource = source;
         
         //after calculating current health, check if the entity has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }

@@ -12,7 +12,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
     [field: SerializeField] public string ObjectiveText { get; private set; } = "";
     [field: SerializeField] public Reward CompletionReward { get; private set; }
-    public bool IsCompleted { get; private set; }
+    public bool IsCompleted { get; protected set; }
 
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
@@ -53,6 +53,25 @@ public abstract class ProgressionQuestSO : ScriptableObject
         progressionManager.OnQuestComplete.Invoke(this);
 
         CleanUp();
+    }
+
+    /// <summary>
+    /// Can be called if you want to avoid clean up 
+    /// </summary>
+    private protected void CompleteWithoutCleanUp()
+    {
+        IsCompleted = true;
+
+        if (CompletionReward == Reward.EMPOWER_TOKEN)
+        {
+            progressionManager.AddEmpowerTokens(1);
+        }
+        else
+        {
+            progressionManager.AddWeakenTokens(1);
+        }
+
+        progressionManager.OnQuestComplete.Invoke(this);
     }
 
     /// <summary>
