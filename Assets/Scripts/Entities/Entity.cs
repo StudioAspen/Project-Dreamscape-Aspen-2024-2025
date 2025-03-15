@@ -586,6 +586,25 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     private void CheckAndSeparateFromEntities()
     {
+        Collider[] hitColliders = GetCharacterControllerOverlaps();
+
+        foreach (Collider hit in hitColliders)
+        {
+            if (hit.gameObject.TryGetComponent(out Entity otherEntity))
+            {
+                Vector3 directionAwayFromOther = transform.position - otherEntity.transform.position;
+                CharacterController.Move(directionAwayFromOther.normalized * LocalDeltaTime);
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Returns overlaps of capsule collider with other entities.
+    /// </summary>
+    /// <returns>Array of colliders that the capsule collider overlaps with.</returns>
+    public Collider[] GetCharacterControllerOverlaps()
+    {
         // Capsule dimensions
         float radius = CharacterController.radius;
         float height = CharacterController.height;
@@ -598,14 +617,7 @@ public class Entity : MonoBehaviour, IPoolableObject
         // Perform the overlap check
         Collider[] hitColliders = Physics.OverlapCapsule(point1, point2, radius, LayerMask.GetMask("Entity"));
 
-        foreach (Collider hit in hitColliders)
-        {
-            if (hit.gameObject.TryGetComponent(out Entity otherEntity))
-            {
-                Vector3 directionAwayFromOther = transform.position - otherEntity.transform.position;
-                CharacterController.Move(directionAwayFromOther.normalized * LocalDeltaTime);
-            }
-        }
+        return hitColliders;
     }
 
     private void OnAnimatorMove()
