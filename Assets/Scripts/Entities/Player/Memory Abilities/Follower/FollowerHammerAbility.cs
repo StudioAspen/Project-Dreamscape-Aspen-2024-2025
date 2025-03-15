@@ -31,6 +31,10 @@ public class FollowerHammerAbility : CastedAbility
             // Start moving the hammer toward the first enemy
             StartCoroutine(MoveHammerToEnemy());
         }
+        else
+        {
+            OnOnDisable();
+        }
     }
 
     private IEnumerator MoveHammerToEnemy()
@@ -58,7 +62,6 @@ public class FollowerHammerAbility : CastedAbility
             // You can add some delay between each movement (optional)
             yield return new WaitForSeconds(0.5f); // Pause before moving to next enemy
         }
-
         // If all enemies are targeted, destroy the hammer or finish the ability
         OnOnDisable();
     }
