@@ -29,13 +29,13 @@ public class PlayerFollowerFollowAbilityStateSO : PlayerAbilityStateSO
         //player.PlayOneShotAnimation(HammerAnimationClip);
 
         // start the hammer attack
-        FollowerHammerAbility hammer = Instantiate(PrefabHammerAttack);
+        FollowerHammerAbility hammer = Instantiate(PrefabHammerAttack, player.transform);
         hammer.Init(player);
     }
 
     public override void OnExit()
     {
-
+        Debug.Log("follower memory abilty finished");
     }
 
     public override void OnUpdate()

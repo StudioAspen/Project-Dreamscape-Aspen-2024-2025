@@ -17,13 +17,16 @@ public class FollowerHammerAbility : CastedAbility
 
     private protected override void OnSpawn()
     {
-        Debug.Log("follower ability, spawn hammer");
-
-        // populate list and grab all non-dead entities nearby
+        // populate list and grab all non-dead entities nearby, and remove player
         enemyList = Entity.GetEntitiesThroughAOE(casterEntity.transform.position, TargetDetectedAOE, false);
+        for(int i = 0; i < enemyList.Count; i++)
+        {
+            if (enemyList[i] == casterEntity)
+                enemyList.RemoveAt(i);
+        }
 
         CustomDebug.InstantiateTemporarySphere(casterEntity.transform.position, TargetDetectedAOE, 0.25f, new Color(1f, 0, 0, 0.2f));
-        if (enemyList.Count > 1)
+        if (enemyList.Count > 0)
         {
             // Start moving the hammer toward the first enemy
             StartCoroutine(MoveHammerToEnemy());
@@ -32,9 +35,7 @@ public class FollowerHammerAbility : CastedAbility
 
     private IEnumerator MoveHammerToEnemy()
     {
-        Debug.Log("total enemies: " + enemyList.Count);
-
-        while (currentEnemyIndex + 1 < enemyList.Count)
+        while (currentEnemyIndex < enemyList.Count)
         {
             Entity currentEnemy = enemyList[currentEnemyIndex];
             Vector3 startPos = transform.position;
