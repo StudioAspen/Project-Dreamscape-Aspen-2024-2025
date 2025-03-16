@@ -5,17 +5,19 @@ using UnityEngine.InputSystem.XR;
 
 public class AmbitionDashState: PlayerDashState
 {
+    private protected Collider[] colliderHits;
+    private protected TemporaryWindWackerStatusEffectSO WindWackerStatusEffect;
     public override void OnEnter()
     {
         base.OnEnter();
-        player.ApplyStatusEffect<AspectofAmbitionPassiveAStatusEffectSO>();
+
         player.IgnoreOtherEntityCollisions(true);
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        player.RemoveStatusEffect<AspectofAmbitionPassiveAStatusEffectSO>();
+        
         player.IgnoreOtherEntityCollisions(false);
     }
 
@@ -23,7 +25,7 @@ public class AmbitionDashState: PlayerDashState
     {
         base.OnUpdate();
 
-        colliderHits = Player.GetCharacterControllerOverlaps();
+        colliderHits = player.GetCharacterControllerOverlaps();
         foreach (var hit in colliderHits)
         {
             if (hit.TryGetComponent(out Entity entity))
@@ -32,7 +34,7 @@ public class AmbitionDashState: PlayerDashState
 
                 if(entity.Team == player.Team) continue;
 
-                entity.ApplyStatusEffect<TemporaryWindWackerStatusEffectSO>();
+                EntityStatusEffector.TryApplyStatusEffect(entity.gameObject, WindWackerStatusEffect, player.gameObject);
             }
         }
     }

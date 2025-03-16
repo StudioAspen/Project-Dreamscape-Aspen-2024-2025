@@ -602,7 +602,6 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <summary>
     /// Returns overlaps of capsule collider with other entities.
     /// </summary>
-    /// <returns>Array of colliders that the capsule collider overlaps with.</returns>
     public Collider[] GetCharacterControllerOverlaps()
     {
         // Capsule dimensions
