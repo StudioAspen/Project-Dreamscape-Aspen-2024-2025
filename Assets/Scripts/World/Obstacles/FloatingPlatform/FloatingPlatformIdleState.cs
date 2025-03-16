@@ -20,6 +20,9 @@ public class FloatingPlatformIdleState : FloatingPlatformBaseState
 
     public override void OnOnTriggerEnter(Collider other)
     {
-        floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformSteppedState);
+        if (other.gameObject.TryGetComponent(out Player player))
+        {
+            floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformSteppedState);
+        }
     }
 }
