@@ -6,15 +6,11 @@ using UnityEngine.InputSystem.Controls;
 
 public class FloatingPlatformSinkingState : FloatingPlatformBaseState
 {
-    private float speed;
-    private float sinkTime = 10f;
-    private float Timer;
-    private float diry;
-
+    private float speed = 0.5f;
+    
     public override void OnEnter()
     {
         Debug.Log("Sinking");
-        Timer = 0;
     }
 
     public override void OnExit()
@@ -24,10 +20,9 @@ public class FloatingPlatformSinkingState : FloatingPlatformBaseState
 
     public override void OnUpdate()
     {
-        Vector3 moveDir = new Vector3(0, diry, 0);
-        transform.position -= moveDir * speed * Time.deltaTime;
-        Timer = Timer + Time.deltaTime;
-        if(Timer > sinkTime)
+        transform.position = Vector3.MoveTowards(transform.position, floatingPlatform.pos2, speed * Time.deltaTime);
+        Debug.Log(transform.position);
+        if (transform.position.y <= floatingPlatform.pos2.y)
         {
             floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformRisingState);
         }

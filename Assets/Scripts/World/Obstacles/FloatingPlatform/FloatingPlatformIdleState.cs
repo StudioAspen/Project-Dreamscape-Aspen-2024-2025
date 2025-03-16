@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class FloatingPlatformIdleState : FloatingPlatformBaseState
 {
+
     public override void OnEnter()
     {
     }
@@ -16,11 +18,8 @@ public class FloatingPlatformIdleState : FloatingPlatformBaseState
     {
     }
 
-    public override void OnOnCollisionEnter(Collision collision)
+    public override void OnOnTriggerEnter(Collider other)
     {
-        if(collision.gameObject.TryGetComponent(out Player player))
-        {
-            floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformSteppedState);
-        }
+        floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformSteppedState);
     }
 }

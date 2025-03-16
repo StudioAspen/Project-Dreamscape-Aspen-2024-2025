@@ -9,7 +9,7 @@ public class FloatingPlatformSteppedState : FloatingPlatformBaseState
     public override void OnEnter()
     {
         timer = 0;
-        Debug.Log("SteepedState");
+        Debug.Log("SteppedState");
     }
 
     public override void OnExit()
@@ -19,7 +19,7 @@ public class FloatingPlatformSteppedState : FloatingPlatformBaseState
 
     public override void OnUpdate()
     {
-        timer++;  
+        timer = timer + Time.deltaTime;  
         if (timer <=7)
         {
             if (timer <= 5)

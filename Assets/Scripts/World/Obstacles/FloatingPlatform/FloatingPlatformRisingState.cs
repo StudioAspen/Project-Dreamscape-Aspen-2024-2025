@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class FloatingPlatformRisingState : FloatingPlatformBaseState
 {
-    private float speed;
-    private float diry;
+    private float speed = 0.2f;
+
     public override void OnEnter()
     {
         Debug.Log("rising");   
@@ -20,7 +20,10 @@ public class FloatingPlatformRisingState : FloatingPlatformBaseState
 
     public override void OnUpdate()
     {
-        Vector3 moveDir = new Vector3(0, diry, 0);
-        transform.position += moveDir * speed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, floatingPlatform.pos1, speed * Time.deltaTime);
+        if (transform.position == floatingPlatform.pos1)
+        {
+            floatingPlatform.ChangeState(floatingPlatform.FloatingPlatformIdleState);
+        }
     }
 }
