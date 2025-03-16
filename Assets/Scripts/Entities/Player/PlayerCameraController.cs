@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static InputManager;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    
-    
+
+    private InputManager inputManager;
     private GameManager gameManager;
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
@@ -21,6 +22,7 @@ public class PlayerCameraController : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        inputManager = FindAnyObjectByType<InputManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
@@ -72,7 +74,8 @@ public class PlayerCameraController : MonoBehaviour
 
     private void SetCameraSensitivity(float sensitivity) {
         CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
-        if (pov != null) {
+        if (pov != null) 
+        {
             pov.m_HorizontalAxis.m_MaxSpeed = sensitivity;
             pov.m_VerticalAxis.m_MaxSpeed = sensitivity;
         }

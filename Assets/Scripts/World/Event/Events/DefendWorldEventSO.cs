@@ -95,7 +95,7 @@ public class DefendWorldEventSO : WorldEventSO
       float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((activeLands.Count - 1) / (EndLayer + 1)) * TimeIncrement);
 
       float interval = timeLimit / BaseIntervals;
-      StartEnemySpawnersWithDuration(activeLands, new Vector2(interval, interval), spawnAmount, timeLimit);
+      StartEnemySpawnersWithDuration(activeLands, new Vector2(interval, interval), timeLimit, spawnAmount);
 
       RemainingTime = timeLimit;
     }
