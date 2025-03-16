@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -7,6 +8,8 @@ public class AmbitionDashState: PlayerDashState
 {
     private protected Collider[] colliderHits;
     private protected TemporaryWindWackerStatusEffectSO WindWackerStatusEffect;
+    private protected HashSet<Entity> hitEntities;
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -30,11 +33,16 @@ public class AmbitionDashState: PlayerDashState
         {
             if (hit.TryGetComponent(out Entity entity))
             {
-                if (entity == player) continue;
+                if (!hitEntities.Contains(entity))
+                {
+                    if (entity == player) continue;
 
-                if(entity.Team == player.Team) continue;
+                    if (entity.Team == player.Team) continue;
 
-                EntityStatusEffector.TryApplyStatusEffect(entity.gameObject, WindWackerStatusEffect, player.gameObject);
+                    EntityStatusEffector.TryApplyStatusEffect(entity.gameObject, WindWackerStatusEffect, player.gameObject);
+
+                    hitEntities.Add(entity);
+                }
             }
         }
     }
