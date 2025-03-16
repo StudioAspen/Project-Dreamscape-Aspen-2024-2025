@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))] // Stores the blend tree
@@ -1496,7 +1495,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit a friendly entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The friendly entity that was hit.</param>
@@ -1504,8 +1502,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
         if (entity == null) entity = hit.GetComponent<Entity>();
+        if(entity == null) return false;
+
         if (entity.Team != Team) return false;
 
         return true;
@@ -1513,7 +1512,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit an enemy entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The enemy entity that was hit.</param>
@@ -1521,8 +1519,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitEnemyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
+        if (entity == null) entity = hit.GetComponent<Entity>();
         if (entity == null) return false;
+
         if (entity.Team == Team) return false;
 
         return true;

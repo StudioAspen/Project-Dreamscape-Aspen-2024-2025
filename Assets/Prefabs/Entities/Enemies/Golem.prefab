@@ -61,7 +61,7 @@ MonoBehaviour:
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 300
+    <BaseValue>k__BackingField: 200
   baseSpeed: 1.5
   rotationSpeed: 5
   mass: 1
@@ -171,8 +171,8 @@ MonoBehaviour:
   <ShardPrefab>k__BackingField: {fileID: 4789584422821504724, guid: aab5c2308ea333d468003485129cd32a,
     type: 3}
   color: {r: 0.64315224, g: 0, b: 1, a: 1}
-  memoryAbility: {fileID: 11400000, guid: a92cebb90948222499cdebf9bf54c8a8, type: 2}
-  shardDropCount: 20
+  memoryAbility: {fileID: 11400000, guid: 91543b360a24d45b1ab8eb62f445db5b, type: 2}
+  shardDropCount: 30
   eliteShardDropCountMultiplier: 1.5
 --- !u!95 &5860220226555299953
 Animator:

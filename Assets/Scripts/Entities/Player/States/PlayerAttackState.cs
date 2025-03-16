@@ -87,6 +87,8 @@ public class PlayerAttackState : PlayerBaseState
 
         if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
+
+        playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
     }
 
     public override void OnExit()
@@ -108,6 +110,8 @@ public class PlayerAttackState : PlayerBaseState
 
         if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
         playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+
+        playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
 
     public override void OnUpdate()
@@ -272,7 +276,7 @@ public class PlayerAttackState : PlayerBaseState
     /// <summary>
     /// Called from playerCombat's FireAbility() method. That method is called from an animation event.
     /// </summary>
-    public void FireAbility()
+    public void PlayerCombat_OnFireAbility(AnimationEvent eventData)
     {
         AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
         if (abilityComboData == null) return;

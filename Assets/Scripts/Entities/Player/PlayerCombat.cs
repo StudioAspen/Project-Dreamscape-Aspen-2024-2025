@@ -42,6 +42,16 @@ public class PlayerCombat : MonoBehaviour
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
 
+    /// <summary>
+    /// Action that is invoked when the FireAbility animation event is called.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>AnimationEvent eventData</c>: The animation event data.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<AnimationEvent> OnFireAbility = delegate { };
+
     private void Awake()
     {
         player = GetComponent<Player>();
@@ -294,10 +304,8 @@ public class PlayerCombat : MonoBehaviour
     /// <summary>
     /// Called by animation through an event.
     /// </summary>
-    public void FireAbility()
+    public void FireAbility(AnimationEvent animationEventData)
     {
-        if (player.CurrentState != player.PlayerAttackState) return;
-
-        player.PlayerAttackState.FireAbility();
+        OnFireAbility.Invoke(animationEventData);
     }
 }
