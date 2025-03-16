@@ -11,7 +11,6 @@ public class SlimeAttackExpandState : SlimeBaseState
     [field: SerializeField] public float AttackExpandSize { get; private set; } = 2f;
     [field: SerializeField] public float AttackExpandDuration { get; private set; } = 0.3f;
     [field: SerializeField] public Ease ExpandEase { get; private set; } = Ease.OutCubic;
-    [field: SerializeField] public float AttackCooldown { get; private set; } = 3f;
 
     private float timer;
     private Entity rememberedTarget;
