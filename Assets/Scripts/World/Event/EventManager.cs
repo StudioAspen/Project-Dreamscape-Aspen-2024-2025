@@ -11,6 +11,7 @@ public class EventManager : MonoBehaviour
     private WorldManager worldManager;
 
     #region Event Machine
+    [SerializeField] private TutorialWorldEventSO tutorialEvent;
     [SerializeField] private List<WorldEventSO> events = new List<WorldEventSO>();
     public Dictionary<Type, WorldEventSO> EventsDictionary { get; private set; } = new Dictionary<Type, WorldEventSO>();
 
@@ -147,20 +148,29 @@ public class EventManager : MonoBehaviour
     {
         worldManager = GetComponent<WorldManager>();
         InitializeEvents();
+
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded;
+        Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
     }
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        Player.OnPlayerDestroyed += Player_OnPlayerDestroyed;
-
         SetDefaultEvent<SurvivalWorldEventSO>();
     }
 
     private void OnDestroy()
     {
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
         Player.OnPlayerDestroyed -= Player_OnPlayerDestroyed;
+    }
+
+    private void Player_OnPlayerLoaded(Player player)
+    {
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
+
+        StartTutorialEvent();
     }
 
     private void Player_OnPlayerDestroyed(Player player)
@@ -203,5 +213,14 @@ public class EventManager : MonoBehaviour
         CurrentEvent?.Clear();
 
         gameManager.ChangeState(GameState.GAME_OVER);
+    }
+
+    /// <summary>
+    /// Starts the tutorial event and changes the game state to PLAYING.
+    /// </summary>
+    public void StartTutorialEvent()
+    {
+        CurrentEvent = tutorialEvent;
+        CurrentEvent.Start();
     }
 }

@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
-        ForceChangeState(GameState.EVENT_SELECTION);
+        ForceChangeState(GameState.PLAYING);
     }
 
     private void OnDestroy()

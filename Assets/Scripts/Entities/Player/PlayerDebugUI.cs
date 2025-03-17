@@ -57,7 +57,7 @@ public class PlayerDebugUI : MonoBehaviour
         levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
     }
 
-    private void Weapon_OnWeaponStartSwing(Entity source)
+    private void Weapon_OnWeaponStartSwing(Entity source, ComboDataSO combo)
     {
         comboText.text = playerCombat == null ? "Missing PlayerCombat component." : $"Combo: {player.PlayerAttackState.ComboData.name}";
     }

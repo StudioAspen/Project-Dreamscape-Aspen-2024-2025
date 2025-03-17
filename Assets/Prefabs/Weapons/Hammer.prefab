@@ -34,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7087501804463230086}
+  - {fileID: 7675915761509051742}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3421845928575617237
@@ -59,10 +60,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2544063d1ad4634409b17d12c1501932, type: 2}
   - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
   - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}
-  - {fileID: 11400000, guid: 806622eae2be3db40b86d3a5c53da0c7, type: 2}
   - {fileID: 11400000, guid: 391bc76b6ed6af54d9ed7ac8fc730a45, type: 2}
   - {fileID: 11400000, guid: 080c04b1bfd82c6459ddd53bee7f2a8c, type: 2}
-  <TipTransform>k__BackingField: {fileID: 0}
+  <TipTransform>k__BackingField: {fileID: 7675915761509051742}
 --- !u!136 &8465198154066823501
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -136,6 +136,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!1 &2423501055705994855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7675915761509051742}
+  m_Layer: 7
+  m_Name: Tip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7675915761509051742
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2423501055705994855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.738, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1329834440275588174}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7336755401549278061
 PrefabInstance:
   m_ObjectHideFlags: 0

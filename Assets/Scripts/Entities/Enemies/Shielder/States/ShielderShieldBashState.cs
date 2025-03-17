@@ -24,7 +24,7 @@ public class ShielderShieldBashState : ShielderBaseState
         shielder.PlayOneShotAnimation(AnimationClip, Duration);
         shielder.SetSpeedModifier(0f);
 
-        shielder.Shield.OnWeaponStartSwing?.Invoke(shielder);
+        shielder.Shield.OnWeaponStartSwing?.Invoke(shielder, null);
         shielder.Shield.ClearObjectHitList();
         shielder.Shield.SetDamageMultiplier(AttackDamageMultiplier);
 
@@ -40,7 +40,7 @@ public class ShielderShieldBashState : ShielderBaseState
         shielder.Shield.OnWeaponHit -= Shielder_Shield_OnWeaponHit;
 
         shielder.UseRootMotion = false;
-        shielder.Shield.OnWeaponEndSwing?.Invoke(shielder);
+        shielder.Shield.OnWeaponEndSwing?.Invoke(shielder, null);
         shielder.Shield.DisableTriggers();
     }
 

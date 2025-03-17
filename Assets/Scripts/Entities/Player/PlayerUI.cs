@@ -150,6 +150,8 @@ public class PlayerUI : MonoBehaviour
 
     private void UpdateCombatUI()
     {
+        // TODO: Need to make these invisible when at 0 and cool popup animation when they change
+
         momentumText.text = $"MOMENTUM: {momentumSystem.Momentum}";
         chainText.text = $"CHAIN: {chainingSystem.ChainCount}";
     }

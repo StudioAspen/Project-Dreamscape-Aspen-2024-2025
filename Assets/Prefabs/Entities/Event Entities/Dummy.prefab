@@ -9,9 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3490398193883977143}
-  - component: {fileID: -4810948276731600067}
   - component: {fileID: 364766872975019307}
-  - component: {fileID: 1647443524885239852}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 8702003990657789017}
   - component: {fileID: 3915645929625153338}
@@ -20,7 +18,7 @@ GameObject:
   - component: {fileID: 3486295499383915700}
   - component: {fileID: 88390753607719405}
   m_Layer: 16
-  m_Name: Follower
+  m_Name: Dummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,90 +37,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 41544952237181766}
+  - {fileID: 7993329737662838697}
   - {fileID: 4150967214179094889}
   - {fileID: 2996173690986891309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4810948276731600067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2211407975701868877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7894c5e290feeb840a15d05698e254c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
-    type: 2}
-  model: {fileID: 4150967214179094889}
-  <CurrentHealth>k__BackingField: 0
-  <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 50
-  baseSpeed: 2
-  rotationSpeed: 5
-  mass: 1
-  <StatusSpeedModifier>k__BackingField:
-    <BaseValue>k__BackingField: 1
-  IsGrounded: 0
-  targetDetectionRadius: 10
-  <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
-  <DamageModifier>k__BackingField:
-    <BaseValue>k__BackingField: 1
-  UseRootMotion: 0
-  <LocalTimeScale>k__BackingField:
-    <BaseValue>k__BackingField: 1
-  <EntityStaggeredState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
-      type: 3}
-    <StaggerDuration>k__BackingField: 0.5
-  <EntityDeathState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a15e742835b4fff4f9fdf88f94096009,
-      type: 3}
-    <DeathDuration>k__BackingField: 1
-  <EntityLaunchState>k__BackingField:
-    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
-      type: 3}
-    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
-      type: 3}
-  <EntityStunnedState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
-      type: 3}
-  <EntitySpawnState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
-      type: 3}
-    <SpawnDuration>k__BackingField: 1.5
-  <Cost>k__BackingField: 1
-  <EXPValue>k__BackingField:
-    <BaseValue>k__BackingField: 0
-  <CustomCollisionRadius>k__BackingField: 0
-  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
-  <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  <FollowerAttackState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 9df1da0ce407d0641a89278cc6022e15,
-      type: 3}
-    <AttackDuration>k__BackingField: 1.25
-    <AttackRange>k__BackingField: 1
-    <AttackDamageMultiplier>k__BackingField: 1
-  <FollowerWanderState>k__BackingField:
-    <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
-    <WanderRadiusRange>k__BackingField: {x: 3, y: 5}
-  <FollowerReadyAttackState>k__BackingField:
-    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 3e4cdbfcdc769104eaf456cc771093ae,
-      type: 3}
-    <AttackReadyDuration>k__BackingField: 0.5
-  <FollowerAttackRecoverState>k__BackingField:
-    <AttackRecoverDuration>k__BackingField: 1
-  <FollowerCircleState>k__BackingField:
-    <CircleFollowerCountThreshold>k__BackingField: 2
-    <ChangeDirectionInterval>k__BackingField: 0.5
-    <ChangeDirectionReciprocal>k__BackingField: 50
-    <CircleRadius>k__BackingField: 5
-    <MaxCircleRadius>k__BackingField: 8
 --- !u!114 &364766872975019307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,24 +54,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3663a655904db9e4ea4890fee8fa6454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1647443524885239852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2211407975701868877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c05c2b71cf71fc04f86c52312ba04d3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <ShardPrefab>k__BackingField: {fileID: 4789584422821504724, guid: aab5c2308ea333d468003485129cd32a,
-    type: 3}
-  color: {r: 0, g: 1, b: 0, a: 1}
-  memoryAbility: {fileID: 11400000, guid: a92cebb90948222499cdebf9bf54c8a8, type: 2}
-  shardDropCount: 5
-  eliteShardDropCountMultiplier: 1.5
 --- !u!95 &5860220226555299953
 Animator:
   serializedVersion: 5
@@ -301,8 +202,8 @@ MonoBehaviour:
     ExitTime: 0
     ClipSpeed: 1
     RestartWhenPlay: 0
-  AnimationControll: {fileID: 9100000, guid: ed2923fa380b2924ba16b71f7b29aa70, type: 2}
---- !u!1 &2299435363706797073
+  AnimationControll: {fileID: 0}
+--- !u!1 &6456653257141973244
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -310,38 +211,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 41544952237181766}
-  - component: {fileID: 3356266993462803643}
-  - component: {fileID: 4550916679114771238}
+  - component: {fileID: 7993329737662838697}
+  - component: {fileID: 5619614587517775842}
+  - component: {fileID: 7057436666269902377}
   m_Layer: 22
-  m_Name: EnemyIcon
+  m_Name: ObjectiveIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &41544952237181766
+--- !u!4 &7993329737662838697
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2299435363706797073}
+  m_GameObject: {fileID: 6456653257141973244}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -10, z: -0}
+  m_LocalPosition: {x: 0, y: -10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3490398193883977143}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!212 &3356266993462803643
+--- !u!212 &5619614587517775842
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2299435363706797073}
+  m_GameObject: {fileID: 6456653257141973244}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -376,8 +277,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: da4cabcc67249dd4381adb10bc43f297, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c8b776af2740c324d87286d4a8261740, type: 3}
+  m_Color: {r: 0, g: 1, b: 0.9305334, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -387,13 +288,13 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4550916679114771238
+--- !u!114 &7057436666269902377
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2299435363706797073}
+  m_GameObject: {fileID: 6456653257141973244}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c34a20c5dff73a742a8b376fc58ac501, type: 3}
@@ -1493,11 +1394,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2956428271824443983, guid: aaea08722f1aa3f489656eacc4555e65,
-        type: 3}
-      propertyPath: entity
-      value: 
-      objectReference: {fileID: -4810948276731600067}
     - target: {fileID: 5069869378782912888, guid: aaea08722f1aa3f489656eacc4555e65,
         type: 3}
       propertyPath: m_Name
