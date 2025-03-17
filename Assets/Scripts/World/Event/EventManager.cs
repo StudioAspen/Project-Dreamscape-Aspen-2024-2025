@@ -34,6 +34,7 @@ public class EventManager : MonoBehaviour
     /// </summary>
     private void InitializeEvents()
     {
+        tutorialEvent.Init(this, worldManager); // Initialize the tutorial event
         foreach(WorldEventSO worldEvent in events)
         {
             worldEvent.Init(this, worldManager);

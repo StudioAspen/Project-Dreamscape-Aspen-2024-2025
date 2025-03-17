@@ -45,6 +45,7 @@ public class TutorialWorldEventSO : WorldEventSO
 
     private void Hammer_OnWeaponEndSwing(Entity entity, ComboDataSO combo)
     {
+        if (combo == null) return;
         if(!remainingCombos.Contains(combo)) return;
 
         remainingCombos.Remove(combo);
