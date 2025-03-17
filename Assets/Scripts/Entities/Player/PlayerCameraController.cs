@@ -31,6 +31,8 @@ public class PlayerCameraController : MonoBehaviour
         Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
 
         PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera
     }
 
     private void OnDestroy()
@@ -54,8 +56,9 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Player_OnPlayerLoaded(Player player)
     {
-        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
         AttachToTarget(player.transform);
+
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
     }
 
     private void AttachToTarget(Transform targetTransform)
