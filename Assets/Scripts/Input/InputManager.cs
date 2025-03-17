@@ -120,9 +120,9 @@ public class InputManager : MonoBehaviour
             //Ensure We Start At The Proper Path:
             var firstPartIndex = bindingIndex + 1; //Note:      Index[0] = WASD,     Index[1] = W,       Index[2] = S,       Index[3] = A,       Index[4] = D
 
-            if (firstPartIndex < action.bindings.Count && action.bindings[firstPartIndex].isComposite)
+            if (firstPartIndex < action.bindings.Count && action.bindings[firstPartIndex].isPartOfComposite)
             {
-                DoRebind(action, bindingIndex, statusText, true, excludeMouse);
+                DoRebind(action, firstPartIndex, statusText, true, excludeMouse);
             }
         }
         //Non-Composite Binding
@@ -157,7 +157,7 @@ public class InputManager : MonoBehaviour
             {
                 var nextBindingIndex = bindingIndex + 1;
 
-                if (nextBindingIndex < actionToRebind.bindings.Count && actionToRebind.bindings[nextBindingIndex].isComposite)
+                if (nextBindingIndex < actionToRebind.bindings.Count && actionToRebind.bindings[nextBindingIndex].isPartOfComposite)
                 {
                     DoRebind(actionToRebind, nextBindingIndex, statusText, allCompositeParts, excludeMouse);
                 }
@@ -244,10 +244,13 @@ public class InputManager : MonoBehaviour
 
         if (action.bindings[bindingIndex].isComposite)
         {
-            for (int i = 0; i < action.bindings.Count && action.bindings[i].isComposite; i++)
+            int partIndex = bindingIndex + 1; // First composite part (W)
+
+            while (partIndex < action.bindings.Count && action.bindings[partIndex].isPartOfComposite)
             {
-                action.RemoveBindingOverride(i);
-                PlayerPrefs.DeleteKey(action.actionMap + action.name + i);
+                action.RemoveBindingOverride(partIndex);
+                PlayerPrefs.DeleteKey(action.actionMap + action.name + partIndex);
+                partIndex++; // Move to next composite part (A, S, D)
             }
         }
         else
