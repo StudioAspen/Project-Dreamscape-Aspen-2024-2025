@@ -26,7 +26,7 @@ public class MinimapCameraController : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<Player>(); // Tries to find player first
-        if(player == null) Player.OnPlayerLoaded += Player_OnPlayerLoaded; // For when it doesnt exist
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded; // For when it doesnt exist
     }
 
     private void OnDestroy()

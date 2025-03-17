@@ -28,7 +28,7 @@ public class PlayerCameraController : MonoBehaviour
 
         Player player = FindObjectOfType<Player>(); // tries to find player first
         if(player != null) AttachToTarget(player.transform);
-        else Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
 
         PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
     }
