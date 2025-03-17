@@ -14,7 +14,7 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     private float elapsedTimeSinceLastHit;
     private float healthRegenTimer;
 
-    private bool healingEnabled = false;
+    private bool healingEnabled = true;
 
     private void Awake()
     {
@@ -51,7 +51,6 @@ public class EntityOutOfCombatRegen : MonoBehaviour
             Debug.LogWarning($"Turning OOO Healing {(healingEnabled ? "On" : "Off")}");
         }
 
-        if (!healingEnabled) return;
         HandleHealthRegen();
     }
 
@@ -61,6 +60,7 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     /// </summary>
     private void HandleHealthRegen()
     {
+        if (!healingEnabled) return; // If healing is disabled
         if (entity.CurrentState == entity.EntityDeathState) return; // If dead
         if (entity.CurrentHealth == entity.MaxHealth.GetIntValue()) return; // If full
         if (entity.MaxHealth.GetIntValue() <= 0) return; // If invincible
