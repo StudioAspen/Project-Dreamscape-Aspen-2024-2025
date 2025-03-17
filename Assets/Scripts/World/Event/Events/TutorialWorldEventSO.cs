@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Tutorial World Event", menuName = "World/World Event/Tutorial")]
@@ -10,9 +11,11 @@ public class TutorialWorldEventSO : WorldEventSO
     private Weapon hammer;
 
     [field: Header("Config")]
-    [field: SerializeField] public int DummyIntVariable { get; private set; } = 2;
+    [field: SerializeField] public Dummy DummyPrefab { get; private set; }
+    private Dummy dummyInstance;
 
     private HashSet<ComboDataSO> remainingCombos = new();
+    private ComboDataSO currentCombo;
     private int totalCombos;
 
     private protected override void OnStarted()
@@ -24,12 +27,18 @@ public class TutorialWorldEventSO : WorldEventSO
         totalCombos = remainingCombos.Count;
         Debug.Log($"Remaining Combos: {GetRemainingCombos()}");
 
-        hammer.OnWeaponEndSwing += Hammer_OnWeaponEndSwing;
+        hammer.OnWeaponHit += Hammer_OnWeaponHit;
+        hammer.OnWeaponStartSwing += Hammer_OnWeaponStartSwing;
+
+        dummyInstance = Instantiate(DummyPrefab, 5f * Vector3.up, Quaternion.identity);
     }
 
     private protected override void OnCleared()
     {
-        hammer.OnWeaponEndSwing -= Hammer_OnWeaponEndSwing;
+        hammer.OnWeaponHit -= Hammer_OnWeaponHit;
+        hammer.OnWeaponStartSwing -= Hammer_OnWeaponStartSwing;
+
+        if(dummyInstance != null) dummyInstance.Die();
     }
 
     private protected override void OnUpdate()
@@ -43,19 +52,24 @@ public class TutorialWorldEventSO : WorldEventSO
         nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 
-    private void Hammer_OnWeaponEndSwing(Entity entity, ComboDataSO combo)
+    private void Hammer_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damage)
     {
-        if (combo == null) return;
-        if(!remainingCombos.Contains(combo)) return;
+        if (currentCombo == null) return;
+        if (!remainingCombos.Contains(currentCombo)) return;
 
-        remainingCombos.Remove(combo);
+        remainingCombos.Remove(currentCombo);
         Debug.Log($"Remaining Combos: {GetRemainingCombos()}");
 
-        if(remainingCombos.Count <= 0)
+        if (remainingCombos.Count <= 0)
         {
             eventManager.ClearEvent();
             return;
         }
+    }
+
+    private void Hammer_OnWeaponStartSwing(Entity entity, ComboDataSO combo)
+    {
+        currentCombo = combo;
     }
 
     private string GetRemainingCombos()

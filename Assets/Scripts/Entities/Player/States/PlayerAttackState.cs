@@ -259,7 +259,7 @@ public class PlayerAttackState : PlayerBaseState
     private void ScaleWeapon(float targetScale, float duration)
     {
         if (weaponScaleCoroutine != null) player.StopCoroutine(weaponScaleCoroutine);
-        weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
+        if (player != null) weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
     }
 
     private IEnumerator WeaponScaleCoroutine(float targetScale, float duration)

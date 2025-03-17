@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3490398193883977143}
+  - component: {fileID: 6102247615063394715}
   - component: {fileID: 364766872975019307}
   - component: {fileID: 5860220226555299953}
   - component: {fileID: 8702003990657789017}
@@ -42,6 +43,64 @@ Transform:
   - {fileID: 2996173690986891309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6102247615063394715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2211407975701868877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d9a807e5301b9e469f1712382daaa6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <PhysicsConfig>k__BackingField: {fileID: 11400000, guid: 67b2e76ec1d37584e9d1e97a4e9ab48b,
+    type: 2}
+  model: {fileID: 4150967214179094889}
+  <CurrentHealth>k__BackingField: 0
+  <MaxHealth>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  baseSpeed: 3
+  rotationSpeed: 5
+  mass: 1
+  <StatusSpeedModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
+  IsGrounded: 0
+  targetDetectionRadius: 0
+  <Team>k__BackingField: 0
+  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <DamageModifier>k__BackingField:
+    <BaseValue>k__BackingField: 1
+  UseRootMotion: 0
+  <LocalTimeScale>k__BackingField:
+    <BaseValue>k__BackingField: 1
+  <EntityStaggeredState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 847029a35ce03334c86ac5ec1211a8ef,
+      type: 3}
+    <StaggerDuration>k__BackingField: 0.5
+  <EntityDeathState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a15e742835b4fff4f9fdf88f94096009,
+      type: 3}
+    <DeathDuration>k__BackingField: 1
+  <EntityLaunchState>k__BackingField:
+    <LaunchAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: d0bfcaed2ccccc648b7c259531d163c7,
+      type: 3}
+    <GroundImpactAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: a036c2372c68c574aa4ffd795f95c6b9,
+      type: 3}
+  <EntityStunnedState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: 3885702465103213143, guid: 9e71dfcec5804bc409b1583dda532a7e,
+      type: 3}
+  <EntitySpawnState>k__BackingField:
+    <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
+      type: 3}
+    <SpawnDuration>k__BackingField: 1.5
+  <Cost>k__BackingField: 0
+  <EXPValue>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <CustomCollisionRadius>k__BackingField: 0
+  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
+  <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
 --- !u!114 &364766872975019307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +261,7 @@ MonoBehaviour:
     ExitTime: 0
     ClipSpeed: 1
     RestartWhenPlay: 0
-  AnimationControll: {fileID: 0}
+  AnimationControll: {fileID: 9100000, guid: ed2923fa380b2924ba16b71f7b29aa70, type: 2}
 --- !u!1 &6456653257141973244
 GameObject:
   m_ObjectHideFlags: 0
