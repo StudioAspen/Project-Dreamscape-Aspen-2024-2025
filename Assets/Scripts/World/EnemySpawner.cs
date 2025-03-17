@@ -73,6 +73,7 @@ public class EnemySpawner : MonoBehaviour
     public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount = 1, bool willRestockCurrency = true)
     {
         StopSpawner();
+        if (landManager.Level <= 0) return;
         currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
     }
 
@@ -83,8 +84,9 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="duration">The duration to spawn enemies for.</param>
     public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
-      StopSpawner();
-      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, duration, spawnAmount));
+        StopSpawner();
+        if (landManager.Level <= 0) return;
+        currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, duration, spawnAmount));
     }
 
     /// <summary>

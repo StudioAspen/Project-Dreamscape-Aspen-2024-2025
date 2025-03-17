@@ -71,7 +71,7 @@ public class EntityOutOfCombatRegen : MonoBehaviour
             if (healthRegenTimer > healthRegenRate)
             {
                 healthRegenTimer = 0f;
-                entity.Heal(healthRegenAmount);
+                entity.Heal(healthRegenAmount, true);
             }
         }
         else

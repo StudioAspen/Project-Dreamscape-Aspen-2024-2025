@@ -144,8 +144,10 @@ public class PlayerUI : MonoBehaviour
 
     private void UpdateExpBar()
     {
-        expBar.value = (float)levelSystem.CurrentEXP / levelSystem.MaxEXP;
+        float targetExpValue = levelSystem.CurrentEXP / (float)levelSystem.MaxEXP;
+        expBar.value = Mathf.Lerp(expBar.value, targetExpValue, 10f * Time.unscaledDeltaTime);
         levelText.text = $"{levelSystem.Level}";
+        //Debug.Log($"Current: {levelSystem.CurrentEXP}, Max: {levelSystem.MaxEXP}, Bar value: {expBar.value}, Target value: {targetExpValue}");
     }
 
     private void UpdateCombatUI()

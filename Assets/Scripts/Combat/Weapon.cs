@@ -316,6 +316,7 @@ public class Weapon : MonoBehaviour
     {
         if (weapon == null) return;
         if (weapon == this) return; // If the weapon is your's
+        if(weapon.HolderEntity == null) return; // If the weapon has no holder
         if (HolderEntity.Team == weapon.HolderEntity.Team) return; // If the weapon hit was an ally's
         if (objectsHitByCurrentAttack.Contains(weapon.gameObject)) return;
 
