@@ -134,7 +134,7 @@ public class Enemy : Entity
     {
         if(!IsValidPointOnNavMesh(dest, 100f, out Vector3 groundedPoint))
         {
-            return null;
+            return new List<Vector3>() { transform.position, dest };
         }
 
         NavMeshPath path = new NavMeshPath();
