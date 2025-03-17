@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /* Right now settings are not saved after exiting the game */
 public class PlayerPreferences : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerPreferences : MonoBehaviour
    public PlayerPreferencesData PlayerPreferencesData { get; private set; }
    
    private int numScreenResolutions;
+   private Resolution[] resolutions;
    
    public event Action<float> OnCameraSensitivityChanged;
 
@@ -23,6 +25,8 @@ public class PlayerPreferences : MonoBehaviour
            Destroy(gameObject);
         }
 
+        InitializeResolutionsArray();
+        
         // Attempt to load in player data
         (PlayerPreferencesData loadedPreferences, bool preferencesSaveFileFound) = TryLoadPlayerPreferences();
         PlayerPreferencesData = loadedPreferences;
@@ -44,6 +48,7 @@ public class PlayerPreferences : MonoBehaviour
    /// 2) Whether a save file was found or not.
    /// </returns>
    private (PlayerPreferencesData, bool) TryLoadPlayerPreferences() {
+      // InitializeResolutionArray must be called first before calling this method!
       PlayerPreferencesData loadedData = SaveLoadManager.LoadPlayerPreferences();
       if (loadedData == null) {
          return (GetDefaultPlayerPreferencesData(), false);
@@ -62,17 +67,27 @@ public class PlayerPreferences : MonoBehaviour
          IsVSync = false,
          QualityLevel = 3,
          MaxFramerate = 60,
-         CurrentScreenResolutionIndex = Screen.resolutions.Length - 1,
+         CurrentScreenResolutionIndex = resolutions.Length - 1,
          FullScreenMode = FullScreenMode.FullScreenWindow,
       };
    }
+
+   private void InitializeResolutionsArray() {
+      // Initialize screen resolutions array (depends on user's display), filtering out non-unique or non-16:9 resolutions
+      resolutions = Screen.resolutions
+         .GroupBy(res => (res.width, res.height))
+         .Select(group => group.First())
+         .Where(res => Mathf.Approximately((float)res.width / res.height, 16f / 9f))
+         .ToArray();
+
+      numScreenResolutions = resolutions.Length;
+      Debug.Log("Resolutions array length: " + numScreenResolutions);
+   }
    
    private void InitializeUserSettings() {
-      numScreenResolutions = Screen.resolutions.Length;
-      PlayerPreferencesData.CurrentScreenResolutionIndex = numScreenResolutions - 1;
-      
-      SetFullScreenMode(PlayerPreferencesData.FullScreenMode);
+      // InitializeResolutionsArray must be called first before calling this method!
       SetResolution(PlayerPreferencesData.CurrentScreenResolutionIndex);
+      SetFullScreenMode(PlayerPreferencesData.FullScreenMode);
       SetMaximumFramerate(PlayerPreferencesData.MaxFramerate);
       SetVSync(PlayerPreferencesData.IsVSync);
       SetMasterVolume(PlayerPreferencesData.MasterVolume);
@@ -81,8 +96,9 @@ public class PlayerPreferences : MonoBehaviour
    }
 
    private void SetResolution(int screenResolutionIndex) {
-      Resolution newResolution = Screen.resolutions[screenResolutionIndex];
+      Resolution newResolution = resolutions[screenResolutionIndex];
       Screen.SetResolution(newResolution.width, newResolution.height, PlayerPreferencesData.FullScreenMode);
+      SetMaximumFramerate(PlayerPreferencesData.MaxFramerate);
    }
 
    private void SetFullScreenMode(FullScreenMode newFullScreenMode) {
@@ -93,6 +109,7 @@ public class PlayerPreferences : MonoBehaviour
    private void SetMaximumFramerate(int newMax) {
       PlayerPreferencesData.MaxFramerate = newMax;
       Application.targetFrameRate = newMax;
+      print($"Application target frame is now {Application.targetFrameRate}");
    }
    
    public void SetVSync(bool newValue) 
@@ -138,7 +155,7 @@ public class PlayerPreferences : MonoBehaviour
    }
 
    public String GetScreenResolutionDisplay() {
-      return $"{Screen.resolutions[PlayerPreferencesData.CurrentScreenResolutionIndex].width}x{Screen.resolutions[PlayerPreferencesData.CurrentScreenResolutionIndex].height}";
+      return $"{resolutions[PlayerPreferencesData.CurrentScreenResolutionIndex].width}x{resolutions[PlayerPreferencesData.CurrentScreenResolutionIndex].height}";
    }
 
    public String GetFullScreenModeDisplay() 
@@ -186,9 +203,9 @@ public class PlayerPreferences : MonoBehaviour
    /// <summary>
    /// Cycles to the next screen resolution in the Screens.resolutions array, wrapping back to the front if needed. Then, updates screen resolution to this next screen resolution.
    /// </summary>
-   /// <returns> The next index in the Screen.resolutions array that was cycled to. </returns>
+   /// <returns> The next index in the resolutions array that was cycled to. </returns>
    public int CycleScreenResolution() {
-      PlayerPreferencesData.CurrentScreenResolutionIndex = (PlayerPreferencesData.CurrentScreenResolutionIndex + 1) % Screen.resolutions.Length;
+      PlayerPreferencesData.CurrentScreenResolutionIndex = (PlayerPreferencesData.CurrentScreenResolutionIndex + 1) % resolutions.Length;
       SetResolution(PlayerPreferencesData.CurrentScreenResolutionIndex);
       return PlayerPreferencesData.CurrentScreenResolutionIndex;
    }
