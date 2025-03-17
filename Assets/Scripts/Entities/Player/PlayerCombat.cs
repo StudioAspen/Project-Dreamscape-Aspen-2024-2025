@@ -91,12 +91,12 @@ public class PlayerCombat : MonoBehaviour
 
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
-        ResetCombos();
+        //ResetCombos();
     }
 
     private void Player_OnGrounded(Vector3 startGroundedPosition)
     {
-        ResetCombos();
+        //ResetCombos();
     }
 
     private void PlayerInputReader_OnComboAction(ComboAction incomingAction)
