@@ -210,9 +210,11 @@ public class PlayerPreferences : MonoBehaviour
       return PlayerPreferencesData.CurrentScreenResolutionIndex;
    }
 
+
+
    /// <summary>
    /// Cycles to the next full screen mode. Then, updates full screen mode to this next full screen mode.
-   /// Cycles in this order: Windowed -> FullScreenWindow -> MaximizedWindow -> Windowed -> ...
+   /// Cycles in this order: Windowed -> FullScreenWindow -> Windowed -> ...
    /// </summary>
    /// <returns>The next full screen mode that was cycled to.</returns>
    public FullScreenMode CycleFullScreenMode() {
@@ -222,17 +224,18 @@ public class PlayerPreferences : MonoBehaviour
             nextFullScreenMode = FullScreenMode.FullScreenWindow;
          break;
          case FullScreenMode.FullScreenWindow:
-            nextFullScreenMode = FullScreenMode.MaximizedWindow;
-         break;
-         case FullScreenMode.MaximizedWindow:
             nextFullScreenMode = FullScreenMode.Windowed;
          break;
+         // Maximized window doesn't behave as intended so leaving it out
+         // case FullScreenMode.MaximizedWindow:
+         //    nextFullScreenMode = FullScreenMode.Windowed;
+         // break;
          default:
             throw new ArgumentException("Invalid FullScreenMode: " + PlayerPreferencesData.FullScreenMode);
       }
       SetFullScreenMode(nextFullScreenMode);
       return nextFullScreenMode;
    }
-
+   
    
 }

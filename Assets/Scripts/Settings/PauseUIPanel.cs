@@ -95,6 +95,7 @@ public class PauseUIPanel : UIPanel
         
         maxFramerateButtonTextComponent.text = $"Max Framerate: {(PlayerPreferences.Instance.PlayerPreferencesData.MaxFramerate == -1 ? "Unlimited" : $"{PlayerPreferences.Instance.PlayerPreferencesData.MaxFramerate} FPS")}";
         maxFramerateButton.SetOriginalText(maxFramerateButtonTextComponent.text); 
+        maxFramerateButton.SetInteractable(!PlayerPreferences.Instance.PlayerPreferencesData.IsVSync);
         
         screenResolutionButtonTextComponent.text = $"Screen Resolution: {PlayerPreferences.Instance.GetScreenResolutionDisplay()} ";
         screenResolutionButton.SetOriginalText(screenResolutionButtonTextComponent.text);
@@ -183,6 +184,9 @@ public class PauseUIPanel : UIPanel
         textField.text = $"VSync: {(PlayerPreferences.Instance.PlayerPreferencesData.IsVSync ? "ON" : "OFF")}";
         vSyncButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
         textField.text = $">{textField.text}<";
+        
+        // Make max framerate button interactable or uninteractable depending on the setting
+        maxFramerateButton.SetInteractable(!PlayerPreferences.Instance.PlayerPreferencesData.IsVSync);
     }
 
     private void OptionsConfirmButton_OnButtonClicked() {

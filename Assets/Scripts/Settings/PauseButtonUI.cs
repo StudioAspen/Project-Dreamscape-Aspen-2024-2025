@@ -12,6 +12,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public string originalText { get; private set; }
     private Color originalColor;
+    
 
     public Action OnButtonClicked = delegate { };
 
@@ -53,8 +54,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         OnButtonClicked?.Invoke();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
+    public void OnPointerEnter(PointerEventData eventData) {
         OnSelect(eventData);
     }
 
@@ -65,6 +65,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnSelect(BaseEventData eventData)
     {
+        if (!button.interactable) return;
         isSelected = true;
 
         EnableSelectedIndicator();
@@ -72,6 +73,7 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnDeselect(BaseEventData eventData)
     {
+        if (!button.interactable) return;
         isSelected = false;
 
         DisableSelectedIndicator();
@@ -91,6 +93,13 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void SetInteractable(bool isInteractable)
     {
         button.interactable = isInteractable;
+
+        if (isInteractable) {
+            UnGreyOut();
+        } else {
+            GreyOut();
+        }
+        
     }
 
     public bool IsInteractable()
@@ -100,6 +109,14 @@ public class PauseButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetOriginalText(string origTxt) {
         originalText = origTxt;
+    }
+
+    private void GreyOut() {
+        buttonText.color = new Color(47 / 255f, 47 / 255f, 47 / 255f);
+    }
+
+    private void UnGreyOut() {
+        buttonText.color = originalColor;
     }
     
 }
