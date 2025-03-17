@@ -85,8 +85,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
-        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
+        ScaleWeapon(ComboData.WeaponScale, ComboData.WeaponScalingDuration);
 
         playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
     }
@@ -108,8 +107,7 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
-        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        ScaleWeapon(1f, ComboData.WeaponScalingDuration); // reset the weapon scale to normal
 
         playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
@@ -253,7 +251,18 @@ public class PlayerAttackState : PlayerBaseState
         return true;
     }
 
-    private IEnumerator StartWeaponScaleCoroutine(float targetScale, float duration)
+    /// <summary>
+    /// Scales the weapon to the target scale over the specified duration.
+    /// </summary>
+    /// <param name="targetScale"></param>
+    /// <param name="duration"></param>
+    private void ScaleWeapon(float targetScale, float duration)
+    {
+        if (weaponScaleCoroutine != null) player.StopCoroutine(weaponScaleCoroutine);
+        weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
+    }
+
+    private IEnumerator WeaponScaleCoroutine(float targetScale, float duration)
     {
         Ease easeType = Ease.OutQuint;
 
@@ -271,6 +280,8 @@ public class PlayerAttackState : PlayerBaseState
         }
 
         playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
+
+        weaponScaleCoroutine = null;
     }
 
     /// <summary>
