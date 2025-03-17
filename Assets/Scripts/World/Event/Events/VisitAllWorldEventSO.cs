@@ -158,7 +158,7 @@ public class VisitAllWorldEventSO : WorldEventSO
 
     public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
     {
-        feedbackText.text = $"{visitIndicatorsDictionary.Count}/{totalLands}";
+        feedbackText.text = $"{totalLands - visitIndicatorsDictionary.Count}/{totalLands}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";
     }
 }

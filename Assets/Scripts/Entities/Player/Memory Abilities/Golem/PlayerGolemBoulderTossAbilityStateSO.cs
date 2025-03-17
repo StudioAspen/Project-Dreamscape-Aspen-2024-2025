@@ -1,33 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 using Dreamscape.Abilities;
 using UnityEngine;
-
-/*
- * CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
-   spawnedAbility.Init(player);
- */
-
 
 [CreateAssetMenu(fileName = "Golem Memory Boulder Toss Ability", menuName = "Memory Abilities/Golem/BoulderToss")]
 public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
-    [field: SerializeField] public AnimationClip ChargeAnimationClip { get; private set; }
-    [field: SerializeField] public PlayerGolemWindDownAbilityStateSO WindDownState { get; private set; }
-    [field: SerializeField] public float ChargeContactDamageMultiplier { get; private set; } = 2f;
-    [field: SerializeField] public float TossDuration { get; private set; } = 20f;
-    [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
-    [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
+    [field: SerializeField] public AnimationClip OneHandThrowAnimationClip { get; private set; }
+    [field: SerializeField] public AnimationClip TwoHandThrowAnimationClip { get; private set; }
+    [field: SerializeField] public float TossDuration { get; private set; } = 1.5f;
     
     [field: SerializeField] public GameObject BoulderPrefab { get; private set; }
-    [field: SerializeField] public float BoulderSpawnDelay { get; private set; } = 1 + (45 / 60f); // Boulder spawn delay should be how long after the throw animation under normal time until boulder prefab spawns
 
-    [SerializeField] public float BounceHeight { get; private set; } = 2f;
-    [SerializeField] public float SpawnForwardOffset { get; private set; } = 0f;
-    [SerializeField] public float GroundOffset { get; private set; } = .75f;
-
-    private Coroutine spawnBoulderCoroutine;
+    [field: SerializeField] public float BounceHeight { get; private set; } = 5f;
+    [field: SerializeField] public float SpawnForwardOffset { get; private set; } = 0f;
+    [field: SerializeField] public float GroundOffset { get; private set; } = .75f;
 
     private float timer;
 
@@ -49,19 +38,19 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
 
     public override void OnEnter()
     {
-        player.PlayOneShotAnimation(ChargeAnimationClip);
-
-        spawnBoulderCoroutine = player.StartCoroutine(UnleashBoulder());
+        player.PlayOneShotAnimation(UnityEngine.Random.Range(0, 2) == 0 ? OneHandThrowAnimationClip : TwoHandThrowAnimationClip, TossDuration);
+        player.UseRootMotion = true;
 
         timer = 0f;
+
+        playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
     }
 
     public override void OnExit()
     {
-        if (spawnBoulderCoroutine != null) {
-            player.StopCoroutine(spawnBoulderCoroutine);
-            spawnBoulderCoroutine = null;
-        }
+        player.UseRootMotion = false;
+
+        playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
 
     public override void OnUpdate()
@@ -71,22 +60,17 @@ public class PlayerGolemBoulderTossAbilityStateSO : PlayerAbilityStateSO
         timer += player.LocalDeltaTime;
         if (timer > TossDuration)
         {
-            player.PlayerAbilityState.TryChangeAbilityState(WindDownState, true);
+            player.ChangeState(player.DefaultState, true);
             return;
         }
 
         player.ApplyRotationToNextMovement();
-        player.LookAt(player.transform.position + player.TargetForwardDirection);
     }
 
-    private IEnumerator UnleashBoulder() 
+    private void PlayerCombat_OnFireAbility(AnimationEvent eventData)
     {
-        yield return new WaitForSeconds(BoulderSpawnDelay / player.LocalTimeScale.GetFloatValue());
-        Boulder spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<Boulder>(BoulderPrefab, player.GetColliderCenterPosition() + (player.transform.forward * SpawnForwardOffset) + (Vector3.up * (GroundOffset + BounceHeight)) );
+        Boulder spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<Boulder>(BoulderPrefab, player.GetColliderCenterPosition() + (player.transform.forward * SpawnForwardOffset) + (Vector3.up * (GroundOffset + BounceHeight)));
         spawnedAbility.SetBounceHeight(BounceHeight);
-        spawnedAbility.SetGroundOffset(GroundOffset);
         spawnedAbility.Init(player);
     }
-
-   
 }

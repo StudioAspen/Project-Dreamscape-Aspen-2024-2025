@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))] // Stores the blend tree
@@ -26,7 +25,17 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Health Variables
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
-    [field: SerializeField, Tooltip("Max health for entity. Set to 0 for invicibility.")] public Stat MaxHealth { get; protected set; }
+    [field: SerializeField] public Stat MaxHealth { get; protected set; }
+    public bool IsInvicible { get; protected set; }
+
+    /// <summary>
+    /// Sets the invicibility status of the entity.
+    /// </summary>
+    /// <param name="isInvicible"></param>
+    public void SetInvincible(bool isInvicible)
+    {
+        IsInvicible = isInvicible;
+    }
     #endregion
 
     #region Speed Variables
@@ -196,6 +205,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </remarks>
     public Action<Vector3> OnAirborne = delegate { };
     private bool prevIsGrounded;
+    private bool isKilledFromBeingOutOfBounds;
 
     /// <summary>
     /// Invokes the vertical movement events based on the current grounded state.
@@ -469,10 +479,12 @@ public class Entity : MonoBehaviour, IPoolableObject
         prevIsGrounded = true;
         inAirTimer = 0f;
         fallVelocityApplied = false;
+        isKilledFromBeingOutOfBounds = false;
 
         lastHitSource = null;
 
         CurrentHealth = MaxHealth.GetIntValue();
+        SetInvincible(false);
 
         IgnoreOtherEntityCollisions(false);
 
@@ -614,6 +626,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         CharacterController.Move(desiredAnimationMovement);
     }
+
     private void OnDrawGizmos()
     {
         CurrentState?.OnDrawGizmos();
@@ -734,8 +747,9 @@ public class Entity : MonoBehaviour, IPoolableObject
         CharacterController.Move(LocalDeltaTime * velocity.y * Vector3.up);
 
         // Kill if below the map
-        if(transform.position.y < -100f)
+        if(transform.position.y < -100f && !isKilledFromBeingOutOfBounds)
         {
+            isKilledFromBeingOutOfBounds = true;
             Kill(lastHitSource);
         }
     }
@@ -1005,14 +1019,14 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
-        CurrentHealth -= damage;
+        if(!IsInvicible) CurrentHealth -= damage;
 
         OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
 
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             CurrentHealth = 0;
             OnDeath();
@@ -1088,14 +1102,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// Increases the current health of the entity by the specified amount.
     /// </summary>
     /// <param name="health">The amount of health to add.</param>
-    public void Heal(int health)
+    /// <param name="willSpawnHitNumbers">Whether to spawn hit numbers</param>
+    public void Heal(int health, bool willSpawnHitNumbers = false)
     {
         OnEntityHeal?.Invoke(this, health);
 
         CurrentHealth += health;
         if(CurrentHealth > MaxHealth.GetIntValue()) CurrentHealth = MaxHealth.GetIntValue();
 
-        AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
+        if(willSpawnHitNumbers) AttemptToSpawnHitNumbers(health, gameObject.transform.position + Vector3.up, Color.green);
     }
 
     /// <summary>
@@ -1480,7 +1495,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit a friendly entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The friendly entity that was hit.</param>
@@ -1488,8 +1502,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
         if (entity == null) entity = hit.GetComponent<Entity>();
+        if(entity == null) return false;
+
         if (entity.Team != Team) return false;
 
         return true;
@@ -1497,7 +1512,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit an enemy entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The enemy entity that was hit.</param>
@@ -1505,8 +1519,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitEnemyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
+        if (entity == null) entity = hit.GetComponent<Entity>();
         if (entity == null) return false;
+
         if (entity.Team == Team) return false;
 
         return true;

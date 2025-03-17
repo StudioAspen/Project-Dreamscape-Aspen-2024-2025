@@ -3,183 +3,119 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dreamscape.Abilities 
+namespace Dreamscape.Abilities
 {
-
-public class Boulder : CastedAbility, IPoolableObject 
-{
-    [Header("Settings")] [SerializeField] private float forwardSpeed = 5f;
-    [SerializeField] private float aoeRadius = 2f;
-    [SerializeField] private float damageMultiplier = 1f;
-    [SerializeField] private float boulderLifetime = 12f;
-    
-    [SerializeField] private float playerBounceCooldown = 1f;
-    [SerializeField] private float wallBounceCooldown = .15f;
-    [SerializeField] private float boulderUnleashDelay = 1.5f;
-
-    private Vector3 direction;
-    private float bounceTimer = 0f;
-    private float wallBounceTimer = 0f;
-    private float bounceHeight = 2f, groundOffset = .75f;
-
-    private new Rigidbody rigidbody;
-    private Coroutine moveCoroutine;
-
-    private void Awake() 
+    public class Boulder : CastedAbility, IPoolableObject
     {
-        rigidbody = GetComponent<Rigidbody>();
-        if (rigidbody == null) Debug.LogError("Boulder requires a Rigidbody component!");
-    }
+        private Rigidbody rigidBody;
 
-    private protected override void OnSpawn() {
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        direction = casterEntity.transform.forward;
-        moveCoroutine = StartCoroutine(BoulderMove());
-    }
+        [Header("Settings")][SerializeField] private float speed = 5f;
+        [SerializeField] private float damageMultiplier = 1f;
+        [SerializeField] private float boulderLifetime = 12f;
+        [SerializeField] private float groundBounceSlopeLimit = 45f;
 
-    
-    private protected override void OnOnDisable()
-    {
-    }
+        private float lifetimeTimer;
+        private float bounceHeight;
+        private HashSet<Entity> hitEnemies = new HashSet<Entity>();
 
-    void OnDrawGizmos()
-    {
-        //Visualize AOE radius in the editor
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(rigidbody.position, aoeRadius);
-    }
-    
-    private IEnumerator BoulderMove() 
-    {
-        yield return new WaitForSeconds(boulderUnleashDelay);
+        private bool willCheckForAllies = false; // Used so that the boulder can check for ally hits only once after hitting a wall
 
-        float currentTimeElapsed = 0f;
-        float verticalVelocity = 0f;
-        bool isFalling = true;
-        bounceTimer = playerBounceCooldown;
-
-        while (currentTimeElapsed < boulderLifetime) 
+        public void SetBounceHeight(float bounceHeight)
         {
-            // Calculate next position
-            Vector3 nextPosition = rigidbody.position + (direction * (forwardSpeed * Time.deltaTime));
+            this.bounceHeight = bounceHeight;
+        }
 
-            // Apply gravity if falling
-            if (isFalling) 
+        private void Awake()
+        {
+            rigidBody = GetComponent<Rigidbody>();
+            Debug.Assert(rigidBody != null, "Boulder requires a Rigidbody component!");
+        }
+
+        private protected override void OnSpawn()
+        {
+            lifetimeTimer = 0f;
+
+            rigidBody.velocity = speed * casterEntity.transform.forward;
+            
+            hitEnemies.Clear();
+
+            willCheckForAllies = false;
+        }
+
+        private protected override void OnOnDisable()
+        {
+            
+        }
+
+        private void Update()
+        {
+            lifetimeTimer += Time.deltaTime;
+            if(lifetimeTimer > boulderLifetime)
             {
-                verticalVelocity -= 9.81f * Time.deltaTime;
+                DestroyAndRelease();
+                return;
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            CheckForAllyHit(other);
+            CheckForEnemyHit(other);
+            CheckForBarrierHit(other);
+        }
+
+        private void CheckForAllyHit(Collider other)
+        {
+            if (!willCheckForAllies) return;
+
+            if(casterEntity.DidHitFriendlyEntity(other, out Entity allyEntity))
+            {
+                Vector3 hitNormal = transform.position - other.ClosestPoint(transform.position);
+                Reflect(hitNormal);
+            }
+        }
+
+        private void CheckForEnemyHit(Collider other)
+        {
+            if(casterEntity.DidHitEnemyEntity(other, out Entity enemyEntity))
+            {
+                if (hitEnemies.Contains(enemyEntity)) return; // Already hit this enemy (to prevent multiple hits on same enemy)
+                hitEnemies.Add(enemyEntity);
+
+                int damage = casterEntity.CalculateDamage(damageMultiplier);
+                Vector3 hitPoint = other.ClosestPoint(transform.position);
+                casterEntity.DealDamageToOtherEntity(enemyEntity, damage, hitPoint, true);
+            }
+        }
+
+        private void CheckForBarrierHit(Collider other)
+        {
+            if (!casterEntity.DidHitWall(other)) return;
+
+            Vector3 hitNormal = transform.position - other.ClosestPoint(transform.position);
+            Reflect(hitNormal, Vector3.Angle(hitNormal, Vector3.up) < groundBounceSlopeLimit);
+        }
+
+        private void Reflect(Vector3 hitNormal, bool willForceBounceHeight = false)
+        {
+            willCheckForAllies = true;
+
+            Vector3 reflectedVelocity = Vector3.Reflect(rigidBody.velocity, hitNormal.normalized);
+            if (willForceBounceHeight)
+            {
+                reflectedVelocity.y = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * bounceHeight); // Ensures bounce stays strong
             }
 
-            // Ground collision check with offset
-            if (Physics.Raycast(nextPosition + Vector3.up * 1f, Vector3.down, out RaycastHit hit, 1.5f,
-                    LayerMask.GetMask("Ground"))) 
-            {
-                if (nextPosition.y + verticalVelocity * Time.deltaTime <= hit.point.y + groundOffset) 
-                {
-                    // Snap to ground with offset
-                    nextPosition.y = hit.point.y + groundOffset;
+            Vector3 groundedVelocity = new Vector3(reflectedVelocity.x, 0f, reflectedVelocity.z).normalized * speed;
 
-                    if (isFalling) 
-                    {
-                        // Apply bounce
-                        verticalVelocity = Mathf.Sqrt(2f * 9.81f * bounceHeight);
-                        isFalling = false;
-                    }
-                }
-            } else 
-            {
-                isFalling = true;
-            }
+            rigidBody.velocity = groundedVelocity + reflectedVelocity.y * Vector3.up;
 
-            // Apply vertical movement
-            nextPosition.y += verticalVelocity * Time.deltaTime;
-
-            // Move boulder with rigidbody moveposition
-            rigidbody.MovePosition(nextPosition);
-
-            // Update timers
-            currentTimeElapsed += Time.deltaTime;
-            bounceTimer = Mathf.Max(0f, bounceTimer - Time.deltaTime);
-            wallBounceTimer = Mathf.Max(0f, wallBounceTimer - Time.deltaTime);
-
-            yield return null;
-        }
-
-        Explode();
-        if (moveCoroutine != null) moveCoroutine = null;
-        if (gameObject) DestroyAndRelease();
-    }
-
-    private void OnTriggerEnter(Collider other) 
-    {
-        CheckForEntityHit(other);
-        CheckForBarrierHit(other);
-    }
-
-    private void CheckForEntityHit(Collider other) 
-    {
-        Entity hitEntity = other.GetComponent<Entity>();
-        if (hitEntity == null) hitEntity = other.GetComponentInParent<Entity>();
-        if (hitEntity == null) return;
-
-        if (hitEntity.CurrentState == hitEntity.EntityDeathState) return;
-        if (hitEntity.Team == casterEntity.Team) 
-        {
-            if (bounceTimer == 0f) 
-            {
-                bounceTimer = playerBounceCooldown;
-                Vector3 hitNormal = (rigidbody.position - new Vector3(hitEntity.transform.position.x, rigidbody.position.y,
-                    hitEntity.transform.position.z)).normalized;
-                direction = Vector3.Reflect(direction, hitNormal);
-            }
-
-            return;
-        }
-        Explode();
-    }
-
-    private void CheckForBarrierHit(Collider other) 
-    {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
-        if (!other.CompareTag("Border")) return;
-        if (wallBounceTimer != 0f) return;
-
-        Debug.DrawRay(rigidbody.position, direction * 10f, Color.green, 100f);
-
-        if (Physics.Raycast(rigidbody.position, direction, out var hit, 10f)) 
-        {
-            direction = Vector3.Reflect(direction, hit.normal);
-            wallBounceTimer = wallBounceCooldown;
-        } else 
-        {
-            direction = -direction;
+            hitEnemies.Clear();
         }
     }
-
-    private void Explode() 
-    {
-        List<Entity> entitiesHit = Entity.GetEntitiesThroughAOE(rigidbody.position, aoeRadius, false);
-
-        foreach (Entity entity in entitiesHit) 
-        {
-            if (entity.Team == casterEntity.Team) return;
-
-            casterEntity.DealDamageToOtherEntity(entity, casterEntity.CalculateDamage(damageMultiplier), rigidbody.position);
-        }
-
-        // Insert explosion VFX here:
-        CustomDebug.InstantiateTemporarySphere(rigidbody.position, aoeRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
-    }
-
-    public void SetBounceHeight(float newHeight) {
-        bounceHeight = newHeight;
-    }
-
-    public void SetGroundOffset(float newOffset) {
-        groundOffset = newOffset;
-    }
-    
-    
-    
-}
-
 }

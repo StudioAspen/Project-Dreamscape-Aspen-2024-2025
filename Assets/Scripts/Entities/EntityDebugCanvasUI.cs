@@ -20,9 +20,8 @@ public class EntityDebugCanvasUI : MonoBehaviour
         entityStatusEffector = entity.GetComponent<EntityStatusEffector>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-#if UNITY_EDITOR
-#else
-        entityStateText.color = Color.black;
+#if !UNITY_EDITOR
+        entityNameText.color = Color.black;
 #endif
     }
 

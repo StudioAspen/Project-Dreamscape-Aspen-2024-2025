@@ -11,6 +11,7 @@ public class ObjectPoolerManager : MonoBehaviour
 
     [field: Header("Commonly Used Prefabs")]
     [field: SerializeField] public HitNumbers HitNumbersPrefab { get; private set; }
+    [field: SerializeField] public MaterializeVFX MaterializeVFXPrefab { get; private set; }
 
     /// <summary>
     /// A dictionary that stores all object poolers as values and their prefab by key.

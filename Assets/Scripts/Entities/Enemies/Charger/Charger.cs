@@ -113,7 +113,7 @@ public class Charger : Enemy
 
         if (willTryStagger) TryChangeStaggeredState();
 
-        CurrentHealth -= newDamage;
+        if(!IsInvicible) CurrentHealth -= newDamage;
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
 
@@ -122,7 +122,7 @@ public class Charger : Enemy
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }
