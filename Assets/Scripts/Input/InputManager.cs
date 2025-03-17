@@ -247,12 +247,16 @@ public class InputManager : MonoBehaviour
             for (int i = 0; i < action.bindings.Count && action.bindings[i].isComposite; i++)
             {
                 action.RemoveBindingOverride(i);
+                PlayerPrefs.DeleteKey(action.actionMap + action.name + i);
             }
         }
         else
         {
             action.RemoveBindingOverride(bindingIndex);
+            PlayerPrefs.DeleteKey(action.actionMap + action.name + bindingIndex);
         }
+
+        PlayerPrefs.Save();
     }
 }
 
