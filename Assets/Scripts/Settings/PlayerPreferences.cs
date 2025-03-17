@@ -30,7 +30,6 @@ public class PlayerPreferences : MonoBehaviour
         SetMasterVolume(MasterVolume);
         SetCameraSensitivity(CameraSensitivity);
         SetQualityLevel(QualityLevel);
-        print("Awake called");
     }
    
    public void SetVSync(bool newValue) 
