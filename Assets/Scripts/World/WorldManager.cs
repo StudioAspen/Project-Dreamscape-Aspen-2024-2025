@@ -48,7 +48,8 @@ public class WorldManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
+        currentBiomeSelection = Biome.DREAM;
+        SpawnLand(Vector2Int.zero); // Spawn Dream land in the middle
 
         BuildNavMesh();
 
@@ -262,7 +263,7 @@ public class WorldManager : MonoBehaviour
     /// Spawns a new land at the given grid position.
     /// </summary>
     /// <param name="gridPosition">The grid position of the land.</param>
-    private void SpawnLand(Vector2Int gridPosition)
+    private LandManager SpawnLand(Vector2Int gridPosition)
     {
         LandManager landPrefabToUse = null;
         if (BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count == 0)
@@ -279,6 +280,8 @@ public class WorldManager : MonoBehaviour
         spawnedLand.Init(gridPosition, currentBiomeSelection);
 
         SpawnedLands.Add(gridPosition, spawnedLand);
+
+        return spawnedLand;
     }
 
     /// <summary>

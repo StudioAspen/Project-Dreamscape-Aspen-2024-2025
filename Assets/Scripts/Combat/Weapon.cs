@@ -35,18 +35,20 @@ public class Weapon : MonoBehaviour
     /// <remarks>
     /// <list type="bullet">
     /// <item><description><c>Entity attacker</c>: The attacker entity</description></item>
+    /// /// <item><description><c>ComboDataSO combo</c>: The started combo</description></item>
     /// </list>
     /// </remarks>
-    public Action<Entity> OnWeaponStartSwing = delegate { };
+    public Action<Entity, ComboDataSO> OnWeaponStartSwing = delegate { };
     /// <summary>
     /// Action that is invoked when the weapon stops swinging.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
     /// <item><description><c>Entity attacker</c>: The attacker entity</description></item>
+    /// <item><description><c>ComboDataSO combo</c>: The ended combo</description></item>
     /// </list>
     /// </remarks>
-    public Action<Entity> OnWeaponEndSwing = delegate { };
+    public Action<Entity, ComboDataSO> OnWeaponEndSwing = delegate { };
     /// <summary>
     /// Action that is invoked when the weapon hits.
     /// </summary>

@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -272, y: -144.15}
+  m_AnchoredPosition: {x: -272, y: -169.15}
   m_SizeDelta: {x: 235.5044, y: 111.1257}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1986837199357902833
@@ -169,8 +169,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -17.924927, y: 0}
-  m_SizeDelta: {x: -35.8497, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3776687360005298286
 CanvasRenderer:
@@ -193,14 +193,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7fef233d13c34ba409a7ed4bc2a17316, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7695e6b948b294f449bf7b8dc7f2e981, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -244,7 +244,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -155}
+  m_AnchoredPosition: {x: 0, y: -180}
   m_SizeDelta: {x: 1199.5312, y: 89.41962}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2855094894652191364
@@ -532,6 +532,11 @@ PrefabInstance:
     - target: {fileID: 729261076422642056, guid: d95e7cc1be9c34b42a2521a867f56f5b,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5218277557481945654, guid: d95e7cc1be9c34b42a2521a867f56f5b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6336689454765213431, guid: d95e7cc1be9c34b42a2521a867f56f5b,

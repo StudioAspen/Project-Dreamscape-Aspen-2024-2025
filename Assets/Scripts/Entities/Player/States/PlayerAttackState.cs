@@ -67,7 +67,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
+        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player, ComboData); // invoke the weapon start swing event
 
         playerCombat.Weapon.ClearObjectHitList(); // allows all enemies to get hit again
 
@@ -80,8 +80,9 @@ public class PlayerAttackState : PlayerBaseState
         player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        playerCombat.CanCombo = false; 
 
-        if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
+        if (player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
@@ -92,7 +93,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnExit()
     {
-        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
+        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player, ComboData); // invoke the weapon end swing event
 
         player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
@@ -259,7 +260,7 @@ public class PlayerAttackState : PlayerBaseState
     private void ScaleWeapon(float targetScale, float duration)
     {
         if (weaponScaleCoroutine != null) player.StopCoroutine(weaponScaleCoroutine);
-        weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
+        if (player != null) weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
     }
 
     private IEnumerator WeaponScaleCoroutine(float targetScale, float duration)

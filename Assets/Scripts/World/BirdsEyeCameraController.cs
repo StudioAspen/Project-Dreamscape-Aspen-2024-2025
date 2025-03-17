@@ -45,6 +45,8 @@ public class BirdsEyeCameraController : MonoBehaviour
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom) / (maxZoom - minZoom));
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera. Race case with gameManager.
     }
 
     private void OnDestroy()

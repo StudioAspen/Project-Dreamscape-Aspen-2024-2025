@@ -53,12 +53,14 @@ public class EventProgressionUI : MonoBehaviour
 
             if (quest == null)
             {
-                questsElements[i].Text.text = "Quest N/A";
+                questsElements[i].Text.text = "";
+                questsElements[i].TokenImage.color = Color.clear;
                 questsElements[i].TokenImage.sprite = null;
             }
             else
             {
                 questsElements[i].Text.text = quest.IsCompleted ? $"<s>{quest.ObjectiveText}</s>" : $"{quest.ObjectiveText}";
+                questsElements[i].TokenImage.color = Color.white;
                 questsElements[i].TokenImage.sprite = quest.CompletionReward == ProgressionQuestSO.Reward.EMPOWER_TOKEN ? empowerSprite : weakenSprite;
             }
         }
