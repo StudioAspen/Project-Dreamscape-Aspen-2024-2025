@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
-
         ForceChangeState(newState);
     }
 
@@ -129,4 +128,6 @@ public class GameManager : MonoBehaviour
         SetTimeScale(1f);
         SceneManager.LoadScene(menuScene.Name, LoadSceneMode.Single);
     }
+
+    
 }
