@@ -896,7 +896,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if(animationClip == null)
         {
-            Debug.LogWarning("Cant play null one shot animation");
+            //Debug.LogWarning("Cant play null one shot animation");
             return;
         }
 
