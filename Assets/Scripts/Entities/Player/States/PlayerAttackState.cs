@@ -80,8 +80,9 @@ public class PlayerAttackState : PlayerBaseState
         player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        playerCombat.CanCombo = false; 
 
-        if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
+        if (player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
