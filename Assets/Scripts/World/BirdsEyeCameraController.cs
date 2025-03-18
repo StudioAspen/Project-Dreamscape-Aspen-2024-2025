@@ -167,6 +167,7 @@ public class BirdsEyeCameraController : MonoBehaviour
         gameObject.SetActive(true);
 
         worldManager.EnableLandLevelTexts();
+        worldManager.ToggleLandLevelStyle(worldManager.LandLevelStyleIsSimple); // Debug delete later
         worldManager.EnableGhostLand();
     }
 
