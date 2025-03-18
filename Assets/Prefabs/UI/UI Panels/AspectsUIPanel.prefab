@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 3204568947751055642}
   - component: {fileID: 7675384858484817416}
   - component: {fileID: 1127645674229688587}
+  - component: {fileID: 2559435730973739699}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -210,6 +211,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2559435730973739699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926421487682420394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27950eedd5352f1469f5b876928ceffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowColor: {r: 1, g: 1, b: 1, a: 1}
+  glowPower: 1
 --- !u!1 &3174038519889163704
 GameObject:
   m_ObjectHideFlags: 0
