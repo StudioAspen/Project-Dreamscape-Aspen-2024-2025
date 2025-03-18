@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: bda48a30425b32c49a5b698ece976dc1, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: a752917fffc3fa945ac3afe0c03f9462, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.10982649, g: 0.14901267, b: 0.2182182, a: 1}
+  m_IndirectSpecularColor: {r: 0.3349286, g: 0.088978946, b: 0.73758876, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 5999ece8e518d3b46aa1ffa047abbd78,
+  m_LightingDataAsset: {fileID: 112000000, guid: af4dc55f66059d54a98f94a890e09d5b,
     type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 05bbbd9c82d45e04e9cfce7ee45a44bd,
     type: 2}
@@ -554,11 +554,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 975201434874280024, guid: 7e9449c6a8e69744db25aff9cece0927,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e9449c6a8e69744db25aff9cece0927, type: 3}
 --- !u!1 &465791416
 GameObject:
@@ -977,8 +973,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083734825}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -3}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

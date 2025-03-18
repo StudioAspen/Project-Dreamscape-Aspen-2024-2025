@@ -21,7 +21,7 @@ public class EntityDebugCanvasUI : MonoBehaviour
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
 #if !UNITY_EDITOR
-        entityNameText.color = Color.black;
+        entityNameText.color = Color.white;
 #endif
         entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
