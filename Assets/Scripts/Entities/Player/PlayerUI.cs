@@ -28,7 +28,7 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
 
     [Header("Aspects")]
-    [SerializeField] private Image[] aspectsIcons = new Image[3];
+    [SerializeField] private Image[] aspectsIcons = new Image[2];
     [SerializeField] private Sprite defaultAspectsIconSprite;
 
     [Header("Memory")]
