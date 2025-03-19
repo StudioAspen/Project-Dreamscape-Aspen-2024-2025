@@ -20,6 +20,7 @@ public class EventProgressionUI : MonoBehaviour
     [SerializeField] private TMP_Text feedbackText;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private Quest[] questsElements = new Quest[3];
+    [SerializeField] private TMP_Text optionalDescriptionText;
 
     [Header("Assets")]
     [SerializeField] private Sprite empowerSprite;
@@ -42,7 +43,7 @@ public class EventProgressionUI : MonoBehaviour
     {
         if (eventManager == null) return;
         if(eventManager.CurrentEvent == null) return;
-        eventManager.CurrentEvent.UpdateEventUIElements(feedbackText, nameText);
+        eventManager.CurrentEvent.UpdateEventUIElements(feedbackText, nameText, optionalDescriptionText);
     }
 
     private void UpdateQuestElements()

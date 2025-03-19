@@ -212,7 +212,8 @@ public class Player : Entity
             || CurrentState == PlayerDashState
             || CurrentState == PlayerChargeState
             || CurrentState == PlayerAttackState
-            || CurrentState == EntityLaunchState;
+            || CurrentState == EntityLaunchState
+            || CurrentState == EntityStunnedState;
 
         return !willNotFall;
     }

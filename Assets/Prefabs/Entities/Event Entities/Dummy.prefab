@@ -67,7 +67,7 @@ MonoBehaviour:
   <StatusSpeedModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   IsGrounded: 0
-  targetDetectionRadius: 0
+  targetDetectionRadius: 10
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 10, y: 15}
   <DamageModifier>k__BackingField:
@@ -261,7 +261,7 @@ MonoBehaviour:
     ExitTime: 0
     ClipSpeed: 1
     RestartWhenPlay: 0
-  AnimationControll: {fileID: 9100000, guid: ed2923fa380b2924ba16b71f7b29aa70, type: 2}
+  AnimationControll: {fileID: 9100000, guid: 7b577034fd5d7564285b41c5547efd97, type: 2}
 --- !u!1 &6456653257141973244
 GameObject:
   m_ObjectHideFlags: 0

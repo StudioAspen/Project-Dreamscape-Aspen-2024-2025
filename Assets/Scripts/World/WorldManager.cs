@@ -48,8 +48,7 @@ public class WorldManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        currentBiomeSelection = Biome.DREAM;
-        SpawnLand(Vector2Int.zero); // Spawn Dream land in the middle
+        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
 
         BuildNavMesh();
 

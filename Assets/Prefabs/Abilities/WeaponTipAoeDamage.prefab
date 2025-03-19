@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5411481435726057782}
   - component: {fileID: 4417142876670017917}
   m_Layer: 0
-  m_Name: WeaponTipAoeExplosion
+  m_Name: WeaponTipAoeDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,6 @@ MonoBehaviour:
   explosionRadius: 5
   damageMultiplier: 1
   willTryStagger: 1
-  willLaunch: 0
-  launchForce: 0
-  launchStunDuration: 0
+  willLaunch: 1
+  launchForce: 3
+  launchStunDuration: 2

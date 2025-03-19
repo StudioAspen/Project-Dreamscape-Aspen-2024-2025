@@ -239,7 +239,7 @@ public class ZonesWorldEventSO : WorldEventSO
         enemiesRemaining--;
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

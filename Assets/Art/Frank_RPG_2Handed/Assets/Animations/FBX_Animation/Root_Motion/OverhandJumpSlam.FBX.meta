@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f8992077cc5c114479fa824a5c4a7c89
+guid: b1b9786cccee24b48b928de4a836ce02
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -497,7 +497,7 @@ ModelImporter:
     second: root
   - first:
       74: 7400000
-    second: OverhandJumpingSlam
+    second: OverhandJumpSlam
   - first:
       95: 9500000
     second: //RootNode
@@ -517,12 +517,9 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
       copied configuration does not match position in animation file:\n\t'thigh_l'
-      : position error = 4.182852 mm\n\t'calf_l' : position error = 1.746104 mm\n\t'thigh_r'
-      : position error = 3.221616 mm\n\t'calf_r' : position error = 2.150747 mm\n\t'upperarm_l'
-      : position error = 1.369139 mm\n\t'hand_l' : position error = 9.298649 mm\n\t'middle_03_l'
-      : position error = 1.026914 mm\n\t'upperarm_r' : position error = 1.766024
-      mm\n\t'lowerarm_r' : position error = 1.091075 mm\n\t'hand_r' : position error
-      = 3.562275 mm\n\t'middle_03_r' : position error = 1.024642 mm\n"
+      : position error = 2.061255 mm\n\t'hand_l' : position error = 1.373653 mm\n\t'lowerarm_r'
+      : position error = 1.494591 mm\n\t'hand_r' : position error = 2.410614 mm\n\t'middle_03_r'
+      : position error = 1.024588 mm\n"
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar
@@ -537,20 +534,18 @@ ModelImporter:
       has translation animation that will be discarded.\n\t'upperarm_l' has translation
       animation that will be discarded.\n\t'lowerarm_l' has translation animation
       that will be discarded.\n\t'hand_l' has translation animation that will be
-      discarded.\n\t'thumb_03_l' has translation animation that will be discarded.\n\t'index_01_l'
-      has translation animation that will be discarded.\n\t'index_02_l' has translation
-      animation that will be discarded.\n\t'index_03_l' has translation animation
-      that will be discarded.\n\t'middle_01_l' has translation animation that will
-      be discarded.\n\t'middle_02_l' has translation animation that will be discarded.\n\t'middle_03_l'
-      has translation animation that will be discarded.\n\t'ring_01_l' has translation
-      animation that will be discarded.\n\t'ring_02_l' has translation animation
-      that will be discarded.\n\t'ring_03_l' has translation animation that will
-      be discarded.\n\t'pinky_01_l' has translation animation that will be discarded.\n\t'pinky_02_l'
-      has translation animation that will be discarded.\n\t'pinky_03_l' has translation
-      animation that will be discarded.\n\t'upperarm_r' has translation animation
-      that will be discarded.\n\t'lowerarm_r' has translation animation that will
-      be discarded.\n\t'hand_r' has translation animation that will be discarded.\n\t'head'
-      has translation animation that will be discarded.\n"
+      discarded.\n\t'index_01_l' has translation animation that will be discarded.\n\t'index_02_l'
+      has translation animation that will be discarded.\n\t'index_03_l' has translation
+      animation that will be discarded.\n\t'middle_01_l' has translation animation
+      that will be discarded.\n\t'middle_02_l' has translation animation that will
+      be discarded.\n\t'middle_03_l' has translation animation that will be discarded.\n\t'ring_01_l'
+      has translation animation that will be discarded.\n\t'ring_02_l' has translation
+      animation that will be discarded.\n\t'ring_03_l' has translation animation
+      that will be discarded.\n\t'pinky_02_l' has translation animation that will
+      be discarded.\n\t'upperarm_r' has translation animation that will be discarded.\n\t'lowerarm_r'
+      has translation animation that will be discarded.\n\t'hand_r' has translation
+      animation that will be discarded.\n\t'head' has translation animation that
+      will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -564,11 +559,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: OverhandJumpingSlam
+      name: OverhandJumpSlam
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 0
-      lastFrame: 162
+      firstFrame: 72
+      lastFrame: 109
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -578,16 +573,37 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 1
+      keepOriginalPositionXZ: 0
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.15165325
+        functionName: StartHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3566472
+        functionName: EndHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3588893
+        functionName: FireAbility
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

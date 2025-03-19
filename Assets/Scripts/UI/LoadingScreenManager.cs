@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Eflatun.SceneReference;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,6 +10,8 @@ using UnityEngine.UI;
 
 public class LoadingScreenManager : MonoBehaviour
 {
+    public static Action OnLoadingScreenFinished = delegate { };
+
     [Header("Scenes References")]
     [SerializeField] private List<SceneReference> scenesToLoad = new();
     [SerializeField] private SceneReference titleScene;
@@ -71,5 +74,6 @@ public class LoadingScreenManager : MonoBehaviour
         yield return fadePanel.DOColor(Color.black, afterFinishLoadDelay).SetUpdate(true).WaitForCompletion();
 
         SceneManager.UnloadSceneAsync(loadingScreenScene);
+        OnLoadingScreenFinished?.Invoke();
     }
 }

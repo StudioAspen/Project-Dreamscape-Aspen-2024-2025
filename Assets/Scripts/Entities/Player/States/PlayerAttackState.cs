@@ -139,9 +139,6 @@ public class PlayerAttackState : PlayerBaseState
     /// </summary>
     private void TryLookAtClosestTarget()
     {
-        // only update new target rotation player if they are grounded
-        if (!player.IsGrounded) return;
-
         List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
 
         if (nearbyTargets.Count == 0)
