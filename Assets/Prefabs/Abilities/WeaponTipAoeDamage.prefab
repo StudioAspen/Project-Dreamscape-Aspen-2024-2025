@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionRadius: 5
-  damageMultiplier: 1
+  damageMultiplier: 0.8
   willTryStagger: 1
-  willLaunch: 1
-  launchForce: 3
-  launchStunDuration: 2
+  willLaunch: 0
+  launchForce: 0
+  launchStunDuration: 0
