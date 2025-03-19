@@ -543,7 +543,6 @@ MonoBehaviour:
   <AllAspectTrees>k__BackingField:
   - {fileID: 11400000, guid: a28dd62f121619a46a6b807c141ad513, type: 2}
   - {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
-  - {fileID: 11400000, guid: 49ebe326734cd8c4cb1f39ce5baa7131, type: 2}
 --- !u!143 &7237775664649881152
 CharacterController:
   m_ObjectHideFlags: 0
@@ -6671,6 +6670,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5589569319064075060, guid: 6aab3603f6d8a4745b542f385342d4c9,
+        type: 3}
+      propertyPath: m_Gravity.y
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7784302037634988293, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
