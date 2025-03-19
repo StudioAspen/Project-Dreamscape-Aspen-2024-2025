@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 public class HoverTextGlow : HoverUI
 {
     private TMP_Text text;
+    public static Material GlowMaterial { get; private set; }
 
     [Header("Config")]
     [SerializeField] private Color glowColor = Color.white;
     [SerializeField] private float glowPower = 1.5f;
 
     private Material originalMaterial;
-    private Material glowMaterial;
 
     private void Awake()
     {
@@ -23,10 +23,10 @@ public class HoverTextGlow : HoverUI
             return;
         }
         originalMaterial = text.fontMaterial;
-        glowMaterial = new Material(originalMaterial);
-        glowMaterial.EnableKeyword("GLOW_ON"); // Enable the glow keyword
-        glowMaterial.SetColor(ShaderUtilities.ID_GlowColor, glowColor);
-        glowMaterial.SetFloat(ShaderUtilities.ID_GlowPower, glowPower);
+        GlowMaterial = new Material(originalMaterial);
+        GlowMaterial.EnableKeyword("GLOW_ON"); // Enable the glow keyword
+        GlowMaterial.SetColor(ShaderUtilities.ID_GlowColor, glowColor);
+        GlowMaterial.SetFloat(ShaderUtilities.ID_GlowPower, glowPower);
     }
 
     private protected override void OnOnEnable()
@@ -36,7 +36,7 @@ public class HoverTextGlow : HoverUI
 
     private protected override void OnOnSelected(BaseEventData eventData)
     {
-        text.fontMaterial = glowMaterial;
+        text.fontMaterial = GlowMaterial;
     }
 
     private protected override void OnOnDeselected(BaseEventData eventData)
