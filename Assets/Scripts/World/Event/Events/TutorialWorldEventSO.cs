@@ -39,7 +39,7 @@ public class TutorialWorldEventSO : WorldEventSO
         hammer.OnWeaponHit += Hammer_OnWeaponHit;
         hammer.OnWeaponStartSwing += Hammer_OnWeaponStartSwing;
 
-        dummyInstance = Instantiate(DummyPrefab, 5f * Vector3.up, Quaternion.identity);
+        dummyInstance = Instantiate(DummyPrefab, 5f * Vector3.up, Quaternion.Euler(0f, 180f, 0f));
 
         isFinished = false;
         afterFinishTimer = 0f;
