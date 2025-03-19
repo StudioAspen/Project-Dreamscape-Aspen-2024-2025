@@ -47,7 +47,7 @@ public class ZonesWorldEventSO : WorldEventSO
         affectedLands = GetRandom3x3Land();
         foreach(LandManager land in affectedLands)
         {
-            // if (land.Level <= 0) continue;
+            if (land.Level <= 0) continue;
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
