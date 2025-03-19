@@ -43,7 +43,8 @@ public class ZonesWorldEventSO : WorldEventSO
         totalEnemiesToKill = 0;
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
-        affectedLands = AffectLandsFromEpicenter();
+        // affectedLands = AffectLandsFromEpicenter();
+        affectedLands = GetRandom3x3Land();
         foreach(LandManager land in affectedLands)
         {
             // if (land.Level <= 0) continue;
