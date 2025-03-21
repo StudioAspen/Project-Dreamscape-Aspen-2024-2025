@@ -9,6 +9,7 @@ public class AmbitionDashState: PlayerDashState
     private protected Collider[] colliderHits;
     private protected TemporaryWindWackerStatusEffectSO WindWackerStatusEffect;
     private protected HashSet<Entity> hitEntities;
+    public float speedBuff { get; protected set; }
 
     public override void OnEnter()
     {
@@ -49,9 +50,9 @@ public class AmbitionDashState: PlayerDashState
 
     // notes for later:
     // add a check so status effect is applied 
-    // once to enemy entity
+    // once to enemy entity *DONE*
     //
-    // use hashmap or hashset to do so
+    // use hashmap or hashset to do so *DONE*
     //
     // implement speed buff after dashing through enemy
 }
