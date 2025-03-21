@@ -9,7 +9,6 @@ public class LandManager : MonoBehaviour
 {
     private WorldManager worldManager;
     public EnemySpawner EnemySpawner { get; private set; }
-    private NavMeshSurface navMeshSurface;
 
     [Header("References")]
     [SerializeField] private TMP_Text levelText;
@@ -46,7 +45,6 @@ public class LandManager : MonoBehaviour
     private void Awake()
     {
         EnemySpawner = GetComponent<EnemySpawner>();
-        navMeshSurface = GetComponent<NavMeshSurface>();
     }
 
     private void Start()

@@ -55,6 +55,37 @@ public class WorldManager : MonoBehaviour
         DisableGhostLand();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            ToggleLandLevelStyle(!LandLevelStyleIsSimple);
+        }
+    }
+
+    public bool LandLevelStyleIsSimple { get; private set; } = false;
+    // Debug Cheat
+    public void ToggleLandLevelStyle(bool isSimple)
+    {
+        LandLevelStyleIsSimple = isSimple;
+
+        if (isSimple)
+        {
+            DisableLandLevelTexts();
+            // Sort the lands by level in descending order
+            List<LandManager> sortedLands = SpawnedLands.Values.OrderByDescending(land => land.Level).ToList();
+            // Add the top 3 lands to the result list
+            for (int i = 0; i < 3 && i < sortedLands.Count; i++)
+            {
+                sortedLands[i].EnableLevelText();
+            }
+        }
+        else
+        {
+            EnableLandLevelTexts();
+        }
+    }
+
     #region Grid Functions
     /// <summary>
     /// Retrieves the LandManager object based on the given grid position.
@@ -262,7 +293,7 @@ public class WorldManager : MonoBehaviour
     /// Spawns a new land at the given grid position.
     /// </summary>
     /// <param name="gridPosition">The grid position of the land.</param>
-    private void SpawnLand(Vector2Int gridPosition)
+    private LandManager SpawnLand(Vector2Int gridPosition)
     {
         LandManager landPrefabToUse = null;
         if (BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count == 0)
@@ -279,6 +310,8 @@ public class WorldManager : MonoBehaviour
         spawnedLand.Init(gridPosition, currentBiomeSelection);
 
         SpawnedLands.Add(gridPosition, spawnedLand);
+
+        return spawnedLand;
     }
 
     /// <summary>

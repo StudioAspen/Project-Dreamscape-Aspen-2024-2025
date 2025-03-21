@@ -57,9 +57,11 @@ public class LevelSystem : MonoBehaviour
         if (Slime.IsEntityACloneSlime(victim)) return; // Cloned slimes dont drop exp
 
         Enemy victimAsEnemy = victim as Enemy;
-        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
+        if(victimAsEnemy == null) return;
 
+        int expReward = victimAsEnemy.EXPValue.GetIntValue();
         AddEXP(expReward);
+        //Debug.Log($"Added {expReward} from {victimAsEnemy.gameObject.name}");
     }
 
     #region EXP Handling

@@ -42,4 +42,18 @@ public class Dummy : Enemy
     {
         base.OnOnDrawGizmos();
     }
+
+    // Override this method to make the dummy not take damage
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    {
+        if (CurrentState == EntityDeathState) return;
+
+        if (willTryStagger) TryChangeStaggeredState();
+
+        AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
+
+        OnEntityTakeDamage?.Invoke(damage, hitPoint, source);
+
+        lastHitSource = source;
+    }
 }

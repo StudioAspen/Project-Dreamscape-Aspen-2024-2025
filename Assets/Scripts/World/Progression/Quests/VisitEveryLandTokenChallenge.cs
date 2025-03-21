@@ -43,7 +43,11 @@ public class VisitEveryLandTokenChallenge : ProgressionQuestSO
 
     private protected override void OnCleanUp()
     {
-
+        foreach(GameObject indicator in visitIndicatorsDictionary.Values)
+        {
+            GameObject.Destroy(indicator);
+        }
+        visitIndicatorsDictionary.Clear();
     }
 
     private protected override void OnUpdate()

@@ -33,7 +33,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         {
             charger.PlayOneShotAnimation(RightJabAnimationClip, JabDuration);
 
-            RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
+            RightFistWeapon.OnWeaponStartSwing?.Invoke(charger, null);
 
             RightFistWeapon.ClearObjectHitList();
 
@@ -43,7 +43,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         {
             charger.PlayOneShotAnimation(LeftJabAnimationClip, JabDuration);
 
-            LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
+            LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger, null);
 
             LeftFistWeapon.ClearObjectHitList();
 
@@ -59,11 +59,11 @@ public class ChargerJabbingAttackState : ChargerBaseState
 
         if (RemainingJabs % 2 == 1)
         {
-            RightFistWeapon.OnWeaponEndSwing?.Invoke(charger);
+            RightFistWeapon.OnWeaponEndSwing?.Invoke(charger, null);
         }
         else
         {
-            LeftFistWeapon.OnWeaponEndSwing?.Invoke(charger);
+            LeftFistWeapon.OnWeaponEndSwing?.Invoke(charger, null);
         }
 
         charger.EndHit();

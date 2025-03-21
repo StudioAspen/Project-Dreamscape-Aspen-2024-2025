@@ -5103,7 +5103,9 @@ PrefabInstance:
       value: sword
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 65702495048144492, guid: d2d1e6246dd0e144d95659c10cc9845e, type: 3}
+    - {fileID: -8700617353114198275, guid: d2d1e6246dd0e144d95659c10cc9845e, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2d1e6246dd0e144d95659c10cc9845e, type: 3}

@@ -3,11 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static InputManager;
 
 public class PlayerCameraController : MonoBehaviour
 {
-
     private InputManager inputManager;
     private GameManager gameManager;
     private CinemachineVirtualCamera vCam;
@@ -28,8 +26,13 @@ public class PlayerCameraController : MonoBehaviour
 
         DisableCameraInputs();
 
-        Player.OnPlayerLoaded += Player_OnPlayerLoaded;
+        Player player = FindObjectOfType<Player>(); // tries to find player first
+        if(player != null) AttachToTarget(player.transform);
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
+
         PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera
     }
 
     private void OnDestroy()
@@ -54,6 +57,8 @@ public class PlayerCameraController : MonoBehaviour
     private void Player_OnPlayerLoaded(Player player)
     {
         AttachToTarget(player.transform);
+
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
     }
 
     private void AttachToTarget(Transform targetTransform)

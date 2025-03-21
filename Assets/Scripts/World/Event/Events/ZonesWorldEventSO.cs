@@ -43,10 +43,11 @@ public class ZonesWorldEventSO : WorldEventSO
         totalEnemiesToKill = 0;
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
-        affectedLands = AffectLandsFromEpicenter();
+        // affectedLands = AffectLandsFromEpicenter();
+        affectedLands = GetRandom3x3Land();
         foreach(LandManager land in affectedLands)
         {
-            // if (land.Level <= 0) continue;
+            if (land.Level <= 0) continue;
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
@@ -239,7 +240,7 @@ public class ZonesWorldEventSO : WorldEventSO
         enemiesRemaining--;
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

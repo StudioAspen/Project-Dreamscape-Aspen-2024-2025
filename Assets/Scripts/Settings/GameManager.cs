@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
-        ForceChangeState(GameState.EVENT_SELECTION);
+        ForceChangeState(GameState.PLAYING);
     }
 
     private void OnDestroy()
@@ -59,7 +59,6 @@ public class GameManager : MonoBehaviour
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
-
         ForceChangeState(newState);
     }
 
@@ -129,4 +128,6 @@ public class GameManager : MonoBehaviour
         SetTimeScale(1f);
         SceneManager.LoadScene(menuScene.Name, LoadSceneMode.Single);
     }
+
+    
 }

@@ -3,6 +3,7 @@
 public class PlayerAbilityStateSO : ScriptableObject
 {
     private protected Player player;
+    private protected PlayerCombat playerCombat;
 
     /// <summary>
     /// Creates a runtime instance of the PlayerAbilityStateSO class, passing in the player.
@@ -26,6 +27,7 @@ public class PlayerAbilityStateSO : ScriptableObject
     public virtual void Init(Player player)
     {
         this.player = player;
+        playerCombat = player.GetComponent<PlayerCombat>();
     }
 
     /// <summary>
