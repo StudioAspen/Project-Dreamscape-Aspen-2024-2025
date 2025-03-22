@@ -9,7 +9,7 @@ public abstract class EggYolkBaseState : ObstacleBaseState
 
     private protected override void Init()
     {
-        eggyolk = obstacle as EggYolk;
+        eggYolk = obstacle as EggYolk;
     }
 }
 

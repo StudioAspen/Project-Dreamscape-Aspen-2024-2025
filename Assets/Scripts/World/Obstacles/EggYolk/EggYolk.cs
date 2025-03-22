@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Linq;
+using System.Linq;
 using UnityEngine.VFX;
 using System.Security.Principal;
 
@@ -14,16 +14,16 @@ public class EggYolk : Obstacle
     [field: SerializeField] public EggYolkExplosionState EggYolkExplosionState { get; private set; }
     [field: SerializeField] public EggYolkCooldownState EggYolkCooldownState { get; private set; }
 
-    pritvate protected override void OnAwake()
+    private protected override void OnAwake()
     {
 
     }
-    pritvate protected override void OnState()
+    private protected override void OnStart()
     {
 
     }
 
-    pritvate protected override void OnUpdate()
+    private protected override void OnUpdate()
     {
 
     }

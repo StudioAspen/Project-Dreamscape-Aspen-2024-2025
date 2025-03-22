@@ -1,18 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EggYolkIdleState : MonoBehaviour
+public class EggYolkIdleState : EggYolkBaseState
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void OnEnter()
     {
-        
+        eggYolk.OnDamaged += EggYolk_OnDamaged;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnExit()
     {
-        
+        eggYolk.OnDamaged -= EggYolk_OnDamaged;
     }
+
+    public override void OnUpdate()
+    {
+
+    }
+
+    private void EggYolk_OnDamaged(Obstacle damagedObstacle, Vector3 hitPoint, GameObject source)
+    {
+        eggYolk.ChangeState(eggYolk.EggYolkOnHitState);
+    }
+
 }
