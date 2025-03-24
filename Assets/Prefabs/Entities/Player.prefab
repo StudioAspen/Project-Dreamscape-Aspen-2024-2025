@@ -1526,13 +1526,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801673e6a91face43b8adc4de0de7aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseTimeBetween: 10
-  timeBetweenMultiplier: 0.975
-  percentDamageBonus: 0.05
-  maxDamageBonus: 2
-  percentMoveSpeedBonus: 0.05
-  maxMoveSpeedBonus: 2
-  healAmount: 10
+  timeBetween: 10
+  chainRewards:
+    _serializedList:
+    - Key: 4
+      Value: 1.2
+    - Key: 6
+      Value: 1.3
+    - Key: 8
+      Value: 1.4
+    - Key: 10
+      Value: 1.5
 --- !u!114 &3702187593430642151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1545,17 +1549,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bf518af5db3b148ab7eaa67d685769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBetween: 2
-  chainRewards:
-    _serializedList:
-    - Key: 6
-      Value: 0.25
-    - Key: 12
-      Value: 0.5
-    - Key: 18
-      Value: 0.75
-    - Key: 24
-      Value: 1
+  baseTimeBetween: 5
+  timeBetweenMultiplier: 0.98
+  percentDamageBonus: 0.02
+  maxDamageBonus: 1
+  percentMoveSpeedBonus: 0.02
+  maxMoveSpeedBonus: 1
+  healAmount: 3
 --- !u!114 &5066363359248579512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1580,9 +1580,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a05f0ec93e9c8a43bd1e8b06656cce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxEXP: 10
-  maxEXPLinearGrowth: 10
-  maxEXPExponentialGrowth: 1.2
+  baseMaxEXP: 80
+  growthRate: 1.2
 --- !u!114 &6950320168933061115
 MonoBehaviour:
   m_ObjectHideFlags: 0

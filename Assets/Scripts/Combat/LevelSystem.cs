@@ -6,9 +6,12 @@ public class LevelSystem : MonoBehaviour
     private Entity entity;
 
     [Header("Config")]
-    [SerializeField] private int baseMaxEXP = 10;
-    [SerializeField] private int maxEXPLinearGrowth = 10;
-    [SerializeField] private float maxEXPExponentialGrowth = 1.2f;
+
+    [Range(50, 300)]
+    [SerializeField] private int baseMaxEXP;
+    
+    [Range (1.01f, 1.50f)]
+    [SerializeField] private float growthRate;
 
     public int Level { get; private set; } = 1;
     public int CurrentEXP { get; private set; }
@@ -114,14 +117,6 @@ public class LevelSystem : MonoBehaviour
     /// Calculates the maximum experience points (EXP) based on the current level.
     /// </summary>
     /// <returns>The maximum EXP for the current level.</returns>
-    private int CalculateMaxEXP()
-    {
-        int linearGrowth = maxEXPLinearGrowth * (Level - 1);
-
-        int useExponentialGrowthMultiplier = (Level <= 1) ? 0 : 1; // If the level is at most 1, don't use exponential growth
-        int exponentialGrowth = useExponentialGrowthMultiplier * (int)Mathf.Pow(maxEXPExponentialGrowth, Level - 1);
-
-        return baseMaxEXP + linearGrowth + exponentialGrowth;
-    }    
+    private int CalculateMaxEXP() => baseMaxEXP * Mathf.RoundToInt(Mathf.Pow(growthRate, Level - 1));
     #endregion
 }
