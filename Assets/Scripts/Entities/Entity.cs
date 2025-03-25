@@ -26,6 +26,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
     [field: SerializeField] public Stat MaxHealth { get; protected set; }
+    [field: SerializeField] public Stat Defense { get; protected set; }
     public bool IsInvicible { get; protected set; }
 
     /// <summary>
@@ -1011,11 +1012,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="hitPoint">The point where the entity was hit.</param>
     /// <param name="source">The source of the damage.</param>
     /// <param name="willTryStagger">If the instance of damage will try to stagger.</param>
-    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
         if(willTryStagger) TryChangeStaggeredState();
+        
+        if(willIgnoreDefense) damage = Mathf.Clamp(damage - Defense.GetIntValue(), 0, int.MaxValue);
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
