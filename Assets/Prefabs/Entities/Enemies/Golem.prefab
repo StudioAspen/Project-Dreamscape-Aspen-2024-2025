@@ -39,7 +39,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 795691779609316352}
+  - {fileID: 6654851115939680121}
   - {fileID: 4150967214179094889}
   - {fileID: 4811610901159636523}
   m_Father: {fileID: 0}
@@ -61,8 +61,10 @@ MonoBehaviour:
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 300
-  baseSpeed: 1.5
+    <BaseValue>k__BackingField: 200
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 1.5
   rotationSpeed: 5
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -171,8 +173,8 @@ MonoBehaviour:
   <ShardPrefab>k__BackingField: {fileID: 4789584422821504724, guid: aab5c2308ea333d468003485129cd32a,
     type: 3}
   color: {r: 0.64315224, g: 0, b: 1, a: 1}
-  memoryAbility: {fileID: 11400000, guid: a92cebb90948222499cdebf9bf54c8a8, type: 2}
-  shardDropCount: 20
+  memoryAbility: {fileID: 11400000, guid: 91543b360a24d45b1ab8eb62f445db5b, type: 2}
+  shardDropCount: 30
   eliteShardDropCountMultiplier: 1.5
 --- !u!95 &5860220226555299953
 Animator:
@@ -323,7 +325,7 @@ MonoBehaviour:
     ClipSpeed: 1
     RestartWhenPlay: 0
   AnimationControll: {fileID: 9100000, guid: 8903add0df15b544e99c700f89dad25c, type: 2}
---- !u!1 &6512184381983205014
+--- !u!1 &4268594416679153513
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,22 +333,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 795691779609316352}
-  - component: {fileID: 1719417507808697702}
+  - component: {fileID: 6654851115939680121}
+  - component: {fileID: 7862358878850946131}
+  - component: {fileID: 7846004136662784083}
   m_Layer: 22
-  m_Name: Follower_Icon
+  m_Name: EnemyIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &795691779609316352
+--- !u!4 &6654851115939680121
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512184381983205014}
+  m_GameObject: {fileID: 4268594416679153513}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -10, z: 0}
@@ -355,13 +358,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3490398193883977143}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!212 &1719417507808697702
+--- !u!212 &7862358878850946131
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6512184381983205014}
+  m_GameObject: {fileID: 4268594416679153513}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -396,7 +399,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c2e7ce2838ff2e94c8ad11ca45adf66a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: da4cabcc67249dd4381adb10bc43f297, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -407,6 +410,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7846004136662784083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4268594416679153513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c34a20c5dff73a742a8b376fc58ac501, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1561633638803247562
 PrefabInstance:
   m_ObjectHideFlags: 0

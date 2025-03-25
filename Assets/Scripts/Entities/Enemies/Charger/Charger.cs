@@ -93,7 +93,7 @@ public class Charger : Enemy
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
-    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -110,6 +110,9 @@ public class Charger : Enemy
                 newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
             }
         }
+
+        if (willIgnoreDefense) newDamage = Mathf.Clamp(newDamage - Defense.GetIntValue(), 0, int.MaxValue);
+
 
         if (willTryStagger) TryChangeStaggeredState();
 

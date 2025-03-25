@@ -51,9 +51,6 @@ public class PlayerInputReader : MonoBehaviour
 
         playerControls.Gameplay.Dash.performed += PlayerControls_OnDashPerformed;
 
-        playerControls.Gameplay.Sprint.started += PlayerControls_OnSprintStarted;
-        playerControls.Gameplay.Sprint.canceled += PlayerControls_OnSprintCanceled;
-
         playerControls.Gameplay.MemoryAbility.performed += PlayerControls_OnMemoryAbilityPerformed;
     }
 
@@ -67,9 +64,6 @@ public class PlayerInputReader : MonoBehaviour
         playerControls.Gameplay.Jump.performed -= PlayerControls_OnJumpPerformed;
 
         playerControls.Gameplay.Dash.performed -= PlayerControls_OnDashPerformed;
-
-        playerControls.Gameplay.Sprint.started -= PlayerControls_OnSprintStarted;
-        playerControls.Gameplay.Sprint.canceled -= PlayerControls_OnSprintCanceled;
 
         playerControls.Gameplay.MemoryAbility.performed -= PlayerControls_OnMemoryAbilityPerformed;
     }
@@ -167,18 +161,6 @@ public class PlayerInputReader : MonoBehaviour
     private void PlayerControls_OnDashPerformed(InputAction.CallbackContext context)
     {
         BufferInput(ComboAction.DASH);
-    }
-
-    private void PlayerControls_OnSprintStarted(InputAction.CallbackContext context)
-    {
-        if(!player.PlayerSprintState.CanSprint()) return;
-
-        player.PlayerSprintState.IsSprinting = true;
-    }
-
-    private void PlayerControls_OnSprintCanceled(InputAction.CallbackContext context)
-    {
-        player.PlayerSprintState.IsSprinting = false;
     }
 
     private void PlayerControls_OnMemoryAbilityPerformed(InputAction.CallbackContext context)

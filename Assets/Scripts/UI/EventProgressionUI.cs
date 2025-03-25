@@ -20,6 +20,7 @@ public class EventProgressionUI : MonoBehaviour
     [SerializeField] private TMP_Text feedbackText;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private Quest[] questsElements = new Quest[3];
+    [SerializeField] private TMP_Text optionalDescriptionText;
 
     [Header("Assets")]
     [SerializeField] private Sprite empowerSprite;
@@ -42,7 +43,7 @@ public class EventProgressionUI : MonoBehaviour
     {
         if (eventManager == null) return;
         if(eventManager.CurrentEvent == null) return;
-        eventManager.CurrentEvent.UpdateEventUIElements(feedbackText, nameText);
+        eventManager.CurrentEvent.UpdateEventUIElements(feedbackText, nameText, optionalDescriptionText);
     }
 
     private void UpdateQuestElements()
@@ -53,12 +54,14 @@ public class EventProgressionUI : MonoBehaviour
 
             if (quest == null)
             {
-                questsElements[i].Text.text = "Quest N/A";
+                questsElements[i].Text.text = "";
+                questsElements[i].TokenImage.color = Color.clear;
                 questsElements[i].TokenImage.sprite = null;
             }
             else
             {
                 questsElements[i].Text.text = quest.IsCompleted ? $"<s>{quest.ObjectiveText}</s>" : $"{quest.ObjectiveText}";
+                questsElements[i].TokenImage.color = Color.white;
                 questsElements[i].TokenImage.sprite = quest.CompletionReward == ProgressionQuestSO.Reward.EMPOWER_TOKEN ? empowerSprite : weakenSprite;
             }
         }

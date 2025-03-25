@@ -12,37 +12,53 @@ public class AspectsUIPanel : UIPanel
 {
     private PlayerControls playerControls;
     private GameManager gameManager;
-    private AspectsManager aspectsManager;
+    public AspectsManager AspectsManager { get; private set; }
 
     [Header("References")]
-    [SerializeField] private AspectOptionUI[] aspectOptions = new AspectOptionUI[3];
-    [SerializeField] private TMP_Text tokensText;
-
-    public bool IsSelectingAspect { get; private set; }
+    [SerializeField] private GameObject aspectsOptionsPanelObject;
+    [SerializeField] private List<AspectOptionUI> aspectOptions = new();
+    [SerializeField] private AspectTreeViewerUI aspectTreeViewer;
+    [SerializeField] private TMP_Text remainingTokensText;
+    [SerializeField] private Button closeButton;
 
     // Use awake here because UI scene loads last
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
-        aspectsManager = FindObjectOfType<Player>().GetComponent<AspectsManager>();
+        AspectsManager = FindObjectOfType<Player>().GetComponent<AspectsManager>();
+
+        closeButton.onClick.AddListener(CloseButton_OnClick);
+    }
+
+    private void OnDestroy()
+    {
+        closeButton.onClick.RemoveListener(CloseButton_OnClick);
     }
 
     private void OnEnable()
     {
-        if(aspectsManager == null)
+        // Aspects manager not found, go to biome selection
+        if(AspectsManager == null)
         {
-            //Debug.LogWarning("Aspects manager not found");
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
             return;
         }
 
-        if(gameManager.CurrentState == GameState.ASPECT_SELECTION && aspectsManager.AspectTokens == 0)
+        // If the player has no aspect tokens (they didnt level), go to biome selection
+        if(gameManager.CurrentState == GameState.ASPECT_SELECTION && AspectsManager.AspectTokens == 0)
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+            return;
+        }
+
+        // All equipped aspects are completed, go to biome selection
+        if (AspectsManager.AreAllEquippedAspectsCompleted())
         {
             gameManager.ChangeState(GameState.BIOME_SELECTION);
             return;
         }
 
         AssignRandomAspectOptions();
-        SetBasicOptionsNavigation();
     }
 
     private void OnDisable()
@@ -52,95 +68,81 @@ public class AspectsUIPanel : UIPanel
 
     private void Update()
     {
-        if (aspectsManager == null) return;
+        if (AspectsManager == null) return;
 
-        tokensText.text = $"{aspectsManager.AspectTokens}";
+        remainingTokensText.text = $"Upgrades: {AspectsManager.AspectTokens}";
+        closeButton.gameObject.SetActive(IsCloseButtonActive());
+
+        UpdateNavigation();
+    }
+
+    private void CloseButton_OnClick()
+    {
+        gameManager.ChangeState(GameState.BIOME_SELECTION);
     }
 
     private void AssignRandomAspectOptions()
     {
         // Populate options with already equipped aspects
         int equippedCount = 0;
-        for(int i = 0; i < aspectsManager.EquippedAspectTrees.Length; i++)
+        for (int i = 0; i < AspectsManager.EquippedAspectTrees.Length; i++)
         {
-            if (aspectsManager.EquippedAspectTrees[i] == null) continue;
-            aspectOptions[equippedCount].Init(true, this, aspectsManager.EquippedAspectTrees[i], aspectsManager, gameManager, equippedCount); // Init option
+            if (AspectsManager.EquippedAspectTrees[i] == null) continue;
+            aspectOptions[equippedCount].Init(true, this, AspectsManager.EquippedAspectTrees[i]); // Init option
             equippedCount++;
         }
 
-        List<AspectTree> availableAspects = aspectsManager.GetAvailableNonEquippedAspects();
+        List<AspectTree> availableAspects = AspectsManager.GetAvailableNonEquippedAspects();
         // Populate remaining options with random aspects
-        for (int i = equippedCount; i < aspectOptions.Length; i++)
+        for (int i = equippedCount; i < aspectOptions.Count; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, availableAspects.Count);
             AspectTree randomTree = availableAspects[randomIndex];
-            aspectOptions[i].Init(false, this, randomTree, aspectsManager, gameManager, i);
+            aspectOptions[i].Init(false, this, randomTree);
             availableAspects.Remove(randomTree);
         }
-
-
-        if(aspectsManager.AreAllEquippedAspectsCompleted()) gameManager.ChangeState(GameState.BIOME_SELECTION);
     }
 
-    public void SelectOptionUI(int index)
+    public void OpenAspectTreeViewer(AspectTree tree, bool isRuntimeInstance)
     {
-        IsSelectingAspect = true;
-        MoveOptionToMiddle(index);
+        aspectTreeViewer.OpenTreeViewer(tree, isRuntimeInstance);
+        aspectsOptionsPanelObject.SetActive(false);
     }
-    
-    public void DeselectOptionUI()
+
+    public void OnAspectTreeViewerClose()
     {
-        IsSelectingAspect = false;
-
-        // Update navigation
-        SetBasicOptionsNavigation();
-        EventSystem.current.SetSelectedGameObject(aspectOptions[1].gameObject); 
+        aspectsOptionsPanelObject.SetActive(true);
     }
 
-    private void MoveOptionToMiddle(int index)
+    public void TryConvertOptionsToRuntimeInstance(AspectTree tree)
     {
-        // Swap positions
-        Vector3 oldPosition = aspectOptions[index].transform.localPosition;
-        aspectOptions[index].transform.DOLocalMove(aspectOptions[1].transform.localPosition, 0.25f).SetUpdate(true);
-        aspectOptions[1].transform.DOLocalMove(oldPosition, 0.25f).SetUpdate(true);
-
-        // Swap references
-        AspectOptionUI currentMiddleOption = aspectOptions[1];
-        aspectOptions[1] = aspectOptions[index];
-        aspectOptions[index] = currentMiddleOption;
-
-        // Update indices
-        aspectOptions[1].AssignOptionsIndex(1);
-        aspectOptions[index].AssignOptionsIndex(index);
-
-        // Update locked navigation
-        aspectOptions[1].SetLockedNavigation();
+        foreach(var option in aspectOptions)
+        {
+            option.TryConvertToRuntimeInstance(tree);
+        }
     }
 
-    private void SetBasicOptionsNavigation()
+    private bool IsCloseButtonActive()
+    {
+        return AspectsManager.AspectTokens <= 0 || AspectsManager.AreAllEquippedAspectsCompleted();
+    }
+
+    private void UpdateNavigation()
     {
         Navigation leftNavigation = aspectOptions[0].OptionsButton.navigation;
         leftNavigation.mode = Navigation.Mode.Explicit;
         leftNavigation.selectOnUp = aspectOptions[0].OptionsButton;
         leftNavigation.selectOnDown = aspectOptions[0].OptionsButton;
-        leftNavigation.selectOnLeft = aspectOptions[2].OptionsButton;
-        leftNavigation.selectOnRight = aspectOptions[1].OptionsButton;
+        leftNavigation.selectOnLeft = aspectOptions[1].OptionsButton;
+        leftNavigation.selectOnRight = IsCloseButtonActive() ? closeButton : aspectOptions[1].OptionsButton;
         aspectOptions[0].OptionsButton.navigation = leftNavigation;
 
-        Navigation middleNavigation = aspectOptions[1].OptionsButton.navigation;
-        middleNavigation.mode = Navigation.Mode.Explicit;
-        middleNavigation.selectOnUp = aspectOptions[1].OptionsButton;
-        middleNavigation.selectOnDown = aspectOptions[1].OptionsButton;
-        middleNavigation.selectOnLeft = aspectOptions[0].OptionsButton;
-        middleNavigation.selectOnRight = aspectOptions[2].OptionsButton;
-        aspectOptions[1].OptionsButton.navigation = middleNavigation;
-
-        Navigation rightNavigation = aspectOptions[2].OptionsButton.navigation;
+        Navigation rightNavigation = aspectOptions[0].OptionsButton.navigation;
         rightNavigation.mode = Navigation.Mode.Explicit;
-        rightNavigation.selectOnUp = aspectOptions[2].OptionsButton;
-        rightNavigation.selectOnDown = aspectOptions[2].OptionsButton;
-        rightNavigation.selectOnLeft = aspectOptions[1].OptionsButton;
+        rightNavigation.selectOnUp = aspectOptions[1].OptionsButton;
+        rightNavigation.selectOnDown = aspectOptions[1].OptionsButton;
+        rightNavigation.selectOnLeft = IsCloseButtonActive() ? closeButton : aspectOptions[0].OptionsButton;
         rightNavigation.selectOnRight = aspectOptions[0].OptionsButton;
-        aspectOptions[2].OptionsButton.navigation = rightNavigation;
+        aspectOptions[1].OptionsButton.navigation = rightNavigation;
     }
 }

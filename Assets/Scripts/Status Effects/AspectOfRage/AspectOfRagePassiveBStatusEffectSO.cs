@@ -114,7 +114,7 @@ public class AspectOfRagePassiveBStatusEffectSO : StatusEffectSO
         player.PlayerAttackState.SetBonusDamageMultiplier(bonusDamageFromDuration * bonusDamageFromPerfectTiming);
     }
 
-    private void Weapon_OnWeaponEndSwing(Entity attacker)
+    private void Weapon_OnWeaponEndSwing(Entity attacker, ComboDataSO combo)
     {
         isCurrentSwingPerfectlyTimed = false;
     }

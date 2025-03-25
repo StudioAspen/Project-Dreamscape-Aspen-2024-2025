@@ -194,7 +194,8 @@ public abstract class WorldEventSO : ScriptableObject
     /// </summary>
     /// <param name="feedbackText"></param>
     /// <param name="nameText"></param>
-    public abstract void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText);
+    /// <param name="optionalDescriptionText"></param>
+    public abstract void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText);
 
     /// <summary>
     /// Formats a float timer into mm:ss string
@@ -209,5 +210,19 @@ public abstract class WorldEventSO : ScriptableObject
 
         // Format as mm:ss
         return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    /// <summary>
+    /// Converts the first letter of a string to uppercase and the rest to lowercase.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string FirstLetterToUpperOthersLower(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        // Convert the first letter to uppercase and the rest to lowercase
+        return char.ToUpper(input[0]) + input.Substring(1).ToLower();
     }
 }

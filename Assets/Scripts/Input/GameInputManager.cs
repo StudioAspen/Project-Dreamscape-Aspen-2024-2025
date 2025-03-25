@@ -22,6 +22,9 @@ public class GameInputManager : InputManager
         gameManager = FindObjectOfType<GameManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state. Race case handler.
+        InputManager_OnControlSchemeChanged(CurrentControlScheme); // Race case handler.
     }
 
     private protected override void OnOnDestroy()

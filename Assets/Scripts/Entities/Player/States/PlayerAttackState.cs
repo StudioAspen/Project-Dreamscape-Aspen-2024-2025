@@ -67,7 +67,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
+        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player, ComboData); // invoke the weapon start swing event
 
         playerCombat.Weapon.ClearObjectHitList(); // allows all enemies to get hit again
 
@@ -80,18 +80,20 @@ public class PlayerAttackState : PlayerBaseState
         player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
 
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        playerCombat.CanCombo = false; 
 
-        if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
+        if (player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
         playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
 
-        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(ComboData.WeaponScale, ComboData.WeaponScalingDuration)); // scale the weapon
+        ScaleWeapon(ComboData.WeaponScale, ComboData.WeaponScalingDuration);
+
+        playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
     }
 
     public override void OnExit()
     {
-        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
+        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player, ComboData); // invoke the weapon end swing event
 
         player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
@@ -106,8 +108,9 @@ public class PlayerAttackState : PlayerBaseState
 
         playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
 
-        if (weaponScaleCoroutine != null) playerCombat.Weapon.StopCoroutine(weaponScaleCoroutine);
-        playerCombat.Weapon.StartCoroutine(StartWeaponScaleCoroutine(1f, ComboData.WeaponScalingDuration)); // scale the weapon back
+        ScaleWeapon(1f, ComboData.WeaponScalingDuration); // reset the weapon scale to normal
+
+        playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
 
     public override void OnUpdate()
@@ -136,9 +139,6 @@ public class PlayerAttackState : PlayerBaseState
     /// </summary>
     private void TryLookAtClosestTarget()
     {
-        // only update new target rotation player if they are grounded
-        if (!player.IsGrounded) return;
-
         List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
 
         if (nearbyTargets.Count == 0)
@@ -249,7 +249,22 @@ public class PlayerAttackState : PlayerBaseState
         return true;
     }
 
-    private IEnumerator StartWeaponScaleCoroutine(float targetScale, float duration)
+    /// <summary>
+    /// Scales the weapon to the target scale over the specified duration.
+    /// </summary>
+    /// <param name="targetScale"></param>
+    /// <param name="duration"></param>
+    private void ScaleWeapon(float targetScale, float duration)
+    {
+        if (weaponScaleCoroutine != null) player.StopCoroutine(weaponScaleCoroutine);
+
+        if (player == null) return;
+        if (!player.enabled) return;
+        if (!player.gameObject.activeSelf) return;
+        weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
+    }
+
+    private IEnumerator WeaponScaleCoroutine(float targetScale, float duration)
     {
         Ease easeType = Ease.OutQuint;
 
@@ -267,12 +282,14 @@ public class PlayerAttackState : PlayerBaseState
         }
 
         playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
+
+        weaponScaleCoroutine = null;
     }
 
     /// <summary>
     /// Called from playerCombat's FireAbility() method. That method is called from an animation event.
     /// </summary>
-    public void FireAbility()
+    public void PlayerCombat_OnFireAbility(AnimationEvent eventData)
     {
         AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
         if (abilityComboData == null) return;

@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Pool;
 using UPlayable.AnimationMixer;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Animator))] // Stores the blend tree
@@ -27,6 +26,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Health")]
     [field: SerializeField] public int CurrentHealth { get; protected set; }
     [field: SerializeField] public Stat MaxHealth { get; protected set; }
+    [field: SerializeField] public Stat Defense { get; protected set; }
     public bool IsInvicible { get; protected set; }
 
     /// <summary>
@@ -40,8 +40,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Speed Variables
-    [Header("Entity: Speed")]
-    [SerializeField] private protected float baseSpeed = 3f;
+    [field: Header("Entity: Speed")]
+    [field: SerializeField] public float BaseSpeed { get; private set; } = 3f;
     [SerializeField] private protected float rotationSpeed = 5f;
     [SerializeField] private protected float mass = 1f;
     private protected Vector3 velocity;
@@ -168,7 +168,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
-    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
+    /// <summary>
+    /// Makes the debuffs you apply last longer.
+    /// </summary>
+    public Stat DebuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
+    /// <summary>
+    /// Makes the buffs you apply last longer.
+    /// </summary>
+    public Stat BuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
@@ -897,7 +904,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     {
         if(animationClip == null)
         {
-            Debug.LogWarning("Cant play null one shot animation");
+            //Debug.LogWarning("Cant play null one shot animation");
             return;
         }
 
@@ -1012,11 +1019,13 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// <param name="hitPoint">The point where the entity was hit.</param>
     /// <param name="source">The source of the damage.</param>
     /// <param name="willTryStagger">If the instance of damage will try to stagger.</param>
-    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public virtual void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
         if(willTryStagger) TryChangeStaggeredState();
+        
+        if(willIgnoreDefense) damage = Mathf.Clamp(damage - Defense.GetIntValue(), 0, int.MaxValue);
 
         AttemptToSpawnHitNumbers(damage, hitPoint, Color.red);
 
@@ -1170,7 +1179,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void EvaluateMovementSpeed()
     {
-        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
+        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * BaseSpeed;
     }
 
     /// <summary>
@@ -1496,7 +1505,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit a friendly entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The friendly entity that was hit.</param>
@@ -1504,8 +1512,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitFriendlyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
         if (entity == null) entity = hit.GetComponent<Entity>();
+        if(entity == null) return false;
+
         if (entity.Team != Team) return false;
 
         return true;
@@ -1513,7 +1522,6 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     /// <summary>
     /// Checks if entity hit an enemy entity.
-    /// Hit must come from Damageable Colliders layer;
     /// </summary>
     /// <param name="hit">The collider that was hit.</param>
     /// <param name="entity">The enemy entity that was hit.</param>
@@ -1521,8 +1529,9 @@ public class Entity : MonoBehaviour, IPoolableObject
     public bool DidHitEnemyEntity(Collider hit, out Entity entity)
     {
         entity = hit.GetComponentInParent<Entity>();
-
+        if (entity == null) entity = hit.GetComponent<Entity>();
         if (entity == null) return false;
+
         if (entity.Team == Team) return false;
 
         return true;

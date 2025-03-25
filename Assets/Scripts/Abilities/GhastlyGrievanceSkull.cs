@@ -7,7 +7,7 @@ namespace Dreamscape.Abilities
     public class GhastlyGrievanceSkull : CastedAbility, IPoolableObject
     {
         [Header("Settings")]
-        [SerializeField] private GhastlyGrievanceStatusEffectSO ghastlyGrievanceStatusEffect;
+        [SerializeField] private ExtendedDebuffStatusEffectSO ghastlyGrievanceStatusEffect;
         [SerializeField] private float speed = 5f;
         [SerializeField] private float maxDistance = 10f;
 
