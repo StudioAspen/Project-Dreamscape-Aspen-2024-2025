@@ -168,7 +168,14 @@ public class Entity : MonoBehaviour, IPoolableObject
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
     [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
-    public Stat DebuffSpeedMultiplier { get; protected set; } = new Stat(1f);
+    /// <summary>
+    /// Makes the debuffs you apply last longer.
+    /// </summary>
+    public Stat DebuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
+    /// <summary>
+    /// Makes the buffs you apply last longer.
+    /// </summary>
+    public Stat BuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Ghastly Grievance", menuName = "Status Effect/Aspect of Fear/Passive A/Ghastly Grievance")]
-public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
+public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
 {
     private AspectOfFearPassiveAStatusEffectSO fearPassiveOwner;
 
@@ -67,7 +67,7 @@ public class GhastlyGrievanceStatusEffectSO : DurationStatusEffectSO
         Entity_OnEntityTakeDamage(0, entity.GetColliderCenterPosition(), source);
 
         // dont include base of this overrided method because we dont want the duration to stack
-        GhastlyGrievanceStatusEffectSO overridingStatusEffect = newStatusEffect as GhastlyGrievanceStatusEffectSO;
+        ExtendedDebuffStatusEffectSO overridingStatusEffect = newStatusEffect as ExtendedDebuffStatusEffectSO;
 
         RemainingDuration = overridingStatusEffect.Duration; // Reset duration
 

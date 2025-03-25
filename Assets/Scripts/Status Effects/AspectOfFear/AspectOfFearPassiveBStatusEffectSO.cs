@@ -9,7 +9,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     {
         DAMAGE,
         SPEED,
-        //DEFENSE,
+        DEFENSE,
     }
 
     [field: Header("Aspect of Fear Passive B: Settings")]
@@ -24,7 +24,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     [field: SerializeField] public float OnKillStatStealFraction { get; private set; } = 0;
     [field: SerializeField] public float OnKillSizeGrowth { get; private set; } = 0;
 
-    private Dictionary<Buff, Stat> buffStatPairs = new Dictionary<Buff, Stat>();
+    private Dictionary<Buff, Stat> multiplierBuffStatPairs = new Dictionary<Buff, Stat>();
     private HashSet<Buff> activeBuffs = new HashSet<Buff>(); // checks for current active buffs, so non-active buffs can be activated when stacks are filled again
 
     private void OnValidate()
@@ -37,11 +37,11 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         base.OnApply();
 
         // predefine buffs with the correct stat here
-        buffStatPairs = new()
+        multiplierBuffStatPairs = new()
         {
             { Buff.DAMAGE, entity.DamageModifier },
             { Buff.SPEED, entity.StatusSpeedModifier },
-            //{ Buff.DEFENSE, entity.StatusSpeedModifier },
+            { Buff.DEFENSE, entity.Defense },
         };
 
         entity.OnStunEntity += Entity_OnStunEntity;
@@ -94,8 +94,10 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         // Steal stats
         entity.DamageModifier.AddMultiplier(1f + victim.DamageModifier.GetFloatValue() * OnKillStatStealFraction, this);
         //Debug.Log($"Stole {victim.gameObject.name}'s damage modifier, +{1f + victim.DamageModifier.GetFloatValue() * OnKillStatStealFraction}%");
-        entity.DamageModifier.AddMultiplier(1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction, this);
+        entity.StatusSpeedModifier.AddMultiplier(1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction, this);
         //Debug.Log($"Stole {victim.gameObject.name}'s speed modifier, +{1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction}%");
+        entity.Defense.AddMultiplier(1f + victim.Defense.GetFloatValue() * OnKillStatStealFraction, this);
+        //Debug.Log($"Stole {victim.gameObject.name}'s defense modifier, +{1f + victim.StatusSpeedModifier.GetFloatValue() * OnKillStatStealFraction}%");
 
         //Debug.Log($"Extended buff duration from {StackTimerReset - timer} to {StackTimerReset - (timer - OnKillBuffExtension)}");
         timer -= OnKillBuffExtension; // Extend buff duration
@@ -122,7 +124,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
         foreach(Buff buff in new HashSet<Buff>(activeBuffs))
         {
-            buffStatPairs[buff].ClearBuffsFromSource(this);
+            multiplierBuffStatPairs[buff].ClearBuffsFromSource(this);
         }
         activeBuffs.Clear();
 
@@ -161,7 +163,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
         // apply the selected buff and mark it as active
         // then refresh timer, stacks, and duration of buffs
-        buffStatPairs[selectedBuff].AddMultiplier(StatBuffs[selectedBuff], this);
+        multiplierBuffStatPairs[selectedBuff].AddMultiplier(StatBuffs[selectedBuff], this);
         activeBuffs.Add(selectedBuff);
 
         timer = 0f;
