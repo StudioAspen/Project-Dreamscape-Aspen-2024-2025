@@ -33,15 +33,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "8df375f3-89b0-4f6c-89c9-c6853e0611be",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Attack1",
                     "type": "Button",
                     "id": "3adb18b7-5ef0-425c-95e9-4b88fd31ff3f",
@@ -187,28 +178,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3402751b-89b5-4142-8776-67a87b042a49",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6915ac95-b7a0-41c0-b5f3-1b9352d13b2e",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "72b27f15-dc10-466d-b76f-450afa58d130",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -276,7 +245,7 @@
                 {
                     "name": "",
                     "id": "145cb044-215a-4b0d-a602-d3e2ccb69827",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
@@ -353,7 +322,7 @@
                 {
                     "name": "",
                     "id": "095e16d4-1efe-4fdb-938d-b1c499afd8fc",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",

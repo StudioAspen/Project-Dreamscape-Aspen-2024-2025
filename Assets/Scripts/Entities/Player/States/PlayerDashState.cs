@@ -11,7 +11,6 @@ public class PlayerDashState : PlayerBaseState
     [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
     [field: SerializeField] public float DashDuration { get; private set; } = 0.25f;
     [field: SerializeField] public float InitialDashVelocity { get; private set; } = 75f;
-    [field: SerializeField] public float SprintDurationAfterDash { get; private set; } = 2f;
     [field: SerializeField] public float DashCooldown { get; private set; } = 1f;
 
     private bool isReadyToDash => dashCooldownTimer >= DashCooldown;
@@ -36,7 +35,7 @@ public class PlayerDashState : PlayerBaseState
         
         timer = 0f;
         currDashSpeed = InitialDashVelocity;
-        maxSpeed = player.MaxSpeed;
+        maxSpeed = player.BaseSpeed * player.StatusSpeedModifier.GetFloatValue();
 
         player.ApplyRotationToNextMovement();
 
@@ -60,8 +59,7 @@ public class PlayerDashState : PlayerBaseState
             }
             else
             {
-                player.PlayerSprintState.SetSprintDuration(SprintDurationAfterDash);
-                player.ChangeState(player.PlayerSprintState);
+                player.ChangeState(player.PlayerWalkState);
                 return;
             }
         }
@@ -116,7 +114,7 @@ public class PlayerDashState : PlayerBaseState
     /// </summary>
     public void HandleDashTrail()
     {
-        bool isPlayerExceedingMaxSpeed = player.GetHorizontalVelocity().magnitude > player.MaxSpeed;
+        bool isPlayerExceedingMaxSpeed = player.GetHorizontalVelocity().magnitude > player.BaseSpeed;
 
         if(isPlayerExceedingMaxSpeed != isTrailPreviouslyPlaying)
         {

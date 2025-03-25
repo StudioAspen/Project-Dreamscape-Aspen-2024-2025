@@ -62,7 +62,9 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-  baseSpeed: 1.5
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 1.5
   rotationSpeed: 5
   mass: 1
   <StatusSpeedModifier>k__BackingField:

@@ -40,8 +40,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     #endregion
 
     #region Speed Variables
-    [Header("Entity: Speed")]
-    [SerializeField] private protected float baseSpeed = 3f;
+    [field: Header("Entity: Speed")]
+    [field: SerializeField] public float BaseSpeed { get; private set; } = 3f;
     [SerializeField] private protected float rotationSpeed = 5f;
     [SerializeField] private protected float mass = 1f;
     private protected Vector3 velocity;
@@ -1172,7 +1172,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     private protected virtual void EvaluateMovementSpeed()
     {
-        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
+        MovementSpeed = StatusSpeedModifier.GetFloatValue() * SpeedModifier * BaseSpeed;
     }
 
     /// <summary>

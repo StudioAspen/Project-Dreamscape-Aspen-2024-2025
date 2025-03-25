@@ -55,15 +55,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sprint"",
-                    ""type"": ""Button"",
-                    ""id"": ""8df375f3-89b0-4f6c-89c9-c6853e0611be"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Attack1"",
                     ""type"": ""Button"",
                     ""id"": ""3adb18b7-5ef0-425c-95e9-4b88fd31ff3f"",
@@ -209,28 +200,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3402751b-89b5-4142-8776-67a87b042a49"",
-                    ""path"": ""<Keyboard>/leftShift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""Sprint"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6915ac95-b7a0-41c0-b5f3-1b9352d13b2e"",
-                    ""path"": ""<Gamepad>/buttonEast"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Sprint"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""72b27f15-dc10-466d-b76f-450afa58d130"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -298,7 +267,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""145cb044-215a-4b0d-a602-d3e2ccb69827"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -375,7 +344,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""095e16d4-1efe-4fdb-938d-b1c499afd8fc"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -1265,7 +1234,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
-        m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_Attack1 = m_Gameplay.FindAction("Attack1", throwIfNotFound: true);
         m_Gameplay_Attack2 = m_Gameplay.FindAction("Attack2", throwIfNotFound: true);
         m_Gameplay_MemoryAbility = m_Gameplay.FindAction("MemoryAbility", throwIfNotFound: true);
@@ -1361,7 +1329,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Movement;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Dash;
-    private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_Attack1;
     private readonly InputAction m_Gameplay_Attack2;
     private readonly InputAction m_Gameplay_MemoryAbility;
@@ -1375,7 +1342,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
-        public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @Attack1 => m_Wrapper.m_Gameplay_Attack1;
         public InputAction @Attack2 => m_Wrapper.m_Gameplay_Attack2;
         public InputAction @MemoryAbility => m_Wrapper.m_Gameplay_MemoryAbility;
@@ -1400,9 +1366,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
-            @Sprint.started += instance.OnSprint;
-            @Sprint.performed += instance.OnSprint;
-            @Sprint.canceled += instance.OnSprint;
             @Attack1.started += instance.OnAttack1;
             @Attack1.performed += instance.OnAttack1;
             @Attack1.canceled += instance.OnAttack1;
@@ -1434,9 +1397,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
-            @Sprint.started -= instance.OnSprint;
-            @Sprint.performed -= instance.OnSprint;
-            @Sprint.canceled -= instance.OnSprint;
             @Attack1.started -= instance.OnAttack1;
             @Attack1.performed -= instance.OnAttack1;
             @Attack1.canceled -= instance.OnAttack1;
@@ -1761,7 +1721,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
-        void OnSprint(InputAction.CallbackContext context);
         void OnAttack1(InputAction.CallbackContext context);
         void OnAttack2(InputAction.CallbackContext context);
         void OnMemoryAbility(InputAction.CallbackContext context);
