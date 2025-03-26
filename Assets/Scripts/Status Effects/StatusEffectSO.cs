@@ -25,6 +25,14 @@ public class StatusEffectSO : ScriptableObject
 
     [field: Header("Status Effect: Settings")]
     [field: SerializeField] public bool Stackable { get; protected set; } // if the status effect can stack with itself (all augments should be stackable)
+    [field: SerializeField] public StatusEffectType BuffType { get; protected set; } = StatusEffectType.NONE;
+
+    public enum StatusEffectType
+    {
+        NONE,
+        BUFF,
+        DEBUFF,
+    }
 
     /// <summary>
     /// Initializes the status effect with the specified owner and source.
@@ -113,5 +121,30 @@ public class StatusEffectSO : ScriptableObject
     public void RemoveSelf()
     {
         entityStatusEffectorOwner.RemoveStatusEffect(GetType(), true);
+    }
+
+    /// <summary>
+    /// Gets the buff/debuff duration multiplier of the source based on the buff type.
+    /// </summary>
+    /// <returns></returns>
+    private protected float GetSourceBuffTypeDurationMultiplier()
+    {
+        if(source == null) return 1f;
+        if (!source.TryGetComponent(out Entity sourceEntity)) return 1f;
+
+        if (BuffType == StatusEffectType.BUFF) return sourceEntity.BuffApplyDurationMultiplier.GetFloatValue();
+        if (BuffType == StatusEffectType.DEBUFF) return sourceEntity.DebuffApplyDurationMultiplier.GetFloatValue();
+        return 1f;
+    }
+
+    /// <summary>
+    /// Gets the local delta time based on the buff/debuff duration multiplier.
+    /// </summary>
+    private protected float GetLocalDeltaTime()
+    {
+        float divisor = GetSourceBuffTypeDurationMultiplier();
+        if (divisor == 0 ) divisor = 1f;
+
+        return Time.deltaTime / divisor;
     }
 }

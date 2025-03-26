@@ -25,6 +25,12 @@ public class FPSCounterUI : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            fpsText.gameObject.SetActive(!fpsText.gameObject.activeSelf);
+        }
+
+        if (!fpsText.gameObject.activeSelf) return;
         // Track time taken for the current frame
         float frameTime = Time.unscaledDeltaTime;
 

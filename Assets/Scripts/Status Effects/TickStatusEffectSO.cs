@@ -26,7 +26,7 @@ public class TickStatusEffectSO : StatusEffectSO
             OnTick();
         }
 
-        if(currentTicks >= Ticks)
+        if(currentTicks >= Mathf.RoundToInt(Ticks * GetSourceBuffTypeDurationMultiplier()))
         {
             OnExpire();
         }

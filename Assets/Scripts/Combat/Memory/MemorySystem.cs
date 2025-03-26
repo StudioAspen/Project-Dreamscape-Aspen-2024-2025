@@ -77,7 +77,7 @@ public class MemorySystem : MonoBehaviour
     {
         if (GetMemoryLevel() < 3)
         {
-            Debug.Log("Memory meter is not level 3");
+            Debug.Log("Memory meter is not full");
             return;
         }
 

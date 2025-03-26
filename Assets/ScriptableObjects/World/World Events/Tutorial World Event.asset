@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fc0e1ed1f2004439a314f3658d91f5, type: 3}
+  m_Name: Tutorial World Event
+  m_EditorClassIdentifier: 
+  <EventName>k__BackingField: Tutorial
+  <EventProgressionUIName>k__BackingField: Tutorial
+  <Description>k__BackingField: Learn about the game!
+  <BaseSpawnAmount>k__BackingField: 1
+  <DummyPrefab>k__BackingField: {fileID: 6102247615063394715, guid: 5dcb47263dafbef419393789dbcccf31,
+    type: 3}
+  <AfterFinishDelay>k__BackingField: 15

@@ -93,15 +93,15 @@ public class Golem : Enemy
                || CurrentState == GolemAttackRecoverState;
     }
    
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
-        int newDamage = dmg;
+        if (willIgnoreDefense) dmg = Mathf.Clamp(dmg - Defense.GetIntValue(), 0, int.MaxValue);
 
         if (CanBeStaggered())
         {
-            damageTakenSinceLastStagger += newDamage;
+            damageTakenSinceLastStagger += dmg;
             if (damageTakenSinceLastStagger > staggerDamageThreshold)
             {
                 ResetDamageTakenSinceLastStagger();
@@ -111,7 +111,7 @@ public class Golem : Enemy
         
         if (CurrentState == GolemStaggeredState)
         {
-            damageTakenWhileStaggered += newDamage;
+            damageTakenWhileStaggered += dmg;
             //print("Damage taken while staggered now " + damageTakenWhileStaggered);
             if (damageTakenWhileStaggered > dazeDamageThreshold)
             {
@@ -120,13 +120,13 @@ public class Golem : Enemy
             }
         }
 
-        CurrentHealth -= newDamage;
-        OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-        AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
+        if(!IsInvicible) CurrentHealth -= dmg;
+        OnEntityTakeDamage?.Invoke(dmg, hitPoint, source);
+        AttemptToSpawnHitNumbers(dmg, hitPoint, Color.red);
         lastHitSource = source;
         
         //after calculating current health, check if the entity has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }

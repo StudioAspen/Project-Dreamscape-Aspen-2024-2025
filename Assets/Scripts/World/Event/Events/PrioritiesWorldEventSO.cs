@@ -81,7 +81,17 @@ public class PrioritiesWorldEventSO : WorldEventSO
 
             land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
 
+            // Each top land will use ALL of its currency to spawn many enemies as possible all at once (with 0.1s delay).
+            StartEnemySpawnerWithCurrency(land, 0.1f * Vector2.one, BaseSpawnAmount);
+              
             activeLands++;
+        }
+
+        // Spawn on all the other lands
+        foreach(LandManager land in spawnedLands)
+        {
+            if (topLands.Contains(land)) return; // Skip the priority land
+            StartEnemySpawnerWithCurrency(land, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
         }
 
         if (activeLands <= 0)
@@ -181,7 +191,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         }
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

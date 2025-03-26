@@ -93,7 +93,7 @@ public class Charger : Enemy
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
-    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
@@ -111,9 +111,12 @@ public class Charger : Enemy
             }
         }
 
+        if (willIgnoreDefense) newDamage = Mathf.Clamp(newDamage - Defense.GetIntValue(), 0, int.MaxValue);
+
+
         if (willTryStagger) TryChangeStaggeredState();
 
-        CurrentHealth -= newDamage;
+        if(!IsInvicible) CurrentHealth -= newDamage;
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
 
@@ -122,7 +125,7 @@ public class Charger : Enemy
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth.GetIntValue() > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }

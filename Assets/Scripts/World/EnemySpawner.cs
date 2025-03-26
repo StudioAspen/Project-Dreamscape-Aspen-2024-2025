@@ -16,7 +16,6 @@ public class EnemySpawner : MonoBehaviour
     [field: SerializeField] public List<Enemy> EnemyPrefabs { get; private set; } = new();
     private Dictionary<Enemy, float> enemySpawnChanceDictionary = new();
     [SerializeField] private List<Transform> enemySpawnPoints;
-    [SerializeField] private MaterializeVFX materializeVFXPrefab;
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewPower = 2.2f;
@@ -200,20 +199,20 @@ public class EnemySpawner : MonoBehaviour
 
         while (remainingDuration > randomDelay)
         {
-          for(int i = 0; i < spawnAmount; i++)
-          {
-            Enemy enemyPrefab = GetRandomEnemyPrefab();
-            if (enemyPrefab == null)
+            for (int i = 0; i < spawnAmount && remainingDuration > randomDelay; i++)
             {
-                Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
-                return new List<(Enemy, float)>();
+                Enemy enemyPrefab = GetRandomEnemyPrefab();
+                if (enemyPrefab == null)
+                {
+                    Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
+                    return new List<(Enemy, float)>();
+                }
+
+                // add the first enemy in the batch with the interval, but set every interval after to be 0.1f seconds
+                float delay = i == 0 ? randomDelay : 0.1f;
+                enemySpawnDelayQueue.Add((enemyPrefab, delay));
+                remainingDuration -= delay;
             }
-
-            // add the first enemy in the batch with the interval, but set every interval after to be 0.1 seconds
-            enemySpawnDelayQueue.Add((enemyPrefab, i == 0 ? randomDelay : 0.1f));
-
-            remainingDuration -= randomDelay;
-          }
         }
 
         return enemySpawnDelayQueue;
@@ -290,7 +289,7 @@ public class EnemySpawner : MonoBehaviour
         EntityRendererManager entityRendererManager = entity.GetComponent<EntityRendererManager>();
         if (entityRendererManager == null) return;
 
-        MaterializeVFX materializeVFX = ObjectPoolerManager.Instance.SpawnPooledObject<MaterializeVFX>(materializeVFXPrefab.gameObject, entity.transform.position);
+        MaterializeVFX materializeVFX = ObjectPoolerManager.Instance.SpawnPooledObject<MaterializeVFX>(ObjectPoolerManager.Instance.MaterializeVFXPrefab.gameObject, entity.transform.position);
 
         for(int i = 0; i < entityRendererManager.Renderers.Count; i++)
         {

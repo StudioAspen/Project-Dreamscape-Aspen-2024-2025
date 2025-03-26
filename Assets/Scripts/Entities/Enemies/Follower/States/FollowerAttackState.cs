@@ -31,7 +31,7 @@ public class FollowerAttackState : FollowerBaseState
 
         follower.SetSpeedModifier(0f);
 
-        Weapon.OnWeaponStartSwing?.Invoke(follower);
+        Weapon.OnWeaponStartSwing?.Invoke(follower, null);
         Weapon.ClearObjectHitList();
 
         Weapon.SetDamageMultiplier(AttackDamageMultiplier);
@@ -43,7 +43,7 @@ public class FollowerAttackState : FollowerBaseState
 
     public override void OnExit()
     {
-        Weapon.OnWeaponEndSwing?.Invoke(follower);
+        Weapon.OnWeaponEndSwing?.Invoke(follower, null);
         follower.UseRootMotion = false;
         follower.EndHit();
     }

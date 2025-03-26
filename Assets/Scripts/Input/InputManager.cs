@@ -97,6 +97,12 @@ public class InputManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+
+    public void EnableControls(bool isEnabled)
+    {
+        if(isEnabled) PlayerControls.Enable();
+        else PlayerControls.Disable();
+    }
 }
 
 

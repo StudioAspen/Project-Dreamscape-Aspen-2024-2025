@@ -46,7 +46,7 @@ public class ZonesWorldEventSO : WorldEventSO
         affectedLands = AffectLandsFromEpicenter();
         foreach(LandManager land in affectedLands)
         {
-            // if (land.Level <= 0) continue;
+            if (land.Level <= 0) continue;
 
             StartEnemySpawnerWithCurrency(land, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
@@ -55,6 +55,8 @@ public class ZonesWorldEventSO : WorldEventSO
 
             land.EnemySpawner.OnEnemySpawned += EnemySpawner_OnEnemySpawned;
             land.EnemySpawner.OnEnemyDeath += EnemySpawner_OnEnemyDeath;
+
+            StartEnemySpawnerWithCurrency(land, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
 
             activeLands++;
         }
@@ -72,7 +74,9 @@ public class ZonesWorldEventSO : WorldEventSO
         foreach (LandManager land in new List<LandManager>(affectedLands))
         {
             land.EnemySpawner.DeactivateAllEnemies();
-
+        }
+        foreach (LandManager land in new List<LandManager>(affectedLands))
+        {
             // Unsubscribe from the OnSpawnerDepleted event for each of the affected lands
             land.EnemySpawner.OnSpawnerDepleted -= EnemySpawner_OnSpawnerDepleted;
 
@@ -238,7 +242,7 @@ public class ZonesWorldEventSO : WorldEventSO
         enemiesRemaining--;
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

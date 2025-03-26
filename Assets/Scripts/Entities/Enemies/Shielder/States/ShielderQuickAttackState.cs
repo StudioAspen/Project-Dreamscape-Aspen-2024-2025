@@ -24,7 +24,7 @@ public class ShielderQuickAttackState : ShielderBaseState
         shielder.PlayOneShotAnimation(AnimationClip, AttackDuration);
         shielder.SetSpeedModifier(0f);
 
-        shielder.LongSword.OnWeaponStartSwing?.Invoke(shielder);
+        shielder.LongSword.OnWeaponStartSwing?.Invoke(shielder, null);
         shielder.LongSword.ClearObjectHitList();
         shielder.LongSword.SetDamageMultiplier(AttackDamageMultiplier);
 
@@ -36,7 +36,7 @@ public class ShielderQuickAttackState : ShielderBaseState
     public override void OnExit()
     {
         shielder.UseRootMotion = false;
-        shielder.LongSword.OnWeaponEndSwing?.Invoke(shielder);
+        shielder.LongSword.OnWeaponEndSwing?.Invoke(shielder, null);
         shielder.LongSword.DisableTriggers();
     }
 
