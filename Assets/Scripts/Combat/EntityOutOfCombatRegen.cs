@@ -8,13 +8,14 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     private Entity entity;
 
     [field: Header("Config")]
+    [Space(5)]
+    [SerializeField] private bool enableOutOfCombatRegen;
+    [Space(5)]
     [SerializeField] private int healthRegenAmount = 1;
     [SerializeField] private float healthRegenRate = 0.25f;
     [SerializeField] private float durationOutOfCombatToRegen = 5f;
     private float elapsedTimeSinceLastHit;
     private float healthRegenTimer;
-
-    private bool healingEnabled = true;
 
     private void Awake()
     {
@@ -47,10 +48,11 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.H))
         {
-            healingEnabled = !healingEnabled;
-            Debug.LogWarning($"Turning OOO Healing {(healingEnabled ? "On" : "Off")}");
+            enableOutOfCombatRegen = !enableOutOfCombatRegen;
+            Debug.LogWarning($"Turning OOO Healing {(enableOutOfCombatRegen ? "On" : "Off")}");
         }
 
+        if (!enableOutOfCombatRegen) return;
         HandleHealthRegen();
     }
 
@@ -60,7 +62,7 @@ public class EntityOutOfCombatRegen : MonoBehaviour
     /// </summary>
     private void HandleHealthRegen()
     {
-        if (!healingEnabled) return; // If healing is disabled
+        if (!enableOutOfCombatRegen) return; // If healing is disabled
         if (entity.CurrentState == entity.EntityDeathState) return; // If dead
         if (entity.CurrentHealth == entity.MaxHealth.GetIntValue()) return; // If full
         if (entity.MaxHealth.GetIntValue() <= 0) return; // If invincible

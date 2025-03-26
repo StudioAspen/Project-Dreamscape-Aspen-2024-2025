@@ -33,4 +33,9 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
     {
         timer += Time.deltaTime;
     }
+
+  public override bool MeetsCriteria()
+  {
+    throw new System.NotImplementedException();
+  }
 }

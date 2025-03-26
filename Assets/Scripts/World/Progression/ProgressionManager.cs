@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
 {
-    private GameManager gameManager;
-    private WorldManager worldManager;
+    public GameManager gameManager { get; private set; }
+    public WorldManager worldManager { get; private set; }
+    public EventManager eventManager { get; private set; }
 
     [Header("Config")]
     [SerializeField] private int baseEmpowerTokens = 2;
@@ -23,6 +24,7 @@ public class ProgressionManager : MonoBehaviour
     private void Awake()
     {
         worldManager = GetComponent<WorldManager>();
+        eventManager = GetComponent<EventManager>();
     }
 
     private void Start()

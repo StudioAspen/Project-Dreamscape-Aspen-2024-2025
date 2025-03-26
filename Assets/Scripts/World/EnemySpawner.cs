@@ -70,10 +70,10 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="spawnIntervalRange"></param>
     /// <param name="spawnAmount"></param>
     /// <param name="willRestockCurrency">Whether to restock currency</param>
-    public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
+    public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount = 1, bool willRestockCurrency = true)
     {
-      StopSpawner();
-      currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
+        StopSpawner();
+        currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
     }
 
     /// <summary>
@@ -81,10 +81,10 @@ public class EnemySpawner : MonoBehaviour
     /// Stops any existing spawning coroutine.
     /// </summary>
     /// <param name="duration">The duration to spawn enemies for.</param>
-    public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
       StopSpawner();
-      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, spawnAmount, duration));
+      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, duration, spawnAmount));
     }
 
     /// <summary>
@@ -101,28 +101,27 @@ public class EnemySpawner : MonoBehaviour
     /// Stores the remaining currency.
     /// <param name="startingCurrency">The starting currency</param>
     /// </summary>
-    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency, Vector2 spawnIntervalRange, int spawnAmount)
+    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency, Vector2 spawnIntervalRange, int spawnAmount = 1)
     {
         currentRemainingCurrency = startingCurrency;
         List<(Enemy, float)> enemyRemainingCurrencyQueue = GetEnemyPrefabQueue(startingCurrency);
 
         float randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
-        int spawned = 0;
 
+        int spawnCount = 0;
         foreach ((Enemy enemyPrefab, float remainingCurrency) in enemyRemainingCurrencyQueue)
         {
             SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
             currentRemainingCurrency = remainingCurrency;
-            
-            if(spawned < spawnAmount)
+            spawnCount++;
+            if(spawnCount >= spawnAmount)
             {
-              spawned++;
-              yield return null;
+                spawnCount = 0;
+                yield return new WaitForSeconds(randomDelay);
             }
             else
             {
-              spawned = 0;
-              yield return new WaitForSeconds(randomDelay);
+                yield return null;
             }
         }
         currentSpawnerCoroutine = null;
@@ -133,9 +132,9 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="spawnIntervalRange">The random range for the spawning interval.</param>
-    /// <param name="spawnAmount">The number of enemies to spawn per interval.</param>
     /// <param name="duration">The duration of the spawning process.</param>
-    private IEnumerator SpawnWithDurationCoroutine(Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    /// <param name="spawnAmount">The number of enemies to spawn per interval.</param>
+    private IEnumerator SpawnWithDurationCoroutine(Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
         List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, spawnIntervalRange, spawnAmount);
         foreach ((Enemy enemyPrefab, float delay) in enemySpawnDelayQueue)

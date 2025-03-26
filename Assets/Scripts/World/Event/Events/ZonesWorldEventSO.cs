@@ -46,10 +46,7 @@ public class ZonesWorldEventSO : WorldEventSO
         affectedLands = AffectLandsFromEpicenter();
         foreach(LandManager land in affectedLands)
         {
-            if (land.Level <= 0) continue;
-
-            StartEnemySpawnerWithCurrency(land, new Vector2 (BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount);
-
+            // if (land.Level <= 0) continue;
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
