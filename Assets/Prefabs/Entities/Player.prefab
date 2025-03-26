@@ -353,7 +353,9 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-  baseSpeed: 7
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 5
   rotationSpeed: 10
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -387,16 +389,12 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
   groundedAcceleration: 5
-  <PlayerSprintState>k__BackingField:
-    <SprintSpeedModifier>k__BackingField: 1.5
-    IsSprinting: 0
   <PlayerDashState>k__BackingField:
     dashTrailParticle: {fileID: 8508715176541134875}
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: ab69ca9e285bf8b4aa58270be79beed0,
       type: 2}
     <DashDuration>k__BackingField: 0.25
     <InitialDashVelocity>k__BackingField: 75
-    <SprintDurationAfterDash>k__BackingField: 2
     <DashCooldown>k__BackingField: 0.75
   <PlayerJumpState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
@@ -425,6 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3994e165571b624590722e7e6e5ffee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableOutOfCombatRegen: 0
   healthRegenAmount: 5
   healthRegenRate: 1
   durationOutOfCombatToRegen: 5
@@ -6603,22 +6602,22 @@ PrefabInstance:
     - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70727944
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.70693415
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000001323759
+      value: 0.00000013240823
       objectReference: {fileID: 0}
     - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000013244056
+      value: -0.00000013240823
       objectReference: {fileID: 0}
     - target: {fileID: 2725540357861909793, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
