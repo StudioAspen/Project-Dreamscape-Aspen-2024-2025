@@ -187,4 +187,14 @@ public class Charger : Enemy
         ChargerJabbingAttackState.RightFistWeapon.DisableTriggers();
         ChargerJabbingAttackState.LeftFistWeapon.DisableTriggers();
     }
+
+    public override void PlayFootstepLeft()
+    {
+        AkSoundEngine.PostEvent("Play_ChargerFootstepLeft", gameObject);
+    }
+
+    public override void PlayFootstepRight()
+    {
+        AkSoundEngine.PostEvent("Play_ChargerFootstepRight", gameObject);
+    }
 }

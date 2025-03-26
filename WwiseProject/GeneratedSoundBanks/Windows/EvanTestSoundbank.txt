@@ -1,16 +1,44 @@
 Event	ID	Name			Wwise Object Path	Notes
+	166950546	Play_ChargerMissRight			\Default Work Unit\Charger\Play_ChargerMissRight	
+	282746656	Play_ChargerFootstepRight			\Default Work Unit\Charger\Play_ChargerFootstepRight	
+	520370339	Play_ChargerHitRight			\Default Work Unit\Charger\Play_ChargerHitRight	
+	543040975	Play_ChargerMissLeft			\Default Work Unit\Charger\Play_ChargerMissLeft	
+	590263643	WeakenTokenSelect			\Default Work Unit\UI\WeakenTokenSelect	
 	732023582	PlayerFootstepSolidLeft			\Default Work Unit\Player\Footsteps\PlayerFootstepSolidLeft	
 	846198821	PlayerLand			\Default Work Unit\Player\PlayerLand	
 	899748333	WeaponSwing			\Default Work Unit\Player\WeaponSwing	
+	953277036	Resume			\Default Work Unit\UI\Resume	
+	1517328899	FoodBiomeSelect			\Default Work Unit\UI\FoodBiomeSelect	
+	2492898533	EmpowerTokenSelect			\Default Work Unit\UI\EmpowerTokenSelect	
 	2525052962	PlayerDash			\Default Work Unit\Player\PlayerDash	
+	2655804996	Play_ChargerHitLeft			\Default Work Unit\Charger\Play_ChargerHitLeft	
+	2903558085	ButtonSelect			\Default Work Unit\UI\ButtonSelect	
+	3035572085	ButtonHover			\Default Work Unit\UI\ButtonHover	
+	3092587493	Pause			\Default Work Unit\UI\Pause	
+	3128074203	CardSelect			\Default Work Unit\UI\CardSelect	
 	3581650749	PlayerFootstepSolidRight			\Default Work Unit\Player\Footsteps\PlayerFootstepSolidRight	
+	3632326709	Play_ChargerFootstepLeft			\Default Work Unit\Charger\Play_ChargerFootstepLeft	
 	4008126242	PlayerJump			\Default Work Unit\Player\PlayerJump	
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	35863944	BaseWeaponSwing	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\swoosh_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\BaseWeaponSwing		79968
-	203157227	PlayerFootstepSolidRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerFootstepSolidRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerFootstepSolidRight		284696
-	271256691	PlayerLand	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerLand_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerLand		301504
-	666999680	PlayerFootstepSolidLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerFootstepSolidLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerFootstepSolidLeft		284696
-	846379177	PlayerJump	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerJump_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerJump		300680
-	1003731978	PlayerDash	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerDash_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerDash		300864
+	35863944	BaseWeaponSwing	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\swoosh_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\BaseWeaponSwing		79968
+	72517855	FoodBiomeSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\FoodBiomeSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\FoodBiomeSelect		394644
+	104266447	ChargerFootstepRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerFootstepRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepRight		284972
+	196077149	CardSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\CardSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CardSelect		853824
+	203157227	PlayerFootstepSolidRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerFootstepSolidRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidRight		284696
+	267959341	ButtonSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ButtonSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonSelect		410208
+	271256691	PlayerLand	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerLand_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerLand		301504
+	279842676	Resume	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\Resume_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Resume		1059936
+	291466921	Pause	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\Pause_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Pause		1059936
+	440275923	ChargerFootstepLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerFootstepLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepLeft		284972
+	458271427	ButtonHover	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ButtonHover_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonHover		534624
+	587497112	ChargerHitRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerHitRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitRight		272908
+	666999680	PlayerFootstepSolidLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerFootstepSolidLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidLeft		284696
+	732349458	ChargerMissRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerMissRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissRight		242412
+	846379177	PlayerJump	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerJump_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerJump		300680
+	849657380	EmpowerTokenSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\EmpowerTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EmpowerTokenSelect		354360
+	851750572	WeakenTokenSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\WeakenTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\WeakenTokenSelect		282060
+	939970087	ChargerMissLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerMissLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissLeft		242412
+	1003731978	PlayerDash	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\PlayerDash_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerDash		300864
+	1044931328	ChargerHitLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Windows\SFX\ChargerHitLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitLeft		272908
 

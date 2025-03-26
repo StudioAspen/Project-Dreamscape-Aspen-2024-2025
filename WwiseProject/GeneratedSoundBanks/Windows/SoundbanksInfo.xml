@@ -9,7 +9,7 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
-		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{88883AF6-92C8-EB8D-79D5-97D24A15D7C2}">
+		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{FD56378E-7052-98DB-7982-07AAB301EF2B}">
 			<ShortName>EvanTestSoundbank</ShortName>
 			<Path>EvanTestSoundbank.bnk</Path>
 			<Media>
@@ -17,28 +17,144 @@
 					<ShortName>swoosh.wav</ShortName>
 					<CachePath>SFX/swoosh_818F3B66.wem</CachePath>
 				</File>
+				<File Id="72517855" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>FoodBiomeSelect.wav</ShortName>
+					<CachePath>SFX/FoodBiomeSelect_818F3B66.wem</CachePath>
+				</File>
+				<File Id="104266447" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerFootstepRight.wav</ShortName>
+					<CachePath>SFX/ChargerFootstepRight_818F3B66.wem</CachePath>
+				</File>
+				<File Id="196077149" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>CardSelect.wav</ShortName>
+					<CachePath>SFX/CardSelect_818F3B66.wem</CachePath>
+				</File>
 				<File Id="203157227" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerFootstepSolidRight.wav</ShortName>
 					<CachePath>SFX/PlayerFootstepSolidRight_818F3B66.wem</CachePath>
+				</File>
+				<File Id="267959341" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ButtonSelect.wav</ShortName>
+					<CachePath>SFX/ButtonSelect_818F3B66.wem</CachePath>
 				</File>
 				<File Id="271256691" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerLand.wav</ShortName>
 					<CachePath>SFX/PlayerLand_818F3B66.wem</CachePath>
 				</File>
+				<File Id="279842676" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>Resume.wav</ShortName>
+					<CachePath>SFX/Resume_818F3B66.wem</CachePath>
+				</File>
+				<File Id="291466921" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>Pause.wav</ShortName>
+					<CachePath>SFX/Pause_818F3B66.wem</CachePath>
+				</File>
+				<File Id="440275923" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerFootstepLeft.wav</ShortName>
+					<CachePath>SFX/ChargerFootstepLeft_818F3B66.wem</CachePath>
+				</File>
+				<File Id="458271427" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ButtonHover.wav</ShortName>
+					<CachePath>SFX/ButtonHover_818F3B66.wem</CachePath>
+				</File>
+				<File Id="587497112" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerHitRight.wav</ShortName>
+					<CachePath>SFX/ChargerHitRight_818F3B66.wem</CachePath>
+				</File>
 				<File Id="666999680" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerFootstepSolidLeft.wav</ShortName>
 					<CachePath>SFX/PlayerFootstepSolidLeft_818F3B66.wem</CachePath>
+				</File>
+				<File Id="732349458" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerMissRight.wav</ShortName>
+					<CachePath>SFX/ChargerMissRight_818F3B66.wem</CachePath>
 				</File>
 				<File Id="846379177" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerJump.wav</ShortName>
 					<CachePath>SFX/PlayerJump_818F3B66.wem</CachePath>
 				</File>
+				<File Id="849657380" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>EmpowerTokenSelect.wav</ShortName>
+					<CachePath>SFX/EmpowerTokenSelect_818F3B66.wem</CachePath>
+				</File>
+				<File Id="851750572" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>WeakenTokenSelect.wav</ShortName>
+					<CachePath>SFX/WeakenTokenSelect_818F3B66.wem</CachePath>
+				</File>
+				<File Id="939970087" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerMissLeft.wav</ShortName>
+					<CachePath>SFX/ChargerMissLeft_818F3B66.wem</CachePath>
+				</File>
 				<File Id="1003731978" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerDash.wav</ShortName>
 					<CachePath>SFX/PlayerDash_818F3B66.wem</CachePath>
 				</File>
+				<File Id="1044931328" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>ChargerHitLeft.wav</ShortName>
+					<CachePath>SFX/ChargerHitLeft_818F3B66.wem</CachePath>
+				</File>
 			</Media>
 			<Events>
+				<Event Id="3035572085" Name="ButtonHover" DurationType="OneShot" DurationMin="3.030204" DurationMax="3.030204">
+					<MediaRefs>
+						<MediaRef Id="458271427"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2903558085" Name="ButtonSelect" DurationType="OneShot" DurationMin="2.324898" DurationMax="2.324898">
+					<MediaRefs>
+						<MediaRef Id="267959341"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3128074203" Name="CardSelect" DurationType="OneShot" DurationMin="4.4465" DurationMax="4.4465">
+					<MediaRefs>
+						<MediaRef Id="196077149"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2492898533" Name="EmpowerTokenSelect" DurationType="OneShot" DurationMin="1.845125" DurationMax="1.845125">
+					<MediaRefs>
+						<MediaRef Id="849657380"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="1517328899" Name="FoodBiomeSelect" DurationType="OneShot" DurationMin="2.0549376" DurationMax="2.0549376">
+					<MediaRefs>
+						<MediaRef Id="72517855"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3092587493" Name="Pause" DurationType="OneShot" DurationMin="6.0081635" DurationMax="6.0081635">
+					<MediaRefs>
+						<MediaRef Id="291466921"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3632326709" Name="Play_ChargerFootstepLeft" DurationType="OneShot" DurationMin="1.6149433" DurationMax="1.6149433">
+					<MediaRefs>
+						<MediaRef Id="440275923"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="282746656" Name="Play_ChargerFootstepRight" DurationType="OneShot" DurationMin="1.6149433" DurationMax="1.6149433">
+					<MediaRefs>
+						<MediaRef Id="104266447"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2655804996" Name="Play_ChargerHitLeft" DurationType="OneShot" DurationMin="1.5465533" DurationMax="1.5465533">
+					<MediaRefs>
+						<MediaRef Id="1044931328"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="520370339" Name="Play_ChargerHitRight" DurationType="OneShot" DurationMin="1.5465533" DurationMax="1.5465533">
+					<MediaRefs>
+						<MediaRef Id="587497112"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="543040975" Name="Play_ChargerMissLeft" DurationType="OneShot" DurationMin="1.3736734" DurationMax="1.3736734">
+					<MediaRefs>
+						<MediaRef Id="939970087"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="166950546" Name="Play_ChargerMissRight" DurationType="OneShot" DurationMin="1.3736734" DurationMax="1.3736734">
+					<MediaRefs>
+						<MediaRef Id="732349458"/>
+					</MediaRefs>
+				</Event>
 				<Event Id="2525052962" Name="PlayerDash" DurationType="OneShot" DurationMin="1.705034" DurationMax="1.705034">
 					<MediaRefs>
 						<MediaRef Id="1003731978"/>
@@ -64,6 +180,16 @@
 						<MediaRef Id="271256691"/>
 					</MediaRefs>
 				</Event>
+				<Event Id="953277036" Name="Resume" DurationType="OneShot" DurationMin="6.0081635" DurationMax="6.0081635">
+					<MediaRefs>
+						<MediaRef Id="279842676"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="590263643" Name="WeakenTokenSelect" DurationType="OneShot" DurationMin="1.468573" DurationMax="1.468573">
+					<MediaRefs>
+						<MediaRef Id="851750572"/>
+					</MediaRefs>
+				</Event>
 				<Event Id="899748333" Name="WeaponSwing" DurationType="OneShot" DurationMin="0.45278913" DurationMax="0.45278913">
 					<MediaRefs>
 						<MediaRef Id="35863944"/>
@@ -85,5 +211,5 @@
 			</Busses>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{BFFB24D9-5A4A-8656-E414-07EB5A2CF3E9}</FileHash>
+	<FileHash>{FBA1990B-DEB2-D5F5-98BD-D4D324B1E9EA}</FileHash>
 </SoundBanksInfo>

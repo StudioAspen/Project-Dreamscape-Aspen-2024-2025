@@ -1536,4 +1536,20 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         return true;
     }
+
+    /// <summary>
+    /// Callback for when footstep sound should be played.
+    /// </summary>
+    public virtual void PlayFootstepLeft()
+    {
+
+    }
+
+    /// <summary>
+    /// Callback for when footstep sound should be played.
+    /// </summary>
+    public virtual void PlayFootstepRight()
+    {
+
+    }
 }
