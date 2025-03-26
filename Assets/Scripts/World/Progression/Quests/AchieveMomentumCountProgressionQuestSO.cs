@@ -10,7 +10,12 @@ public class AchieveMomentumCountProgressionQuestSO : ProgressionQuestSO
     [field: Header("Config")]
     [field: SerializeField] public int MomentumGoal { get; private set; } = 5;
 
-    private protected override void OnActivated()
+  public override bool MeetsCriteria()
+  {
+    throw new System.NotImplementedException();
+  }
+
+  private protected override void OnActivated()
     {
         momentumSystem = FindObjectOfType<MomentumSystem>();
         if (momentumSystem == null)

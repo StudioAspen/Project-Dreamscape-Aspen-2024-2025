@@ -14,6 +14,10 @@ public abstract class ProgressionQuestSO : ScriptableObject
     [field: SerializeField] public Reward CompletionReward { get; private set; }
     public bool IsCompleted { get; protected set; }
 
+    // [Header("Basic Criteria")]
+    // [Range(1, 5)]
+    // [SerializeField] protected int Difficulty;
+
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
     /// </summary>
@@ -25,6 +29,8 @@ public abstract class ProgressionQuestSO : ScriptableObject
         //Debug.Log($"Activated progression quest: {name}");
         OnActivated();
     }
+
+    public abstract bool MeetsCriteria();
 
     /// <summary>
     /// Fires once when the game enters the PLAYING state. The player auto accepts progression quests every new event.

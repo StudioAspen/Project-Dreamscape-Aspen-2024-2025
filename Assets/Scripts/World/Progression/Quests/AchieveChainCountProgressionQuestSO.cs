@@ -10,7 +10,12 @@ public class AchieveChainCountProgressionQuestSO : ProgressionQuestSO
     [field: Header("Config")]
     [field: SerializeField] public int ChainGoal { get; private set; } = 15;
 
-    private protected override void OnActivated()
+  public override bool MeetsCriteria()
+  {
+    throw new System.NotImplementedException();
+  }
+
+  private protected override void OnActivated()
     {
         chainingSystem = FindObjectOfType<ChainingSystem>();
         if(chainingSystem == null)
