@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50e4cff50d823a04987f6b19da93f65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landScale: 30
+  <LandScale>k__BackingField: 30
   ghostLandTransform: {fileID: 4562900200964922340}
   <BiomeDatabase>k__BackingField: {fileID: 11400000, guid: 3cd142a13b4f30541b5d350499677ef4,
     type: 2}
@@ -82,6 +82,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8ee7a7cce64266a4d8c825055a214d15, type: 2}
   - {fileID: 11400000, guid: 13a196a673fd9df49a1425a4483fd3bd, type: 2}
   - {fileID: 11400000, guid: dcc3f5bc6882f8a4b92a6de0fe43347d, type: 2}
+  - {fileID: 11400000, guid: 80fe603dd37d9f942b5db0303263c095, type: 2}
+  - {fileID: 11400000, guid: f5b3f894029b2244f852abceeb006ec4, type: 2}
 --- !u!114 &2152970851481245927
 MonoBehaviour:
   m_ObjectHideFlags: 0

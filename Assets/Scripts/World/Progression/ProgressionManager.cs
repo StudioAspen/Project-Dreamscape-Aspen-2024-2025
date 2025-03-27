@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
@@ -18,11 +19,12 @@ public class ProgressionManager : MonoBehaviour
     public int EmpowerTokens { get; private set; }
     public int WeakenTokens { get; private set; }
 
-    public int WaveIndex { get; private set; } = 1;
+    // Tutorial Counts as a wave
+    public int WaveIndex { get; private set; } = 0;
 
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
-    public int QuestCount { get; private set; } = 1;
+    public int QuestCount { get; private set; } = 0;
     public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
@@ -43,6 +45,9 @@ public class ProgressionManager : MonoBehaviour
 
         EmpowerTokens = baseEmpowerTokens;
         WeakenTokens = baseWeakenTokens;
+
+        // Sort the Quests in order of difficulty from least to greatest, just once.
+        possibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
     }
 
     private void OnDestroy()
@@ -68,7 +73,7 @@ public class ProgressionManager : MonoBehaviour
         // If Game Over
         if (newState == GameState.GAME_OVER)
         {
-          WaveIndex = 1;
+          WaveIndex = 0;
         }
     }
 
@@ -78,7 +83,7 @@ public class ProgressionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J))
         {
             Debug.LogWarning("Chear: Insta completing all quests");
-            for(int i = 0; i < QuestCount; i++)
+            for(int i = 0; i < CurrentQuests.Count; i++)
             {
                 if (CurrentQuests[i] == null) continue;
                 CurrentQuests[i].Complete();
@@ -115,9 +120,10 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CreateNewQuests()
     {
-        if(possibleProgressionQuests.Count < QuestCount)
+
+        if(possibleProgressionQuests.Count < 1)
         {
-            Debug.LogWarning($"Progression Manager needs at least {QuestCount} possible quests before creating any");
+            Debug.LogWarning($"Progression Manager needs at least 1 possible quest before creating any");
             return;
         }
 
@@ -125,17 +131,27 @@ public class ProgressionManager : MonoBehaviour
 
         List<ProgressionQuestSO> remainingQuests = new List<ProgressionQuestSO>(possibleProgressionQuests);
 
-        for(int i = 0; i < QuestCount; i++)
+        // After completing the first wave, we'll introduce the first quest type: Skillful Play.
+        if (QuestCount < 1 && WaveIndex >= 2)
         {
-            int randomIndex = UnityEngine.Random.Range(0, remainingQuests.Count);
+          QuestCount = 1;
 
-            ProgressionQuestSO runtimeQuestInstance = Instantiate(remainingQuests[randomIndex]);
-            runtimeQuestInstance.Init(this);
-
-            CurrentQuests[i] = runtimeQuestInstance;
-
-            remainingQuests.RemoveAt(randomIndex);
+          List<SkillfulQuestSO> skillfulQuests = possibleProgressionQuests.OfType<SkillfulQuestSO>().ToList();
+          Debug.Log($"Skillful Quests found: {skillfulQuests.Count}");
         }
+
+
+        // for(int i = 0; i < QuestCount; i++)
+        // {
+        //     int randomIndex = UnityEngine.Random.Range(0, remainingQuests.Count);
+
+        //     ProgressionQuestSO runtimeQuestInstance = Instantiate(remainingQuests[randomIndex]);
+        //     runtimeQuestInstance.Init(this);
+
+        //     CurrentQuests[i] = runtimeQuestInstance;
+
+        //     remainingQuests.RemoveAt(randomIndex);
+        // }
     }
 
     /// <summary>
@@ -145,7 +161,7 @@ public class ProgressionManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
 
-        for(int i = 0; i < QuestCount; i++)
+        for(int i = 0; i < CurrentQuests.Count; i++)
         {
             if (CurrentQuests[i] == null) continue;
 
@@ -158,7 +174,7 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CleanUpQuests()
     {
-        for (int i = 0; i < QuestCount; i++)
+        for (int i = 0; i < CurrentQuests.Count; i++)
         {
             if (CurrentQuests[i] == null) continue;
 
@@ -167,11 +183,6 @@ public class ProgressionManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// The minimum difficulty requirement for the selected quests
-    /// </summary>
-    /// <returns>An integer</returns>
-    public int MinimumQuestDifficulty() => 1;
     #endregion
 
     #region During Land Empowerment

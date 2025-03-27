@@ -16,7 +16,8 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
     [Header("Basic Criteria")]
     [Range(1, 3)]
-    [SerializeField] protected int Difficulty;
+    [SerializeField] protected int difficulty;
+    public int Difficulty => difficulty;
 
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
