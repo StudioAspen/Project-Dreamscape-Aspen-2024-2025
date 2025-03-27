@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -21,15 +22,17 @@ public class FPSCounterUI : MonoBehaviour
     private void Start()
     {
         windowFrames = new float[rollingWindowSize];
+        PlayerPreferences.Instance.OnShowFPSCounterChanged += SetFPSTextVisibility;
+        SetFPSTextVisibility(PlayerPreferences.Instance.PlayerPreferencesData.ShowFPSCounter);
     }
+    
+    private void OnDestroy() {
+        PlayerPreferences.Instance.OnShowFPSCounterChanged -= SetFPSTextVisibility;
+    }
+
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            fpsText.gameObject.SetActive(!fpsText.gameObject.activeSelf);
-        }
-
         if (!fpsText.gameObject.activeSelf) return;
         // Track time taken for the current frame
         float frameTime = Time.unscaledDeltaTime;
@@ -59,4 +62,9 @@ public class FPSCounterUI : MonoBehaviour
             timeSinceLastUpdate = 0f;
         }
     }
+
+    private void SetFPSTextVisibility(bool val) {
+        fpsText.gameObject.SetActive(val);
+    }
+    
 }

@@ -1154,7 +1154,7 @@ MonoBehaviour:
     asset: {fileID: 102900000, guid: 47e29cf9b5d446743979e1098eb6084a, type: 3}
     guid: 47e29cf9b5d446743979e1098eb6084a
   playButton: {fileID: 275387212}
---- !u!1 &2007447792
+--- !u!1 &1988006855
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1162,8 +1162,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2007447794}
-  - component: {fileID: 2007447793}
+  - component: {fileID: 1988006857}
+  - component: {fileID: 1988006856}
   m_Layer: 0
   m_Name: WwiseGlobal
   m_TagString: Untagged
@@ -1171,13 +1171,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2007447793
+--- !u!114 &1988006856
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007447792}
+  m_GameObject: {fileID: 1988006855}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 440b2c232313ef54ca6220d12033e3e3, type: 3}
@@ -1197,13 +1197,13 @@ MonoBehaviour:
   spatialAudioPoolSize: 0
   maxSoundPropagationDepth: 0
   engineLogging: 0
---- !u!4 &2007447794
+--- !u!4 &1988006857
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007447792}
+  m_GameObject: {fileID: 1988006855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1291,4 +1291,4 @@ SceneRoots:
   - {fileID: 640207756967731071}
   - {fileID: 795590273}
   - {fileID: 100485483}
-  - {fileID: 2007447794}
+  - {fileID: 1988006857}

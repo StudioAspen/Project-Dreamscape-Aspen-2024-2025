@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 /* Right now settings are not saved after exiting the game */
 public class PlayerPreferences : MonoBehaviour
@@ -14,6 +15,7 @@ public class PlayerPreferences : MonoBehaviour
    private Resolution[] resolutions;
    
    public event Action<float> OnCameraSensitivityChanged;
+   public event Action<bool> OnShowFPSCounterChanged;
 
    private void Awake() 
    {
@@ -65,6 +67,7 @@ public class PlayerPreferences : MonoBehaviour
          CameraSensitivity = .25f,
          MasterVolume = 1f,
          IsVSync = false,
+         ShowFPSCounter = false,
          QualityLevel = 3,
          MaxFramerate = 60,
          CurrentScreenResolutionIndex = resolutions.Length - 1,
@@ -90,6 +93,7 @@ public class PlayerPreferences : MonoBehaviour
       SetFullScreenMode(PlayerPreferencesData.FullScreenMode);
       SetMaximumFramerate(PlayerPreferencesData.MaxFramerate);
       SetVSync(PlayerPreferencesData.IsVSync);
+      SetShowFPSCounter(PlayerPreferencesData.ShowFPSCounter);
       SetMasterVolume(PlayerPreferencesData.MasterVolume);
       SetCameraSensitivity(PlayerPreferencesData.CameraSensitivity);
       SetQualityLevel(PlayerPreferencesData.QualityLevel);
@@ -118,6 +122,12 @@ public class PlayerPreferences : MonoBehaviour
       QualitySettings.vSyncCount = newValue ? 1 : 0;
    }
 
+   public void SetShowFPSCounter(bool newValue) {
+      PlayerPreferencesData.ShowFPSCounter = newValue;
+      // Fire an event to hide the counter
+      OnShowFPSCounterChanged?.Invoke(newValue);
+   }
+   
    public void SetMasterVolume(float newValue) 
    {
       PlayerPreferencesData.MasterVolume = newValue;

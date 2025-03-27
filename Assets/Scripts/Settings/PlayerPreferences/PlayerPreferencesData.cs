@@ -7,6 +7,7 @@ public class PlayerPreferencesData {
   public float CameraSensitivity;
   public float MasterVolume;
   public bool IsVSync;
+  public bool ShowFPSCounter;
   public int QualityLevel;
   public int MaxFramerate;
   public int CurrentScreenResolutionIndex;

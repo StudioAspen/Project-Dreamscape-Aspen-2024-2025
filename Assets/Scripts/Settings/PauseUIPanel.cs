@@ -27,6 +27,7 @@ public class PauseUIPanel : UIPanel
     [SerializeField] private PauseButtonUI maxFramerateButton;
     [SerializeField] private PauseButtonUI screenResolutionButton;
     [SerializeField] private PauseButtonUI fullScreenModeButton;
+    [SerializeField] private PauseButtonUI showFPSCounterButton;
     [SerializeField] private PauseButtonUI optionsConfirmButton;
 
     [Header("Options Sliders")] 
@@ -46,7 +47,7 @@ public class PauseUIPanel : UIPanel
 
 
     private Slider volumeSliderComponent, cameraSensitivitySliderComponent;
-    private TMP_Text vSyncButtonTextComponent, qualityPresetButtonTextComponent, maxFramerateButtonTextComponent, screenResolutionButtonTextComponent, fullScreenModeButtonTextComponent;
+    private TMP_Text vSyncButtonTextComponent, qualityPresetButtonTextComponent, maxFramerateButtonTextComponent, screenResolutionButtonTextComponent, fullScreenModeButtonTextComponent, showFPSCounterButtonTextComponent;
     
     private void Awake() {
         optionsMenuObject.SetActive(true);
@@ -71,6 +72,7 @@ public class PauseUIPanel : UIPanel
         optionsConfirmButton.OnButtonClicked += OptionsConfirmButton_OnButtonClicked;
         screenResolutionButton.OnButtonClicked += ScreenResolutionButton_OnButtonClicked;
         fullScreenModeButton.OnButtonClicked += FullScreenModeButton_OnButtonClicked;
+        showFPSCounterButton.OnButtonClicked += ShowFPSCounterButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
     }
@@ -89,6 +91,9 @@ public class PauseUIPanel : UIPanel
         
         vSyncButtonTextComponent.text = $"VSync: {(PlayerPreferences.Instance.PlayerPreferencesData.IsVSync ? "ON" : "OFF")}";
         vSyncButton.SetOriginalText(vSyncButtonTextComponent.text);
+        
+        showFPSCounterButtonTextComponent.text = $"Show FPS Counter: {(PlayerPreferences.Instance.PlayerPreferencesData.ShowFPSCounter ? "ON" : "OFF")}";
+        showFPSCounterButton.SetOriginalText(showFPSCounterButtonTextComponent.text);
         
         qualityPresetButtonTextComponent.text = $"Quality Level: {PlayerPreferences.Instance.GetQualityLevelDisplay()}";
         qualityPresetButton.SetOriginalText(qualityPresetButtonTextComponent.text); 
@@ -114,6 +119,7 @@ public class PauseUIPanel : UIPanel
         maxFramerateButtonTextComponent = maxFramerateButton.GetComponentInChildren<TMP_Text>();
         screenResolutionButtonTextComponent = screenResolutionButton.GetComponentInChildren<TMP_Text>();
         fullScreenModeButtonTextComponent = fullScreenModeButton.GetComponentInChildren<TMP_Text>();
+        showFPSCounterButtonTextComponent = showFPSCounterButton.GetComponentInChildren<TMP_Text>();
     }
 
     private void OnDisable() {
@@ -131,7 +137,8 @@ public class PauseUIPanel : UIPanel
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
         screenResolutionButton.OnButtonClicked -= ScreenResolutionButton_OnButtonClicked;
         fullScreenModeButton.OnButtonClicked -= FullScreenModeButton_OnButtonClicked;
-        
+        showFPSCounterButton.OnButtonClicked -= ShowFPSCounterButton_OnButtonClicked;
+
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
@@ -242,6 +249,14 @@ public class PauseUIPanel : UIPanel
         TMP_Text textField = fullScreenModeButton.GetComponentInChildren<TMP_Text>();
         textField.text = $"Full Screen Mode: {PlayerPreferences.Instance.GetFullScreenModeDisplay()}";
         fullScreenModeButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
+        textField.text = $">{textField.text}<";
+    }
+
+    private void ShowFPSCounterButton_OnButtonClicked() {
+        PlayerPreferences.Instance.SetShowFPSCounter(!PlayerPreferences.Instance.PlayerPreferencesData.ShowFPSCounter);
+        TMP_Text textField = showFPSCounterButton.GetComponentInChildren<TMP_Text>();
+        textField.text = $"Show FPS Counter: {(PlayerPreferences.Instance.PlayerPreferencesData.ShowFPSCounter ? "ON" : "OFF")}";
+        showFPSCounterButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
         textField.text = $">{textField.text}<";
     }
     
