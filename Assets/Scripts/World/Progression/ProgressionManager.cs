@@ -7,6 +7,9 @@ public class ProgressionManager : MonoBehaviour
     public GameManager gameManager { get; private set; }
     public WorldManager worldManager { get; private set; }
     public EventManager eventManager { get; private set; }
+    public AspectsManager aspectsManager { get; private set; }
+    public Player player { get; private set; }
+    public LevelSystem levelSystem { get; private set; }
 
     [Header("Config")]
     [SerializeField] private int baseEmpowerTokens = 2;
@@ -14,6 +17,8 @@ public class ProgressionManager : MonoBehaviour
 
     public int EmpowerTokens { get; private set; }
     public int WeakenTokens { get; private set; }
+
+    public int WaveIndex { get; private set; } = 1;
 
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
@@ -29,7 +34,10 @@ public class ProgressionManager : MonoBehaviour
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        gameManager = FindFirstObjectByType<GameManager>();
+        aspectsManager = FindFirstObjectByType<AspectsManager>();
+        player = FindFirstObjectByType<Player>();
+        levelSystem = FindFirstObjectByType<LevelSystem>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
@@ -48,12 +56,20 @@ public class ProgressionManager : MonoBehaviour
         if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.EVENT_SELECTION)
         {
             CreateNewQuests();
+            WaveIndex = 1;
         }
 
         // If clearing the event
         if (newState == GameState.ASPECT_SELECTION && gameManager.PreviousState == GameState.PLAYING)
         {
             CleanUpQuests();
+            WaveIndex++;
+        }
+
+        // If Game Over
+        if (newState == GameState.GAME_OVER)
+        {
+          WaveIndex = 1;
         }
     }
 
@@ -151,6 +167,12 @@ public class ProgressionManager : MonoBehaviour
             CurrentQuests[i] = null;
         }
     }
+
+    /// <summary>
+    /// The minimum difficulty requirement for the selected quests
+    /// </summary>
+    /// <returns>An integer</returns>
+    public int MinimumQuestDifficulty() => 1;
     #endregion
 
     #region During Land Empowerment

@@ -6,17 +6,17 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
     public enum Reward
     {
+        WEAKEN_TOKEN,
         EMPOWER_TOKEN,
-        WEAKEN_TOKEN
     }
 
     [field: SerializeField] public string ObjectiveText { get; private set; } = "";
     [field: SerializeField] public Reward CompletionReward { get; private set; }
     public bool IsCompleted { get; protected set; }
 
-    // [Header("Basic Criteria")]
-    // [Range(1, 5)]
-    // [SerializeField] protected int Difficulty;
+    [Header("Basic Criteria")]
+    [Range(1, 3)]
+    [SerializeField] protected int Difficulty;
 
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
