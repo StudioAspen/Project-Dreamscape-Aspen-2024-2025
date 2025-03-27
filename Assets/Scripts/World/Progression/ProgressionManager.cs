@@ -22,8 +22,8 @@ public class ProgressionManager : MonoBehaviour
 
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
-    public const int QUEST_COUNT = 3;
-    public ProgressionQuestSO[] CurrentQuests { get; private set; } = new ProgressionQuestSO[QUEST_COUNT];
+    public int QuestCount { get; private set; } = 1;
+    public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
     private void Awake()
@@ -56,7 +56,6 @@ public class ProgressionManager : MonoBehaviour
         if(newState == GameState.PLAYING && gameManager.PreviousState == GameState.EVENT_SELECTION)
         {
             CreateNewQuests();
-            WaveIndex = 1;
         }
 
         // If clearing the event
@@ -79,7 +78,7 @@ public class ProgressionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J))
         {
             Debug.LogWarning("Chear: Insta completing all quests");
-            for(int i = 0; i < QUEST_COUNT; i++)
+            for(int i = 0; i < QuestCount; i++)
             {
                 if (CurrentQuests[i] == null) continue;
                 CurrentQuests[i].Complete();
@@ -116,9 +115,9 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CreateNewQuests()
     {
-        if(possibleProgressionQuests.Count < QUEST_COUNT)
+        if(possibleProgressionQuests.Count < QuestCount)
         {
-            Debug.LogWarning($"Progression Manager needs at least {QUEST_COUNT} possible quests before creating any");
+            Debug.LogWarning($"Progression Manager needs at least {QuestCount} possible quests before creating any");
             return;
         }
 
@@ -126,7 +125,7 @@ public class ProgressionManager : MonoBehaviour
 
         List<ProgressionQuestSO> remainingQuests = new List<ProgressionQuestSO>(possibleProgressionQuests);
 
-        for(int i = 0; i < QUEST_COUNT; i++)
+        for(int i = 0; i < QuestCount; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, remainingQuests.Count);
 
@@ -146,7 +145,7 @@ public class ProgressionManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
 
-        for(int i = 0; i < QUEST_COUNT; i++)
+        for(int i = 0; i < QuestCount; i++)
         {
             if (CurrentQuests[i] == null) continue;
 
@@ -159,7 +158,7 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CleanUpQuests()
     {
-        for (int i = 0; i < QUEST_COUNT; i++)
+        for (int i = 0; i < QuestCount; i++)
         {
             if (CurrentQuests[i] == null) continue;
 

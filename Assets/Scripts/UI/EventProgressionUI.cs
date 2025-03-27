@@ -48,7 +48,7 @@ public class EventProgressionUI : MonoBehaviour
 
     private void UpdateQuestElements()
     {
-        for (int i = 0; i < progressionManager.CurrentQuests.Length; i++)
+        for (int i = 0; i < progressionManager.CurrentQuests.Count; i++)
         {
             ProgressionQuestSO quest = progressionManager.CurrentQuests[i];
 
