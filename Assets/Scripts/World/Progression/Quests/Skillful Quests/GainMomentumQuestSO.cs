@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Achieve_x_MomentumQuestSO", menuName = "World/Progression Quest/Skillful Quests/Achieve Momentum")]
-public class AchieveMomentumQuestSO : SkillfulQuestSO
+[CreateAssetMenu(fileName = "Gain_x_MomentumQuestSO", menuName = "World/Progression Quest/Skillful Quests/Gain Momentum")]
+public class GainMomentumQuestSO : SkillfulQuestSO
 {
   [Header("Config")]
   [Range(1, 100)]
