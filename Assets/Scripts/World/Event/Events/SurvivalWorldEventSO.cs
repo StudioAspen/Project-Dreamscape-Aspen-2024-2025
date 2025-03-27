@@ -54,7 +54,7 @@ public class SurvivalWorldEventSO : WorldEventSO
       
       float interval = timeLimit / BaseIntervals;
       // Spawn enemies on all lands for the duration of the event
-      StartEnemySpawnersWithDuration(spawnedLands, new Vector2(interval, interval), spawnAmount, timeLimit);
+      StartEnemySpawnersWithDuration(spawnedLands, new Vector2(interval, interval), timeLimit, spawnAmount);
 
       RemainingTime = timeLimit;
     }
