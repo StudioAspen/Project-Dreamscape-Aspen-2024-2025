@@ -1,5 +1,4 @@
 Event	ID	Name			Wwise Object Path	Notes
-<<<<<<< HEAD
 	166950546	Play_ChargerMissRight			\Default Work Unit\Charger\Play_ChargerMissRight	
 	282746656	Play_ChargerFootstepRight			\Default Work Unit\Charger\Play_ChargerFootstepRight	
 	520370339	Play_ChargerHitRight			\Default Work Unit\Charger\Play_ChargerHitRight	
@@ -27,56 +26,45 @@ Event	ID	Name			Wwise Object Path	Notes
 
 State Group	ID	Name			Wwise Object Path	Notes
 	261089142	GameMode			\Default Work Unit\GameMode	
+	835576787	Biome			\Default Work Unit\Biome	
 
 State	ID	Name	State Group			Notes
 	748895195	None	GameMode			
 	2280308571	ActiveGameplay	GameMode			
 	2716678721	Victory	GameMode			
 	3705726509	Title	GameMode			
+	540301611	Lava	Biome			
+	748895195	None	Biome			
+	813526661	DreamForest	Biome			
+	3031504781	Food	Biome			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	35863944	BaseWeaponSwing	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\swoosh_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\BaseWeaponSwing		79968
-	72517855	FoodBiomeSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\FoodBiomeSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\FoodBiomeSelect		394644
-	72664747	DreamForestAmbient	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\DreamForestAmbient_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\DreamForestAmbient\DreamForestAmbient		10586236
-	92385256	FollowerFootstepRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\SkeletonFootstepRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Follower\FollowerFootstepRight		243592
-	104266447	ChargerFootstepRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerFootstepRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepRight		284972
-	193118872	DreamForestNightBite	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\DreamForestNightBite_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\DreamForestNightBite\DreamForestNightBite		3480160
-	196077149	CardSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\CardSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CardSelect		853824
-	203157227	PlayerFootstepSolidRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidRight		284696
-	267959341	ButtonSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ButtonSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonSelect		410208
-	271256691	PlayerLand	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerLand_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerLand		301504
-	279842676	Resume	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\Resume_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Resume		1059936
-	284921940	NightBite	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\NightBite_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelMusicContainer\NightBitePlaylist\NightBite\NightBite		24822464
-	291466921	Pause	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\Pause_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Pause		1059936
-	350374130	FollowerFootstepLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\SkeletonFootstepLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Follower\FollowerFootstepLeft		243592
-	440275923	ChargerFootstepLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerFootstepLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepLeft		284972
-	458271427	ButtonHover	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ButtonHover_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonHover		534624
-	587497112	ChargerHitRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerHitRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitRight		272908
-	666999680	PlayerFootstepSolidLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidLeft		284696
-	732349458	ChargerMissRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerMissRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissRight		242412
-	814615840	TitleMusic	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\TitleMusic_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelMusicContainer\TitleMusicPlaylist\TitleMusic\TitleMusic		17280160
-	846379177	PlayerJump	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerJump_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerJump		300680
-	849657380	EmpowerTokenSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\EmpowerTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EmpowerTokenSelect		354360
-	851750572	WeakenTokenSelect	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\WeakenTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\WeakenTokenSelect		282060
-	939970087	ChargerMissLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerMissLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissLeft		242412
-	1003731978	PlayerDash	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerDash_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerDash		300864
-	1006519674	LavaAmbient	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\LavaAmbient_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\LavaAmbient\LavaAmbient		12852404
-	1012147918	TitleTrack	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\MainLoop_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TestMusicPlaylist\TitleLoop\TitleTrack		16685664
-	1044931328	ChargerHitLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\ChargerHitLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitLeft		272908
-=======
-	732023582	PlayerFootstepSolidLeft			\Default Work Unit\Player\Footsteps\PlayerFootstepSolidLeft	
-	846198821	PlayerLand			\Default Work Unit\Player\PlayerLand	
-	899748333	WeaponSwing			\Default Work Unit\Player\WeaponSwing	
-	2525052962	PlayerDash			\Default Work Unit\Player\PlayerDash	
-	3581650749	PlayerFootstepSolidRight			\Default Work Unit\Player\Footsteps\PlayerFootstepSolidRight	
-	4008126242	PlayerJump			\Default Work Unit\Player\PlayerJump	
-
-In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	35863944	BaseWeaponSwing	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\swoosh_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\BaseWeaponSwing		79968
-	203157227	PlayerFootstepSolidRight	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerFootstepSolidRight		284696
-	271256691	PlayerLand	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerLand_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerLand		301504
-	666999680	PlayerFootstepSolidLeft	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerFootstepSolidLeft		284696
-	846379177	PlayerJump	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerJump_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerJump		300680
-	1003731978	PlayerDash	C:\Users\Tshiknn\unity-projects\aspen_project\WwiseProject\.cache\Mac\SFX\PlayerDash_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\PlayerDash		300864
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
+	35863944	BaseWeaponSwing	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\swoosh_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\BaseWeaponSwing		79968
+	72517855	FoodBiomeSelect	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\FoodBiomeSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\FoodBiomeSelect		394644
+	72664747	DreamForestAmbient	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\DreamForestAmbient_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelAmbientContainer\DreamForestAmbientPlaylist\DreamForestAmbient\DreamForestAmbient		10586236
+	92385256	FollowerFootstepRight	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\SkeletonFootstepRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Follower\FollowerFootstepRight		243592
+	104266447	ChargerFootstepRight	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerFootstepRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepRight		284972
+	193118872	DreamForestNightBite	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\DreamForestNightBite_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\DreamForestNightBite\DreamForestNightBite		3480160
+	196077149	CardSelect	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\CardSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\CardSelect		853824
+	203157227	PlayerFootstepSolidRight	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidRight		284696
+	267959341	ButtonSelect	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ButtonSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonSelect		410208
+	271256691	PlayerLand	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\PlayerLand_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerLand		301504
+	279842676	Resume	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\Resume_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Resume		1059936
+	284921940	NightBite	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\NightBite_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelMusicContainer\NightBitePlaylist\NightBite\NightBite		24822464
+	291466921	Pause	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\Pause_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\Pause		1059936
+	350374130	FollowerFootstepLeft	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\SkeletonFootstepLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Follower\FollowerFootstepLeft		243592
+	440275923	ChargerFootstepLeft	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerFootstepLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerFootstepLeft		284972
+	458271427	ButtonHover	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ButtonHover_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\ButtonHover		534624
+	587497112	ChargerHitRight	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerHitRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitRight		272908
+	666999680	PlayerFootstepSolidLeft	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\PlayerFootstepSolidLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerFootstepSolidLeft		284696
+	732349458	ChargerMissRight	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerMissRight_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissRight		242412
+	814615840	TitleMusic	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\TitleMusic_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelMusicContainer\TitleMusicPlaylist\TitleMusic\TitleMusic		17280160
+	846379177	PlayerJump	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\PlayerJump_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerJump		300680
+	849657380	EmpowerTokenSelect	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\EmpowerTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\EmpowerTokenSelect		354360
+	851750572	WeakenTokenSelect	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\WeakenTokenSelect_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\UI\WeakenTokenSelect		282060
+	939970087	ChargerMissLeft	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerMissLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerMissLeft		242412
+	1003731978	PlayerDash	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\PlayerDash_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Player\PlayerDash		300864
+	1006519674	LavaAmbient	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\LavaAmbient_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TopLevelAmbientContainer\LavaAmbientPlaylist\LavaAmbient\LavaAmbient		12852404
+	1012147918	TitleTrack	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\MainLoop_FBC78EF0.wem		\Interactive Music Hierarchy\Default Work Unit\TestMusicPlaylist\TitleLoop\TitleTrack		16685664
+	1044931328	ChargerHitLeft	C:\Users\samso\Desktop\Projects\Aspen2024-2025\WwiseProject\.cache\Mac\SFX\ChargerHitLeft_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\Charger\ChargerHitLeft		272908
 

@@ -9,11 +9,7 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
-<<<<<<< HEAD
-		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{BAB983D7-9711-6802-F26E-8CCBFBFB6C5F}">
-=======
-		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{88883AF6-92C8-EB8D-79D5-97D24A15D7C2}">
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
+		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{C06A6E33-F553-FACC-FFF8-497EDDCAD407}">
 			<ShortName>EvanTestSoundbank</ShortName>
 			<Path>EvanTestSoundbank.bnk</Path>
 			<Media>
@@ -21,7 +17,6 @@
 					<ShortName>swoosh.wav</ShortName>
 					<CachePath>SFX/swoosh_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="72517855" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>FoodBiomeSelect.wav</ShortName>
 					<CachePath>SFX/FoodBiomeSelect_818F3B66.wem</CachePath>
@@ -46,24 +41,18 @@
 					<ShortName>CardSelect.wav</ShortName>
 					<CachePath>SFX/CardSelect_818F3B66.wem</CachePath>
 				</File>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<File Id="203157227" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerFootstepSolidRight.wav</ShortName>
 					<CachePath>SFX/PlayerFootstepSolidRight_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="267959341" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>ButtonSelect.wav</ShortName>
 					<CachePath>SFX/ButtonSelect_818F3B66.wem</CachePath>
 				</File>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<File Id="271256691" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerLand.wav</ShortName>
 					<CachePath>SFX/PlayerLand_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="279842676" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>Resume.wav</ShortName>
 					<CachePath>SFX/Resume_818F3B66.wem</CachePath>
@@ -92,13 +81,10 @@
 					<ShortName>ChargerHitRight.wav</ShortName>
 					<CachePath>SFX/ChargerHitRight_818F3B66.wem</CachePath>
 				</File>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<File Id="666999680" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerFootstepSolidLeft.wav</ShortName>
 					<CachePath>SFX/PlayerFootstepSolidLeft_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="732349458" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>ChargerMissRight.wav</ShortName>
 					<CachePath>SFX/ChargerMissRight_818F3B66.wem</CachePath>
@@ -107,13 +93,10 @@
 					<ShortName>TitleMusic.wav</ShortName>
 					<CachePath>SFX/TitleMusic_FBC78EF0.wem</CachePath>
 				</File>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<File Id="846379177" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerJump.wav</ShortName>
 					<CachePath>SFX/PlayerJump_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="849657380" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>EmpowerTokenSelect.wav</ShortName>
 					<CachePath>SFX/EmpowerTokenSelect_818F3B66.wem</CachePath>
@@ -126,13 +109,10 @@
 					<ShortName>ChargerMissLeft.wav</ShortName>
 					<CachePath>SFX/ChargerMissLeft_818F3B66.wem</CachePath>
 				</File>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<File Id="1003731978" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>PlayerDash.wav</ShortName>
 					<CachePath>SFX/PlayerDash_818F3B66.wem</CachePath>
 				</File>
-<<<<<<< HEAD
 				<File Id="1006519674" Language="SFX" Streaming="false" Location="Memory">
 					<ShortName>LavaAmbient.wav</ShortName>
 					<CachePath>SFX/LavaAmbient_FBC78EF0.wem</CachePath>
@@ -238,10 +218,6 @@
 						</SwitchContainer>
 					</SwitchContainers>
 				</Event>
-=======
-			</Media>
-			<Events>
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<Event Id="2525052962" Name="PlayerDash" DurationType="OneShot" DurationMin="1.705034" DurationMax="1.705034">
 					<MediaRefs>
 						<MediaRef Id="1003731978"/>
@@ -267,7 +243,6 @@
 						<MediaRef Id="271256691"/>
 					</MediaRefs>
 				</Event>
-<<<<<<< HEAD
 				<Event Id="953277036" Name="Resume" DurationType="OneShot" DurationMin="6.0081635" DurationMax="6.0081635">
 					<MediaRefs>
 						<MediaRef Id="279842676"/>
@@ -278,15 +253,12 @@
 						<MediaRef Id="851750572"/>
 					</MediaRefs>
 				</Event>
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 				<Event Id="899748333" Name="WeaponSwing" DurationType="OneShot" DurationMin="0.45278913" DurationMax="0.45278913">
 					<MediaRefs>
 						<MediaRef Id="35863944"/>
 					</MediaRefs>
 				</Event>
 			</Events>
-<<<<<<< HEAD
 			<StateGroups>
 				<StateGroup Id="261089142" Name="GameMode">
 					<States>
@@ -299,10 +271,6 @@
 			</StateGroups>
 		</SoundBank>
 		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{83A2C8A8-89BA-7E82-A52B-4AF143D5867D}">
-=======
-		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{D326F752-7CA2-0A14-FDB1-63ECE89D0199}">
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
@@ -314,7 +282,6 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus"/>
 			</Busses>
-<<<<<<< HEAD
 			<StateGroups>
 				<StateGroup Id="261089142" Name="GameMode">
 					<States>
@@ -342,10 +309,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{9C087B50-25F0-3696-0A7D-7EC3EF55DD1A}</FileHash>
-=======
-		</SoundBank>
-	</SoundBanks>
-	<FileHash>{E7FD040A-C937-447C-326E-3BB1BACF5DA4}</FileHash>
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
+	<FileHash>{5FD2FAE3-1C50-7EBF-5149-0BF2CCD9D268}</FileHash>
 </SoundBanksInfo>
