@@ -9,7 +9,7 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
-		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{C06A6E33-F553-FACC-FFF8-497EDDCAD407}">
+		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{901754D8-6F14-E1BC-3A2B-B0C58A2FD8B9}">
 			<ShortName>EvanTestSoundbank</ShortName>
 			<Path>EvanTestSoundbank.bnk</Path>
 			<Media>
@@ -259,6 +259,12 @@
 					</MediaRefs>
 				</Event>
 			</Events>
+			<Busses>
+				<Bus Id="3803692087" Name="Master Audio Bus"/>
+			</Busses>
+			<GameParameters>
+				<GameParameter Id="2918011349" Name="MasterVolume"/>
+			</GameParameters>
 			<StateGroups>
 				<StateGroup Id="261089142" Name="GameMode">
 					<States>
@@ -270,7 +276,7 @@
 				</StateGroup>
 			</StateGroups>
 		</SoundBank>
-		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{F26CD99A-D4E2-73D4-30F6-072E6B130866}">
+		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{58671FE8-9EA9-0DF1-27AF-DFFF0EF91337}">
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 			<Plugins>
@@ -282,6 +288,9 @@
 			<Busses>
 				<Bus Id="3803692087" Name="Master Audio Bus"/>
 			</Busses>
+			<GameParameters>
+				<GameParameter Id="2918011349" Name="MasterVolume"/>
+			</GameParameters>
 			<StateGroups>
 				<StateGroup Id="261089142" Name="GameMode">
 					<States>
@@ -309,5 +318,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{73543E6F-E3E4-9214-58D8-4A7AFD316B80}</FileHash>
+	<FileHash>{B642F431-7CCD-1478-61E9-785392DA50BB}</FileHash>
 </SoundBanksInfo>

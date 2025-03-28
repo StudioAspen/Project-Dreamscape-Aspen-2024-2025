@@ -13,7 +13,6 @@ namespace AK
 {
     namespace EVENTS
     {
-<<<<<<< HEAD
         static const AkUniqueID BUTTONHOVER = 3035572085U;
         static const AkUniqueID BUTTONSELECT = 2903558085U;
         static const AkUniqueID CARDSELECT = 3128074203U;
@@ -30,14 +29,11 @@ namespace AK
         static const AkUniqueID PLAY_FOLLOWERFOOTSTEPRIGHT = 1352216468U;
         static const AkUniqueID PLAY_TESTMUSICPLAYLIST = 3745406025U;
         static const AkUniqueID PLAY_TOPLEVELMUSICCONTAINER = 3458950525U;
-=======
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
         static const AkUniqueID PLAYERDASH = 2525052962U;
         static const AkUniqueID PLAYERFOOTSTEPSOLIDLEFT = 732023582U;
         static const AkUniqueID PLAYERFOOTSTEPSOLIDRIGHT = 3581650749U;
         static const AkUniqueID PLAYERJUMP = 4008126242U;
         static const AkUniqueID PLAYERLAND = 846198821U;
-<<<<<<< HEAD
         static const AkUniqueID RESUME = 953277036U;
         static const AkUniqueID WEAKENTOKENSELECT = 590263643U;
         static const AkUniqueID WEAPONSWING = 899748333U;
@@ -85,11 +81,11 @@ namespace AK
 
     } // namespace STATES
 
-=======
-        static const AkUniqueID WEAPONSWING = 899748333U;
-    } // namespace EVENTS
+    namespace GAME_PARAMETERS
+    {
+        static const AkUniqueID MASTERVOLUME = 2918011349U;
+    } // namespace GAME_PARAMETERS
 
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
     namespace BANKS
     {
         static const AkUniqueID INIT = 1355168291U;

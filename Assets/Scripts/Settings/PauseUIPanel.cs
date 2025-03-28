@@ -203,6 +203,8 @@ public class PauseUIPanel : UIPanel
         PlayerPreferences.Instance.SetMasterVolume(newValue);
         volumeSlider.SetSliderOriginalText($"Volume: {Mathf.RoundToInt(newValue * 100f)}%");
         volumeSlider.ForceUpdateText();
+
+        AkSoundEngine.SetRTPCValue("MasterVolume", newValue * 100f);
     }
 
     private void OnCameraSensitivitySliderValueChanged(float newValue) {
