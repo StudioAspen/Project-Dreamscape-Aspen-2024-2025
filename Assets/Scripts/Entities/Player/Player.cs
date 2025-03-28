@@ -333,13 +333,13 @@ public class Player : Entity
 
     public override void PlayFootstepLeft()
     {
-        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+        if (CurrentState != PlayerWalkState) { return; }
         AkSoundEngine.PostEvent("PlayerFootstepSolidLeft", gameObject);
     }
 
     public override void PlayFootstepRight()
     {
-        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+        if (CurrentState != PlayerWalkState) { return; }
         AkSoundEngine.PostEvent("PlayerFootstepSolidRight", gameObject);
     }
 }

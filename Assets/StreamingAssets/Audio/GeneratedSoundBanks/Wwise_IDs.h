@@ -25,6 +25,10 @@ namespace AK
         static const AkUniqueID PLAY_CHARGERHITRIGHT = 520370339U;
         static const AkUniqueID PLAY_CHARGERMISSLEFT = 543040975U;
         static const AkUniqueID PLAY_CHARGERMISSRIGHT = 166950546U;
+        static const AkUniqueID PLAY_FOLLOWERFOOTSTEPLEFT = 1446475553U;
+        static const AkUniqueID PLAY_FOLLOWERFOOTSTEPRIGHT = 1352216468U;
+        static const AkUniqueID PLAY_TESTMUSICPLAYLIST = 3745406025U;
+        static const AkUniqueID PLAY_TOPLEVELMUSICCONTAINER = 3458950525U;
         static const AkUniqueID PLAYERDASH = 2525052962U;
         static const AkUniqueID PLAYERFOOTSTEPSOLIDLEFT = 732023582U;
         static const AkUniqueID PLAYERFOOTSTEPSOLIDRIGHT = 3581650749U;
@@ -34,6 +38,48 @@ namespace AK
         static const AkUniqueID WEAKENTOKENSELECT = 590263643U;
         static const AkUniqueID WEAPONSWING = 899748333U;
     } // namespace EVENTS
+
+    namespace STATES
+    {
+        namespace BIOME
+        {
+            static const AkUniqueID GROUP = 835576787U;
+
+            namespace STATE
+            {
+                static const AkUniqueID DREAMFOREST = 813526661U;
+                static const AkUniqueID FOOD = 3031504781U;
+                static const AkUniqueID LAVA = 540301611U;
+                static const AkUniqueID NONE = 748895195U;
+            } // namespace STATE
+        } // namespace BIOME
+
+        namespace GAMEMODE
+        {
+            static const AkUniqueID GROUP = 261089142U;
+
+            namespace STATE
+            {
+                static const AkUniqueID ACTIVEGAMEPLAY = 2280308571U;
+                static const AkUniqueID NONE = 748895195U;
+                static const AkUniqueID TITLE = 3705726509U;
+                static const AkUniqueID VICTORY = 2716678721U;
+            } // namespace STATE
+        } // namespace GAMEMODE
+
+        namespace MENUSTATE
+        {
+            static const AkUniqueID GROUP = 1548586727U;
+
+            namespace STATE
+            {
+                static const AkUniqueID INMENU = 3374585465U;
+                static const AkUniqueID NONE = 748895195U;
+                static const AkUniqueID OUTSIDEMENU = 1858159279U;
+            } // namespace STATE
+        } // namespace MENUSTATE
+
+    } // namespace STATES
 
     namespace BANKS
     {

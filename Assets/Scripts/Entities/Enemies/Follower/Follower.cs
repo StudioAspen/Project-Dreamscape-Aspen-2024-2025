@@ -70,11 +70,11 @@ public class Follower : Enemy
 
     public override void PlayFootstepLeft()
     {
-        AkSoundEngine.PostEvent("Play_SkeletonFootstepLeft", gameObject);
+        AkSoundEngine.PostEvent("Play_FollowerFootstepLeft", gameObject);
     }
 
     public override void PlayFootstepRight()
     {
-        AkSoundEngine.PostEvent("Play_SkeletonFootstepRight", gameObject);
+        AkSoundEngine.PostEvent("Play_FollowerFootstepRight", gameObject);
     }
 }

@@ -273,6 +273,72 @@
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Shielder" ID="{A71E1DAA-2290-4515-BCB4-619AB52AEEF0}" ShortID="605855559"/>
+				<Folder Name="Follower" ID="{D30FB231-8898-4672-942D-2CDC85BF5293}" ShortID="55719959">
+					<ChildrenList>
+						<Event Name="Play_FollowerFootstepLeft" ID="{05A14DFD-D63D-4FC4-A49C-70369500EE54}">
+							<ChildrenList>
+								<Action Name="" ID="{620BE0B5-AAA5-454A-A2BF-71383671E5DD}" ShortID="1019575595">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="FollowerFootstepLeft" ID="{45D5CC92-34A2-41AD-A464-0DEAF07AB57E}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Play_FollowerFootstepRight" ID="{B3799BA3-191A-4B40-90F8-D3AED1D78A63}">
+							<ChildrenList>
+								<Action Name="" ID="{BCC29FDC-01C2-4306-AF34-4FD08617CE2C}" ShortID="624890727">
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="FollowerFootstepRight" ID="{EE6CEA2E-D091-49D4-916D-D0F5C910F276}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Event Name="Play_TopLevelMusicContainer" ID="{9505B518-0534-4EC8-9565-24316EE1988A}">
+					<ChildrenList>
+						<Action Name="" ID="{08BC7CD5-220D-499A-987A-BA7712943159}" ShortID="249205052">
+							<PropertyList>
+								<Property Name="FadeTime" Type="Real64" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="TopLevelMusicContainer" ID="{4DECA34F-AF78-48B6-8EBB-1EEE1CB5DD18}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_TopLevelAmbientContainer" ID="{04EEE3D1-3929-486F-BE19-16A5302AAA5A}">
+					<ChildrenList>
+						<Action Name="" ID="{CE734FDF-6635-4990-81FE-0E43A8E90B38}" ShortID="260050068">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="TopLevelAmbientContainer" ID="{F2C8AB4F-9A4B-4E67-92CB-057CB12D5740}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_TopLevelAmbientContainer" ID="{0271572B-6B70-48FD-B659-B8EEC0ECE666}">
+					<ChildrenList>
+						<Action Name="" ID="{191617BD-0038-4320-ADBF-465F30A1FC5D}" ShortID="288191776">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="TopLevelAmbientContainer" ID="{F2C8AB4F-9A4B-4E67-92CB-057CB12D5740}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

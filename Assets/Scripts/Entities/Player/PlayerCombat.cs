@@ -90,12 +90,7 @@ public class PlayerCombat : MonoBehaviour
         CameraShakeManager.Instance.ShakeCamera(5f, 0.1f, 0.25f);
     }
 
-    private void Weapon_OnWeaponStartSwing(Entity attacker)
-    {
-        AkSoundEngine.PostEvent("WeaponSwing", gameObject);
-    }
-
-    private void Weapon_OnWeaponStartSwing(Entity attacker)
+    private void Weapon_OnWeaponStartSwing(Entity attacker, ComboDataSO combo)
     {
         AkSoundEngine.PostEvent("WeaponSwing", gameObject);
     }

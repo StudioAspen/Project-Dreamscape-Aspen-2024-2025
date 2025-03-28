@@ -366,7 +366,14 @@
 				<Folder Name="Charger" ID="{6E497DDE-98A9-4698-9C3E-C2D425CEDE44}" ShortID="878692069">
 					<ChildrenList>
 						<Sound Name="ChargerHitLeft" ID="{FE0B713D-317A-4B29-9DD2-25594277F90B}" ShortID="375921224">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="HitAttenuation" ID="{0802699F-7DD0-44D4-92E8-9855034D4A06}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -388,7 +395,14 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="ChargerHitRight" ID="{878CADE9-1C64-4F93-977C-6EC8C99F1AB1}" ShortID="322194683">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="HitAttenuation" ID="{0802699F-7DD0-44D4-92E8-9855034D4A06}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -410,7 +424,14 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="ChargerMissLeft" ID="{4101472B-99F1-4685-AAE9-08257205DD1F}" ShortID="572858100">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="HitAttenuation" ID="{0802699F-7DD0-44D4-92E8-9855034D4A06}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -432,7 +453,14 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="ChargerMissRight" ID="{F528391E-572B-4E5D-A4ED-0928009687AD}" ShortID="930196922">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="HitAttenuation" ID="{0802699F-7DD0-44D4-92E8-9855034D4A06}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -454,7 +482,14 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="ChargerFootstepLeft" ID="{3743E0AF-F804-4AAB-AE63-FCF214BDEFE7}" ShortID="123115466">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="EnemyAttenuation" ID="{FDE3A0E8-EAF1-4000-8D56-57DB4FA08732}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -476,7 +511,14 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="ChargerFootstepRight" ID="{EACA2C77-F6EB-436C-B1EC-D390AE1AF3C9}" ShortID="15613758">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="EnemyAttenuation" ID="{FDE3A0E8-EAF1-4000-8D56-57DB4FA08732}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
 								</Reference>
@@ -501,6 +543,68 @@
 				</Folder>
 				<Folder Name="Shielder" ID="{34E119FA-7101-412A-AF1C-3F6865B08066}" ShortID="990311206"/>
 				<Folder Name="Environmental" ID="{324587F1-1AED-481C-9C44-CD1FFA845F6E}" ShortID="668670178"/>
+				<Folder Name="Follower" ID="{DA814DAD-00F9-481A-A38C-9A585EEBB5CC}" ShortID="72464213">
+					<ChildrenList>
+						<Sound Name="FollowerFootstepLeft" ID="{45D5CC92-34A2-41AD-A464-0DEAF07AB57E}" ShortID="22693087">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="EnemyAttenuation" ID="{FDE3A0E8-EAF1-4000-8D56-57DB4FA08732}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="SkeletonFootstepLeft" ID="{C81D0350-E2C7-4E86-8DF6-17E7D0466ABA}">
+									<Language>SFX</Language>
+									<AudioFile>SkeletonFootstepLeft.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="350374130"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="SkeletonFootstepLeft" ID="{C81D0350-E2C7-4E86-8DF6-17E7D0466ABA}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="FollowerFootstepRight" ID="{EE6CEA2E-D091-49D4-916D-D0F5C910F276}" ShortID="257059601">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="1"/>
+								<Property Name="UseGameAuxSends" Type="bool" Value="True"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="EnemyAttenuation" ID="{FDE3A0E8-EAF1-4000-8D56-57DB4FA08732}" WorkUnitID="{2AE3E345-E9F5-4057-A114-21633B22BAFF}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="SkeletonFootstepRight" ID="{571B349A-D594-4D37-AC6C-71F6C3403229}">
+									<Language>SFX</Language>
+									<AudioFile>SkeletonFootstepRight.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="92385256"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="SkeletonFootstepRight" ID="{571B349A-D594-4D37-AC6C-71F6C3403229}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

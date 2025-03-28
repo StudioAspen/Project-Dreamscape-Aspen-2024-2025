@@ -129,7 +129,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         rightMissEnabled = false;
     }
 
-    public void ConditionallyPlayLeftMiss(Entity entity)
+    public void ConditionallyPlayLeftMiss(Entity entity, ComboDataSO combo)
     {
         if (leftMissEnabled)
         {
@@ -138,7 +138,7 @@ public class ChargerJabbingAttackState : ChargerBaseState
         leftMissEnabled = true;
     }
 
-    public void ConditionallyPlayRightMiss(Entity entity)
+    public void ConditionallyPlayRightMiss(Entity entity, ComboDataSO combo)
     {
         if (rightMissEnabled)
         {
