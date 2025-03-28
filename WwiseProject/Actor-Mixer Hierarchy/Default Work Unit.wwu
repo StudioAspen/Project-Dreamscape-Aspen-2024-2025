@@ -3,6 +3,7 @@
 	<AudioObjects>
 		<WorkUnit Name="Default Work Unit" ID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" PersistMode="Standalone">
 			<ChildrenList>
+<<<<<<< HEAD
 				<Folder Name="Player" ID="{7F5119B7-D7E9-48FF-9ECF-3FF9BF86F277}" ShortID="946469629">
 					<ChildrenList>
 						<Sound Name="PlayerFootstepSolidRight" ID="{23138999-6D66-493F-B63D-F93200FE128B}" ShortID="524099692">
@@ -605,6 +606,140 @@
 						</Sound>
 					</ChildrenList>
 				</Folder>
+=======
+				<Sound Name="BaseWeaponSwing" ID="{B73573F2-81E8-41EC-9E06-9422458E6825}" ShortID="949945369">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="swoosh" ID="{6853BC28-448C-4D10-A009-80D0BC6B2695}">
+							<Language>SFX</Language>
+							<AudioFile>swoosh.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="35863944"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="swoosh" ID="{6853BC28-448C-4D10-A009-80D0BC6B2695}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="PlayerJump" ID="{996AF6D1-781C-43B8-AF0E-E732F8C377A8}" ShortID="5235238">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="PlayerJump" ID="{3E5EF7A6-DCE0-4BD9-ABC4-36F565037124}">
+							<Language>SFX</Language>
+							<AudioFile>PlayerJump.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="846379177"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="PlayerJump" ID="{3E5EF7A6-DCE0-4BD9-ABC4-36F565037124}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="PlayerLand" ID="{73A207DA-2AEC-431D-9925-CF4E88FCE920}" ShortID="1055834824">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="PlayerLand" ID="{D8F2B6F7-019D-4EBA-9C32-EF21C69510E3}">
+							<Language>SFX</Language>
+							<AudioFile>PlayerLand.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="271256691"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="PlayerLand" ID="{D8F2B6F7-019D-4EBA-9C32-EF21C69510E3}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="PlayerDash" ID="{935353AD-4733-414C-BA67-7D7F36DD4AC4}" ShortID="798610205">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="PlayerDash" ID="{A1210F94-7355-47AC-9B98-EAC208BD6902}">
+							<Language>SFX</Language>
+							<AudioFile>PlayerDash.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="1003731978"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="PlayerDash" ID="{A1210F94-7355-47AC-9B98-EAC208BD6902}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="PlayerFootstepSolidLeft" ID="{18CA0C5A-868D-40F0-BA5F-A7C64CD08C61}" ShortID="905785247">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="PlayerFootstepSolidLeft" ID="{D4ED4252-D72F-4406-9B7A-D675B0FD6EEE}">
+							<Language>SFX</Language>
+							<AudioFile>PlayerFootstepSolidLeft.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="666999680"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="PlayerFootstepSolidLeft" ID="{D4ED4252-D72F-4406-9B7A-D675B0FD6EEE}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="PlayerFootstepSolidRight" ID="{23138999-6D66-493F-B63D-F93200FE128B}" ShortID="524099692">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{EA80B146-CE09-4E3D-BB93-2114E21753EB}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{CE676510-5630-4B32-A1A9-196898688815}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="PlayerFootstepSolidRight" ID="{E85D87D3-D6D3-4432-9788-C01F06E7C5D7}">
+							<Language>SFX</Language>
+							<AudioFile>PlayerFootstepSolidRight.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="203157227"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="PlayerFootstepSolidRight" ID="{E85D87D3-D6D3-4432-9788-C01F06E7C5D7}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+>>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

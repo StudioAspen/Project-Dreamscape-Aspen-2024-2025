@@ -331,6 +331,7 @@ public class Player : Entity
         blendTreeAnimator.runtimeAnimatorController = overrideController;
     }
 
+<<<<<<< HEAD
     public override void PlayFootstepLeft()
     {
         if (CurrentState != PlayerWalkState) { return; }
@@ -340,6 +341,17 @@ public class Player : Entity
     public override void PlayFootstepRight()
     {
         if (CurrentState != PlayerWalkState) { return; }
+=======
+    public void PlayFootstepLeft()
+    {
+        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+        AkSoundEngine.PostEvent("PlayerFootstepSolidLeft", gameObject);
+    }
+
+    public void PlayFootstepRight()
+    {
+        if (CurrentState != PlayerWalkState && CurrentState != PlayerSprintState) { return; }
+>>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
         AkSoundEngine.PostEvent("PlayerFootstepSolidRight", gameObject);
     }
 }
