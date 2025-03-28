@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d09c7e563ff64a629bc5143109003ca6, type: 3}
   m_Name: Fire Biome Variant
   m_EditorClassIdentifier: 
-  <DisplayName>k__BackingField: Status Effect
-  <Description>k__BackingField: Status effect description
+  <DisplayName>k__BackingField: Fire Biome Status
+  <Description>k__BackingField: Enemies move slower but apply burning to player on
+    hit
   <Stackable>k__BackingField: 0
-  <BuffType>k__BackingField: 0
-  <Name>k__BackingField: Variant
-  <MaxHealthMultiplier>k__BackingField: 1.25
-  <EXPValueMultiplier>k__BackingField: 1.25
-  <SizeMultiplier>k__BackingField: 1.25
-  <DamageMultiplier>k__BackingField: 1.25
-  <MovementSpeedMultiplier>k__BackingField: 0.67
+  <BuffType>k__BackingField: 2
+  <Name>k__BackingField: 
+  <MaxHealthMultiplier>k__BackingField: 1
+  <EXPValueMultiplier>k__BackingField: 1
+  <SizeMultiplier>k__BackingField: 1
+  <DamageMultiplier>k__BackingField: 1
+  <MovementSpeedMultiplier>k__BackingField: 0.1

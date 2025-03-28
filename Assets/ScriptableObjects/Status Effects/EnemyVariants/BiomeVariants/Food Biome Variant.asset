@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4151455e082c4404b3792dbc3411fbc1, type: 3}
   m_Name: Food Biome Variant
   m_EditorClassIdentifier: 
-  <DisplayName>k__BackingField: Status Effect
-  <Description>k__BackingField: Status effect description
+  <DisplayName>k__BackingField: Food Biome Status
+  <Description>k__BackingField: Enemies move faster but have a chance to drop a food
+    consumable that heals the player on touch.
   <Stackable>k__BackingField: 0
-  <BuffType>k__BackingField: 0
-  <Name>k__BackingField: Variant
-  <MaxHealthMultiplier>k__BackingField: 1.25
-  <EXPValueMultiplier>k__BackingField: 1.25
-  <SizeMultiplier>k__BackingField: 1.25
-  <DamageMultiplier>k__BackingField: 1.25
-  <MovementSpeedMultiplier>k__BackingField: 1.337
+  <BuffType>k__BackingField: 1
+  <Name>k__BackingField: 
+  <MaxHealthMultiplier>k__BackingField: 1
+  <EXPValueMultiplier>k__BackingField: 1
+  <SizeMultiplier>k__BackingField: 1
+  <DamageMultiplier>k__BackingField: 1
+  <MovementSpeedMultiplier>k__BackingField: 5
   <FoodDropChance>k__BackingField: 0.15
