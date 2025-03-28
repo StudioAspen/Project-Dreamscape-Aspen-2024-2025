@@ -29,11 +29,7 @@ public class PlayerDashState : PlayerBaseState
 
     public override void OnEnter()
     {
-<<<<<<< HEAD
         player.PlayOneShotAnimation(AnimationClip, DashDuration);
-=======
-        player.PlayOneShotAnimation(AnimationClip);
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
         AkSoundEngine.PostEvent("PlayerDash", player.gameObject);
 
         dashCooldownTimer = 0f; // Reset the dash cooldown timer when you start dashing
