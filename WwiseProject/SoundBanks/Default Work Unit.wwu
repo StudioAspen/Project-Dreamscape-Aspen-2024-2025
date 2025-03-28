@@ -5,7 +5,6 @@
 			<ChildrenList>
 				<SoundBank Name="EvanTestSoundbank" ID="{2DD448C1-0369-4F56-B1C0-3467FE5EEDC9}">
 					<ObjectInclusionList>
-<<<<<<< HEAD
 						<ObjectRef Name="FoodBiomeSelect" ID="{1E0BB50A-3364-4007-84F7-718548624F83}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="EmpowerTokenSelect" ID="{53DF00CB-C346-40F7-A7CD-60B6F856E046}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="PlayerDash" ID="{935353AD-4733-414C-BA67-7D7F36DD4AC4}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
@@ -46,14 +45,6 @@
 						<ObjectRef Name="FoodMusic" ID="{2C95A9A0-B3E8-4EE9-98BE-C61F479E5AB6}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="ChargerHitRight" ID="{878CADE9-1C64-4F93-977C-6EC8C99F1AB1}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Play_FollowerFootstepLeft" ID="{05A14DFD-D63D-4FC4-A49C-70369500EE54}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
-=======
-						<ObjectRef Name="PlayerDash" ID="{935353AD-4733-414C-BA67-7D7F36DD4AC4}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="BaseWeaponSwing" ID="{B73573F2-81E8-41EC-9E06-9422458E6825}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="PlayerLand" ID="{73A207DA-2AEC-431D-9925-CF4E88FCE920}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="PlayerJump" ID="{996AF6D1-781C-43B8-AF0E-E732F8C377A8}" WorkUnitID="{C76A5A93-D7D0-4921-99A3-AC996292595E}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="Player" ID="{1EAEC283-F837-4B3E-92F8-1EFBA1876839}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
-						<ObjectRef Name="WeaponSwing" ID="{D7AB3E65-0F0C-4DF5-985F-AD2740936A7C}" WorkUnitID="{9F52CB76-9F61-4277-A8EE-6BACB13C83C0}" Origin="Manual" Filter="7"/>
->>>>>>> 0fdc546bc55921de3630d2ecffecd33f123905e6
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
