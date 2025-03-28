@@ -22,12 +22,6 @@ public class PlayerIdleState : PlayerBaseState
         player.AccelerateToHorizontalSpeed(0f);
         player.ApplyHorizontalVelocity();
 
-        if (player.MoveDirection != Vector3.zero && player.PlayerSprintState.IsSprinting)
-        {
-            player.ChangeState(player.PlayerSprintState);
-            return;
-        }
-
         if (player.MoveDirection != Vector3.zero)
         {
             player.ChangeState(player.PlayerWalkState);

@@ -295,6 +295,10 @@ GameObject:
   - component: {fileID: 2411606197987123092}
   - component: {fileID: 4149513394303482825}
   - component: {fileID: 3934613862195641431}
+  - component: {fileID: 1482346031949010561}
+  - component: {fileID: 1842916140199244542}
+  - component: {fileID: 1815536099431545359}
+  - component: {fileID: 1783508924061164814}
   m_Layer: 16
   m_Name: Player
   m_TagString: Untagged
@@ -353,7 +357,9 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 200
-  baseSpeed: 3
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 5
   rotationSpeed: 10
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -387,16 +393,12 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
   groundedAcceleration: 4
-  <PlayerSprintState>k__BackingField:
-    <SprintSpeedModifier>k__BackingField: 1.66
-    IsSprinting: 0
   <PlayerDashState>k__BackingField:
     dashTrailParticle: {fileID: 8508715176541134875}
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: ab69ca9e285bf8b4aa58270be79beed0,
       type: 2}
     <DashDuration>k__BackingField: 0.25
     <InitialDashVelocity>k__BackingField: 75
-    <SprintDurationAfterDash>k__BackingField: 2
     <DashCooldown>k__BackingField: 1
   <PlayerJumpState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
@@ -705,6 +707,67 @@ MonoBehaviour:
     ClipSpeed: 1
     RestartWhenPlay: 0
   AnimationControll: {fileID: 9100000, guid: 50d240aa279a9be409ed39946418d119, type: 2}
+--- !u!114 &1482346031949010561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4e2af428beb3a40b063556e55fef6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!114 &1842916140199244542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d18546b4198a90c469c71f7864ac21bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0
+--- !u!114 &1815536099431545359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c9702ec5fa1fd47aa4f1e800bad24d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Collider: {fileID: 0}
+--- !u!114 &1783508924061164814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51485369ba395664981ede7e1a0a3aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0

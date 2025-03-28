@@ -44,7 +44,7 @@ public class Dummy : Enemy
     }
 
     // Override this method to make the dummy not take damage
-    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 

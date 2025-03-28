@@ -17,6 +17,18 @@ public class ChargerJabbingAttackState : ChargerBaseState
     private Entity rememberedTarget;
     private Vector3 directionToTarget;
     private float timer;
+    private bool leftMissEnabled = true;
+    private bool rightMissEnabled = true;
+
+    public override void Init(Entity entity)
+    {
+        base.Init(entity);
+
+        LeftFistWeapon.OnWeaponEndSwing += ConditionallyPlayLeftMiss;
+        RightFistWeapon.OnWeaponEndSwing += ConditionallyPlayRightMiss;
+        LeftFistWeapon.OnWeaponHit += PlayLeftHit;
+        RightFistWeapon.OnWeaponHit += PlayRightHit;
+    }
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
@@ -103,5 +115,35 @@ public class ChargerJabbingAttackState : ChargerBaseState
     public void DecrementJabCount()
     {
         RemainingJabs--;
+    }
+
+    public void PlayLeftHit(Entity entity, Entity target, Vector3 hitPoint, int damage)
+    {
+        AkSoundEngine.PostEvent("Play_ChargerHitLeft", charger.gameObject);
+        leftMissEnabled = false;
+    }
+
+    public void PlayRightHit(Entity entity, Entity target, Vector3 hitPoint, int damage)
+    {
+        AkSoundEngine.PostEvent("Play_ChargerHitRight", charger.gameObject);
+        rightMissEnabled = false;
+    }
+
+    public void ConditionallyPlayLeftMiss(Entity entity, ComboDataSO combo)
+    {
+        if (leftMissEnabled)
+        {
+            AkSoundEngine.PostEvent("Play_ChargerMissLeft", charger.gameObject);
+        }
+        leftMissEnabled = true;
+    }
+
+    public void ConditionallyPlayRightMiss(Entity entity, ComboDataSO combo)
+    {
+        if (rightMissEnabled)
+        {
+            AkSoundEngine.PostEvent("Play_ChargerMissRight", charger.gameObject);
+        }
+        rightMissEnabled = true;
     }
 }

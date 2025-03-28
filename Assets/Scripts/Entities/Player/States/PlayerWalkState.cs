@@ -25,12 +25,6 @@ public class PlayerWalkState : PlayerBaseState
             return;
         }
 
-        if (player.PlayerSprintState.IsSprinting)
-        {
-            player.ChangeState(player.PlayerSprintState);
-            return;
-        }
-
         player.ApplyRotationToNextMovement();
         player.RotateToTargetRotation();
         player.AccelerateToHorizontalSpeed(player.MovementSpeed);

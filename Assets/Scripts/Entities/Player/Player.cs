@@ -28,11 +28,6 @@ public class Player : Entity
     [field: Header("Player: Grounded Movement")]
     [SerializeField] private float groundedAcceleration = 4f;
     public Vector3 MoveDirection => playerInputReader.MoveDirection;
-    /// <summary>
-    /// Gets the maximum speed of the player, taking into account the sprint speed modifier.
-    /// </summary>
-    /// <returns>The maximum speed of the player.</returns>
-    public float MaxSpeed => PlayerSprintState.SprintSpeedModifier * baseSpeed;
     private float forwardAngleBasedOnCamera;
     public Quaternion TargetForwardRotation { get; private set; } = Quaternion.identity;
     public Vector3 TargetForwardDirection { get; private set; } = Vector3.forward;
@@ -42,7 +37,6 @@ public class Player : Entity
     [field: Header("Player: States")]
     [field: SerializeField] public PlayerIdleState PlayerIdleState { get; private set; }
     [field: SerializeField] public PlayerWalkState PlayerWalkState { get; private set; }
-    [field: SerializeField] public PlayerSprintState PlayerSprintState { get; private set; }
     [field: SerializeField] public PlayerDashState PlayerDashState { get; private set; }
     [field: SerializeField] public PlayerJumpState PlayerJumpState { get; private set; }
     [field: SerializeField] public PlayerFallState PlayerFallState { get; private set; }
@@ -57,7 +51,6 @@ public class Player : Entity
 
         PlayerIdleState.Init(this);
         PlayerWalkState.Init(this);
-        PlayerSprintState.Init(this);
         PlayerDashState.Init(this);
         PlayerJumpState.Init(this);
         PlayerFallState.Init(this);
@@ -251,7 +244,7 @@ public class Player : Entity
 
     private protected override void EvaluateMovementSpeed()
     {
-        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier.GetFloatValue() * SpeedModifier * baseSpeed;
+        MovementSpeed = PlayerSlideState.MovementOnSlopeSpeedModifier * StatusSpeedModifier.GetFloatValue() * SpeedModifier * BaseSpeed;
     }
 
     private protected override void TryChangeStaggeredState()
@@ -336,5 +329,17 @@ public class Player : Entity
 
         // Assign the override controller to the animator
         blendTreeAnimator.runtimeAnimatorController = overrideController;
+    }
+
+    public override void PlayFootstepLeft()
+    {
+        if (CurrentState != PlayerWalkState) { return; }
+        AkSoundEngine.PostEvent("PlayerFootstepSolidLeft", gameObject);
+    }
+
+    public override void PlayFootstepRight()
+    {
+        if (CurrentState != PlayerWalkState) { return; }
+        AkSoundEngine.PostEvent("PlayerFootstepSolidRight", gameObject);
     }
 }

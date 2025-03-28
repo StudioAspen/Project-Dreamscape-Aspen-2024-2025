@@ -165,6 +165,8 @@ public class EventSelectUIPanel : UIPanel
         PlayExitAnimation(clickedCard);
 
         previousEvent = clickedCard.CurrentEventType;
+
+        AkSoundEngine.PostEvent("CardSelect", clickedCard.gameObject);
     }
 
     /// <summary>

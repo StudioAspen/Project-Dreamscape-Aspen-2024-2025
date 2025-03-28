@@ -174,12 +174,14 @@ public class ProgressionManager : MonoBehaviour
         if (hoveredLand == null)
         {
             //Debug.LogWarning("Can't empower at this land");
+            PlayFailedActionSFX();
             return;
         }
 
         if (hoveredLand.LevelDifference >= 0 && EmpowerTokens <= 0)
         {
             //Debug.LogWarning("Not enough empower tokens");
+            PlayFailedActionSFX();
             return;
         }
 
@@ -191,6 +193,7 @@ public class ProgressionManager : MonoBehaviour
 
         if (hoveredLand.TryAddLevel(1))
         {
+            PlaySuccessfulEmpowerSFX();
             EmpowerTokens--;
         }
     }
@@ -207,12 +210,14 @@ public class ProgressionManager : MonoBehaviour
         if (hoveredLand == null)
         {
             //Debug.LogWarning("Can't weaken at this land");
+            PlayFailedActionSFX();
             return;
         }
 
         if (hoveredLand.LevelDifference <= 0 && WeakenTokens <= 0)
         {
             //Debug.LogWarning("Not enough weaken tokens");
+            PlayFailedActionSFX();
             return;
         }
 
@@ -224,6 +229,7 @@ public class ProgressionManager : MonoBehaviour
 
         if (hoveredLand.TryAddLevel(-1))
         {
+            PlaySuccessfulWeakenSFX();
             WeakenTokens--;
         }        
     }
@@ -262,5 +268,33 @@ public class ProgressionManager : MonoBehaviour
             land.UndoLevelChanges();
         }
     }
+    #endregion
+
+    #region SFX
+
+    /// <summary>
+    /// Plays the SFX for a failed empower/weaken attempt.
+    /// </summary>
+    private void PlayFailedActionSFX()
+    {
+        return; // TODO: when failed action SFX is added, assign here
+    }
+
+    /// <summary>
+    /// Plays the SFX for a successful land empower.
+    /// </summary>
+    private void PlaySuccessfulEmpowerSFX()
+    {
+        AkSoundEngine.PostEvent("EmpowerTokenSelect", gameObject);
+    }
+
+    /// <summary>
+    /// Plays the SFX for a successful land weaken.
+    /// </summary>
+    private void PlaySuccessfulWeakenSFX()
+    {
+        AkSoundEngine.PostEvent("WeakenTokenSelect", gameObject);
+    }
+
     #endregion
 }
