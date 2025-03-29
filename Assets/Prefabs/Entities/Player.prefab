@@ -359,13 +359,13 @@ MonoBehaviour:
     <BaseValue>k__BackingField: 200
   <Defense>k__BackingField:
     <BaseValue>k__BackingField: 0
-  <BaseSpeed>k__BackingField: 5
+  <BaseSpeed>k__BackingField: 7
   rotationSpeed: 10
   mass: 1
   <StatusSpeedModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   IsGrounded: 0
-  targetDetectionRadius: 10
+  targetDetectionRadius: 20
   <Team>k__BackingField: 0
   <BaseDamageRange>k__BackingField: {x: 5, y: 10}
   <DamageModifier>k__BackingField:
@@ -398,12 +398,12 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: ab69ca9e285bf8b4aa58270be79beed0,
       type: 2}
     <DashDuration>k__BackingField: 0.25
-    <InitialDashVelocity>k__BackingField: 75
+    <InitialDashVelocity>k__BackingField: 50
     <DashCooldown>k__BackingField: 1
   <PlayerJumpState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
       type: 3}
-    <JumpHeight>k__BackingField: 2
+    <JumpHeight>k__BackingField: 1.75
     <MaxJumpCount>k__BackingField: 1
     IsJumping: 0
   <PlayerFallState>k__BackingField:
@@ -427,9 +427,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3994e165571b624590722e7e6e5ffee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthRegenAmount: 5
-  healthRegenRate: 1
-  durationOutOfCombatToRegen: 5
+  healthRegenAmount: 10000000
+  healthRegenRate: 100
+  durationOutOfCombatToRegen: 1
 --- !u!114 &5620550920081884860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6132,13 +6132,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
