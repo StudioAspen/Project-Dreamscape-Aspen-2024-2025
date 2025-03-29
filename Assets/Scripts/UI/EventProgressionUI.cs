@@ -54,26 +54,25 @@ public class EventProgressionUI : MonoBehaviour
 
     private void UpdateQuestElements()
     { 
-      
-      // If there are no quests, deactivate the panel.
+      // If there are no quests, deactivate the panel and end the function.
       questsPanel.SetActive(progressionManager.CurrentQuests.Count > 0);
 
-      for (int i = 0; i < progressionManager.CurrentQuests.Count; i++)
-      {
-          ProgressionQuestSO quest = progressionManager.CurrentQuests[i];
+      for (int i = 0; i < questsElements.Length; i++)
+      {   
+        if (i < progressionManager.CurrentQuests.Count)
+        {
+            ProgressionQuestSO quest = progressionManager.CurrentQuests[i];
 
-          if (quest == null)
-          {
-              questsElements[i].Text.text = "";
-              questsElements[i].TokenImage.color = Color.clear;
-              questsElements[i].TokenImage.sprite = null;
-          }
-          else
-          {
-              questsElements[i].Text.text = quest.IsCompleted ? $"<s>{quest.ObjectiveText}</s>" : $"{quest.ObjectiveText}";
-              questsElements[i].TokenImage.color = Color.white;
-              questsElements[i].TokenImage.sprite = quest.CompletionReward == ProgressionQuestSO.Reward.EMPOWER_TOKEN ? empowerSprite : weakenSprite;
-          }
+            questsElements[i].Text.text = quest.IsCompleted ? $"<s>{quest.ObjectiveText}</s>" : $"{quest.ObjectiveText}";
+            questsElements[i].TokenImage.color = Color.white;
+            questsElements[i].TokenImage.sprite = quest.CompletionReward == ProgressionQuestSO.Reward.EMPOWER_TOKEN ? empowerSprite : weakenSprite;
+        }
+        else
+        {
+            questsElements[i].Text.text = "";
+            questsElements[i].TokenImage.color = Color.clear;
+            questsElements[i].TokenImage.sprite = null;
+        }
       }
     }
 }

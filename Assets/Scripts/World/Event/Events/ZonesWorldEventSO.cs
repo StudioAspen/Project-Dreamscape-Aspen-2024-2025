@@ -143,7 +143,8 @@ public class ZonesWorldEventSO : WorldEventSO
     // Get the highest possible floored integer from a square root
     int s = Mathf.FloorToInt(Mathf.Sqrt(worldManager.SpawnedLands.Count));
     // Returns the largest integer that, when squared, will be <= the number of spawned lands
-    int outbreakSize = Mathf.FloorToInt(Mathf.Pow(s - 1, 2));
+    int outbreakSize = Mathf.FloorToInt(Mathf.Pow(s, 2));
+    Debug.Log($"Greatest Perfect Square: {s}");
     Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
 
     // Gets a land by its weight, which increases proportionally with its land level.

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_TimesFlameSwingAspectQuestSO", menuName = "World/Progression Quest/Aspect Quests/Flame Swing")]
+[CreateAssetMenu(fileName = "_x_TimesFlameSwingGroundedAspectQuestSO", menuName = "World/Progression Quest/Aspect Quests/Flame Swing (Grounded)")]
 
-public class FlameSwingQuestSO : AspectQuestSO
+public class FlameSwingGroundedQuestSO : AspectQuestSO
 {
   [Header("Config")]
   [Range(1, 10)]
@@ -12,16 +12,16 @@ public class FlameSwingQuestSO : AspectQuestSO
 
   private protected override void OnActivated()
   {
-    throw new System.NotImplementedException();
+
   }
 
   private protected override void OnCleanUp()
   {
-    throw new System.NotImplementedException();
+
   }
 
   private protected override void OnUpdate()
   {
-    throw new System.NotImplementedException();
+
   }
 }

@@ -7,10 +7,7 @@ public abstract class SkillfulQuestSO : ProgressionQuestSO
   [SerializeField] protected int requiredPlayerLevel;
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
-  {
-    if (progressionManager.levelSystem == null)
-      progressionManager.levelSystem = FindFirstObjectByType<LevelSystem>();
-    
+  {  
     // Check whether the player is at least the required Level.
     if (progressionManager.levelSystem.Level < requiredPlayerLevel)
       return false;

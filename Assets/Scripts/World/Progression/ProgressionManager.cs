@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
@@ -10,9 +11,9 @@ public class ProgressionManager : MonoBehaviour
     public EventManager eventManager { get; private set; }
 
     // Loaded in different scene
-    public AspectsManager aspectsManager;
-    public Player player;
-    public LevelSystem levelSystem;
+    public AspectsManager aspectsManager { get; private set; }
+    public Player player { get; private set; }
+    public LevelSystem levelSystem { get; private set; }
 
     [Header("Config")]
     [SerializeField] private int baseEmpowerTokens = 2;
@@ -43,12 +44,6 @@ public class ProgressionManager : MonoBehaviour
     private void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
-
-        // Try to store these. If failed, the first quest that requires the reference will set it.
-        aspectsManager = FindFirstObjectByType<AspectsManager>();
-        player = FindFirstObjectByType<Player>();
-        levelSystem = FindFirstObjectByType<LevelSystem>();
-
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         EmpowerTokens = baseEmpowerTokens;
@@ -161,11 +156,38 @@ public class ProgressionManager : MonoBehaviour
         // After completing the first wave, we'll introduce the first quest type: Skillful Play.
         if (WaveIndex >= 2)
         {
-          SkillfulQuestSO skillfulQuestInstance = Instantiate(FindProgressionQuestByType(skillfulQuests));
+          if (player == null)
+            player = FindFirstObjectByType<Player>();
+          if (levelSystem == null)
+            levelSystem = FindFirstObjectByType<LevelSystem>();
+
+          SkillfulQuestSO skillfulQuestInstance = FindProgressionQuestByType(skillfulQuests);
           if (skillfulQuestInstance != null)
           {
+            Instantiate(skillfulQuestInstance);
             skillfulQuestInstance.Init(this);
             CurrentQuests.Add(skillfulQuestInstance);
+            skillfulQuests.Remove(skillfulQuestInstance);
+          }
+        }
+
+        // By the 5th wave, we can assume the player has already unlocked an aspect.
+        if (WaveIndex >= 5)
+        {
+          if (aspectsManager == null)
+            aspectsManager = FindFirstObjectByType<AspectsManager>();
+
+          // We'll introduce the second quest type: Aspects.
+          if (aspectsManager.EquippedAspectTrees.Length > 0)
+          {
+            AspectQuestSO aspectQuestInstance = FindProgressionQuestByType(aspectQuests);
+            if (aspectQuestInstance != null)
+            {
+              Instantiate(aspectQuestInstance);
+              aspectQuestInstance.Init(this);
+              CurrentQuests.Add(aspectQuestInstance);
+              aspectQuests.Remove(aspectQuestInstance);
+            }
           }
         }
 
@@ -220,10 +242,7 @@ public class ProgressionManager : MonoBehaviour
       if (quests.Count == 0)
         return null;
       else if (quests.Count == 1 && quests[0].MeetsCriteria(this))
-      {
-        quests.RemoveAt(0);
         return quests[0];
-      }
       
       // Find the easiest difficulty
       int difficulty = quests[0].Difficulty;
@@ -243,10 +262,7 @@ public class ProgressionManager : MonoBehaviour
 
         // If the player can complete it, we return it.
         if (quest.MeetsCriteria(this))
-        {
-          quests.RemoveAt(randomIndex);
           return quest;
-        }
       }
 
       return null;
