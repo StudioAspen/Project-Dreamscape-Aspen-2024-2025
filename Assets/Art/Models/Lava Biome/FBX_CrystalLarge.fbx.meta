@@ -3,7 +3,12 @@ guid: b1b1f5482f9aea04ca889cb9f66aabfe
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CrystalMediumTexture
+    second: {fileID: 2100000, guid: 6f08c5f14df1e384e88df30039112f00, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -3,7 +3,12 @@ guid: 2fb7be7916cf7a84a8ea057cbf631331
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SmallRock
+    second: {fileID: 2100000, guid: c6e32b880b6afef4f888862d37eb1ae8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

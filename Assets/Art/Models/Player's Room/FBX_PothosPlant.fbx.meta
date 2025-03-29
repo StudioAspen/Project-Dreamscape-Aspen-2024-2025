@@ -3,7 +3,17 @@ guid: f97f7486c5d1bf44586b5770c851648d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pleafmat
+    second: {fileID: 2100000, guid: cdf8cad5e24ab0949bec23445a2a9194, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: potmat
+    second: {fileID: 2100000, guid: e92705bc8eea86c43b73d7869b58c5d0, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

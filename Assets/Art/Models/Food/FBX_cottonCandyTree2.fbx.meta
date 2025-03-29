@@ -3,7 +3,17 @@ guid: 74880228f4d34c24e8c79cf92423e84f
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CottCandyLeafPink
+    second: {fileID: 2100000, guid: 2ba49c68e2fc9534e817f0c239257aa5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DreamTree3
+    second: {fileID: 2100000, guid: e1434c70f64f4a9418c3a789f12656d9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

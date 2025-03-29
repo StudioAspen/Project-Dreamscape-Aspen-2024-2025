@@ -3,7 +3,12 @@ guid: 28392a7138d695a4e93834031940eda1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DeadTree3
+    second: {fileID: 2100000, guid: 63a793a2e4a45504aaee8fa4edda692b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

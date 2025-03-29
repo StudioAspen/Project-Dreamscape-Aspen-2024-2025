@@ -3,7 +3,12 @@ guid: db70542c6d853ad418b98f50f11cd897
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GumdropStoneBlue
+    second: {fileID: 2100000, guid: 317b9d14fbfc4e548a4a20fe7e0c7058, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

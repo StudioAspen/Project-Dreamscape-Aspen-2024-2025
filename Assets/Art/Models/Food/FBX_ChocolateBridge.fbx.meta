@@ -3,7 +3,17 @@ guid: ad842169bac32e8478a93decf0d87b26
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BridgePlanks
+    second: {fileID: 2100000, guid: 83604d1b1227f6a468b13ba7390fba89, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BridgeTower
+    second: {fileID: 2100000, guid: 9fb7ba1cc31e2ed42a014ccc1a0f53eb, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

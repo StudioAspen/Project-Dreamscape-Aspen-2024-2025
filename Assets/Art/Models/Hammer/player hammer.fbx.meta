@@ -3,7 +3,32 @@ guid: 7e838649a46d05944a53c7fbed67797a
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Hammer_Head.001
+    second: {fileID: 2100000, guid: d201051418544ea40b4b990761f82fa1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: 06a0574d847109b4e90c2c0689bea8f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Star_texture.001
+    second: {fileID: 2100000, guid: 06a0574d847109b4e90c2c0689bea8f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stem.001
+    second: {fileID: 2100000, guid: 9a7df2aea736c034690c5726dde116aa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wraps_texture.001
+    second: {fileID: 2100000, guid: 1531cde014424794db7d9d21cbe30cba, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

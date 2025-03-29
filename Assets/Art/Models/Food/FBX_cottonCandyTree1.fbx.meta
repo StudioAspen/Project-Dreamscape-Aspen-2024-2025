@@ -3,7 +3,17 @@ guid: e27f031a9f2e4a842bd7516f61e5d160
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CottCandLeaf1Pink
+    second: {fileID: 2100000, guid: f242217e80b74dd4d9dd5868b4572fda, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: DeadTree1
+    second: {fileID: 2100000, guid: e1434c70f64f4a9418c3a789f12656d9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
