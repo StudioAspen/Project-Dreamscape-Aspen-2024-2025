@@ -6,6 +6,7 @@ public class FireBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
     
     [field: Header("Biome Enemy Status Effect Config")]
     [field: SerializeField] public float MovementSpeedMultiplier { get; private set; } = .67f;
+    [field: SerializeField] private BurnStatusEffectSO burnStatusEffect;
     
     private protected override void OnApply()
     {
@@ -20,7 +21,8 @@ public class FireBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         }
         
         enemy.StatusSpeedModifier.AddMultiplier(MovementSpeedMultiplier, this);
-        
+        enemy.OnEntityDealDamage += BurnVictim;
+
 
     }
 
@@ -29,7 +31,14 @@ public class FireBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO
         base.Cancel();
         
         enemy.StatusSpeedModifier.ClearBuffsFromSource(this);
+        enemy.OnEntityDealDamage -= BurnVictim;
         
+    }
+
+    private void BurnVictim(Entity attacker, Entity victim, Vector3 hitPoint, int damage) {
+        if (victim == null) return;
+        if (attacker == null) return;
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, burnStatusEffect, enemy.gameObject);
     }
     
     

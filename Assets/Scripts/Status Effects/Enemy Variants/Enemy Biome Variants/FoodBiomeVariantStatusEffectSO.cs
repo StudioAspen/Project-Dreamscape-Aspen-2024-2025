@@ -5,7 +5,7 @@ public class FoodBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO {
     [field: Header("Biome Enemy Status Effect Config")]
     [field: SerializeField] public float MovementSpeedMultiplier { get; private set; } = 1.337f;
     [field: SerializeField][field: Range(0f,1f)] public float FoodDropChance { get; private set; } = .15f;
-    
+    [field: SerializeField] private GameObject foodCollectiblePrefab;
     
     private protected override void OnApply()
     {
@@ -22,6 +22,7 @@ public class FoodBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO {
         Debug.LogWarning("Effect applied to " + enemy.name);
         
         enemy.StatusSpeedModifier.AddMultiplier(MovementSpeedMultiplier, this);
+        enemy.OnEntityDeath += TrySpawnFoodCollectible;
     }
 
     public override void Cancel()
@@ -29,6 +30,15 @@ public class FoodBiomeVariantStatusEffectSO : BiomeVariantStatusEffectSO {
         base.Cancel();
         
         enemy.StatusSpeedModifier.ClearBuffsFromSource(this);
+        enemy.OnEntityDeath -= TrySpawnFoodCollectible;
+    }
+
+    private void TrySpawnFoodCollectible(GameObject killer) {
+        if (Random.Range(0f, 1f) < FoodDropChance) {
+            Debug.LogWarning("Spawned food collectible");
+            FoodCollectible spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<FoodCollectible>(foodCollectiblePrefab, enemy.GetColliderCenterPosition() );
+            spawnedAbility.Init(enemy);
+        }
     }
     
 }
