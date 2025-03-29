@@ -25,6 +25,9 @@ public class TitleScreenManager : MonoBehaviour
         inputManager.OnControlSchemeChanged += InputManager_OnControlSchemeChanged;
 
         playButton.onClick.AddListener(PlayButton_OnClicked);
+
+        AkSoundEngine.PostEvent("Play_TopLevelMusicContainer", gameObject);
+        AkSoundEngine.SetState("GameMode", "Title");
     }
 
     private void OnDestroy()

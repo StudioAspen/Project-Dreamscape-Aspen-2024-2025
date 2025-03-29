@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}" SchemaVersion="119">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="GameMode" ID="{8E58EDB3-12DD-4336-BBA6-1F28E5A160AC}">
+					<ChildrenList>
+						<State Name="None" ID="{F9F3CB93-894C-4210-B115-DAD6780C6163}"/>
+						<State Name="Title" ID="{D2F14156-8BEF-482A-83EB-12EF8D6638D7}"/>
+						<State Name="ActiveGameplay" ID="{82FDA30B-205B-4C35-A0E0-1EA3A9E0EF5F}"/>
+						<State Name="Victory" ID="{992A06BF-497D-40AF-8F1E-8C339C8417E9}"/>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="Biome" ID="{4BA9B125-C0DC-4EA3-948C-4E333CEA4B75}">
+					<ChildrenList>
+						<State Name="None" ID="{7DD5BC25-18A9-4FAC-BB60-FCCA53D4BBB9}"/>
+						<State Name="Lava" ID="{C7CF3559-60FB-4968-85D2-DFDD47E74662}"/>
+						<State Name="Food" ID="{13076F91-4FF5-4A2B-839E-129F0196CDC9}"/>
+						<State Name="DreamForest" ID="{85FFBAB4-6ED8-40C5-A657-EDFB469BD887}"/>
+					</ChildrenList>
+				</StateGroup>
+				<StateGroup Name="MenuState" ID="{AC616963-2072-4C2A-8772-B0A0857931C4}">
+					<ChildrenList>
+						<State Name="None" ID="{6DA69FE5-D147-4942-B932-9531DD6DDDCB}"/>
+						<State Name="InMenu" ID="{EF0FA073-460E-400F-A5E8-C55DCA82E4C2}"/>
+						<State Name="OutsideMenu" ID="{2168787E-59DE-4DC9-B4C4-805207DAEFF2}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</States>
 </WwiseDocument>
