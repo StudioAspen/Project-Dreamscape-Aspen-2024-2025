@@ -5,6 +5,8 @@ using UnityEngine;
 public class AspectofAmbitionPassiveAStatusEffectSO: StatusEffectSO
 {
     [field: Header("Aspect of Ambition Passive A: Settings")]
+    public float speedBuff { get; protected set; }
+    public AmbitionDashState ambitionDashState;
 
     private void OnValidate()
     {
@@ -13,6 +15,11 @@ public class AspectofAmbitionPassiveAStatusEffectSO: StatusEffectSO
     private protected override void OnApply()
     {
         base.OnApply();
+
+        if (ambitionDashState.dashedThroughEnemy)
+        {
+            player.StatusSpeedModifier.AddMultiplier(speedBuff, this);
+        }
     }
 
     public override void Cancel()

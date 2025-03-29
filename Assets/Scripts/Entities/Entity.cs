@@ -431,6 +431,20 @@ public class Entity : MonoBehaviour, IPoolableObject
         CurrentState = state;
         CurrentState.OnEnter();
     }
+    public void ReplaceExistingState(ref EntityBaseState state, EntityBaseState newState)
+    {
+        if(CurrentState == state)
+        {
+            // save it and do it after the current state is finished
+
+            // to do
+        }else{
+            // do it now
+            state = newState;
+        }
+    }
+
+
     #endregion
 
     private void OnValidate()
