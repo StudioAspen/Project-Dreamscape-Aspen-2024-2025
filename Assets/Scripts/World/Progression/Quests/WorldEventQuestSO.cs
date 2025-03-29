@@ -8,5 +8,5 @@ public abstract class WorldEventQuestSO : ProgressionQuestSO
   [SerializeField] private WorldEventSO requiredWorldEvent;
 
   // For World Event Quests, the Current Event must be the one that's required in order for them to be selectable options for the progressionManager.
-  public override bool MeetsCriteria() => progressionManager.eventManager.CurrentEvent == requiredWorldEvent;
+  public override bool MeetsCriteria(ProgressionManager progressionManager) => progressionManager.eventManager.CurrentEvent == requiredWorldEvent;
 }

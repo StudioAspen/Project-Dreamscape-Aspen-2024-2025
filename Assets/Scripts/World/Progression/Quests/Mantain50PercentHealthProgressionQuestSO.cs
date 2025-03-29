@@ -9,7 +9,7 @@ public class Maintain50PercentHealthProgressionQuestSO : ProgressionQuestSO
     private Player player;
     private bool isFailed;
 
-  public override bool MeetsCriteria()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     throw new NotImplementedException();
   }

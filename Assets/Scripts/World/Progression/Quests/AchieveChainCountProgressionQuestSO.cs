@@ -10,7 +10,7 @@ public class AchieveChainCountProgressionQuestSO : ProgressionQuestSO
     [field: Header("Config")]
     [field: SerializeField] public int ChainGoal { get; private set; } = 15;
 
-  public override bool MeetsCriteria()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     throw new System.NotImplementedException();
   }

@@ -8,9 +8,11 @@ public class ProgressionManager : MonoBehaviour
     public GameManager gameManager { get; private set; }
     public WorldManager worldManager { get; private set; }
     public EventManager eventManager { get; private set; }
-    public AspectsManager aspectsManager { get; private set; }
-    public Player player { get; private set; }
-    public LevelSystem levelSystem { get; private set; }
+
+    // Loaded in different scene
+    public AspectsManager aspectsManager;
+    public Player player;
+    public LevelSystem levelSystem;
 
     [Header("Config")]
     [SerializeField] private int baseEmpowerTokens = 2;
@@ -24,9 +26,13 @@ public class ProgressionManager : MonoBehaviour
 
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
-    public int QuestCount { get; private set; } = 0;
     public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
+
+    // List Storage during runtime
+    private List<SkillfulQuestSO> skillfulQuests = new List<SkillfulQuestSO>();
+    private List<AspectQuestSO> aspectQuests = new List<AspectQuestSO>();
+    private List<WorldEventQuestSO> worldEventQuests = new List<WorldEventQuestSO>();
 
     private void Awake()
     {
@@ -37,6 +43,8 @@ public class ProgressionManager : MonoBehaviour
     private void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
+
+        // Try to store these. If failed, the first quest that requires the reference will set it.
         aspectsManager = FindFirstObjectByType<AspectsManager>();
         player = FindFirstObjectByType<Player>();
         levelSystem = FindFirstObjectByType<LevelSystem>();
@@ -48,6 +56,27 @@ public class ProgressionManager : MonoBehaviour
 
         // Sort the Quests in order of difficulty from least to greatest, just once.
         possibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
+
+        // Filter the Quests into lists based on their class, just once.
+        foreach(ProgressionQuestSO quest in possibleProgressionQuests)
+        {
+          switch (quest)
+          {
+            case SkillfulQuestSO sQ:
+              skillfulQuests.Add(sQ);
+              break;
+            case AspectQuestSO aQ:
+              aspectQuests.Add(aQ);
+              break;   
+            case WorldEventQuestSO eQ:
+              worldEventQuests.Add(eQ);
+              break;
+            default:
+              break;
+          }
+        }
+
+        // Total Time Complexity: n log n
     }
 
     private void OnDestroy()
@@ -129,15 +158,15 @@ public class ProgressionManager : MonoBehaviour
 
         CleanUpQuests(); // Just in case it wasn't done before
 
-        List<ProgressionQuestSO> remainingQuests = new List<ProgressionQuestSO>(possibleProgressionQuests);
-
         // After completing the first wave, we'll introduce the first quest type: Skillful Play.
-        if (QuestCount < 1 && WaveIndex >= 2)
+        if (WaveIndex >= 2)
         {
-          QuestCount = 1;
-
-          List<SkillfulQuestSO> skillfulQuests = possibleProgressionQuests.OfType<SkillfulQuestSO>().ToList();
-          Debug.Log($"Skillful Quests found: {skillfulQuests.Count}");
+          SkillfulQuestSO skillfulQuestInstance = Instantiate(FindProgressionQuestByType(skillfulQuests));
+          if (skillfulQuestInstance != null)
+          {
+            skillfulQuestInstance.Init(this);
+            CurrentQuests.Add(skillfulQuestInstance);
+          }
         }
 
 
@@ -161,12 +190,8 @@ public class ProgressionManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
 
-        for(int i = 0; i < CurrentQuests.Count; i++)
-        {
-            if (CurrentQuests[i] == null) continue;
-
-            CurrentQuests[i].Update();
-        }
+        foreach (ProgressionQuestSO quest in CurrentQuests)
+          quest.Update();
     }
 
     /// <summary>
@@ -174,15 +199,58 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CleanUpQuests()
     {
-        for (int i = 0; i < CurrentQuests.Count; i++)
-        {
-            if (CurrentQuests[i] == null) continue;
+        // for (int i = 0; i < CurrentQuests.Count; i++)
+        // {
+        //     if (CurrentQuests[i] == null) continue;
 
-            CurrentQuests[i].CleanUp();
-            CurrentQuests[i] = null;
-        }
+        //     CurrentQuests[i].CleanUp();
+        //     CurrentQuests[i] = null;
+        // }
+        if (CurrentQuests.Count == 0)
+          return;
+
+        foreach (ProgressionQuestSO quest in CurrentQuests)
+          quest.CleanUp();
+
+        CurrentQuests.Clear();
     }
 
+    private T FindProgressionQuestByType<T>(List<T> quests) where T : ProgressionQuestSO
+    {
+      if (quests.Count == 0)
+        return null;
+      else if (quests.Count == 1 && quests[0].MeetsCriteria(this))
+      {
+        quests.RemoveAt(0);
+        return quests[0];
+      }
+      
+      // Find the easiest difficulty
+      int difficulty = quests[0].Difficulty;
+
+      // Count of the quests with the easiest difficulty
+      int easiestQuestsCount = 0;
+      while (easiestQuestsCount < quests.Count && quests[easiestQuestsCount].Difficulty == difficulty)
+        easiestQuestsCount++;
+
+      // Prevent an infinite loop, but be reasonable so that the function finds a quest.
+      int maxAttempts = 20;
+      for (int a = 0; a < maxAttempts; a++)
+      {
+        // Pick a random quest of the lowest difficulty
+        int randomIndex = UnityEngine.Random.Range(0, easiestQuestsCount);
+        T quest = quests[randomIndex];
+
+        // If the player can complete it, we return it.
+        if (quest.MeetsCriteria(this))
+        {
+          quests.RemoveAt(randomIndex);
+          return quest;
+        }
+      }
+
+      return null;
+    }
     #endregion
 
     #region During Land Empowerment

@@ -12,7 +12,10 @@ public abstract class AspectQuestSO : ProgressionQuestSO
   [Range(0, 5)]
   [SerializeField] protected int nodeLevel;
 
-  public override bool MeetsCriteria(){
+  public override bool MeetsCriteria(ProgressionManager progressionManager){
+    if (progressionManager.aspectsManager == null)
+      progressionManager.aspectsManager = FindFirstObjectByType<AspectsManager>();
+
     AspectTree[] equippedAspectTrees = progressionManager.aspectsManager.EquippedAspectTrees;
 
     // First, check if the player has equipped the required Aspect Tree.

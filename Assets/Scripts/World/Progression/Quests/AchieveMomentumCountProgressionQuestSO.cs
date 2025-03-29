@@ -10,7 +10,7 @@ public class AchieveMomentumCountProgressionQuestSO : ProgressionQuestSO
     [field: Header("Config")]
     [field: SerializeField] public int MomentumGoal { get; private set; } = 5;
 
-  public override bool MeetsCriteria()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     throw new System.NotImplementedException();
   }

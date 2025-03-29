@@ -49,7 +49,7 @@ public class EventProgressionUI : MonoBehaviour
         eventManager.CurrentEvent.UpdateEventUIElements(feedbackText, nameText, optionalDescriptionText);
 
         // If there is not optional description, deactivate the Optional Description.
-        // optionalDescriptionText.gameObject.SetActive(optionalDescriptionText.text != string.Empty);
+        optionalDescriptionText.gameObject.SetActive(optionalDescriptionText.text != string.Empty);
     }
 
     private void UpdateQuestElements()

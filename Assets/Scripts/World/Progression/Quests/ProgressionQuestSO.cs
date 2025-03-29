@@ -31,7 +31,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
         OnActivated();
     }
 
-    public abstract bool MeetsCriteria();
+    public abstract bool MeetsCriteria(ProgressionManager progressionManager);
 
     /// <summary>
     /// Fires once when the game enters the PLAYING state. The player auto accepts progression quests every new event.

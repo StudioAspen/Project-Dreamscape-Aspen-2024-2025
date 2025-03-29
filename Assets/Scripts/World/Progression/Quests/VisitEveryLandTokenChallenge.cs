@@ -70,7 +70,7 @@ public class VisitEveryLandTokenChallenge : ProgressionQuestSO
         }
     }
 
-  public override bool MeetsCriteria()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     throw new System.NotImplementedException();
   }

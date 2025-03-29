@@ -70,7 +70,7 @@ public class AchieveDefeatEliteEnemiesWithoutBeingHit : ProgressionQuestSO
 
     }
 
-  public override bool MeetsCriteria()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     throw new NotImplementedException();
   }
