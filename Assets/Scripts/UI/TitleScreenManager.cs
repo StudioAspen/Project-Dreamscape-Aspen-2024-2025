@@ -27,7 +27,9 @@ public class TitleScreenManager : MonoBehaviour
         playButton.onClick.AddListener(PlayButton_OnClicked);
 
         AkSoundEngine.PostEvent("Play_TopLevelMusicContainer", gameObject);
+        AkSoundEngine.PostEvent("Play_TopLevelAmbientContainer", gameObject);
         AkSoundEngine.SetState("GameMode", "Title");
+        AkSoundEngine.SetState("Biome", "None");
     }
 
     private void OnDestroy()

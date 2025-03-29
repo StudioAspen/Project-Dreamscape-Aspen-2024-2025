@@ -18,6 +18,7 @@ public class LandManager : MonoBehaviour
 
     [field: Header("Settings")]
     [field: SerializeField] public Vector2Int GridPosition { get; private set; }
+    [field: SerializeField] public string WwiseStateName { get; private set; }
     public Biome Biome { get; private set; }
 
     [field: Header("Progression Tracking")]
@@ -152,6 +153,12 @@ public class LandManager : MonoBehaviour
     public void DisableLevelText()
     {
         levelText.gameObject.SetActive(false);
+    }
+
+    public void UpdateWwiseState()
+    {
+        Debug.Log($"Setting Wwise Biome state to {WwiseStateName}");
+        AkSoundEngine.SetState("Biome", WwiseStateName);
     }
 }
     

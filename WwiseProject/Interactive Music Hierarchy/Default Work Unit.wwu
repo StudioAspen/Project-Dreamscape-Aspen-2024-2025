@@ -800,13 +800,13 @@
 												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
 												<Property Name="ExitSourceAt" Type="int16" Value="0"/>
 												<Property Name="PlayDestinationPreEntry" Type="bool" Value="False"/>
-												<Property Name="PlaySourcePostExit" Type="bool" Value="False"/>
 											</PropertyList>
 											<TransitionInfo>
 												<SourceFadeOut>
 													<MusicFade Name="Source Fade-out" ID="{9C572ACB-660F-4A18-A876-18375A86BFFA}">
 														<PropertyList>
-															<Property Name="FadeTime" Type="Real64" Value="1"/>
+															<Property Name="FadeOffset" Type="Real64" Value="2"/>
+															<Property Name="FadeTime" Type="Real64" Value="2"/>
 															<Property Name="FadeType" Type="int16" Value="1"/>
 														</PropertyList>
 													</MusicFade>
@@ -814,7 +814,7 @@
 												<DestinationFadeIn>
 													<MusicFade Name="Destination Fade-in" ID="{6EEE8B02-18E6-4C0D-ABC6-0E6C5D601AA7}">
 														<PropertyList>
-															<Property Name="FadeTime" Type="Real64" Value="1"/>
+															<Property Name="FadeTime" Type="Real64" Value="2"/>
 														</PropertyList>
 													</MusicFade>
 												</DestinationFadeIn>
@@ -971,7 +971,20 @@
 								</Reference>
 								<Reference Name="PlaylistRoot">
 									<Custom>
-										<MusicPlaylistItem Name="" ID="{9AA34B03-04AC-402E-AAE0-8C392873B424}" ShortID="1057178179"/>
+										<MusicPlaylistItem Name="" ID="{9AA34B03-04AC-402E-AAE0-8C392873B424}" ShortID="1057178179">
+											<ChildrenList>
+												<MusicPlaylistItem Name="" ID="{75F94CAB-3DEF-4AFE-B373-C1257B553FCB}" ShortID="888573131">
+													<PropertyList>
+														<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Segment">
+															<ObjectRef Name="LavaAmbient" ID="{B4F2AEA8-7B5D-497D-A4FE-E6003426B1A6}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}"/>
+														</Reference>
+													</ReferenceList>
+												</MusicPlaylistItem>
+											</ChildrenList>
+										</MusicPlaylistItem>
 									</Custom>
 								</Reference>
 								<Reference Name="TransitionRoot">
@@ -1126,6 +1139,27 @@
 												</Reference>
 												<Reference>
 													<ObjectRef Name="Lava" ID="{C7CF3559-60FB-4968-85D2-DFDD47E74662}" WorkUnitID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}"/>
+												</Reference>
+											</ObjectList>
+										</ObjectLists>
+									</MultiSwitchEntry>
+								</Local>
+							</Reference>
+							<Reference>
+								<Local>
+									<MultiSwitchEntry Name="" ID="{B1970AD1-5295-4F93-B33A-E04BB299B7DB}">
+										<ReferenceList>
+											<Reference Name="AudioNode">
+												<ObjectRef Name="DreamForestAmbientPlaylist" ID="{F3C1D0E8-D012-4D0F-A453-CFF814A107FA}" WorkUnitID="{1D089651-5B00-426B-B38E-966B04826413}"/>
+											</Reference>
+										</ReferenceList>
+										<ObjectLists>
+											<ObjectList Name="EntryPath">
+												<Reference>
+													<ObjectRef Name="ActiveGameplay" ID="{82FDA30B-205B-4C35-A0E0-1EA3A9E0EF5F}" WorkUnitID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}"/>
+												</Reference>
+												<Reference>
+													<ObjectRef Name="Default" ID="{F6B08BE9-C532-4517-ACCC-686CA7F9D571}" WorkUnitID="{B4D9DF47-3CE3-4D49-86AD-B99679A51638}"/>
 												</Reference>
 											</ObjectList>
 										</ObjectLists>

@@ -9,7 +9,7 @@
 	</RootPaths>
 	<DialogueEvents/>
 	<SoundBanks>
-		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{901754D8-6F14-E1BC-3A2B-B0C58A2FD8B9}">
+		<SoundBank Id="1198232180" Type="User" Language="SFX" Hash="{303FE2AA-8CE5-6D1E-4C2F-1FA3046C37B2}">
 			<ShortName>EvanTestSoundbank</ShortName>
 			<Path>EvanTestSoundbank.bnk</Path>
 			<Media>
@@ -202,6 +202,43 @@
 						<MediaRef Id="1012147918"/>
 					</MediaRefs>
 				</Event>
+				<Event Id="3920001302" Name="Play_TopLevelAmbientContainer" DurationType="Infinite">
+					<SwitchContainers>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="261089142" Id="2280308571"/>
+							<Children>
+								<SwitchContainer>
+									<SwitchValue GroupType="State" GroupId="835576787" Id="813526661"/>
+									<MediaRefs>
+										<MediaRef Id="72664747"/>
+									</MediaRefs>
+								</SwitchContainer>
+							</Children>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="261089142" Id="2280308571"/>
+							<Children>
+								<SwitchContainer>
+									<SwitchValue GroupType="State" GroupId="835576787" Id="540301611"/>
+									<MediaRefs>
+										<MediaRef Id="1006519674"/>
+									</MediaRefs>
+								</SwitchContainer>
+							</Children>
+						</SwitchContainer>
+						<SwitchContainer>
+							<SwitchValue GroupType="State" GroupId="261089142" Id="2280308571"/>
+							<Children>
+								<SwitchContainer>
+									<SwitchValue GroupType="State" GroupId="835576787" Id="782826392"/>
+									<MediaRefs>
+										<MediaRef Id="72664747"/>
+									</MediaRefs>
+								</SwitchContainer>
+							</Children>
+						</SwitchContainer>
+					</SwitchContainers>
+				</Event>
 				<Event Id="3458950525" Name="Play_TopLevelMusicContainer" DurationType="Infinite">
 					<SwitchContainers>
 						<SwitchContainer>
@@ -248,6 +285,7 @@
 						<MediaRef Id="279842676"/>
 					</MediaRefs>
 				</Event>
+				<Event Id="2320038536" Name="Stop_TopLevelAmbientContainer" MaxAttenuation="0" DurationType="OneShot" DurationMin="0" DurationMax="0"/>
 				<Event Id="590263643" Name="WeakenTokenSelect" DurationType="OneShot" DurationMin="1.468573" DurationMax="1.468573">
 					<MediaRefs>
 						<MediaRef Id="851750572"/>
@@ -272,6 +310,15 @@
 						<State Id="2280308571" Name="ActiveGameplay"/>
 						<State Id="2716678721" Name="Victory"/>
 						<State Id="3705726509" Name="Title"/>
+					</States>
+				</StateGroup>
+				<StateGroup Id="835576787" Name="Biome">
+					<States>
+						<State Id="540301611" Name="Lava"/>
+						<State Id="748895195" Name="None"/>
+						<State Id="782826392" Name="Default"/>
+						<State Id="813526661" Name="DreamForest"/>
+						<State Id="3031504781" Name="Food"/>
 					</States>
 				</StateGroup>
 			</StateGroups>
@@ -304,6 +351,7 @@
 					<States>
 						<State Id="540301611" Name="Lava"/>
 						<State Id="748895195" Name="None"/>
+						<State Id="782826392" Name="Default"/>
 						<State Id="813526661" Name="DreamForest"/>
 						<State Id="3031504781" Name="Food"/>
 					</States>
@@ -318,5 +366,5 @@
 			</StateGroups>
 		</SoundBank>
 	</SoundBanks>
-	<FileHash>{1DA54C18-662C-F5A8-8E73-050A73A8FE43}</FileHash>
+	<FileHash>{123669D4-78E8-0864-97DB-28EFF408B7B8}</FileHash>
 </SoundBanksInfo>

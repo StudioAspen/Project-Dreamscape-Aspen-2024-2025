@@ -50,6 +50,8 @@ public class PlayerSkyBoxManager : MonoBehaviour
     /// <param name="newLand">The new land the player stepped on</param>
     private void OnPlayerEnterNewLand(LandManager newLand)
     {
+        newLand.UpdateWwiseState();
+
         if (RenderSettings.skybox == null) return;
         if(newLand.SkyBoxMaterial == null) return;
         if (RenderSettings.skybox == newLand.SkyBoxMaterial) return; // Prevent redundant changes

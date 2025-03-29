@@ -38,7 +38,7 @@ MonoBehaviour:
     ParentPath: Master-Mixer Hierarchy\Default Work Unit
     guid: 106567ce3056324ba1a9196898688815
     GuidInternal: 
-    m_lastTime: -8584610600519849646
+    m_lastTime: -8584584624834664494
     List:
     - name: Master Audio Bus
       guid: d8a41415a61d2a41a17e75ca0c2149f3
@@ -66,7 +66,7 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: b78f427f6079d34b84905095204cf32e
     GuidInternal: 
-    m_lastTime: -8584584809711696929
+    m_lastTime: -8584583864558055049
     List:
     - name: EvanTestSoundbank
       guid: c148d42d6903564fb1c03467fe5eedc9
@@ -94,7 +94,7 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 76cb529f619f7742a8ee6bacb13c83c0
     GuidInternal: 
-    m_lastTime: -8584584809711701919
+    m_lastTime: -8584584624834646457
     List:
     - name: ButtonHover
       guid: ccf20bbfd9679242974dafacf7f90ea1
@@ -696,8 +696,8 @@ MonoBehaviour:
         guid: 2b577102706bfd48b659b8eec0ece666
       Path: Events\Default Work Unit\Stop_TopLevelAmbientContainer
       maxAttenuation: 0
-      maxDuration: -1
-      minDuration: -1
+      maxDuration: 0
+      minDuration: 0
     - name: UI
       guid: 3bcd16752caf6848957434f1e7cc1a35
       id: 1551306167
@@ -767,8 +767,22 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: e302baca22d7a94a8cce75325a9345b3
     GuidInternal: 
-    m_lastTime: -8584610600519914640
-    List: []
+    m_lastTime: -8584584624834684497
+    List:
+    - name: MasterVolume
+      guid: 17ec6bfc3e4eae4c9677eb1fcb2e01a3
+      id: 2918011349
+      PathAndIcons:
+      - ElementName: Game Parameters
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: e302baca22d7a94a8cce75325a9345b3
+      - ElementName: MasterVolume
+        ObjectType: 13
+        guid: 17ec6bfc3e4eae4c9677eb1fcb2e01a3
+      Path: Game Parameters\Default Work Unit\MasterVolume
   StateWwu:
   - PhysicalPath: States\Default Work Unit.wwu
     PathAndIcons:
@@ -781,7 +795,7 @@ MonoBehaviour:
     ParentPath: States\Default Work Unit
     guid: 47dfd9b4e33c494d86adb99679a51638
     GuidInternal: 
-    m_lastTime: -8584584825171967327
+    m_lastTime: -8584583878587661011
     List:
     - name: Biome
       guid: 25b1a94bdcc0a34e948c4e333cea4b75
@@ -798,6 +812,22 @@ MonoBehaviour:
         guid: 25b1a94bdcc0a34e948c4e333cea4b75
       Path: States\Default Work Unit\Biome
       values:
+      - name: Default
+        guid: e98bb0f632c51745accc686ca7f9d571
+        id: 782826392
+        PathAndIcons:
+        - ElementName: States
+          ObjectType: 5
+          guid: 00000000000000000000000000000000
+        - ElementName: Default Work Unit
+          ObjectType: 12
+          guid: 47dfd9b4e33c494d86adb99679a51638
+        - ElementName: Biome
+          ObjectType: 9
+          guid: 25b1a94bdcc0a34e948c4e333cea4b75
+        - ElementName: Default
+          ObjectType: 8
+          guid: e98bb0f632c51745accc686ca7f9d571
       - name: DreamForest
         guid: b4baff85d86ec540a657edfb469bd887
         id: 813526661

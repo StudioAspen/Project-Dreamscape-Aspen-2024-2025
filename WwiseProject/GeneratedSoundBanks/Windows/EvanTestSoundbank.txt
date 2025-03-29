@@ -11,6 +11,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	1352216468	Play_FollowerFootstepRight			\Default Work Unit\Follower\Play_FollowerFootstepRight	
 	1446475553	Play_FollowerFootstepLeft			\Default Work Unit\Follower\Play_FollowerFootstepLeft	
 	1517328899	FoodBiomeSelect			\Default Work Unit\UI\FoodBiomeSelect	
+	2320038536	Stop_TopLevelAmbientContainer			\Default Work Unit\Stop_TopLevelAmbientContainer	
 	2492898533	EmpowerTokenSelect			\Default Work Unit\UI\EmpowerTokenSelect	
 	2525052962	PlayerDash			\Default Work Unit\Player\PlayerDash	
 	2655804996	Play_ChargerHitLeft			\Default Work Unit\Charger\Play_ChargerHitLeft	
@@ -22,6 +23,7 @@ Event	ID	Name			Wwise Object Path	Notes
 	3581650749	PlayerFootstepSolidRight			\Default Work Unit\Player\Footsteps\PlayerFootstepSolidRight	
 	3632326709	Play_ChargerFootstepLeft			\Default Work Unit\Charger\Play_ChargerFootstepLeft	
 	3745406025	Play_TestMusicPlaylist			\Default Work Unit\Play_TestMusicPlaylist	
+	3920001302	Play_TopLevelAmbientContainer			\Default Work Unit\Play_TopLevelAmbientContainer	
 	4008126242	PlayerJump			\Default Work Unit\Player\PlayerJump	
 
 State Group	ID	Name			Wwise Object Path	Notes
@@ -35,6 +37,7 @@ State	ID	Name	State Group			Notes
 	3705726509	Title	GameMode			
 	540301611	Lava	Biome			
 	748895195	None	Biome			
+	782826392	Default	Biome			
 	813526661	DreamForest	Biome			
 	3031504781	Food	Biome			
 

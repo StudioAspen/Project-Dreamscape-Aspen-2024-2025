@@ -28,6 +28,7 @@ namespace AK
         static const AkUniqueID PLAY_FOLLOWERFOOTSTEPLEFT = 1446475553U;
         static const AkUniqueID PLAY_FOLLOWERFOOTSTEPRIGHT = 1352216468U;
         static const AkUniqueID PLAY_TESTMUSICPLAYLIST = 3745406025U;
+        static const AkUniqueID PLAY_TOPLEVELAMBIENTCONTAINER = 3920001302U;
         static const AkUniqueID PLAY_TOPLEVELMUSICCONTAINER = 3458950525U;
         static const AkUniqueID PLAYERDASH = 2525052962U;
         static const AkUniqueID PLAYERFOOTSTEPSOLIDLEFT = 732023582U;
@@ -35,6 +36,7 @@ namespace AK
         static const AkUniqueID PLAYERJUMP = 4008126242U;
         static const AkUniqueID PLAYERLAND = 846198821U;
         static const AkUniqueID RESUME = 953277036U;
+        static const AkUniqueID STOP_TOPLEVELAMBIENTCONTAINER = 2320038536U;
         static const AkUniqueID WEAKENTOKENSELECT = 590263643U;
         static const AkUniqueID WEAPONSWING = 899748333U;
     } // namespace EVENTS
@@ -47,6 +49,7 @@ namespace AK
 
             namespace STATE
             {
+                static const AkUniqueID DEFAULT = 782826392U;
                 static const AkUniqueID DREAMFOREST = 813526661U;
                 static const AkUniqueID FOOD = 3031504781U;
                 static const AkUniqueID LAVA = 540301611U;
