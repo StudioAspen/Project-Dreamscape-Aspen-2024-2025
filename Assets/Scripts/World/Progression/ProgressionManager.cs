@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Packages.Rider.Editor.UnitTesting;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -191,18 +192,25 @@ public class ProgressionManager : MonoBehaviour
           }
         }
 
+        // By the 8th wave, the player has had enough time to experience each event at least once.
+        if (WaveIndex >= 8) 
+        {
+          if (eventManager == null)
+            eventManager = GetComponent<EventManager>();
 
-        // for(int i = 0; i < QuestCount; i++)
-        // {
-        //     int randomIndex = UnityEngine.Random.Range(0, remainingQuests.Count);
-
-        //     ProgressionQuestSO runtimeQuestInstance = Instantiate(remainingQuests[randomIndex]);
-        //     runtimeQuestInstance.Init(this);
-
-        //     CurrentQuests[i] = runtimeQuestInstance;
-
-        //     remainingQuests.RemoveAt(randomIndex);
-        // }
+          // We'll introduce the third quest type: World Events.
+          if (eventManager.CurrentEvent != null)
+          {
+            WorldEventQuestSO worldEventQuestInstance = FindProgressionQuestByType(worldEventQuests);
+            if (worldEventQuestInstance != null)
+            {
+              Instantiate(worldEventQuestInstance);
+              worldEventQuestInstance.Init(this);
+              CurrentQuests.Add(worldEventQuestInstance);
+              worldEventQuests.Remove(worldEventQuestInstance);
+            }
+          }
+        }
     }
 
     /// <summary>

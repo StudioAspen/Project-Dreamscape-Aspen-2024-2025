@@ -17,19 +17,27 @@ public abstract class AspectQuestSO : ProgressionQuestSO
     AspectTree[] equippedAspectTrees = progressionManager.aspectsManager.EquippedAspectTrees;
 
     // First, check if the player has equipped the required Aspect Tree.
-    if (!equippedAspectTrees.Contains(requiredAspectTree) || requiredAspectTree == null)
+    if (requiredAspectTree == null || equippedAspectTrees == null)
       return false;
 
-    AspectTree aspectTree = Array.Find(equippedAspectTrees, tree => tree == requiredAspectTree);
+    AspectTree aspectTree = Array.Find(equippedAspectTrees, tree => tree.GetType() == requiredAspectTree.GetType());
+    if (aspectTree == null)
+      return false;
+
+    Debug.Log("Required ASPECT TREE Equipped");
     
     List<AspectNodeNode> aspectNodes = aspectTree.GetNodesAtLevel(nodeLevel);
 
     // Next, check if the required Aspect Node belongs to the required Aspect Tree. 
-    if (!aspectNodes.Contains(requiredAspectNode) || requiredAspectNode == null)
+    if (requiredAspectNode == null) 
       return false;
-      
-    AspectNodeNode aspectNode = aspectNodes.Find(node => node == requiredAspectNode);
+
+    AspectNodeNode aspectNode = aspectNodes.Find(node => node.DisplayName == requiredAspectNode.DisplayName);
+    if(aspectNode == null)
+      return false;
     
+    Debug.Log("Required ASPECT NODE belongs to Tree");
+
     // Finally, check if the required Aspect Node is already applied. If yes, then the game state meets the criteria for this quest.
     return aspectNode.IsApplied;
   } 
