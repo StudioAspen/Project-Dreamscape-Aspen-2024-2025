@@ -15,18 +15,26 @@ public abstract class AspectQuestSO : ProgressionQuestSO
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     AspectTree[] equippedAspectTrees = progressionManager.aspectsManager.EquippedAspectTrees;
-
     // First, check if the player has equipped the required Aspect Tree.
     if (requiredAspectTree == null || equippedAspectTrees == null)
       return false;
 
-    AspectTree aspectTree = Array.Find(equippedAspectTrees, tree => tree.GetType() == requiredAspectTree.GetType());
-    if (aspectTree == null)
-      return false;
+    AspectTree matchingTree = null;
+    foreach (AspectTree tree in equippedAspectTrees)
+    {
+        if (tree != null && tree.GetType() == requiredAspectTree.GetType())
+        {
+            matchingTree = tree;
+            break;
+        }
+    }
+    
+    if (matchingTree == null)
+        return false;
 
     Debug.Log("Required ASPECT TREE Equipped");
     
-    List<AspectNodeNode> aspectNodes = aspectTree.GetNodesAtLevel(nodeLevel);
+    List<AspectNodeNode> aspectNodes = matchingTree.GetNodesAtLevel(nodeLevel);
 
     // Next, check if the required Aspect Node belongs to the required Aspect Tree. 
     if (requiredAspectNode == null) 
