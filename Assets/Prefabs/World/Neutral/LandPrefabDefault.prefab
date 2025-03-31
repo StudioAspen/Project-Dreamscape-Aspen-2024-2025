@@ -110,7 +110,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: 1222065609000672791, guid: 05ab69354798bb7498dedf7330040e50, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -154,8 +154,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 05ab69354798bb7498dedf7330040e50, type: 2}
+  m_sharedMaterial: {fileID: 1222065609000672791, guid: 05ab69354798bb7498dedf7330040e50,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -708,20 +709,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <BiomeVariantStatusEffect>k__BackingField: {fileID: 0}
-  <NeutralEnemyPrefabs>k__BackingField:
-  - {fileID: -4810948276731600067, guid: 8c2e001ff766d794788a1bcb1e2d778e, type: 3}
-  - {fileID: 3031659000538846661, guid: 9a11dca2df7ba4093b846968b8d64376, type: 3}
-  - {fileID: -397280236229411759, guid: 89d66779686439e469b5b81a13e3d1ff, type: 3}
-  - {fileID: 6783651500108301844, guid: f3b920511701efa4ab708b534bf17f95, type: 3}
-  - {fileID: 8249551895023086540, guid: c6e05d9c9e872094195556605d7b1ce4, type: 3}
-  - {fileID: 796325873204930862, guid: a668ae943b833fa4a9329a48e461e47a, type: 3}
+  <EnemyPrefabs>k__BackingField: []
   enemySpawnPoints:
   - {fileID: 6582786453875711809}
   - {fileID: 9196543633839178868}
   - {fileID: 2966767745637804228}
   - {fileID: 4028803017606178624}
-  weightingSkewFactor: 2.2
-  spawnInterval: 3
+  weightingSkewPower: 2.2
+  enemySpawnIntervalRange: {x: 3, y: 6}
   baseCurrency: 2
   growthFactor: 1
   polynomialDegree: 1
