@@ -245,36 +245,48 @@ public class ProgressionManager : MonoBehaviour
         CurrentQuests.Clear();
     }
 
-    private T FindProgressionQuestByType<T>(List<T> quests) where T : ProgressionQuestSO
+  private T FindProgressionQuestByType<T>(List<T> quests) where T : ProgressionQuestSO
+  {
+    if (quests.Count == 0)
+      return null;
+    else if (quests.Count == 1 && quests[0].MeetsCriteria(this))
+      return quests[0]; 
+    
+    // Start with lowest difficulty
+    int difficultyIndex = 0;
+    
+    // Try different difficulty levels if needed
+    while (difficultyIndex < quests.Count)
     {
-      if (quests.Count == 0)
-        return null;
-      else if (quests.Count == 1 && quests[0].MeetsCriteria(this))
-        return quests[0];
+      int currentDifficulty = quests[difficultyIndex].Difficulty;
       
-      // Find the easiest difficulty
-      int difficulty = quests[0].Difficulty;
-
-      // Count of the quests with the easiest difficulty
-      int easiestQuestsCount = 0;
-      while (easiestQuestsCount < quests.Count && quests[easiestQuestsCount].Difficulty == difficulty)
-        easiestQuestsCount++;
-
-      // Prevent an infinite loop, but be reasonable so that the function finds a quest.
-      int maxAttempts = 20;
+      // Find how many quests have this difficulty
+      int sameQuestDifficultyCount = 0;
+      while (difficultyIndex + sameQuestDifficultyCount < quests.Count && 
+            quests[difficultyIndex + sameQuestDifficultyCount].Difficulty == currentDifficulty)
+      {
+        sameQuestDifficultyCount++;
+      }
+      
+      // Try a reasonable number of attempts at this difficulty
+      int maxAttempts = Math.Min(sameQuestDifficultyCount * 2, 20);
       for (int a = 0; a < maxAttempts; a++)
       {
-        // Pick a random quest of the lowest difficulty
-        int randomIndex = UnityEngine.Random.Range(0, easiestQuestsCount);
-        T quest = quests[randomIndex];
-
-        // If the player can complete it, we return it.
+        // Pick a random quest of the current difficulty
+        int randomOffset = UnityEngine.Random.Range(0, sameQuestDifficultyCount);
+        T quest = quests[difficultyIndex + randomOffset];
+        
+        // If the player can complete it, we return it
         if (quest.MeetsCriteria(this))
           return quest;
       }
-
-      return null;
+      
+      // Move to the next difficulty level
+      difficultyIndex += sameQuestDifficultyCount;
     }
+    
+    return null;
+  }
     #endregion
 
     #region During Land Empowerment

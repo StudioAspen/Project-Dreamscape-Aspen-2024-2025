@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6465df070216ebe4db2448c38298c6db, type: 3}
-  m_Name: 1TimesDamageByCombustionQuestSO
+  m_Name: 1TimesKillByCombustionQuestSO
   m_EditorClassIdentifier: 
-  <ObjectiveText>k__BackingField: '[Aspect of Rage] Damage a Dreamon as a result
-    of Burning Rage Combustion.'
+  <ObjectiveText>k__BackingField: '[Aspect of Rage] Kill a Dreamon as a result of
+    Burning Rage Combustion.'
   <CompletionReward>k__BackingField: 0
-  difficulty: 1
+  difficulty: 3
   requiredAspectTree: {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
   requiredAspectNode: {fileID: -5092554926121242106, guid: 4aef8062b306a4b48a5e04d3b2209534,
     type: 2}
   nodeLevel: 1
-  <SuccessfulHitsGoal>k__BackingField: 1
-  <SuccessfulKillsGoal>k__BackingField: 0
+  <SuccessfulHitsGoal>k__BackingField: 0
+  <SuccessfulKillsGoal>k__BackingField: 1
   <TargetStatusEffect>k__BackingField: {fileID: 11400000, guid: fcf193a5c0c719f489756473afed2395,
     type: 2}

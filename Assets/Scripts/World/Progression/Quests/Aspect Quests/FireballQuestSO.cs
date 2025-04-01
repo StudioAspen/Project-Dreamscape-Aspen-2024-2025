@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_TimesFireballAspectQuestSO", menuName = "World/Progression Quest/Aspect Quests/Fireball")]
+[CreateAssetMenu(fileName = "_x_TimesFireballQuestSO", menuName = "World/Progression Quest/Aspect Quests/Fireball")]
 
 public class FireballQuestSO : AspectQuestSO
 {

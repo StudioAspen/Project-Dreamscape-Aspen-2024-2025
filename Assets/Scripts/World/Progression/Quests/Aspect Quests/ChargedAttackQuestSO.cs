@@ -1,28 +1,29 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_TimesFlameSwingQuestSO", menuName = "World/Progression Quest/Aspect Quests/Flame Swing")]
-
-public class FlameSwingQuestSO : AspectQuestSO
+[CreateAssetMenu(fileName = "_x_Times_y_ByChargedAttackQuestSO", menuName = "World/Progression Quest/Aspect Quests/Charged Attack")]
+public class ChargedAttackQuestSO : AspectQuestSO
 {
   [field: Header("Config")]
-  [field: Range(1, 10)]
+  [field: Range(0, 10)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
-  [field: SerializeField] public ComboDataSO TargetComboData { get; private set; } 
+  [field: Range(0, 10)]
+  [field: SerializeField] public int SuccessfulKillsGoal { get; private set; }
 
   private Player player;
   private PlayerCombat playerCombat; 
   private PlayerAttackState playerAttackState;
-  private int successfulHits = 0;
+
+  private int successfulHitsByChargedAttack = 0;
+  private int successfulKillsByChargedAttack = 0;
 
   private protected override void OnActivated()
   {
     player = progressionManager?.player;
     playerCombat = player.GetComponent<PlayerCombat>();
-    playerAttackState = player.PlayerAttackState;
 
     if (player == null)
       CleanUp();
-    
+
     if (playerCombat.Weapon != null)
       playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
   }
@@ -35,7 +36,7 @@ public class FlameSwingQuestSO : AspectQuestSO
 
   private protected override void OnUpdate()
   {
-    if (successfulHits >= SuccessfulHitsGoal)
+    if (successfulHitsByChargedAttack >= SuccessfulHitsGoal && successfulKillsByChargedAttack >= SuccessfulKillsGoal)
       Complete();
   }
 
@@ -44,7 +45,13 @@ public class FlameSwingQuestSO : AspectQuestSO
     if (player.CurrentState != playerAttackState || playerAttackState.ComboData == null)
       return;
 
-    if (playerAttackState.ComboData.DisplayName == TargetComboData.DisplayName)
-      successfulHits++;
+    bool isChargedHit = playerAttackState.ComboData.ComboInputs.Contains(ComboAction.CHARGED_ATTACK1)
+            || playerAttackState.ComboData.ComboInputs.Contains(ComboAction.CHARGED_ATTACK2);
+
+    if (isChargedHit)
+      successfulHitsByChargedAttack++;
+
+    if (victim.CurrentHealth <= damageValue)
+      successfulKillsByChargedAttack++;
   }
 }

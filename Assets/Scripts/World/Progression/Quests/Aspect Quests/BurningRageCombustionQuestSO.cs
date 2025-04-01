@@ -6,10 +6,10 @@ using UnityEngine;
 public class BurningRageCombustionQuestSO : AspectQuestSO
 {
   [field: Header("Config")]
-  [field: Range(1, 5)]
+  [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
+  [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulKillsGoal { get; private set; }
-  [field: SerializeField] public StatusEffectSO TargetStatusEffect { get; private set; }
 
   private Player player;
   private PlayerCombat playerCombat; 
@@ -19,30 +19,37 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
 
   private protected override void OnActivated()
   {
+    successfulHitsByCombustion = 0;
+    successfulKillsByCombustion = 0;
     player = progressionManager?.player;
 
     if (player == null)
-      return;
+      CleanUp();
     
     playerCombat = player.GetComponent<PlayerCombat>();
     if (playerCombat != null && playerCombat.Weapon != null)
     {
-        playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+      playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
     }
   }
 
   private protected override void OnCleanUp()
   {
+    if (playerCombat != null && playerCombat.Weapon != null)
+      playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
 
+    foreach (Entity entity in affectedEntities.Keys)
+      affectedEntities[entity].OnCombustionDamage -= AffectedEntity_OnCombustionDamage;
+
+    affectedEntities.Clear();
   }
 
   private protected override void OnUpdate()
   {
-    // if (IsCompleted)
-    //   return;
+    Debug.Log($"Successful Hits {successfulHitsByCombustion}, Successful Kills: {successfulKillsByCombustion}");
 
-    // if (successfulHits >= SuccessfulHitsGoal)
-    //   Complete();
+    if (successfulHitsByCombustion >= SuccessfulHitsGoal && successfulKillsByCombustion >= SuccessfulKillsGoal)
+      Complete();
   }
 
   private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue) => CheckForBurningRage(victim);
@@ -59,17 +66,18 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
     }
   }
 
-  private void AffectedEntity_OnCombustionDamage(Entity source, Entity victim, int damageValue)
+  private void AffectedEntity_OnCombustionDamage(Entity combustionSource, Entity victim, int damageValue)
   {
-    Debug.Log(affectedEntities.ContainsKey(source));
-    Debug.Log(source.name);
-    if(affectedEntities.ContainsKey(source))
+    if(affectedEntities.ContainsKey(combustionSource))
     {
-      affectedEntities[source].OnCombustionDamage -= AffectedEntity_OnCombustionDamage;
-      affectedEntities.Remove(source);
+      affectedEntities[combustionSource].OnCombustionDamage -= AffectedEntity_OnCombustionDamage;
+      affectedEntities.Remove(combustionSource);
 
-      successfulHitsByCombustion++;
       Debug.Log($"You hit a nearby enemy with Combustion Damage!");
+      successfulHitsByCombustion++;
+
+      if (victim.CurrentHealth <= damageValue)
+        successfulKillsByCombustion++;
     }
   }
 }
