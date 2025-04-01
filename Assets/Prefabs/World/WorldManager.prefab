@@ -71,21 +71,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca374d8738a92604c851e6668d6a3f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspectsManager: {fileID: 0}
-  player: {fileID: 0}
-  levelSystem: {fileID: 0}
   baseEmpowerTokens: 2
   baseWeakenTokens: 1
   possibleProgressionQuests:
   - {fileID: 11400000, guid: 80fe603dd37d9f942b5db0303263c095, type: 2}
+  - {fileID: 11400000, guid: 8eba611afef9a984f95677f3fd04e326, type: 2}
+  - {fileID: 11400000, guid: e79ed52b0b2cf8340b0121f80fe1284a, type: 2}
   - {fileID: 11400000, guid: f5b3f894029b2244f852abceeb006ec4, type: 2}
+  - {fileID: 11400000, guid: 094e37f87f4728544b0baaaf32502d32, type: 2}
+  - {fileID: 11400000, guid: adb16167e8b773a4eb5f0c0f5baec003, type: 2}
+  - {fileID: 11400000, guid: 1cc34440ed834f346941561147ec0353, type: 2}
+  - {fileID: 11400000, guid: 98a64864369bda442a5a3dc402d350ec, type: 2}
+  - {fileID: 11400000, guid: 16d93348b965de24fa156ebbdb35fa4e, type: 2}
+  - {fileID: 11400000, guid: 3fb492af432a9c144b0e78a7ea679a26, type: 2}
   - {fileID: 11400000, guid: f10be2291ddad5740bdf415e0dd60d5a, type: 2}
   - {fileID: 11400000, guid: 131b3d74cb755864a9723526eb9cc796, type: 2}
   - {fileID: 11400000, guid: 3a75d34987a318b41b2e048dacf4b3ec, type: 2}
   - {fileID: 11400000, guid: 23cacc6f28d96594281bd365672c8e1a, type: 2}
   - {fileID: 11400000, guid: 3c1e430b202e3d841b0534d3f307778b, type: 2}
   - {fileID: 11400000, guid: d3d6db2730d97554aa56563d78dda074, type: 2}
-  - {fileID: 11400000, guid: 1cc34440ed834f346941561147ec0353, type: 2}
 --- !u!114 &2152970851481245927
 MonoBehaviour:
   m_ObjectHideFlags: 0

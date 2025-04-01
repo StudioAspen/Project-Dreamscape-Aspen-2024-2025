@@ -1,8 +1,8 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_TimesFlameSwingAspectQuestSO", menuName = "World/Progression Quest/Aspect Quests/Flame Swing")]
+[CreateAssetMenu(fileName = "_x_TimesFireballAspectQuestSO", menuName = "World/Progression Quest/Aspect Quests/Fireball")]
 
-public class FlameSwingQuestSO : AspectQuestSO
+public class FireballQuestSO : AspectQuestSO
 {
   [field: Header("Config")]
   [field: Range(1, 10)]
