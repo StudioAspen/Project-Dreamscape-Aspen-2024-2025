@@ -27,7 +27,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
     {
         this.progressionManager = progressionManager;
 
-        // Debug.Log($"Activated progression quest: {name}");
+        Debug.Log($"Activated progression quest: {name}");
         OnActivated();
     }
 
@@ -44,7 +44,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
     /// </summary>
     public void Complete()
     {
-        //Debug.Log($"Completed progression quest: {name}");
+        Debug.Log($"Completed progression quest: {name}");
 
         IsCompleted = true;
 
