@@ -2091,6 +2091,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1141874754346503445, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2091894983123498305, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
         type: 3}
       propertyPath: materializeVFXPrefab
@@ -2213,6 +2218,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8535887469899581681, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 1222065609000672791, guid: 05ab69354798bb7498dedf7330040e50,
+        type: 2}
     - target: {fileID: 8758385683819074250, guid: df11cb92a8f8f894a82afcfc2ccf38bf,
         type: 3}
       propertyPath: m_Name
