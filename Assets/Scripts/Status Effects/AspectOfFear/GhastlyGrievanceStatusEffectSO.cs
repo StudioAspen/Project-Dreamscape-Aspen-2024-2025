@@ -20,6 +20,16 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
     [field: SerializeField] public float ExecuteThresholdPerExtraDebuff { get; private set; } = 0f; // TODO
     [field: SerializeField] public float ExecutionExplosionRadius { get; private set; } = 0f;
 
+    /// <summary>
+    /// An action that is invoked when the entity is executed for having health below the execution threshold.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity entity</c>: The executed entity.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity> OnExecution;
+
     private void OnValidate()
     {
         Stackable = true; // force stackable otherwise override wont work
@@ -83,6 +93,7 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
             //Debug.Log($"{entity.gameObject.name} reached {GetFinalExecuteThreshold()} threshold of health, executing");
             TryExecutionAOEExplosion(entity.CurrentHealth, entity.GetColliderCenterPosition());
             entity.Kill(source);
+            OnExecution?.Invoke(entity);
         }
     }
 
