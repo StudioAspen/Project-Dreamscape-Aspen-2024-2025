@@ -55,7 +55,18 @@ public class LevelSystem : MonoBehaviour
         entity.OnKillEntity -= Entity_OnKillEntity;
     }
 
-    private void Entity_OnKillEntity(Entity victim)
+  private void Update()
+  {
+            // Cheat for leveling  up
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.LogWarning("Cheat: Automatically leveling up");
+            CurrentEXP = 0;
+            AddEXP(CalculateMaxEXP());
+        }
+  }
+
+  private void Entity_OnKillEntity(Entity victim)
     {
         if (Slime.IsEntityACloneSlime(victim)) return; // Cloned slimes dont drop exp
 
