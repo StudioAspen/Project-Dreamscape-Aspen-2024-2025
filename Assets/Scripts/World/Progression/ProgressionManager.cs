@@ -155,7 +155,7 @@ public class ProgressionManager : MonoBehaviour
         CleanUpQuests(); // Just in case it wasn't done before
 
         // After completing the first wave, we'll introduce the first quest type: Skillful Play.
-        if (WaveIndex >= 1)
+        if (WaveIndex >= 2)
         {
           if (player == null)
             player = FindFirstObjectByType<Player>();
@@ -173,7 +173,7 @@ public class ProgressionManager : MonoBehaviour
         }
 
         // By the 5th wave, we can assume the player has already unlocked an aspect.
-        if (WaveIndex >= 1)
+        if (WaveIndex >= 5)
         {
           if (aspectsManager == null)
             aspectsManager = FindFirstObjectByType<AspectsManager>();
@@ -193,7 +193,7 @@ public class ProgressionManager : MonoBehaviour
         }
 
         // By the 8th wave, the player has had enough time to experience each event at least once.
-        if (WaveIndex >= 1) 
+        if (WaveIndex >= 8) 
         {
           if (eventManager == null)
             eventManager = GetComponent<EventManager>();
