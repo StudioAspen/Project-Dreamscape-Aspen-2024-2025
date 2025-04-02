@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b5ec6a1565949641bcf45367cea7581, type: 3}
   m_Name: 5FearStacksByIntimidationQuestSO
   m_EditorClassIdentifier: 
-  <ObjectiveText>k__BackingField: '[Aspect of Fear] Achieve 5 Fear stacks by stunning
+  <ObjectiveText>k__BackingField: '[Aspect of Fear] Achieve 3 Fear stacks by stunning
     Dreamons.'
   <CompletionReward>k__BackingField: 0
   difficulty: 2
@@ -20,4 +20,4 @@ MonoBehaviour:
   requiredAspectNode: {fileID: 2763769569843930792, guid: a28dd62f121619a46a6b807c141ad513,
     type: 2}
   nodeLevel: 1
-  <FearStacksGoal>k__BackingField: 5
+  <FearStacksGoal>k__BackingField: 3

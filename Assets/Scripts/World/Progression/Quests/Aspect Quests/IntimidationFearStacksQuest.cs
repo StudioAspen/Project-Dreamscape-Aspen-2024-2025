@@ -52,5 +52,6 @@ public class IntimidationFearStacksQuest : AspectQuestSO
   private void PlayerIntimidation_OnEntityStunned(Entity stunner, Entity victim, float stunDuration)
   {
     fearStacks = playerIntimidation.CurrentStacks;
+    Debug.Log($"Current tracked Fear Stacks: {fearStacks}");
   }
 }
