@@ -9,10 +9,19 @@ public class AchieveChainQuestSO : SkillfulQuestSO
 
   private ChainingSystem chainingSystem;
 
-  private protected override void OnActivated()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     chainingSystem = FindFirstObjectByType<ChainingSystem>();
 
+    if (chainingSystem == null)
+      return false;
+    else if (chainingSystem.ChainCount >= ChainGoal)
+      return false;
+
+    return base.MeetsCriteria(progressionManager);
+  }
+  private protected override void OnActivated()
+  {
     if (chainingSystem == null)
       CleanUp();
   }

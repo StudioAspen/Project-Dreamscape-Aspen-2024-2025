@@ -9,10 +9,19 @@ public class GainMomentumQuestSO : SkillfulQuestSO
 
   private MomentumSystem momentumSystem;
 
-  private protected override void OnActivated()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
     momentumSystem = FindObjectOfType<MomentumSystem>();
-
+    
+    if(momentumSystem == null)
+      return false;
+    else if (momentumSystem.Momentum >= MomentumGoal)
+      return false;
+      
+    return base.MeetsCriteria(progressionManager);
+  }
+  private protected override void OnActivated()
+  {
     if (momentumSystem == null)
       CleanUp();
   }

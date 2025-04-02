@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5ec6a1565949641bcf45367cea7581, type: 3}
+  m_Name: 5FearStacksByIntimidationQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: '[Aspect of Fear] Achieve 5 Fear stacks by stunning
+    Dreamons.'
+  <CompletionReward>k__BackingField: 0
+  difficulty: 2
+  requiredAspectTree: {fileID: 11400000, guid: a28dd62f121619a46a6b807c141ad513, type: 2}
+  requiredAspectNode: {fileID: 2763769569843930792, guid: a28dd62f121619a46a6b807c141ad513,
+    type: 2}
+  nodeLevel: 1
+  <FearStacksGoal>k__BackingField: 5

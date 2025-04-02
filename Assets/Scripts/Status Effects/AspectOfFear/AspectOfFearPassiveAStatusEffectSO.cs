@@ -19,15 +19,8 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
     [field: Header("Aspect of Fear Passive A Expanded: Settings")]
     [field: SerializeField] public float DamageUpPerSkulledEntity { get; private set; } = 0f;
     public Dictionary<Entity, ExtendedDebuffStatusEffectSO> skulledEntities = new Dictionary<Entity, ExtendedDebuffStatusEffectSO>();
-    /// <summary>
-    /// An action that is invoked when the entity is executed and safely removed from the skulled entities dictionary.
-    /// </summary>
-    /// <remarks>
-    /// <list type="bullet">
-    /// <item><description><c>ExtendedDebuffStatusEffectSO Ghastly Grievance</c>: The debuff attached to the executed entity.</description></item>
-    /// </list>
-    /// </remarks>
-    public Action<ExtendedDebuffStatusEffectSO> OnSkulledEntityExecuted;
+
+    public Action<ExtendedDebuffStatusEffectSO> OnEntitySkulled, OnSkulledEntityExecuted;
 
     private void OnValidate()
     {
@@ -128,6 +121,7 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
           
         skulledEntities.Add(newSkulledEntity, ghastlyGrievance);
         ghastlyGrievance.OnExecution += RemoveSkulledEntity;
+        OnEntitySkulled?.Invoke(ghastlyGrievance);
         
         if (DamageUpPerSkulledEntity <= 0f) 
           return;
