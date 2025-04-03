@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerLowHealthVFX : MonoBehaviour
 {
@@ -22,17 +23,43 @@ public class PlayerLowHealthVFX : MonoBehaviour
         player = GetComponent<Player>();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        // float healthPercent = player.CurrentHealth / player.MaxHealth.GetFloatValue();
+        player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
+        player.OnEntityHeal += Player_OnEntityHeal;
 
-        if (Input.GetKeyDown(KeyCode.V))
+        OnHealthChanged();
+    }
+
+    private void OnDisable()
+    {
+        player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
+        player.OnEntityHeal -= Player_OnEntityHeal;
+
+        lowHealthVFX.DisableKeyword(ACTIVE_PROPERTY);
+    }
+
+    private void Player_OnEntityHeal(Entity entity, int healAmount)
+    {
+        OnHealthChanged();
+    }
+
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    {
+        OnHealthChanged();
+    }
+
+    private void OnHealthChanged()
+    {
+        float healthPercent = player.CurrentHealth / player.MaxHealth.GetFloatValue();
+
+        if(healthPercent < lowHealthThreshold)
         {
-            lowHealthVFX.SetFloat(ACTIVE_PROPERTY, 1.0f);
+            lowHealthVFX.EnableKeyword(ACTIVE_PROPERTY);
         }
-        if (Input.GetKeyDown(KeyCode.B))
+        else
         {
-            lowHealthVFX.SetFloat(ACTIVE_PROPERTY, 0f);
+            lowHealthVFX.DisableKeyword(ACTIVE_PROPERTY);
         }
     }
 }
