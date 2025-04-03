@@ -1,3 +1,4 @@
+*.bnk filter=lfs diff=lfs merge=lfs -text
 *.gitignore filter=lfs diff=lfs merge=lfs -text
 *.json filter=lfs diff=lfs merge=lfs -text
 *.vsconfig filter=lfs diff=lfs merge=lfs -text
@@ -64,7 +65,6 @@
 *.py filter=lfs diff=lfs merge=lfs -text
 *.p4ignore filter=lfs diff=lfs merge=lfs -text
 *.wwu filter=lfs diff=lfs merge=lfs -text
-*.bnk filter=lfs diff=lfs merge=lfs -text
 *.dat filter=lfs diff=lfs merge=lfs -text
 *.wproj filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
