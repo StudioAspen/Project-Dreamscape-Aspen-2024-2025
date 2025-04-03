@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 409a490ed4b7d444c9ee1853cb12665f, type: 3}
+  m_Name: DashAerialCombosOnlyPrioritiesQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: Hit marked Dreamons with dash or aerial swings
+    only.
+  <CompletionReward>k__BackingField: 0
+  difficulty: 3
+  requiredWorldEvent: {fileID: 11400000, guid: a8e95b779c0c9b24480329f27eb31f34, type: 2}
+  allowedCombos:
+  - {fileID: 11400000, guid: 00d269358e037cb45b41ba880a256c9b, type: 2}
+  - {fileID: 11400000, guid: d08752b192726424c84ffaff07eb3ab1, type: 2}
+  - {fileID: 11400000, guid: 2544063d1ad4634409b17d12c1501932, type: 2}
+  - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
+  - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}
+  - {fileID: 11400000, guid: 47cfa06376be08142b82cf04604712cb, type: 2}
+  - {fileID: 11400000, guid: 97ae1355d2427534bb0490559d8e4657, type: 2}

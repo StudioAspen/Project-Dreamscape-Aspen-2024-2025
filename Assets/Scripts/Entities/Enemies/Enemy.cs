@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class Enemy : Entity
 {
     [field: Header("Enemy: Settings")]
+    [field: SerializeField] public string EnemyType { get; protected set; }
     [field: SerializeField] public int Cost { get; protected set; }
     [field: SerializeField] public Stat EXPValue { get; protected set; }
 
