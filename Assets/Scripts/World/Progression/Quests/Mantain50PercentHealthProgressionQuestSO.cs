@@ -28,7 +28,7 @@ public class Maintain50PercentHealthProgressionQuestSO : ProgressionQuestSO
     private protected override void OnCleanUp()
     {
         if (isFailed) return;
-        CompleteWithoutCleanUp();
+        Complete(false);
     }
 
     private protected override void OnUpdate()

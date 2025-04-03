@@ -25,7 +25,7 @@ public class CompleteWaveUnderXLandCountTimeQuestSO : ProgressionQuestSO
     {
         if(timer < requiredTime)
         {
-            CompleteWithoutCleanUp();
+            Complete(false);
         }
     }
 

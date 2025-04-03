@@ -42,7 +42,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
     /// Call this function to complete the quest and trigger the CleanUp() cleanup method.
     /// Awards the player with the reward token.
     /// </summary>
-    public void Complete()
+    public void Complete(bool withCleanUp = true)
     {
         Debug.Log($"Completed progression quest: {name}");
 
@@ -59,26 +59,8 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
         progressionManager.OnQuestComplete.Invoke(this);
 
-        CleanUp();
-    }
-
-    /// <summary>
-    /// Can be called if you want to avoid clean up 
-    /// </summary>
-    private protected void CompleteWithoutCleanUp()
-    {
-        IsCompleted = true;
-
-        if (CompletionReward == Reward.EMPOWER_TOKEN)
-        {
-            progressionManager.AddEmpowerTokens(1);
-        }
-        else
-        {
-            progressionManager.AddWeakenTokens(1);
-        }
-
-        progressionManager.OnQuestComplete.Invoke(this);
+        if(withCleanUp)
+          CleanUp();
     }
 
     /// <summary>

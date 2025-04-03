@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 703e2a45d05279748a856b4b0355a799, type: 3}
-  m_Name: 60PctHpRemainingEscortEntityQuestSO
+  m_Name: 60RemainingEscortQuestSO
   m_EditorClassIdentifier: 
-  <ObjectiveText>k__BackingField: Preserve at least 50% of the Escort Entity's max
-    HP.
+  <ObjectiveText>k__BackingField: Preserve at least 50% of the Guide's max health.
   <CompletionReward>k__BackingField: 0
   difficulty: 2
   requiredWorldEvent: {fileID: 11400000, guid: d443efcebe2df9b44b3067a5cc54674d, type: 2}
