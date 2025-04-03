@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2742135043516056700}
   - component: {fileID: 1983465479685202449}
   - component: {fileID: 2590860473003748391}
+  - component: {fileID: -4302356140595905613}
+  - component: {fileID: 4573485525514679709}
   m_Layer: 0
   m_Name: FoodCollectible
   m_TagString: Untagged
@@ -125,6 +127,54 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &-4302356140595905613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8751723860962638630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea67b83109f49d59607eb76e7ab4152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  foodPrefabs:
+  - {fileID: 5378660376236463087}
+  - {fileID: 3879382583576538518}
+  - {fileID: 4627838305330446637}
+  - {fileID: 4313984946923128431}
+  - {fileID: 286196784826083705}
+  - {fileID: 4608867116649531153}
+  - {fileID: 6304581354806581694}
+  spawnYOffset: 0.5
+  floatSpeed: 1
+  floatHeight: 1
+  rotationSpeed: 45
+  delayUntilConsumable: 1
+  healRegenStatusEffect: {fileID: 11400000, guid: d7d8c2d7a664f8d4aa29a66b392c5927,
+    type: 2}
+--- !u!135 &4573485525514679709
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8751723860962638630}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.3
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1390252084677451756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -137,11 +187,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FBX_GumDrop Variant 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1203565637920159381, guid: dfe960139aba941059031e0ef8106b83,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2015427073231334447, guid: dfe960139aba941059031e0ef8106b83,
         type: 3}
@@ -198,6 +243,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dfe960139aba941059031e0ef8106b83, type: 3}
+--- !u!1 &286196784826083705 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1203565637920159381, guid: dfe960139aba941059031e0ef8106b83,
+    type: 3}
+  m_PrefabInstance: {fileID: 1390252084677451756}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &626869894496564163 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2015427073231334447, guid: dfe960139aba941059031e0ef8106b83,
@@ -267,16 +318,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: FBX_IceCreamSandwich Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 5516523814525582645, guid: cf79f08f6cb664409967c5bf4bb87f01,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf79f08f6cb664409967c5bf4bb87f01, type: 3}
+--- !u!1 &6304581354806581694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5516523814525582645, guid: cf79f08f6cb664409967c5bf4bb87f01,
+    type: 3}
+  m_PrefabInstance: {fileID: 2013388827888690315}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6644375130577060612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5171664554248628111, guid: cf79f08f6cb664409967c5bf4bb87f01,
@@ -295,11 +347,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FBX_GumDrop Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 1581825210466953373, guid: 1d2676ae9dc8b4763a1ed2a0cc3a1f0c,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2213542347333153319, guid: 1d2676ae9dc8b4763a1ed2a0cc3a1f0c,
         type: 3}
@@ -362,6 +409,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3028171144558292876}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4608867116649531153 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1581825210466953373, guid: 1d2676ae9dc8b4763a1ed2a0cc3a1f0c,
+    type: 3}
+  m_PrefabInstance: {fileID: 3028171144558292876}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3123443980201302868
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -374,11 +427,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FBX_Flan Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 7060629217078151355, guid: 22cdeaa9825fa4a6fa2b9c14fc8451db,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7689813289068417537, guid: 22cdeaa9825fa4a6fa2b9c14fc8451db,
         type: 3}
@@ -441,6 +489,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3123443980201302868}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5378660376236463087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7060629217078151355, guid: 22cdeaa9825fa4a6fa2b9c14fc8451db,
+    type: 3}
+  m_PrefabInstance: {fileID: 3123443980201302868}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5030752613725469341
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -453,11 +507,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FBX_GumDrop Variant 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 426065919502171056, guid: 47e61f99f4f51443a9e4c05d669ae592,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1054510948420935946, guid: 47e61f99f4f51443a9e4c05d669ae592,
         type: 3}
@@ -514,6 +563,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47e61f99f4f51443a9e4c05d669ae592, type: 3}
+--- !u!1 &4627838305330446637 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 426065919502171056, guid: 47e61f99f4f51443a9e4c05d669ae592,
+    type: 3}
+  m_PrefabInstance: {fileID: 5030752613725469341}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5436604271205981079 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1054510948420935946, guid: 47e61f99f4f51443a9e4c05d669ae592,
@@ -532,11 +587,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FBX_GumDrop Variant 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8613048198121386583, guid: 34640f89c76f2401c800db437c0c628d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8992669343081277677, guid: 34640f89c76f2401c800db437c0c628d,
         type: 3}
@@ -596,6 +646,12 @@ PrefabInstance:
 --- !u!4 &3500856977830714581 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8992669343081277677, guid: 34640f89c76f2401c800db437c0c628d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5501687630446441528}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4313984946923128431 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8613048198121386583, guid: 34640f89c76f2401c800db437c0c628d,
     type: 3}
   m_PrefabInstance: {fileID: 5501687630446441528}
   m_PrefabAsset: {fileID: 0}
@@ -662,16 +718,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: FBX_GumDrop Variant 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6612401403793998281, guid: 8923dd6b18a474b258b1c95454e52bbc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8923dd6b18a474b258b1c95454e52bbc, type: 3}
+--- !u!1 &3879382583576538518 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6612401403793998281, guid: 8923dd6b18a474b258b1c95454e52bbc,
+    type: 3}
+  m_PrefabInstance: {fileID: 7932437552513231967}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4511908960799487788 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5802932815106399091, guid: 8923dd6b18a474b258b1c95454e52bbc,
