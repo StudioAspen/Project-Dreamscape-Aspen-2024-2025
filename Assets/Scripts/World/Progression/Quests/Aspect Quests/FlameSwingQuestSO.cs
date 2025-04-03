@@ -21,7 +21,10 @@ public class FlameSwingQuestSO : AspectQuestSO
     playerAttackState = player.PlayerAttackState;
 
     if (player == null)
+    {
       CleanUp();
+      return;
+    }
     
     if (playerCombat.Weapon != null)
       playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
