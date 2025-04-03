@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a5724c6e96f7744faac75da7ac9c381, type: 3}
+  m_Name: 50SecondsOutbreakQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: 'Complete the wave objective within the remaining
+    time:'
+  <CompletionReward>k__BackingField: 0
+  difficulty: 0
+  requiredWorldEvent: {fileID: 11400000, guid: 173c12488ac257e4192d85d727b223f1, type: 2}
+  <SecondsPerOutbreakLand>k__BackingField: 50

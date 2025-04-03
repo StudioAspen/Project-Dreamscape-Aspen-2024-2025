@@ -10,7 +10,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
         EMPOWER_TOKEN,
     }
 
-    [field: SerializeField] public string ObjectiveText { get; private set; } = "";
+    [field: SerializeField] public string ObjectiveText { get; protected set; } = "";
     [field: SerializeField] public Reward CompletionReward { get; private set; }
     public bool IsCompleted { get; protected set; }
 
