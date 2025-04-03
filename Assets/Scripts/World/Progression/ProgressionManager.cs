@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Packages.Rider.Editor.UnitTesting;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
 {
-    private GameManager gameManager;
-    private WorldManager worldManager;
+    public GameManager gameManager { get; private set; }
+    public WorldManager worldManager { get; private set; }
+    public EventManager eventManager { get; private set; }
+
+    // Loaded in different scene
+    public AspectsManager aspectsManager { get; private set; }
+    public Player player { get; private set; }
+    public LevelSystem levelSystem { get; private set; }
 
     [Header("Config")]
     [SerializeField] private int baseEmpowerTokens = 2;
@@ -14,25 +23,56 @@ public class ProgressionManager : MonoBehaviour
     public int EmpowerTokens { get; private set; }
     public int WeakenTokens { get; private set; }
 
+    // Tutorial Counts as a wave
+    public int WaveIndex { get; private set; } = 0;
+
     [Header("Quests")]
     [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
-    public const int QUEST_COUNT = 3;
-    public ProgressionQuestSO[] CurrentQuests { get; private set; } = new ProgressionQuestSO[QUEST_COUNT];
+    public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
+
+    // List Storage during runtime
+    private List<SkillfulQuestSO> skillfulQuests = new List<SkillfulQuestSO>();
+    private List<AspectQuestSO> aspectQuests = new List<AspectQuestSO>();
+    private List<WorldEventQuestSO> worldEventQuests = new List<WorldEventQuestSO>();
 
     private void Awake()
     {
         worldManager = GetComponent<WorldManager>();
+        eventManager = GetComponent<EventManager>();
     }
 
     private void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
-
+        gameManager = FindFirstObjectByType<GameManager>();
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         EmpowerTokens = baseEmpowerTokens;
         WeakenTokens = baseWeakenTokens;
+
+        // Sort the Quests in order of difficulty from least to greatest, just once.
+        possibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
+
+        // Filter the Quests into lists based on their class, just once.
+        foreach(ProgressionQuestSO quest in possibleProgressionQuests)
+        {
+          switch (quest)
+          {
+            case SkillfulQuestSO sQ:
+              skillfulQuests.Add(sQ);
+              break;
+            case AspectQuestSO aQ:
+              aspectQuests.Add(aQ);
+              break;   
+            case WorldEventQuestSO eQ:
+              worldEventQuests.Add(eQ);
+              break;
+            default:
+              break;
+          }
+        }
+
+        // Total Time Complexity: n log n
     }
 
     private void OnDestroy()
@@ -52,6 +92,13 @@ public class ProgressionManager : MonoBehaviour
         if (newState == GameState.ASPECT_SELECTION && gameManager.PreviousState == GameState.PLAYING)
         {
             CleanUpQuests();
+            WaveIndex++;
+        }
+
+        // If Game Over
+        if (newState == GameState.GAME_OVER)
+        {
+          WaveIndex = 0;
         }
     }
 
@@ -60,8 +107,8 @@ public class ProgressionManager : MonoBehaviour
         // Cheat for completing all quests
         if (Input.GetKeyDown(KeyCode.J))
         {
-            Debug.LogWarning("Chear: Insta completing all quests");
-            for(int i = 0; i < QUEST_COUNT; i++)
+            Debug.LogWarning("Cheat: Insta completing all quests");
+            for(int i = 0; i < CurrentQuests.Count; i++)
             {
                 if (CurrentQuests[i] == null) continue;
                 CurrentQuests[i].Complete();
@@ -98,26 +145,71 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CreateNewQuests()
     {
-        if(possibleProgressionQuests.Count < QUEST_COUNT)
+
+        if(possibleProgressionQuests.Count < 1)
         {
-            Debug.LogWarning($"Progression Manager needs at least {QUEST_COUNT} possible quests before creating any");
+            Debug.LogWarning($"Progression Manager needs at least 1 possible quest before creating any");
             return;
         }
 
         CleanUpQuests(); // Just in case it wasn't done before
 
-        List<ProgressionQuestSO> remainingQuests = new List<ProgressionQuestSO>(possibleProgressionQuests);
-
-        for(int i = 0; i < QUEST_COUNT; i++)
+        // After completing the first wave, we'll introduce the first quest type: Skillful Play.
+        if (WaveIndex >= 2)
         {
-            int randomIndex = UnityEngine.Random.Range(0, remainingQuests.Count);
+          if (player == null)
+            player = FindFirstObjectByType<Player>();
+          if (levelSystem == null)
+            levelSystem = FindFirstObjectByType<LevelSystem>();
 
-            ProgressionQuestSO runtimeQuestInstance = Instantiate(remainingQuests[randomIndex]);
-            runtimeQuestInstance.Init(this);
+          SkillfulQuestSO skillfulQuestInstance = FindProgressionQuestByType(skillfulQuests);
+          if (skillfulQuestInstance != null)
+          {
+            Instantiate(skillfulQuestInstance);
+            skillfulQuestInstance.Init(this);
+            CurrentQuests.Add(skillfulQuestInstance);
+            skillfulQuests.Remove(skillfulQuestInstance);
+          }
+        }
 
-            CurrentQuests[i] = runtimeQuestInstance;
+        // By the 5th wave, we can assume the player has already unlocked an aspect.
+        if (WaveIndex >= 5)
+        {
+          if (aspectsManager == null)
+            aspectsManager = FindFirstObjectByType<AspectsManager>();
 
-            remainingQuests.RemoveAt(randomIndex);
+          // We'll introduce the second quest type: Aspects.
+          if (aspectsManager.EquippedAspectTrees.Length > 0)
+          {
+            AspectQuestSO aspectQuestInstance = FindProgressionQuestByType(aspectQuests);
+            if (aspectQuestInstance != null)
+            {
+              Instantiate(aspectQuestInstance);
+              aspectQuestInstance.Init(this);
+              CurrentQuests.Add(aspectQuestInstance);
+              aspectQuests.Remove(aspectQuestInstance);
+            }
+          }
+        }
+
+        // By the 8th wave, the player has had enough time to experience each event at least once.
+        if (WaveIndex >= 8) 
+        {
+          if (eventManager == null)
+            eventManager = GetComponent<EventManager>();
+
+          // We'll introduce the third quest type: World Events.
+          if (eventManager.CurrentEvent != null)
+          {
+            WorldEventQuestSO worldEventQuestInstance = FindProgressionQuestByType(worldEventQuests);
+            if (worldEventQuestInstance != null)
+            {
+              Instantiate(worldEventQuestInstance);
+              worldEventQuestInstance.Init(this);
+              CurrentQuests.Add(worldEventQuestInstance);
+              worldEventQuests.Remove(worldEventQuestInstance);
+            }
+          }
         }
     }
 
@@ -128,12 +220,8 @@ public class ProgressionManager : MonoBehaviour
     {
         if (gameManager.CurrentState != GameState.PLAYING) return;
 
-        for(int i = 0; i < QUEST_COUNT; i++)
-        {
-            if (CurrentQuests[i] == null) continue;
-
-            CurrentQuests[i].Update();
-        }
+        foreach (ProgressionQuestSO quest in CurrentQuests)
+          quest.Update();
     }
 
     /// <summary>
@@ -141,14 +229,64 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     private void CleanUpQuests()
     {
-        for (int i = 0; i < QUEST_COUNT; i++)
-        {
-            if (CurrentQuests[i] == null) continue;
+        // for (int i = 0; i < CurrentQuests.Count; i++)
+        // {
+        //     if (CurrentQuests[i] == null) continue;
 
-            CurrentQuests[i].CleanUp();
-            CurrentQuests[i] = null;
-        }
+        //     CurrentQuests[i].CleanUp();
+        //     CurrentQuests[i] = null;
+        // }
+        if (CurrentQuests.Count == 0)
+          return;
+
+        foreach (ProgressionQuestSO quest in CurrentQuests)
+          quest.CleanUp();
+
+        CurrentQuests.Clear();
     }
+
+  private T FindProgressionQuestByType<T>(List<T> quests) where T : ProgressionQuestSO
+  {
+    if (quests.Count == 0)
+      return null;
+    else if (quests.Count == 1 && quests[0].MeetsCriteria(this))
+      return quests[0]; 
+    
+    // Start with lowest difficulty
+    int difficultyIndex = 0;
+    
+    // Try different difficulty levels if needed
+    while (difficultyIndex < quests.Count)
+    {
+      int currentDifficulty = quests[difficultyIndex].Difficulty;
+      
+      // Find how many quests have this difficulty
+      int sameQuestDifficultyCount = 0;
+      while (difficultyIndex + sameQuestDifficultyCount < quests.Count && 
+            quests[difficultyIndex + sameQuestDifficultyCount].Difficulty == currentDifficulty)
+      {
+        sameQuestDifficultyCount++;
+      }
+      
+      // Try a reasonable number of attempts at this difficulty
+      int maxAttempts = Math.Min(sameQuestDifficultyCount * 2, 20);
+      for (int a = 0; a < maxAttempts; a++)
+      {
+        // Pick a random quest of the current difficulty
+        int randomOffset = UnityEngine.Random.Range(0, sameQuestDifficultyCount);
+        T quest = quests[difficultyIndex + randomOffset];
+        
+        // If the player can complete it, we return it
+        if (quest.MeetsCriteria(this))
+          return quest;
+      }
+      
+      // Move to the next difficulty level
+      difficultyIndex += sameQuestDifficultyCount;
+    }
+    
+    return null;
+  }
     #endregion
 
     #region During Land Empowerment

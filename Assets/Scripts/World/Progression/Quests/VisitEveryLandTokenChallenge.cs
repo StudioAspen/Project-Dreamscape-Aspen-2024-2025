@@ -69,4 +69,9 @@ public class VisitEveryLandTokenChallenge : ProgressionQuestSO
             visitIndicatorsDictionary.Remove(playerGridPosition);
         }
     }
+
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
+  {
+    throw new System.NotImplementedException();
+  }
 }

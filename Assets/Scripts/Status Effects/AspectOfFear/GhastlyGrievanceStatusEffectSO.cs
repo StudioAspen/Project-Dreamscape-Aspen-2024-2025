@@ -20,6 +20,16 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
     [field: SerializeField] public float ExecuteThresholdPerExtraDebuff { get; private set; } = 0f; // TODO
     [field: SerializeField] public float ExecutionExplosionRadius { get; private set; } = 0f;
 
+    /// <summary>
+    /// An action that is invoked when the entity is executed for having health below the execution threshold.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity entity</c>: The executed entity.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity> OnExecution;
+
     private void OnValidate()
     {
         Stackable = true; // force stackable otherwise override wont work
@@ -37,7 +47,8 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
 
         // Get the passive from the player who applied this effect and try to add to the counter
         fearPassiveOwner = EntityStatusEffector.TryGetStatusEffect<AspectOfFearPassiveAStatusEffectSO>(source);
-        if (fearPassiveOwner != null) fearPassiveOwner.AddSkulledEntity(1);
+        if (fearPassiveOwner != null) 
+          fearPassiveOwner.AddSkulledEntity(entity, this);
 
         // Check for execution threshold on apply
         Entity_OnEntityTakeDamage(0, entity.GetColliderCenterPosition(), source);
@@ -46,18 +57,24 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
     private protected override void OnExpire()
     {
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
-        if (markerInstance != null) Destroy(markerInstance.gameObject);
+        if (markerInstance != null) 
+          Destroy(markerInstance.gameObject);
 
-        if (fearPassiveOwner != null) fearPassiveOwner.AddSkulledEntity(-1);
+        if (fearPassiveOwner != null) 
+          fearPassiveOwner.RemoveSkulledEntity(entity);
+
         base.OnExpire();
     }
 
     public override void Cancel()
     {
         entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
-        if (markerInstance != null) Destroy(markerInstance.gameObject);
+        if (markerInstance != null) 
+          Destroy(markerInstance.gameObject);
 
-        if (fearPassiveOwner != null) fearPassiveOwner.AddSkulledEntity(-1);
+        if (fearPassiveOwner != null) 
+          fearPassiveOwner.RemoveSkulledEntity(entity);
+
         base.Cancel();
     }
 
@@ -80,9 +97,10 @@ public class ExtendedDebuffStatusEffectSO : DurationStatusEffectSO
     {
         if (entity.CurrentHealth < Mathf.RoundToInt(entity.MaxHealth.GetFloatValue() * GetFinalExecuteThreshold()))
         {
-            //Debug.Log($"{entity.gameObject.name} reached {GetFinalExecuteThreshold()} threshold of health, executing");
+            Debug.Log($"{entity.gameObject.name} reached {GetFinalExecuteThreshold()} threshold of health, executing");
             TryExecutionAOEExplosion(entity.CurrentHealth, entity.GetColliderCenterPosition());
             entity.Kill(source);
+            OnExecution?.Invoke(entity);
         }
     }
 

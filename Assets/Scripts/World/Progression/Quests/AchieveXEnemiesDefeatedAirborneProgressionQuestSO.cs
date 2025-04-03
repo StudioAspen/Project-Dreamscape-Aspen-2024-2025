@@ -44,4 +44,9 @@ public class AchieveXEnemiesDefeatedAirborneProgressionQuestSO : ProgressionQues
     {
         
     }
+
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
+  {
+    throw new System.NotImplementedException();
+  }
 }

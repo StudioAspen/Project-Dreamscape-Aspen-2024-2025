@@ -44,4 +44,9 @@ public class AchieveXEnemiesDefeatedProgressionQuestSO : ProgressionQuestSO
     {
 
     }
+
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
+  {
+    throw new NotImplementedException();
+  }
 }

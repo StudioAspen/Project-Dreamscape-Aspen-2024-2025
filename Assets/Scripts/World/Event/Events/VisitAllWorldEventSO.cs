@@ -135,9 +135,16 @@ public class VisitAllWorldEventSO : WorldEventSO
             //Check if the player is within the visit indicator, and remove the visit indicator if so.
             if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= sphereRadius)
             {
-                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
-                visitIndicatorsDictionary.Remove(playerGridPosition);
-            }
+
+                Debug.Log($"Land Level: {worldManager.GetLandByGridPosition(playerGridPosition).Level} \n Radius: {sphereRadius}");
+
+                //Check if the player is within the visit indicator, and remove the visit indicator if so.
+                if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= sphereRadius)
+                {
+                  GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+                  visitIndicatorsDictionary.Remove(playerGridPosition);
+                }
+            } 
         }
     }
 

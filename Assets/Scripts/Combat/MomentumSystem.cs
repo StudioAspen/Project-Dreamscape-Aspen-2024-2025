@@ -1,26 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
+using AYellowpaper.SerializedCollections;
 
 public class MomentumSystem : MonoBehaviour
 {
     private Player player;
+    private LevelSystem levelSystem;
 
     [Header("Settings")]
-    [SerializeField] private float baseTimeBetween = 5f;
-    [SerializeField] private float timeBetweenMultiplier = 0.975f;
+    [SerializeField] private float timeBetween = 1f;
     private float timer;
-    private float timeBetween;
 
-    [SerializeField] private float percentDamageBonus;
-    private float currentDamageBonus = 1;
-    [SerializeField] private float maxDamageBonus;
-    [SerializeField] private float percentMoveSpeedBonus;
-    private float currentMoveSpeedBonus = 1;
-    [SerializeField] private float maxMoveSpeedBonus;
-    [SerializeField] private int healAmount;
+    [Header("Rewards")]
+    /// <summary>
+    /// Dictionary that stores the milestones (int) as keys and bonuses (float) as values. Upon reaching a milestone, the corresponding bonus is applied.
+    /// </summary>
+    [SerializeField, SerializedDictionary("Chain Milestone", "% EXP Bonus")] private SerializedDictionary<int, float> chainRewards = new();
 
     private int momentum;
     public int Momentum => momentum;
@@ -28,6 +23,7 @@ public class MomentumSystem : MonoBehaviour
     private void Awake()
     {
         player = GetComponent<Player>();
+        levelSystem = GetComponent<LevelSystem>();
     }
 
     private void Start()
@@ -39,12 +35,14 @@ public class MomentumSystem : MonoBehaviour
     {
         player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
         player.OnKillEntity += Player_OnKillEntity;
+        levelSystem.OnEXPAdded += LevelSystem_OnEXPAdded;
     }
 
     private void OnDisable()
     {
         player.OnEntityTakeDamage -= Player_OnEntityTakeDamage;
         player.OnKillEntity -= Player_OnKillEntity;
+        levelSystem.OnEXPAdded -= LevelSystem_OnEXPAdded;
     }
 
     void Update()
@@ -52,15 +50,11 @@ public class MomentumSystem : MonoBehaviour
         HandleMomentum();
     }
 
-    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        ResetMomentum();
-    }
+    // Momentum resets to 0 when the player takes damage.
+    private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source) => ResetMomentum();
 
-    private void Player_OnKillEntity(Entity victim)
-    {
-        AddMomentum();
-    }
+    // Momentum increases by 1 every time the player kills an entity.
+    private void Player_OnKillEntity(Entity victim) => AddMomentum();
 
     private void HandleMomentum()
     {
@@ -74,51 +68,48 @@ public class MomentumSystem : MonoBehaviour
         }
     }
 
-    private void AddMomentum()
+    public void AddMomentum()
     {
         momentum++;
-        timer = 0;
-        timeBetween = timeBetween * timeBetweenMultiplier;
-
-        if(momentum % 10 == 0)
-        {
-            //if momentum reaches mutliple of 10 you get healed yay
-            player.Heal(healAmount);
-        }
-        else if(momentum % 2 == 1)
-        {
-            //activates every odd increment of momentum (1,3,5..)
-            if(currentDamageBonus < maxDamageBonus)
-            {
-                //if damage bonus isnt maxed out already, add percent bonus
-                player.DamageModifier.RemoveMultiplier(currentDamageBonus, this);
-                currentDamageBonus += percentDamageBonus;
-                player.DamageModifier.AddMultiplier(currentDamageBonus, this);
-
-            }
-        }
-        else
-        {
-            //activates every even increment (2,4,6..)
-            if(currentMoveSpeedBonus < maxMoveSpeedBonus)
-            {
-                //if speed bonus hasnt maxed out add percent bonus
-                player.StatusSpeedModifier.RemoveMultiplier(currentMoveSpeedBonus, this);
-                currentMoveSpeedBonus += percentMoveSpeedBonus;
-                player.StatusSpeedModifier.AddMultiplier(currentMoveSpeedBonus, this);
-            }
-        }
+        timer = 0f;
     }
 
     private void ResetMomentum()
     {
-        timer = 0;
-        timeBetween = baseTimeBetween;
         momentum = 0;
-        //resets modifiers yay
-        player.StatusSpeedModifier.ClearBuffsFromSource(this);
-        currentMoveSpeedBonus = 1;
-        player.DamageModifier.ClearBuffsFromSource(this);
-        currentDamageBonus = 1;
+        timer = 0;
+    }
+
+    private void LevelSystem_OnEXPAdded(int addedAmount)
+    {
+        // Just in case the dictionary is empty
+        if(chainRewards.Count == 0)
+        {
+            Debug.LogWarning("You need to configure chain rewards for the Player's chaining system");
+            return;
+        }
+
+        if (momentum == 0) return; // No need to check for rewards if there is no chain
+
+        List<int> milestones = new List<int>(chainRewards.Keys);
+        milestones.Sort(); // Ensures the milestones are in ascending order
+
+        // Finds the largest milestone that is less than or equal to the chain count
+        int currentMilestone = 0;
+        foreach(int milestone in milestones)
+        {
+            if (milestone > momentum) break;
+            currentMilestone = milestone;
+        }
+
+        // There should be no reward for not reaching any milestone
+        if (currentMilestone == 0) return;
+
+        // Get the bonus multiplier and add bonus exp if nonzero
+        float bonusEXPMultiplier = chainRewards[currentMilestone];
+        int bonusEXP = Mathf.RoundToInt(bonusEXPMultiplier * addedAmount);
+        if (bonusEXP > 0) levelSystem.AddEXP(bonusEXP, false); // False because you dont want to cause an infinite loop of adding EXP and giving bonus EXP
+
+        //Debug.Log($"Bonus EXP Multiplier: {bonusEXPMultiplier}, Bonus EXP: {bonusEXP}");
     }
 }

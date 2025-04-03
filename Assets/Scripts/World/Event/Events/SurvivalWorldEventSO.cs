@@ -21,6 +21,9 @@ public class SurvivalWorldEventSO : WorldEventSO
     [field: Range(5f, 60f)]
     [field: SerializeField] public float TimeIncrement { get; private set; } = 10f;
 
+    [field: Range(2, 10)]
+    [field: SerializeField] public int SpawnedLandsPerIncrement { get; private set; } = 2;
+
     [field: Space(5)]
 
     /// <summary>
@@ -50,7 +53,7 @@ public class SurvivalWorldEventSO : WorldEventSO
       int spawnAmount = BaseSpawnAmount + players.Count - 1;
 
       // Calculate the time limit based the number of spawned lands, the Base Time Limit, and the Time Increment.
-      float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((spawnedLands.Count - 1) / 2) * TimeIncrement);
+      float timeLimit = BaseTimeLimit + (Mathf.FloorToInt(Mathf.Clamp(spawnedLands.Count - 4, 0, spawnedLands.Count) / SpawnedLandsPerIncrement) * TimeIncrement);
       
       float interval = timeLimit / BaseIntervals;
       // Spawn enemies on all lands for the duration of the event
