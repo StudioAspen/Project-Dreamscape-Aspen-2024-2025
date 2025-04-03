@@ -230,7 +230,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1047686824729074286}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7d7c47eddd28cb418b6e88b89d6de7c, type: 3}
   m_Name: 
@@ -238,8 +238,6 @@ MonoBehaviour:
   devConsoleUI: {fileID: 994752154596740298}
   consoleLogUI: {fileID: 6605611801327270777}
   userInput: {fileID: 8482147990019719741}
-  loadableScenes:
-  - exampleScene
 --- !u!223 &7838526367145619098
 Canvas:
   m_ObjectHideFlags: 0
