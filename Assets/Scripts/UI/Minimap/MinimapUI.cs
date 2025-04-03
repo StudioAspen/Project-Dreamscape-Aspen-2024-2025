@@ -67,7 +67,7 @@ public class MinimapUI : MonoBehaviour
 
             // Center Map and increase Size
             rawImage.rectTransform.sizeDelta = new Vector2(Camera.main.pixelHeight, Camera.main.pixelHeight);
-            rawImage.rectTransform.position = new Vector2(Camera.main.pixelWidth, Camera.main.pixelHeight)/2;
+            rawImage.rectTransform.position = new Vector2(Camera.main.pixelWidth, Camera.main.pixelHeight) / 2;
 
             minimapCamera.ChangeCameraSize(maximizedCameraSize);
             minimapCamera.EnableCameraBackground(false);
