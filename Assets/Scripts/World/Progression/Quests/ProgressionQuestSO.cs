@@ -6,13 +6,18 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
     public enum Reward
     {
+        WEAKEN_TOKEN,
         EMPOWER_TOKEN,
-        WEAKEN_TOKEN
     }
 
     [field: SerializeField] public string ObjectiveText { get; private set; } = "";
     [field: SerializeField] public Reward CompletionReward { get; private set; }
     public bool IsCompleted { get; protected set; }
+
+    [Header("Basic Criteria")]
+    [Range(1, 3)]
+    [SerializeField] protected int difficulty;
+    public int Difficulty => difficulty;
 
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
@@ -22,9 +27,11 @@ public abstract class ProgressionQuestSO : ScriptableObject
     {
         this.progressionManager = progressionManager;
 
-        //Debug.Log($"Activated progression quest: {name}");
+        Debug.Log($"Activated progression quest: {name}");
         OnActivated();
     }
+
+    public abstract bool MeetsCriteria(ProgressionManager progressionManager);
 
     /// <summary>
     /// Fires once when the game enters the PLAYING state. The player auto accepts progression quests every new event.
@@ -37,7 +44,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
     /// </summary>
     public void Complete()
     {
-        //Debug.Log($"Completed progression quest: {name}");
+        Debug.Log($"Completed progression quest: {name}");
 
         IsCompleted = true;
 
@@ -93,6 +100,7 @@ public abstract class ProgressionQuestSO : ScriptableObject
     /// </summary>
     public void Update()
     {
+        // Debug.Log($"Quest Completed: {IsCompleted}");
         if(IsCompleted) return;
 
         OnUpdate();

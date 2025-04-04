@@ -1,4 +1,5 @@
 using AYellowpaper.SerializedCollections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
     [field: SerializeField] public float StackTimerReset { get; private set; } = 5f;
     [field: SerializeField, SerializedDictionary("Buff", "Multiplier")] public SerializedDictionary<Buff, float> StatBuffs { get; private set; } = new();
-    private int currentStacks;
+    public int CurrentStacks { get; private set; }
     private float timer;
 
     [field: Header("Aspect of Fear Passive B Expanded: Settings")]
@@ -26,6 +27,8 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
 
     private Dictionary<Buff, Stat> multiplierBuffStatPairs = new Dictionary<Buff, Stat>();
     private HashSet<Buff> activeBuffs = new HashSet<Buff>(); // checks for current active buffs, so non-active buffs can be activated when stacks are filled again
+
+    public Action<Entity, Entity, float> OnStunEntity = delegate{ };
 
     private void OnValidate()
     {
@@ -84,6 +87,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     private void Entity_OnStunEntity(Entity stunner, Entity victim, float stunDuration)
     {
         AddStack();
+        OnStunEntity?.Invoke(stunner, victim, stunDuration);
     }
 
     private void Entity_OnKillEntity(Entity victim)
@@ -109,9 +113,9 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     {
         // reset timer and add stack
         timer = 0f;
-        currentStacks++;
+        CurrentStacks++;
 
-        if(currentStacks >= MaxStacks)
+        if(CurrentStacks >= MaxStacks)
         {
             OnMaxStacksReached();
         }
@@ -120,7 +124,7 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
     private void ResetStacks()
     {
         timer = 0f;
-        currentStacks = 0;
+        CurrentStacks = 0;
 
         foreach(Buff buff in new HashSet<Buff>(activeBuffs))
         {
@@ -154,12 +158,12 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         if (nonActiveBuffs.Count == 0)
         {
             timer = 0f;
-            currentStacks = 0;
+            CurrentStacks = 0;
             return;
         }
 
         // select a random buff from the available list
-        Buff selectedBuff = nonActiveBuffs[Random.Range(0, nonActiveBuffs.Count)];
+        Buff selectedBuff = nonActiveBuffs[UnityEngine.Random.Range(0, nonActiveBuffs.Count)];
 
         // apply the selected buff and mark it as active
         // then refresh timer, stacks, and duration of buffs
@@ -167,6 +171,6 @@ public class AspectOfFearPassiveBStatusEffectSO : StatusEffectSO
         activeBuffs.Add(selectedBuff);
 
         timer = 0f;
-        currentStacks = 0;
+        CurrentStacks = 0;
     }
 }

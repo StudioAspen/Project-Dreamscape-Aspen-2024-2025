@@ -9,7 +9,12 @@ public class Maintain50PercentHealthProgressionQuestSO : ProgressionQuestSO
     private Player player;
     private bool isFailed;
 
-    private protected override void OnActivated()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
+  {
+    throw new NotImplementedException();
+  }
+
+  private protected override void OnActivated()
     {
         player = FindObjectOfType<Player>();
         if (player == null)

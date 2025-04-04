@@ -92,6 +92,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 949471153978555938, guid: d4925ffd511a4194d864679bdf163929,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2301924996432201334, guid: d4925ffd511a4194d864679bdf163929,
         type: 3}
       propertyPath: materializeVFXPrefab
@@ -239,6 +244,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 8394819227781102534, guid: d4925ffd511a4194d864679bdf163929,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 1222065609000672791, guid: 05ab69354798bb7498dedf7330040e50,
+        type: 2}
     - target: {fileID: 8897418042988257789, guid: d4925ffd511a4194d864679bdf163929,
         type: 3}
       propertyPath: m_Name
@@ -352,6 +363,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7492268669228070353}
     m_Modifications:
+    - target: {fileID: 534554893591527209, guid: f83bcfb760b6ea44fb357e4e4bf255a4,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2563498881540559356, guid: f83bcfb760b6ea44fb357e4e4bf255a4,
         type: 3}
       propertyPath: m_Name
