@@ -15,6 +15,7 @@ public class MinimapUI : MonoBehaviour
     [SerializeField] private Transform background;
     [SerializeField] private Mask mask;
     [SerializeField] private RawImage rawImage;
+    [SerializeField] private RenderTexture mapRender;
 
     [Header("Config")]
     [SerializeField] private float maximizedCameraSize = 80f;
@@ -65,6 +66,9 @@ public class MinimapUI : MonoBehaviour
             transparentColor.a = maximizedOpacity;
             rawImage.color = transparentColor;
 
+            // Resize render
+            Resize(mapRender, 3000, 3000);
+
             // Center Map and increase Size
             rawImage.rectTransform.sizeDelta = new Vector2(Camera.main.pixelHeight, Camera.main.pixelHeight);
             rawImage.rectTransform.position = new Vector2(Camera.main.pixelWidth, Camera.main.pixelHeight)/2;
@@ -78,12 +82,25 @@ public class MinimapUI : MonoBehaviour
             opaqueColor.a = 1f;
             rawImage.color = opaqueColor;
 
+            // Resize render
+            Resize(mapRender, 512, 512);
+
             // Make Minimap smaller and move into corner
             rawImage.rectTransform.sizeDelta = rawImageMinimizedSize;
             rawImage.rectTransform.localPosition = rawImageMinimizedPosition;
 
             minimapCamera.ResetCameraSize();
             minimapCamera.EnableCameraBackground(false);
+        }
+    }
+
+    void Resize(RenderTexture renderTexture, int width, int height)
+    {
+        if (renderTexture)
+        {
+            renderTexture.Release();
+            renderTexture.width = width;
+            renderTexture.height = height;
         }
     }
 }
