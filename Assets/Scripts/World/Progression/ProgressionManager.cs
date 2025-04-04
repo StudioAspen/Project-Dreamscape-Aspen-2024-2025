@@ -26,8 +26,8 @@ public class ProgressionManager : MonoBehaviour
     // Tutorial Counts as a wave
     public int WaveIndex { get; private set; } = 0;
 
-    [Header("Quests")]
-    [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
+    [field: Header("Quests")]
+    [field: SerializeField] public List<ProgressionQuestSO> PossibleProgressionQuests { get; private set; } = new();
     public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
@@ -51,10 +51,10 @@ public class ProgressionManager : MonoBehaviour
         WeakenTokens = baseWeakenTokens;
 
         // Sort the Quests in order of difficulty from least to greatest, just once.
-        possibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
+        PossibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
 
         // Filter the Quests into lists based on their class, just once.
-        foreach(ProgressionQuestSO quest in possibleProgressionQuests)
+        foreach(ProgressionQuestSO quest in PossibleProgressionQuests)
         {
           switch (quest)
           {
@@ -146,7 +146,7 @@ public class ProgressionManager : MonoBehaviour
     private void CreateNewQuests()
     {
 
-        if(possibleProgressionQuests.Count < 1)
+        if(PossibleProgressionQuests.Count < 1)
         {
             Debug.LogWarning($"Progression Manager needs at least 1 possible quest before creating any");
             return;
