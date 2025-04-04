@@ -7,14 +7,14 @@ public class MemoryAbilityQuestSO : SkillfulQuestSO
   [field: Header("Perform Memory Ability Configuration")]
 
   /// <summary>
-  /// The minimum Memory Meter level required for the Progression Manager to select this quest.
+  /// The minimum Memory Meter level required for the Progression Manager to select the quest.
   /// </summary>
   [field: Tooltip("The minimum Memory Meter level required for the Progression Manager to select this quest.")]
   [field: Range(0, 3)]
   [field: SerializeField] public int MinRequiredMemoryLevel { get; private set; }
 
   /// <summary>
-  /// The Memory Ability required to complete this quest. The Progression Manager will check if the majority of the Memory Meter consists of Shards for the specified Memory Ability.
+  /// The Memory Ability required to complete the quest. The Progression Manager will check if the majority of the Memory Meter consists of Shards for the specified Memory Ability.
   /// </summary>
   [field: Tooltip("The Memory Ability required to complete this quest. The Progression Manager will check if the majority of the Memory Meter consists of Shards for the specified Memory Ability.")]
   [field: SerializeField] public string RequiredMemoryAbility { get; private set; }
