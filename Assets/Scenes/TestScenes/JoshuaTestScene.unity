@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -922,6 +922,60 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5671f7e8d8d5ab7448c31b9a9c047932, type: 3}
+--- !u!1 &1137791535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1137791537}
+  - component: {fileID: 1137791538}
+  m_Layer: 0
+  m_Name: SlimeTestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1137791537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137791535}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1050.9532, y: 416.82956, z: 4.521994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1137791538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137791535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9390c429c367c4f13892550fcabf03ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slimeIndex: 1
+  numberOfSlimes: 8
+  numberOfSplitSlimes: 4
+  playerSlimeLaunch: 0.7853982
+  deployedSlimeLaunch: 1.5707964
+  playerHeight: 0
+  slimeVelocity: 5
+  projectileMotionHeight: 0
+  slimeObject: {fileID: 4518511054676028987, guid: a668ae943b833fa4a9329a48e461e47a,
+    type: 3}
 --- !u!1 &1231333731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2189,7 +2243,7 @@ PrefabInstance:
     - target: {fileID: 4518511054676028987, guid: a668ae943b833fa4a9329a48e461e47a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2311,22 +2365,27 @@ PrefabInstance:
     - target: {fileID: 4516155681631422558, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70727944
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4516155681631422558, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.70693415
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4516155681631422558, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000001323759
+      value: 0.00000013240823
       objectReference: {fileID: 0}
     - target: {fileID: 4516155681631422558, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000013244056
+      value: -0.00000013240823
+      objectReference: {fileID: 0}
+    - target: {fileID: 6950320168933061115, guid: 19dae7578bc56674dae55670ec5dfbf5,
+        type: 3}
+      propertyPath: <ShardDictionary>k__BackingField._serializedList.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7536978621657743438, guid: 19dae7578bc56674dae55670ec5dfbf5,
         type: 3}
@@ -2567,3 +2626,4 @@ SceneRoots:
   - {fileID: 602888464}
   - {fileID: 552994380}
   - {fileID: 939322494}
+  - {fileID: 1137791537}
