@@ -1,10 +1,7 @@
-﻿using UnityEditor.EditorTools;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class ProgressionQuestSO : ScriptableObject
 {
-    private protected ProgressionManager progressionManager;
-
     public enum Reward
     {
         WEAKEN_TOKEN,
@@ -17,42 +14,62 @@ public abstract class ProgressionQuestSO : ScriptableObject
         // FEAR_UPGRADE
     }
 
-    [field: Header("Basic Settings")]
-    [field: SerializeField] public string ObjectiveText { get; protected set; } = "";
+    [field: Header("Quest Settings")]
+
+    /// <summary>
+    /// The quest objective statement displayed to players.
+    /// </summary>
+    [field: Tooltip("The quest objective statement displayed to players.")]
+    [field: SerializeField] public string ObjectiveText { get; protected set; }
+
+    /// <summary>
+    /// The reward for completing the quest.
+    /// </summary>
+    [field: Tooltip("The reward for completing the quest")]
     [field: SerializeField] public Reward CompletionReward { get; private set; }
+
+    /// <summary>
+    /// If checked, the quest will log error messages in the Console.
+    /// </summary>
+    [field: Tooltip("If checked, the quest will log error messages in the Console.")]
     [field: SerializeField] public bool LogErrorMessages { get; private set; } = false;
+
+
+    [field: Header("Basic Criteria")]
+
+    /// <summary>
+    /// The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.
+    /// </summary>
+    [field: Tooltip("The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.")]
+    [field: Range(1, 3)]
+    [field: SerializeField] public int Difficulty { get; private set; }
 
     /// <summary>
     /// Did the player complete this quest?
     /// </summary>
-    /// <value></value>
-    public bool IsCompleted { get; protected set; }
+    public bool IsCompleted { get; protected set; } = false;
 
-    [Header("Basic Criteria")]
     /// <summary>
-    /// The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.
+    /// Reference to the Progression Manager.
     /// </summary>
-    [Tooltip("The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.")]
-    [Range(1, 3)]
-    [SerializeField] protected int difficulty;
-    public int Difficulty => difficulty;
-
+    protected ProgressionManager progressionManager;
+    
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
     /// </summary>
-    /// <param name="progressionManager">Reference to the Progression Manager</param>
+    /// <param name="progressionManager">Reference to the Progression Manager.</param>
     public void Init(ProgressionManager progressionManager)
     {
-        this.progressionManager = progressionManager;
+      this.progressionManager ??= progressionManager;
 
-        Debug.Log($"Activated progression quest: {name}");
-        OnActivated();
+      Debug.Log($"Activated progression quest: {name}");
+      OnActivated();
     }
 
     /// <summary>
     /// Checks if the quest meets the minimum criteria before the Progression Manager assigns it.
     /// </summary>
-    /// <param name="progressionManager">Reference to the Progression Manager</param>
+    /// <param name="progressionManager">Reference to the Progression Manager.</param>
     /// <returns>A boolean</returns>
     public abstract bool MeetsCriteria(ProgressionManager progressionManager);
 

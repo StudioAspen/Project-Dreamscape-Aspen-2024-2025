@@ -17,10 +17,10 @@ public abstract class SkillfulQuestSO : ProgressionQuestSO
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   { 
-    if (progressionManager.levelSystem == null)
+    if (!progressionManager.levelSystem)
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: Could not find reference to the Level System.");
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Level System.");
 
       return false;
     }
