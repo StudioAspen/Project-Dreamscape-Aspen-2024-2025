@@ -2,13 +2,13 @@ using UnityEngine;
 
 public abstract class SkillfulQuestSO : ProgressionQuestSO
 {
-  [Header ("Skillful Criteria")]
+  [field: Header ("Skillful Criteria")]
   /// <summary>
   /// The minimum player level required for the Progression Manager to select this quest.
   /// </summary>
-  [Tooltip("The minimum player level required for the Progression Manager to select this quest.")]
-  [Range(1, 99)]
-  [SerializeField] protected int requiredPlayerLevel;
+  [field: Tooltip("The minimum player level required for the Progression Manager to select this quest.")]
+  [field: Range(1, 99)]
+  [field: SerializeField] protected int requiredPlayerLevel;
 
   /// <summary>
   /// Reference to the Event Manager via the Progression Manager.

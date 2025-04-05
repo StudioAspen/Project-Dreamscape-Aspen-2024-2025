@@ -10,14 +10,14 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
   /// <summary>
   /// The number of times the player must afflict Dreamons with the Burning Rage status effect to complete the quest.
   /// </summary>
-  [Tooltip("The number of times the player must afflict Dreamons with the Burning Rage status effect to complete the quest.")]
+  [field: Tooltip("The number of times the player must afflict Dreamons with the Burning Rage status effect to complete the quest.")]
   [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
 
   /// <summary>
   /// The number of times the player must defeat Dreamons with Burning Rage combustion damage to complete the quest.
   /// </summary>
-  [Tooltip("The number of times the player must defeat Dreamons with Burning Rage combustion damage to complete the quest.")]
+  [field: Tooltip("The number of times the player must defeat Dreamons with Burning Rage combustion damage to complete the quest.")]
   [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulDefeatsGoal { get; private set; }
 
@@ -32,6 +32,13 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
   private int successfulDefeats = 0;
 
   /// <summary>
+  /// Dictionary that tracks every entity the player afflicts with the Burning Rage status effect during the quest.
+  /// </summary>
+  /// <typeparam name="Entity">The affected entity.</typeparam>
+  /// <typeparam name="BurningRageStatusEffectSO">The entity's Burning Rage status effect.</typeparam>
+  private Dictionary<Entity, BurningRageStatusEffectSO> affectedEntities = new Dictionary<Entity, BurningRageStatusEffectSO>();
+
+  /// <summary>
   /// Reference to the Player via the Progression Manager.
   /// </summary>
   private Player player;
@@ -40,13 +47,6 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
   /// Reference to the Player Combat via the Progression Manager and Player.
   /// </summary>
   private PlayerCombat playerCombat;
-
-  /// <summary>
-  /// Dictionary that tracks every entity the player afflicts with the Burning Rage status effect during the quest.
-  /// </summary>
-  /// <typeparam name="Entity">The affected entity.</typeparam>
-  /// <typeparam name="BurningRageStatusEffectSO">The entity's Burning Rage status effect.</typeparam>
-  private Dictionary<Entity, BurningRageStatusEffectSO> affectedEntities = new Dictionary<Entity, BurningRageStatusEffectSO>();
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {

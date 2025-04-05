@@ -4,26 +4,26 @@ using UnityEngine;
 
 public abstract class AspectQuestSO : ProgressionQuestSO
 {
-  [Header("Aspect Criteria")]
+  [field: Header("Aspect Criteria")]
 
   /// <summary>
   /// The Aspect Tree required to be equipped for the Progression Manager to select this quest.
   /// </summary>
-  [Tooltip("The Aspect Tree required to be equipped for the Progression Manager to select this quest.")]
-  [SerializeField] protected AspectTree requiredAspectTree;
+  [field: Tooltip("The Aspect Tree required to be equipped for the Progression Manager to select this quest.")]
+  [field: SerializeField] protected AspectTree requiredAspectTree;
 
   /// <summary>
   /// The Aspect Node required to be applied for the Progression Manager to select this quest. This Aspect Node must also belong to the required Aspect Tree, and the player has to have applied it.
   /// </summary>
-  [Tooltip("The Aspect Node required to be applied for the Progression Manager to select this quest. This Aspect Node must also belong to the Required Aspect Tree, and the player has to have applied it.")]
-  [SerializeField] protected AspectNodeNode requiredAspectNode;
+  [field: Tooltip("The Aspect Node required to be applied for the Progression Manager to select this quest. This Aspect Node must also belong to the Required Aspect Tree, and the player has to have applied it.")]
+  [field: SerializeField] protected AspectNodeNode requiredAspectNode;
 
   /// <summary>
   /// The Node Level at which the Progression Manager will search the required Aspect Tree for the required Aspect Node.
   /// </summary>
-  [Tooltip("The Node Level at which the Progression Manager will search the required Aspect Tree for the required Aspect Node.")]
-  [Range(0, 5)]
-  [SerializeField] protected int nodeLevel;
+  [field: Tooltip("The Node Level at which the Progression Manager will search the required Aspect Tree for the required Aspect Node.")]
+  [field: Range(0, 5)]
+  [field: SerializeField] protected int nodeLevel;
 
   /// <summary>
   /// Reference to the equipped Aspect Trees via the Progression Manager and Aspects Manager.
@@ -36,14 +36,14 @@ public abstract class AspectQuestSO : ProgressionQuestSO
     if (requiredAspectTree == null)
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: A required Aspect Tree was not provided.");
+        Debug.LogError($"{name} Criteria Error: A required Aspect Tree was not provided.");
 
       return false;
     }
     else if (progressionManager.aspectsManager.EquippedAspectTrees == null)
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: Could not find reference to Equipped Aspect Trees.");
+        Debug.LogError($"{name} Criteria Error: Could not find reference to Equipped Aspect Trees.");
 
       return false;
     }
@@ -67,7 +67,7 @@ public abstract class AspectQuestSO : ProgressionQuestSO
     if (matchingTree == null)
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: Player does not have any Aspect Trees equipped.");
+        Debug.LogError($"{name} Criteria Error: Player does not have any Aspect Trees equipped.");
 
       return false;
     }
@@ -80,14 +80,14 @@ public abstract class AspectQuestSO : ProgressionQuestSO
     if (requiredAspectNode == null) 
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: A required Aspect Node was not provided.");
+        Debug.LogError($"{name} Criteria Error: A required Aspect Node was not provided.");
 
       return false;
     }
     else if(aspectNode == null)
     {
       if (LogErrorMessages)
-        Debug.LogError("Quest Criteria Error: Required Aspect Node was not found at the specified Node Level.");
+        Debug.LogError($"{name} Criteria Error: Required Aspect Node was not found at the specified Node Level.");
 
       return false;
     }

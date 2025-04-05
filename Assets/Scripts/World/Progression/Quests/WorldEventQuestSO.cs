@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
 
 public abstract class WorldEventQuestSO : ProgressionQuestSO
 {
-  [Header("World Event Criteria")]
+  [field: Header("World Event Criteria")]
   /// <summary>
   /// The World Event required to be in effect for the Progression Manager to select this quest.
   /// </summary>
-  [Tooltip("The World Event required to be in effect for the Progression Manager to select this quest.")]
-  [SerializeField] private WorldEventSO requiredWorldEvent;
+  [field: Tooltip("The World Event required to be in effect for the Progression Manager to select this quest.")]
+  [field: SerializeField] protected WorldEventSO requiredWorldEvent;
 
   /// <summary>
   /// Reference to the Event Manager via the Progression Manager.
@@ -19,10 +16,10 @@ public abstract class WorldEventQuestSO : ProgressionQuestSO
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    if (progressionManager.eventManager == null)
+    if (!progressionManager.eventManager)
     {
       if (LogErrorMessages) 
-        Debug.LogError("Quest Criteria Error: Could not find reference to the Event Manager.");
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
 
       return false;
     }

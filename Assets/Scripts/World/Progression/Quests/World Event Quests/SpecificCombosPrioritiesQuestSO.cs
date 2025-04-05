@@ -1,58 +1,135 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_CombosOnlyPrioritiesQuestSO", menuName = "World/Progression Quest/World Event Quests/Specific Combos Only (Priorities)")]
+[CreateAssetMenu(fileName = "_x_CombosOnlyPrioritiesQuestSO", menuName = "World/Progression Quest/World Event Quests/Specific Combos (Priorities)")]
 public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
 {
-  [field: Header("Config")]
-  [SerializeField] List<ComboDataSO> allowedCombos;
-  private PrioritiesWorldEventSO prioritiesEventRef;
-  private Player player;
-  private PlayerCombat playerCombat;
-  private PlayerAttackState playerAttackState;
+  [field: Header("Specific Combos (Priorities) Configuration")]
+
+  /// <summary>
+  /// List of the combos the player is allowed to hit marked Dreamons with during the quest.
+  /// </summary>
+  [field: Tooltip("List of the combos the player is allowed to hit marked Dreamons with during the quest.")]
+  [field: SerializeField] List<ComboDataSO> allowedCombos;
+
+  /// <summary>
+  /// Did the player hit a marked Dreamon with a combo not listed in the allowed Combos list?
+  /// </summary>
   private bool landedProhibitedCombo = false;
+
+  /// <summary>
+  /// Reference to the Player via the Progression Manager.
+  /// </summary>
+  private Player player;
+
+  /// <summary>
+  /// Reference to the Player Combat via the Progression Manager and Player.
+  /// </summary>
+  private PlayerCombat playerCombat; 
+
+  /// <summary>
+  /// Reference to the Player Attack State via the Progression Manager and Player.
+  /// </summary>
+  private PlayerAttackState playerAttackState;
+
+  /// <summary>
+  /// Reference to the Defend World Event via the Event Manager.
+  /// </summary>
+  private PrioritiesWorldEventSO prioritiesEvent;
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    if (allowedCombos.Count == 0)
+    if (!progressionManager.player)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player.");
+
       return false;
+    }
+    else if (allowedCombos.Count == 0)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: A list of allowed Combos was not provided.");
+
+      return false;
+    }
+    
+    player ??= progressionManager.player;
+
+    if (!progressionManager.player.TryGetComponent(out PlayerCombat playerCombatRef))
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find Player Combat component on the player.");
+
+      return false;      
+    }
+    else if (player.PlayerAttackState == null)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player Attack State.");
+
+      return false;   
+    }
+    else if (!(PrioritiesWorldEventSO)eventManager.CurrentEvent)
+    {
+      {
+        if (LogErrorMessages)
+          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new PrioritiesWorldEventSO().GetType()}.");
+
+        return false;  
+      }
+    }
+
+    // Assign the references to the corresponding variables.
+    playerCombat ??= playerCombatRef;
+    playerAttackState ??= player.PlayerAttackState;
+    prioritiesEvent ??= (PrioritiesWorldEventSO)eventManager?.CurrentEvent;
+
+    if (!playerCombat.Weapon)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player Weapon.");
+
+      return false;
+    }
 
     return base.MeetsCriteria(progressionManager);
   }
 
-  private protected override void OnActivated()
+  private protected override void OnActivated() => playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+  private protected override void OnCleanUp()
   {
-    player = progressionManager?.player;
-    playerCombat = player.GetComponent<PlayerCombat>();
-    playerAttackState = player.PlayerAttackState;
-    prioritiesEventRef = (PrioritiesWorldEventSO)eventManager?.CurrentEvent;
+    // Unsubscribe to any Actions used for the quest.
+    playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
 
-    if (player == null || prioritiesEventRef == null)
-    {
-      landedProhibitedCombo = true;
-      CleanUp();
-      return;
-    }
-
-    landedProhibitedCombo = false;
-
-    if (playerCombat.Weapon != null || playerAttackState != null)
-      playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+    // Check for completion at the end of the wave.
+    if (landedProhibitedCombo == false)
+      Complete(false);
   }
+
+  private protected override void OnUpdate() { }
 
   private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue) 
   {
-    if (player.CurrentState != playerAttackState || playerAttackState.ComboData == null)
-      return;
+    if (player.CurrentState != playerAttackState)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} On Weapon Hit Error: Player's current State is not the Attack State.");
 
+      return;
+    }
+    else if (!playerAttackState.ComboData)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} On Weapon Hit Error: Could not find a Combo Data reference on the player Attack State.");
+
+      return;
+    }
     // Ignore the following checks if the Dreamon is still alive
-    if (victim.CurrentHealth > damageValue)
+    else if (victim.CurrentHealth > damageValue)
       return;
-
     // Ignore the next check if the Dreamon is not marked by this event.
-    if (!prioritiesEventRef.enemyMarkers.ContainsKey(victim as Enemy))
+    else if (!prioritiesEvent.enemyMarkers.ContainsKey(victim as Enemy))
       return;
 
     // If the combo is not in the allowed combos list, the player fails this event
@@ -60,17 +137,4 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
       landedProhibitedCombo = true;
   }
 
-  private protected override void OnCleanUp()
-  {
-    if (playerCombat.Weapon != null || playerAttackState != null)
-      playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
-
-    if (landedProhibitedCombo == false)
-      Complete(false);
-  }
-
-  private protected override void OnUpdate()
-  {
-    Debug.Log($"Player defeated a marked Dreamon with a prohibited combo: {landedProhibitedCombo}");
-  }
 }
