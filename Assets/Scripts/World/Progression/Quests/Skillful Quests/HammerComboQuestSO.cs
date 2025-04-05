@@ -23,6 +23,7 @@ public class HammerComboQuestSO : SkillfulQuestSO
   /// <summary>
   /// The Combo used to determine the completion of the quest.
   /// </summary>
+  [field: Tooltip("The Combo used to determine the completion of the quest.")]
   [field: SerializeField] public ComboDataSO TargetComboData { get; private set; } 
 
   /// <summary>
@@ -31,7 +32,7 @@ public class HammerComboQuestSO : SkillfulQuestSO
   private int successfulPerformances = 0;
 
   /// <summary>
-  /// The number of times the player has hit Dreamons the target Combo.
+  /// The number of times the player has hit Dreamons with the target Combo.
   /// </summary>
   private int successfulHits = 0;
 
@@ -124,12 +125,25 @@ public class HammerComboQuestSO : SkillfulQuestSO
 
   private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue) 
   {
-    if (player.CurrentState != playerAttackState || !playerAttackState.ComboData)
+    if (player.CurrentState != playerAttackState)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} On Weapon Hit Error: Player's current State is not the Attack State.");
+
       return;
+    }
+    else if (!playerAttackState.ComboData)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} On Weapon Hit Error: Could not find a Combo Data reference on the player Attack State.");
+
+      return;
+    }
 
     if (playerAttackState.ComboData.DisplayName == TargetComboData.DisplayName)
       successfulHits++;
 
+    // Check if the updated successful performances and hits meet the goals.
     if(successfulPerformances >= SuccessfulPerformancesGoal && successfulHits >= SuccessfulHitsGoal)
       Complete();
   }

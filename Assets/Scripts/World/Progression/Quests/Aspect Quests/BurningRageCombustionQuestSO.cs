@@ -1,56 +1,102 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [CreateAssetMenu(fileName = "_x_Times_y_ByCombustionQuestSO", menuName = "World/Progression Quest/Aspect Quests/Burning Rage Combustion")]
 public class BurningRageCombustionQuestSO : AspectQuestSO
 {
-  [field: Header("Config")]
+  [field: Header("Burning Rage Combustion Configuration")]
+
+  /// <summary>
+  /// The number of times the player must afflict Dreamons with the Burning Rage status effect to complete the quest.
+  /// </summary>
+  [Tooltip("The number of times the player must afflict Dreamons with the Burning Rage status effect to complete the quest.")]
   [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
+
+  /// <summary>
+  /// The number of times the player must defeat Dreamons with Burning Rage combustion damage to complete the quest.
+  /// </summary>
+  [Tooltip("The number of times the player must defeat Dreamons with Burning Rage combustion damage to complete the quest.")]
   [field: Range(0, 5)]
-  [field: SerializeField] public int SuccessfulKillsGoal { get; private set; }
+  [field: SerializeField] public int SuccessfulDefeatsGoal { get; private set; }
 
+  /// <summary>
+  /// The number of times the player has afflicted Dreamons with the Burning Rage status effect.
+  /// </summary>
+  private int successfulHits = 0;
+
+  /// <summary>
+  /// The number of times the player has defeated Dreamons with Burning Rage combustion damage.
+  /// </summary>
+  private int successfulDefeats = 0;
+
+  /// <summary>
+  /// Reference to the Player via the Progression Manager.
+  /// </summary>
   private Player player;
-  private PlayerCombat playerCombat; 
+
+  /// <summary>
+  /// Reference to the Player Combat via the Progression Manager and Player.
+  /// </summary>
+  private PlayerCombat playerCombat;
+
+  /// <summary>
+  /// Dictionary that tracks every entity the player afflicts with the Burning Rage status effect during the quest.
+  /// </summary>
+  /// <typeparam name="Entity">The affected entity.</typeparam>
+  /// <typeparam name="BurningRageStatusEffectSO">The entity's Burning Rage status effect.</typeparam>
+  /// <returns>A dictionary with Entity keys and Burning Rage status effect values.</returns>
   private Dictionary<Entity, BurningRageStatusEffectSO> affectedEntities = new Dictionary<Entity, BurningRageStatusEffectSO>();
-  private int successfulHitsByCombustion = 0;
-  private int successfulKillsByCombustion = 0;
 
-  private protected override void OnActivated()
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    successfulHitsByCombustion = 0;
-    successfulKillsByCombustion = 0;
-    player = progressionManager?.player;
-
-    if (player == null)
-      CleanUp();
-    
-    playerCombat = player.GetComponent<PlayerCombat>();
-    if (playerCombat != null && playerCombat.Weapon != null)
+    if (!progressionManager.player)
     {
-      playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player.");
+
+      return false;
     }
+
+    player ??= progressionManager.player;
+
+    if (!progressionManager.player.TryGetComponent(out PlayerCombat playerCombatRef))
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find Player Combat component on the player.");
+
+      return false;      
+    }
+
+    // Assign the references to the corresponding variables.
+    playerCombat ??= playerCombatRef;
+
+    if (!playerCombat.Weapon)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player Weapon.");
+
+      return false;
+    }
+
+    // Check the base criteria.
+    return base.MeetsCriteria(progressionManager);
   }
 
+  // Subscribe to the necessary Actions.
+  private protected override void OnActivated() => playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+
+  // Unsubscribe to any Actions used for the quest.
   private protected override void OnCleanUp()
   {
-    if (playerCombat != null && playerCombat.Weapon != null)
-      playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
+    playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
 
     foreach (Entity entity in affectedEntities.Keys)
       affectedEntities[entity].OnCombustionDamage -= AffectedEntity_OnCombustionDamage;
-
-    affectedEntities.Clear();
   }
 
-  private protected override void OnUpdate()
-  {
-    Debug.Log($"Successful Hits {successfulHitsByCombustion}, Successful Kills: {successfulKillsByCombustion}");
-
-    if (successfulHitsByCombustion >= SuccessfulHitsGoal && successfulKillsByCombustion >= SuccessfulKillsGoal)
-      Complete();
-  }
+  private protected override void OnUpdate() { }
 
   private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue) => CheckForBurningRage(victim);
 
@@ -58,9 +104,8 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
   {
     BurningRageStatusEffectSO burningRage = EntityStatusEffector.TryGetStatusEffect<BurningRageStatusEffectSO>(entity.gameObject);
 
-    if (burningRage != null && !affectedEntities.ContainsKey(entity))
+    if (!burningRage && !affectedEntities.ContainsKey(entity))
     {
-      Debug.Log($"Burning Rage Afflicted to {entity.name}!");
       affectedEntities.Add(entity, burningRage);
       burningRage.OnCombustionDamage += AffectedEntity_OnCombustionDamage;
     }
@@ -73,11 +118,14 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
       affectedEntities[combustionSource].OnCombustionDamage -= AffectedEntity_OnCombustionDamage;
       affectedEntities.Remove(combustionSource);
 
-      Debug.Log($"You hit a nearby enemy with Combustion Damage!");
-      successfulHitsByCombustion++;
+      successfulHits++;
 
       if (victim.CurrentHealth <= damageValue)
-        successfulKillsByCombustion++;
+        successfulDefeats++;
     }
+
+    // Check if the updated successful hits and defeats meet the goals.
+    if (successfulHits >= SuccessfulHitsGoal && successfulDefeats >= SuccessfulDefeatsGoal)
+      Complete();
   }
 }

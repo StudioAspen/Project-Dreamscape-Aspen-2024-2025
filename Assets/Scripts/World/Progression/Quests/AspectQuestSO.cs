@@ -1,22 +1,23 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public abstract class AspectQuestSO : ProgressionQuestSO
 {
   [Header("Aspect Criteria")]
+
   /// <summary>
   /// The Aspect Tree required to be equipped for the Progression Manager to select this quest.
   /// </summary>
   [Tooltip("The Aspect Tree required to be equipped for the Progression Manager to select this quest.")]
   [SerializeField] protected AspectTree requiredAspectTree;
+
   /// <summary>
   /// The Aspect Node required to be applied for the Progression Manager to select this quest. This Aspect Node must also belong to the required Aspect Tree, and the player has to have applied it.
   /// </summary>
   [Tooltip("The Aspect Node required to be applied for the Progression Manager to select this quest. This Aspect Node must also belong to the Required Aspect Tree, and the player has to have applied it.")]
   [SerializeField] protected AspectNodeNode requiredAspectNode;
+
   /// <summary>
   /// The Node Level at which the Progression Manager will search the required Aspect Tree for the required Aspect Node.
   /// </summary>
@@ -70,10 +71,8 @@ public abstract class AspectQuestSO : ProgressionQuestSO
 
       return false;
     }
-    else
-      Debug.Log($"Required Aspect Tree found: {matchingTree.DisplayName}");
-    
-  
+
+    // Get the Aspect Nodes at the specified Node Level and search for the required Aspect Node among them.
     List<AspectNodeNode> aspectNodes = matchingTree.GetNodesAtLevel(nodeLevel);
     AspectNodeNode aspectNode = aspectNodes.Find(node => node.DisplayName == requiredAspectNode.DisplayName);
 
@@ -92,8 +91,6 @@ public abstract class AspectQuestSO : ProgressionQuestSO
 
       return false;
     }
-    else
-      Debug.Log($"Required Aspect Node found at Node Level {nodeLevel + 1}: {matchingTree.DisplayName}");
 
     // Finally, check if the required Aspect Node is already applied. If yes, then the game state meets the criteria for this quest.
     return aspectNode.IsApplied;
