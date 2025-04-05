@@ -24,6 +24,7 @@ public class PlayerInputReader : MonoBehaviour
     public Action<ComboAction> OnComboAction = delegate { };
 
     public Vector3 MoveDirection { get; private set; }
+    private bool isMovementReversed = false;
 
     [Header("Hold Thresholds")]
     [SerializeField] private float attackReleaseThreshold = 0.25f;
@@ -145,7 +146,18 @@ public class PlayerInputReader : MonoBehaviour
 
     private void PlayerControls_OnMovementPerformed(InputAction.CallbackContext context)
     {
-        MoveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
+        Vector2 input = context.ReadValue<Vector2>();
+        MoveDirection = new Vector3(input.x, 0, input.y);
+
+        if (isMovementReversed)
+        {
+            MoveDirection = -MoveDirection;
+        }
+    }
+
+    public void SetMovementReversed(bool reverse)
+    {
+        isMovementReversed = reverse;
     }
 
     private void PlayerControls_OnMovementCanceled(InputAction.CallbackContext context)
