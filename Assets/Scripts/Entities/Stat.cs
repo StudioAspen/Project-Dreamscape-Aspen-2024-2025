@@ -4,6 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class Stat : ISerializationCallbackReceiver
 {
+
+    [field: SerializeField] public string  DisplayName { get; private set; }
     public class Buffs
     {
         public List<float> Multipliers = new();
@@ -13,10 +15,12 @@ public class Stat : ISerializationCallbackReceiver
     [field: SerializeField] public float BaseValue { get; private set; }
     private Dictionary<object, Buffs> buffsDictionary = new();
 
-    public Stat(float baseValue)
+    public Stat(string displayName, float baseValue)
     {
+        DisplayName = displayName;
         BaseValue = baseValue;
         buffsDictionary = new();
+
     }
 
     public void SetBaseValue(float newBaseValue)

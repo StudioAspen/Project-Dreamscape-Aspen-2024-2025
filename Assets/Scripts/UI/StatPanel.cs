@@ -6,10 +6,7 @@ using Unity.VisualScripting;
 
 public class StatPanel : MonoBehaviour 
 {
-    private Player player;
-    
-    [SerializeField] private TMP_Text StatPanelText;
-
+    public Player player;
     public List<Stat> statList;
     public List<TMP_Text> DisplayText;
 
@@ -26,8 +23,6 @@ public class StatPanel : MonoBehaviour
         statList.Add(player.DebuffApplyDurationMultiplier);
         statList.Add(player.BuffApplyDurationMultiplier);
 
-        
-        
     }
 
     private void Start()
@@ -45,17 +40,14 @@ public class StatPanel : MonoBehaviour
     {
         for(int i = 0; i < statList.Count; i++)
         {
-            /*Debug.Log("I displayed");*/
-            /*DisplayText[i].text = "";*/
-            /* Name of Stat, Current Stat Value,Base Value, totalmult, totalflatincrease*/
-            /*DisplayText[i].text = statList[i].DisplayName.ToString();*/
-            DisplayText[i].text += " ";
+            DisplayText[i].text = statList[i].DisplayName;
+            DisplayText[i].text += ": ";
             DisplayText[i].text += statList[i].GetIntValue().ToString();
-            DisplayText[i].text += " ";
+            DisplayText[i].text += ", ";
             DisplayText[i].text += statList[i].BaseValue.ToString();
-            DisplayText[i].text += " ";
+            DisplayText[i].text += ", ";
             DisplayText[i].text += statList[i].GetTotalMultiplier().ToString();
-            DisplayText[i].text += " ";
+            DisplayText[i].text += ", ";
             DisplayText[i].text += statList[i].GetTotalFlatIncreass().ToString();
             
         }

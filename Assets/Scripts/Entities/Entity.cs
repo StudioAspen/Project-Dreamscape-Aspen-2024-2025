@@ -47,7 +47,8 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected Vector3 velocity;
     public Vector3 Velocity => velocity;
     public float SpeedModifier { get; protected set; } = 1f;
-    [field: SerializeField]public Stat StatusSpeedModifier { get; protected set; } = new Stat(1f);
+    // ALL NEW STAT ADD DISPLAY NAME BEFORE VALUE
+    [field: SerializeField]public Stat StatusSpeedModifier { get; protected set; } = new Stat("SpeedModifier",1f);
     public float MovementSpeed { get; protected set; }
     private protected float totalSpeedModifierForAnimation;
     #endregion
@@ -167,15 +168,15 @@ public class Entity : MonoBehaviour, IPoolableObject
     #region Attack Variables
     [field: Header("Entity: Attack")]
     [field: SerializeField] public Vector2Int BaseDamageRange { get; protected set; } = new Vector2Int(10, 15);
-    [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat(1f);
+    [field: SerializeField] public Stat DamageModifier { get; protected set; } = new Stat("DamageModifier",1f);
     /// <summary>
     /// Makes the debuffs you apply last longer.
     /// </summary>
-    public Stat DebuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
+    public Stat DebuffApplyDurationMultiplier { get; protected set; } = new Stat("DADM",1f);
     /// <summary>
     /// Makes the buffs you apply last longer.
     /// </summary>
-    public Stat BuffApplyDurationMultiplier { get; protected set; } = new Stat(1f);
+    public Stat BuffApplyDurationMultiplier { get; protected set; } = new Stat("BADM",1f);
     [HideInInspector] public bool UseRootMotion;
 
     /// <summary>
@@ -350,12 +351,12 @@ public class Entity : MonoBehaviour, IPoolableObject
 
     #region Local Time Scale
     [field: Header("Local Time Scale")]
-    [field: SerializeField] public Stat LocalTimeScale { get; protected set; } = new Stat(1f);
+    [field: SerializeField] public Stat LocalTimeScale { get; protected set; } = new Stat("LocalTimeScale",1f);
     public float LocalDeltaTime => Time.deltaTime * LocalTimeScale.GetFloatValue();
     #endregion
 
     #region Scale
-    public Stat SizeScale { get; protected set; } = new Stat(1f);
+    public Stat SizeScale { get; protected set; } = new Stat("SizeScale",1f);
     #endregion
 
     #region Pooling Variables
