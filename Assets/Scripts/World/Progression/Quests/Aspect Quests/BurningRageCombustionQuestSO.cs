@@ -46,7 +46,6 @@ public class BurningRageCombustionQuestSO : AspectQuestSO
   /// </summary>
   /// <typeparam name="Entity">The affected entity.</typeparam>
   /// <typeparam name="BurningRageStatusEffectSO">The entity's Burning Rage status effect.</typeparam>
-  /// <returns>A dictionary with Entity keys and Burning Rage status effect values.</returns>
   private Dictionary<Entity, BurningRageStatusEffectSO> affectedEntities = new Dictionary<Entity, BurningRageStatusEffectSO>();
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)

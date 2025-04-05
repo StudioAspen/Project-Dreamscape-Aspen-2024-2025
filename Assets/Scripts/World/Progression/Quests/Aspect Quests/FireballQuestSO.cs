@@ -80,8 +80,10 @@ public class FireballQuestSO : AspectQuestSO
     return base.MeetsCriteria(progressionManager);
   }
 
+  // Subscribe to the necessary Actions.
   private protected override void OnActivated() => playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
 
+  // Unsubscribe to any Actions used for the quest.
   private protected override void OnCleanUp() => playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
 
   private protected override void OnUpdate() { }
@@ -103,6 +105,7 @@ public class FireballQuestSO : AspectQuestSO
       return;
     }
 
+    // Check if the player Attack State's current Combo Data matches the display name.
     if (playerAttackState.ComboData.DisplayName == DISPLAY_NAME)
       successfulHits++;
 

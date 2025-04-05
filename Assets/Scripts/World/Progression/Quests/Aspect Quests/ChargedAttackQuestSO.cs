@@ -6,8 +6,17 @@ public class ChargedAttackQuestSO : AspectQuestSO
 {
   [field: Header("Charged Attack Configuration")]
 
+  /// <summary>
+  /// The number of times the player must hit Dreamons with a charged attack to complete the quest.
+  /// </summary>
+  [field: Tooltip("The number of times the player must hit Dreamons with a charged attack to complete the quest.")]
   [field: Range(0, 10)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
+
+  /// <summary>
+  /// The number of times the player must defeat Dreamons with a charged attack to complete the quest.
+  /// </summary>
+  [field: Tooltip("The number of times the player must defeat Dreamons with a charged attack to complete the quest.")]
   [field: Range(0, 10)]
   [field: SerializeField] public int SuccessfulDefeatsGoal { get; private set; }
 
@@ -108,10 +117,12 @@ public class ChargedAttackQuestSO : AspectQuestSO
 
     // Check the Combo Inputs for a Charged Attack Combo Action.
     if (comboInputs.Contains(ComboAction.CHARGED_ATTACK1) || comboInputs.Contains(ComboAction.CHARGED_ATTACK2))
+    {
       successfulHits++;
 
-    if (victim.CurrentHealth <= damageValue)
-      successfulDefeats++;
+      if (victim.CurrentHealth <= damageValue)
+        successfulDefeats++;
+    }
 
     // Check if the updated successful hits and defeats meet the goals.
     if (successfulHits >= SuccessfulHitsGoal && successfulDefeats >= SuccessfulDefeatsGoal)
