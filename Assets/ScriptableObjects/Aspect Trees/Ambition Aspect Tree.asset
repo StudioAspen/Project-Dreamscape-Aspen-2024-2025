@@ -50,9 +50,10 @@ MonoBehaviour:
   Parent: {fileID: -5092554926121242106}
   Children:
   - {fileID: 1864611941190978949}
-  <DisplayName>k__BackingField: WIP
-  <Description>k__BackingField: WIP
-  <StatusEffect>k__BackingField: {fileID: 0}
+  <DisplayName>k__BackingField: Basic Stat Upgrade
+  <Description>k__BackingField: Player movement & attack speed is increased by 25%
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 35f32a73184c947d78acc54bf46fa1a2,
+    type: 2}
 --- !u!114 &-5359809309940247393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,7 +257,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 585e5f22252d25641b4432be95b30b80, type: 3}
-  m_Name: Hope Aspect Tree
+  m_Name: Ambition Aspect Tree
   m_EditorClassIdentifier: 
   nodes:
   - {fileID: 4095001867604409900}
@@ -267,8 +268,10 @@ MonoBehaviour:
   - {fileID: -6323877592038428020}
   - {fileID: -3194902288124324442}
   - {fileID: -5359809309940247393}
-  <DisplayName>k__BackingField: Aspect of WIP
-  <Description>k__BackingField: WIP
+  <DisplayName>k__BackingField: Aspect of Ambition
+  <Description>k__BackingField: Let hope carry you forward with speed. Move freely
+    weaving through dreamons and protecting yourself with powerful winds and your
+    unwavering resolve.
   <AspectSprite>k__BackingField: {fileID: 21300000, guid: 68c66bb3807bd764888c469e47f6ee57,
     type: 3}
   <AspectTextColor>k__BackingField: {r: 0.78823537, g: 0.63529414, b: 0.3254902, a: 1}
