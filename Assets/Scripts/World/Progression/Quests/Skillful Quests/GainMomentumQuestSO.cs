@@ -9,7 +9,7 @@ public class GainMomentumQuestSO : SkillfulQuestSO
   /// The minimum Momentum that the player must gain to complete the quest.
   /// </summary>
   [field: Tooltip("The minimum Momentum that the player must gain to complete the quest.")]
-  [field: Range(1, 100)]
+  [field: Range(1, 10)]
   [field: SerializeField] public int MomentumGoal { get; private set; }
 
   /// <summary>
