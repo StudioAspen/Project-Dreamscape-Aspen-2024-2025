@@ -73,14 +73,14 @@ public class PlayerPreferences : MonoBehaviour
    }
 
    private void InitializeResolutionsArray() {
-      // Initialize screen resolutions array (depends on user's display), filtering out non-unique or non-16:9 resolutions
-      resolutions = Screen.resolutions
+        // Initialize screen resolutions array (depends on user's display), filtering out non-unique or non-16:9 resolutions
+        resolutions = Screen.resolutions
          .GroupBy(res => (res.width, res.height))
          .Select(group => group.First())
-         .Where(res => Mathf.Approximately((float)res.width / res.height, 16f / 9f))
+         //.Where(res => Mathf.Approximately((float)res.width / res.height, 16f / 9f))
          .ToArray();
 
-      numScreenResolutions = resolutions.Length;
+        numScreenResolutions = resolutions.Length;
       Debug.Log("Resolutions array length: " + numScreenResolutions);
    }
    
@@ -96,9 +96,9 @@ public class PlayerPreferences : MonoBehaviour
    }
 
    private void SetResolution(int screenResolutionIndex) {
-      Resolution newResolution = resolutions[screenResolutionIndex];
-      Screen.SetResolution(newResolution.width, newResolution.height, PlayerPreferencesData.FullScreenMode);
-      SetMaximumFramerate(PlayerPreferencesData.MaxFramerate);
+        Resolution newResolution = resolutions[screenResolutionIndex];
+        Screen.SetResolution(newResolution.width, newResolution.height, PlayerPreferencesData.FullScreenMode);
+        SetMaximumFramerate(PlayerPreferencesData.MaxFramerate);
    }
 
    private void SetFullScreenMode(FullScreenMode newFullScreenMode) {

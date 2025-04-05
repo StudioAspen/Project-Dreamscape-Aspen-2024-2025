@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32144aa5a9cfe42e79e8e778d8355423, type: 3}
+  m_Name: Slime Memory Launch Ability
+  m_EditorClassIdentifier: 
+  <LaunchAnimationClip>k__BackingField: {fileID: 7400000, guid: 0bb2b662a5968694c8b19e7f42eee9c1,
+    type: 3}
+  <AnimationDuration>k__BackingField: 1
+  <SlimePrefab>k__BackingField: {fileID: 8583652847560221169, guid: 12ea873f815b64068baf565f1adedfbf,
+    type: 3}
+  <SlimeVelocity>k__BackingField: 5
