@@ -7,9 +7,9 @@ public class RemainingHealthDefendQuestSO : WorldEventQuestSO
   [field: Header("Remaining Health (Defend) Configuration")]
 
   /// <summary>
-  /// The minimum percentage of the Defend Entity's remaining health that the player must preserve until the end of the wave to complete the quest.
+  /// The minimum percentage of the Defend Entity's max health that the player must preserve until the end of the wave to complete the quest.
   /// </summary>
-  [field: Tooltip("The minimum percentage of the Defend Entity's remaining health that the player must preserve until the end of the wave to complete the quest.")]
+  [field: Tooltip("The minimum percentage of the Defend Entity's max health that the player must preserve until the end of the wave to complete the quest.")]
   [field: Range(0.01f, 1.00f)]
   [field: SerializeField] private float minimumHealthPercentage;
 
@@ -25,20 +25,31 @@ public class RemainingHealthDefendQuestSO : WorldEventQuestSO
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    if (!(DefendWorldEventSO)eventManager.CurrentEvent)
+    if (!progressionManager.eventManager)
+    {
+      if (LogErrorMessages) 
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
+
+      return false;
+    }
+
+    // Assign the references to the corresponding variables.
+    eventManager ??= progressionManager.eventManager;
+
+    if (eventManager.CurrentEvent is not DefendWorldEventSO)
     {
       {
         if (LogErrorMessages)
-          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new DefendWorldEventSO().GetType()}.");
+          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {typeof(DefendWorldEventSO)}.");
 
         return false;  
       }
     }
 
     // Assign the references to the corresponding variables.
-    defendEvent ??= (DefendWorldEventSO)eventManager?.CurrentEvent;
+    defendEvent ??= (DefendWorldEventSO)eventManager.CurrentEvent;
 
-    return base.MeetsCriteria(progressionManager);
+    return true;
   }
 
   // Find the spawned Defend Entity.

@@ -46,6 +46,13 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
 
       return false;
     }
+    else if (!progressionManager.eventManager)
+    {
+      if (LogErrorMessages) 
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
+
+      return false;
+    }
     else if (allowedCombos.Count == 0)
     {
       if (LogErrorMessages)
@@ -54,7 +61,9 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
       return false;
     }
     
+    // Assign the references to the corresponding variables.
     player ??= progressionManager.player;
+    eventManager ??= progressionManager.eventManager;
 
     if (!progressionManager.player.TryGetComponent(out PlayerCombat playerCombatRef))
     {
@@ -70,11 +79,11 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
 
       return false;   
     }
-    else if (!(PrioritiesWorldEventSO)eventManager.CurrentEvent)
+    else if (eventManager.CurrentEvent is not PrioritiesWorldEventSO)
     {
       {
         if (LogErrorMessages)
-          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new PrioritiesWorldEventSO().GetType()}.");
+          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {typeof(PrioritiesWorldEventSO)}.");
 
         return false;  
       }
@@ -83,7 +92,7 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
     // Assign the references to the corresponding variables.
     playerCombat ??= playerCombatRef;
     playerAttackState ??= player.PlayerAttackState;
-    prioritiesEvent ??= (PrioritiesWorldEventSO)eventManager?.CurrentEvent;
+    prioritiesEvent ??= (PrioritiesWorldEventSO)eventManager.CurrentEvent;
 
     if (!playerCombat.Weapon)
     {
@@ -93,7 +102,7 @@ public class SpecificCombosPrioritiesQuestSO : WorldEventQuestSO
       return false;
     }
 
-    return base.MeetsCriteria(progressionManager);
+    return true;
   }
 
   private protected override void OnActivated() => playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;

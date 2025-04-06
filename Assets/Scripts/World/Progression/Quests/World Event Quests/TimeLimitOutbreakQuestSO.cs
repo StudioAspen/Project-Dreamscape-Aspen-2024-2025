@@ -26,20 +26,31 @@ public class TimeLimitOutbreakQuestSO : WorldEventQuestSO
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    if (!(ZonesWorldEventSO)eventManager.CurrentEvent)
+    if (!progressionManager.eventManager)
+    {
+      if (LogErrorMessages) 
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
+
+      return false;
+    }
+
+    // Assign the references to the corresponding variables.
+    eventManager ??= progressionManager.eventManager;
+
+    if (eventManager.CurrentEvent is not ZonesWorldEventSO)
     {
       {
         if (LogErrorMessages)
-          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new ZonesWorldEventSO().GetType()}.");
+          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {typeof(ZonesWorldEventSO)}.");
 
         return false;  
       }
     }
 
     // Assign the references to the corresponding variables.
-    outbreakEvent ??= (ZonesWorldEventSO)eventManager?.CurrentEvent;
+    outbreakEvent ??= (ZonesWorldEventSO)eventManager.CurrentEvent;
 
-    return base.MeetsCriteria(progressionManager);
+    return true;
   }
 
   private protected override void OnActivated()

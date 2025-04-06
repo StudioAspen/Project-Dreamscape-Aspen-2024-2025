@@ -46,8 +46,17 @@ public class DefeatDreamonsWanderlustQuest : WorldEventQuestSO
 
       return false;
     }
+    else if (!progressionManager.eventManager)
+    {
+      if (LogErrorMessages) 
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
 
+      return false;
+    }
+    
+    // Assign the references to the corresponding variables.
     player ??= progressionManager.player;
+    eventManager ??= progressionManager.eventManager;
 
     if (!progressionManager.player.TryGetComponent(out PlayerCombat playerCombatRef))
     {
@@ -56,17 +65,17 @@ public class DefeatDreamonsWanderlustQuest : WorldEventQuestSO
 
       return false;      
     }
-    else if (!(VisitAllWorldEventSO)eventManager.CurrentEvent)
+    else if (eventManager.CurrentEvent is not VisitAllWorldEventSO)
     {
       if (LogErrorMessages)
-        Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new VisitAllWorldEventSO().GetType()}.");
+        Debug.LogError($"{name} Criteria Error: Required World Event is not of type {typeof(VisitAllWorldEventSO)}.");
 
       return false;  
     }
 
     // Assign the references to the corresponding variables.
     playerCombat ??= playerCombatRef;
-    wanderlustEvent ??= (VisitAllWorldEventSO)eventManager?.CurrentEvent;
+    wanderlustEvent ??= (VisitAllWorldEventSO)eventManager.CurrentEvent;
 
     if (!playerCombat.Weapon)
     {
@@ -76,7 +85,7 @@ public class DefeatDreamonsWanderlustQuest : WorldEventQuestSO
       return false;
     }
 
-    return base.MeetsCriteria(progressionManager);
+    return true;
   }
 
   private protected override void OnActivated()

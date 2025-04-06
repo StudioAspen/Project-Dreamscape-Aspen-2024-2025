@@ -7,9 +7,9 @@ public class RemainingHealthEscortQuestSO : WorldEventQuestSO
   [field: Header("Remaining Health (Escort) Configuration")]
 
   /// <summary>
-  /// The minimum percentage of the Escort Entity's remaining health that the player must preserve until the end of the wave to complete the quest.
+  /// The minimum percentage of the Escort Entity's max health that the player must preserve until the end of the wave to complete the quest.
   /// </summary>
-  [field: Tooltip("The minimum percentage of the Escort Entity's remaining health that the player must preserve until the end of the wave to complete the quest.")]
+  [field: Tooltip("The minimum percentage of the Escort Entity's max health that the player must preserve until the end of the wave to complete the quest.")]
   [field: Range(0.01f, 1.00f)]
   [field: SerializeField] private float minimumHealthPercentage;
 
@@ -25,20 +25,31 @@ public class RemainingHealthEscortQuestSO : WorldEventQuestSO
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    if (!(EscortWorldEventSO)eventManager.CurrentEvent)
+    if (!progressionManager.eventManager)
+    {
+      if (LogErrorMessages) 
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Event Manager.");
+
+      return false;
+    }
+
+    // Assign the references to the corresponding variables.
+    eventManager ??= progressionManager.eventManager;
+
+    if (eventManager.CurrentEvent is not EscortWorldEventSO)
     {
       {
         if (LogErrorMessages)
-          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {new EscortWorldEventSO().GetType()}.");
+          Debug.LogError($"{name} Criteria Error: Required World Event is not of type {typeof(EscortWorldEventSO)}.");
 
         return false;  
       }
     }
 
     // Assign the references to the corresponding variables.
-    escortEvent ??= (EscortWorldEventSO)eventManager?.CurrentEvent;
+    escortEvent ??= (EscortWorldEventSO)eventManager.CurrentEvent;
 
-    return base.MeetsCriteria(progressionManager);
+    return true;
   }
 
   // Find the spawned Escort Entity.

@@ -154,13 +154,11 @@ public class ProgressionManager : MonoBehaviour
         // After completing the first wave, we'll introduce the first quest type: Skillful Play.
         if (WaveIndex >= 1)
         {
-          if (player == null)
-            player = FindFirstObjectByType<Player>();
-          if (levelSystem == null)
-            levelSystem = FindFirstObjectByType<LevelSystem>();
+          player ??= FindFirstObjectByType<Player>();
+          levelSystem ??= FindFirstObjectByType<LevelSystem>();
 
           SkillfulQuestSO skillfulQuestInstance = FindProgressionQuestByType(skillfulQuests);
-          if (skillfulQuestInstance != null)
+          if (skillfulQuestInstance)
           {
             Instantiate(skillfulQuestInstance);
             skillfulQuestInstance.Init(this);
@@ -172,14 +170,13 @@ public class ProgressionManager : MonoBehaviour
         // By the 5th wave, we can assume the player has already unlocked an aspect.
         if (WaveIndex >= 5)
         {
-          if (aspectsManager == null)
-            aspectsManager = FindFirstObjectByType<AspectsManager>();
+          aspectsManager ??= FindFirstObjectByType<AspectsManager>();
 
           // We'll introduce the second quest type: Aspects.
           if (aspectsManager.EquippedAspectTrees.Length > 0)
           {
             AspectQuestSO aspectQuestInstance = FindProgressionQuestByType(aspectQuests);
-            if (aspectQuestInstance != null)
+            if (aspectQuestInstance)
             {
               Instantiate(aspectQuestInstance);
               aspectQuestInstance.Init(this);
@@ -190,16 +187,15 @@ public class ProgressionManager : MonoBehaviour
         }
 
         // By the 8th wave, the player has had enough time to experience each event at least once.
-        if (WaveIndex >= 1) 
+        if (WaveIndex >= 8) 
         {
-          if (eventManager == null)
-            eventManager = GetComponent<EventManager>();
+          eventManager ??= GetComponent<EventManager>();
 
           // We'll introduce the third quest type: World Events.
-          if (eventManager.CurrentEvent != null)
+          if (eventManager.CurrentEvent)
           {
             WorldEventQuestSO worldEventQuestInstance = FindProgressionQuestByType(worldEventQuests);
-            if (worldEventQuestInstance != null)
+            if (worldEventQuestInstance)
             {
               Instantiate(worldEventQuestInstance);
               worldEventQuestInstance.Init(this);
