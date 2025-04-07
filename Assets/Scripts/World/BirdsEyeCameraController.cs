@@ -17,7 +17,8 @@ public class BirdsEyeCameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed = 500f;
     [SerializeField] private float minZoom = 25f;
     [SerializeField] private float maxZoom = 100f;
-    private Vector3 moveDirection;
+    //private Vector3 moveDirection;
+    private Vector2 moveDirection;  // Now a Vector2 for 2D movement.
     private float currentMoveSpeed;
     private float zoomDelta;
 
@@ -85,17 +86,26 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void PlayerControls_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        moveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
+        //moveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
+
+        // Store movement as a Vector2
+        moveDirection = context.ReadValue<Vector2>();
     }
 
     private void PlayerControls_OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        moveDirection = Vector3.zero;
+        //moveDirection = Vector3.zero;
+
+        moveDirection = Vector2.zero; // Stop movement when canceled
     }
 
     private void HandleMovement()
     {
-        transform.Translate(currentMoveSpeed * Time.unscaledDeltaTime * moveDirection, Space.World);
+        //transform.Translate(currentMoveSpeed * Time.unscaledDeltaTime * moveDirection, Space.World);
+
+        // Use Vector2 for the move direction, convert it to Vector3 (only x and z are relevant)
+        Vector3 movement = new Vector3(moveDirection.x, 0, moveDirection.y);
+        transform.Translate(currentMoveSpeed * Time.unscaledDeltaTime * movement, Space.World);
     }
 
     private void PlayerControls_OnZoomPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
