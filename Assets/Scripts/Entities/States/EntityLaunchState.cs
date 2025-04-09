@@ -38,8 +38,6 @@ public class EntityLaunchState : EntityBaseState
     public override void OnExit()
     {
         entity.IgnoreOtherEntityCollisions(false);
-
-        entity.LocalTimeScale.ClearBuffsFromSource(this);
     }
 
     public override void OnUpdate()

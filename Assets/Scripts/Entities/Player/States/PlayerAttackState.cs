@@ -17,7 +17,7 @@ public class PlayerAttackState : PlayerBaseState
 
     [field: Header("Air Nearby Attack Config")]
     [field: SerializeField] public float AirAttackMagnetSpeed { get; private set; } = 5f;
-    [field: SerializeField] public float AirAttackMagnetStopRadius { get; private set; } = 1f;
+    [field: SerializeField] public float AirAttackMagnetStopRadius { get; private set; } = 2f;
 
     public ComboDataSO ComboData { get; private set; }
 
@@ -257,8 +257,6 @@ public class PlayerAttackState : PlayerBaseState
         if (victim.WillDieFromDamage(damage)) return;
 
         victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
-        victim.LocalTimeScale.ClearBuffsFromSource(victim.EntityLaunchState);
-        victim.LocalTimeScale.AddMultiplier(0.7f, victim.EntityLaunchState);
 
         isAirComboPerfomed = true;
     }
