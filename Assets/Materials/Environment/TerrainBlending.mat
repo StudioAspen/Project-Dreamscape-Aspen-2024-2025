@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1141831442953010870
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TerrainBlending
+  m_Shader: {fileID: -6465566751694194690, guid: 03c75798f81da204d907e18a0d7f5270,
+    type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _BASE_LAVA
+  - _XADJACENT_FOOD
+  - _ZADJACENT_DREAMSCAPE
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _PainterlyLighting_1a9a958fb68a40c0a793634875f8af85_BaseMap_3400033977_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_1a9a958fb68a40c0a793634875f8af85_PainterlyTexture_558820014_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 918130781bc469c44b95dffa9abfa325, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_44bd2578621c41d68a4ee1718b70051c_BaseMap_3400033977_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_44bd2578621c41d68a4ee1718b70051c_PainterlyTexture_558820014_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 918130781bc469c44b95dffa9abfa325, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_79eed580ac8b42248a44c328efa5ac3a_BaseMap_3400033977_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PainterlyLighting_79eed580ac8b42248a44c328efa5ac3a_PainterlyTexture_558820014_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 918130781bc469c44b95dffa9abfa325, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_2c82163c108e4b909a3d1a8f14e40da0_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 918130781bc469c44b95dffa9abfa325, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BASE: 0
+    - _Blend: 17.15
+    - _Float: 0
+    - _Float_1: 3.54
+    - _Float_2: 30.54
+    - _Offset: 9.9
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Scale: 0.1
+    - _X: 0.1
+    - _XADJACENT: 1
+    - _XZ: 0.15
+    - _ZADJACENT: 2
+    m_Colors:
+    - _BaseDiffuseColor: {r: 0.8, g: 0, b: 0, a: 0}
+    - _BaseShadowColor: {r: 0.6, g: 0, b: 0, a: 0}
+    - _BaseSpecularColor: {r: 1, g: 0, b: 0, a: 0}
+    - _XDiffuseColor: {r: 0, g: 0.18196106, b: 0.8, a: 0}
+    - _XShadowColor: {r: 0, g: 0.13647076, b: 0.6, a: 0}
+    - _XSpecularColor: {r: 0, g: 0.22749755, b: 1, a: 0}
+    - _ZDiffuseColor: {r: 0.003137398, g: 0.8, b: 0, a: 0}
+    - _ZShadowColor: {r: 0.002353048, g: 0.6, b: 0, a: 0}
+    - _ZSpecularColor: {r: 0.002500772, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []
