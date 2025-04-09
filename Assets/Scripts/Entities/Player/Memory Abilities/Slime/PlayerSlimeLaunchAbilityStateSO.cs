@@ -11,12 +11,14 @@ public class PlayerSlimeLaunchAbilityStateSO : PlayerAbilityStateSO
     [field: SerializeField] public AnimationClip LaunchAnimationClip { get; private set; }
     [field: SerializeField] public float AnimationDuration { get; private set; } = 1f;
 
-
+    [field: SerializeField] public float SlimeIndex { get; private set; } = 1f;
     [field: SerializeField] public GameObject SlimePrefab { get; private set; }
     [field: SerializeField] public GameObject SlimeTrail { get; private set; }
     [field: SerializeField] public float SlimeVelocity { get; private set; } = 5f;
     [field: SerializeField] public float ArcHeight { get; private set; } = 5f;
     [field: SerializeField] public LayerMask SlimeTrailLayer { get; private set; } //layerMask used to detect and allow the Slime Trail to Instantiate on top of.
+    [field: SerializeField] public float SlimeUpTime { get; private set; } = 10f;
+
 
 
 
@@ -73,11 +75,13 @@ public class PlayerSlimeLaunchAbilityStateSO : PlayerAbilityStateSO
     private void PlayerCombat_OnFireAbility(AnimationEvent eventData)
     {
         SlimeLaunch spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<SlimeLaunch>(SlimePrefab);
+        spawnedAbility.SetSlimeIndex(SlimeIndex);
         spawnedAbility.SetVelocity(SlimeVelocity);
         spawnedAbility.SetSlimePrefab(SlimePrefab);
         spawnedAbility.SetSlimeTrail(SlimeTrail);
         spawnedAbility.SetArc(ArcHeight);
         spawnedAbility.SetIgnoredLayers(SlimeTrailLayer);
+        spawnedAbility.SetSlimeLifeSpan(SlimeUpTime);
 
         spawnedAbility.Init(player);
     }

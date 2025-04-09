@@ -119,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390c429c367c4f13892550fcabf03ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slimeIndex: 0
   slimeVelocity: 0
   arcHeight: 0
   playerHeight: 0
@@ -130,6 +131,7 @@ MonoBehaviour:
     m_Bits: 0
   raycastDistance: 1.5
   trailSpawnRate: 0.1
+  slimeLifeSpan: 0
 --- !u!54 &-3697667266918703954
 Rigidbody:
   m_ObjectHideFlags: 0
