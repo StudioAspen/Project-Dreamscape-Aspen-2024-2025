@@ -14,6 +14,7 @@ public class LandManager : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private List<LandBorder> borders;
     [SerializeField] private Transform bodyContentTransform;
+    [SerializeField] private Renderer groundRenderer;
     [field: SerializeField] public Material SkyBoxMaterial { get; private set; }
 
     [field: Header("Settings")]
@@ -59,6 +60,7 @@ public class LandManager : MonoBehaviour
         levelText.text = $"{Level}";
 
         InitializeBorders();
+        AssignAdjacentLands();
 
         StartCoroutine(OnCompleteSpawn());
     }
@@ -87,6 +89,27 @@ public class LandManager : MonoBehaviour
             border.SetWorldBorderPosition(GridPosition);
             worldManager.AddBorder(border);
         }
+    }
+
+    /// <summary>
+    /// Attempts to find the adjacent lands based on the current grid position.
+    /// Uses the biomes of the adjacent lands to adjust the shader material to blend properly
+    /// </summary>
+    private void AssignAdjacentLands()
+    {
+        LandManager rightLand = worldManager.GetLandByGridPosition(new Vector2Int(GridPosition.x + 1, GridPosition.y));
+        LandManager upLand = worldManager.GetLandByGridPosition(new Vector2Int(GridPosition.x, GridPosition.y + 1));
+
+        Biome rightBiome = rightLand == null ? Biome : rightLand.Biome;
+        Biome upBiome = upLand == null ? Biome : upLand.Biome;
+
+        // TODO:
+        // Set the shader properties for the ground renderer based on the adjacent biomes
+        // Use the provided biome variables rightBiome and upBiome above
+        // Potential biomes are: Biome.DREAM, Biome.FIRE, Biome.FOOD
+        // Make sure groundRenderer is properly assigned in the inspector for every biome prefab.
+        // A good way to access all prefabs is through ScriptableObjects/World/Biome Database 
+        // Use groundRenderer.material.SetFloat() to assign the values to the shader properties
     }
 
     /// <summary>

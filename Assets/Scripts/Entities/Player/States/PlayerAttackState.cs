@@ -205,7 +205,6 @@ public class PlayerAttackState : PlayerBaseState
         Vector3 directionToTarget = (closestTargetCenter - playerCenter).normalized;
         directionToTarget.y = 0;
         player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * directionToTarget);
-        Debug.Log($"Mangetting towards nearby entity: {closestTarget.gameObject.name}");
     }
 
     /// <summary>
