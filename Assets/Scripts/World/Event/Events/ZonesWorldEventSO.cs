@@ -25,7 +25,7 @@ public class ZonesWorldEventSO : WorldEventSO
     [field: Range(3f, 30f)]
     [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
 
-    private List<LandManager> affectedLands = new List<LandManager>();
+    public List<LandManager> affectedLands { get; private set; } = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();

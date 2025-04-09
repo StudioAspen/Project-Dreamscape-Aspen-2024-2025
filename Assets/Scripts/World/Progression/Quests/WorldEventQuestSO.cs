@@ -1,12 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class WorldEventQuestSO : ProgressionQuestSO
 {
-  [Header("World Event Criteria")]
-  [SerializeField] private WorldEventSO requiredWorldEvent;
+  [field: Header("World Event Criteria")]
+  /// <summary>
+  /// The World Event required to be in effect for the Progression Manager to select this quest.
+  /// </summary>
+  [field: Tooltip("The World Event required to be in effect for the Progression Manager to select this quest.")]
+  [field: SerializeField] protected WorldEventSO requiredWorldEvent;
 
-  // For World Event Quests, the Current Event must be the one that's required in order for them to be selectable options for the progressionManager.
-  public override bool MeetsCriteria(ProgressionManager progressionManager) => progressionManager.eventManager.CurrentEvent.GetType() == requiredWorldEvent.GetType();
+  /// <summary>
+  /// Reference to the Event Manager via the Progression Manager.
+  /// </summary>
+  protected EventManager eventManager;
 }

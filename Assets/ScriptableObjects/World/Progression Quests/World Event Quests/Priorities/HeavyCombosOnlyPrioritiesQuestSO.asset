@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 409a490ed4b7d444c9ee1853cb12665f, type: 3}
+  m_Name: HeavyCombosOnlyPrioritiesQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: Hit marked Dreamons with heavy swings only.
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 2
+  requiredWorldEvent: {fileID: 11400000, guid: a8e95b779c0c9b24480329f27eb31f34, type: 2}
+  allowedCombos:
+  - {fileID: 11400000, guid: d08752b192726424c84ffaff07eb3ab1, type: 2}
+  - {fileID: 11400000, guid: 806622eae2be3db40b86d3a5c53da0c7, type: 2}
+  - {fileID: 11400000, guid: 3ce1959bd8a0e194490c62b305ab31dd, type: 2}
+  - {fileID: 11400000, guid: 43d86e0013c19714492c677467f2c1f6, type: 2}
+  - {fileID: 11400000, guid: e8cdc0955bbe20449b75994e182b9b72, type: 2}
+  - {fileID: 11400000, guid: 47cfa06376be08142b82cf04604712cb, type: 2}

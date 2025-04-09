@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ChainingSystem : MonoBehaviour
@@ -21,6 +22,7 @@ public class ChainingSystem : MonoBehaviour
     [SerializeField] private int healAmount;
 
     public int ChainCount { get; private set; }
+    public Action<int> OnChainUpdated = delegate {};
 
     private void Awake()
     {
@@ -69,6 +71,7 @@ public class ChainingSystem : MonoBehaviour
     private void AddChain()
     {
         ChainCount++;
+        OnChainUpdated?.Invoke(ChainCount);
         timer = 0;
         timeBetween = timeBetween * timeBetweenMultiplier;
 
@@ -106,6 +109,7 @@ public class ChainingSystem : MonoBehaviour
         timer = 0;
         timeBetween = baseTimeBetween;
         ChainCount = 0;
+        OnChainUpdated?.Invoke(ChainCount);
         //resets modifiers yay
         player.StatusSpeedModifier.ClearBuffsFromSource(this);
         currentMoveSpeedBonus = 1;
