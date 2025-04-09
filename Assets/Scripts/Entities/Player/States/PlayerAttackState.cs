@@ -195,7 +195,15 @@ public class PlayerAttackState : PlayerBaseState
         List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
         if (nearbyTargets.Count == 0) return;
 
-        Entity closestTarget = nearbyTargets[0];
+        List<Entity> nearbyAirborneTargets = new List<Entity>();
+        foreach (Entity entity in new List<Entity>(nearbyTargets))
+        {
+            if (entity.IsGrounded) continue; // skip grounded targets
+            nearbyAirborneTargets.Add(entity);
+        }
+        if (nearbyAirborneTargets.Count == 0) return; // if there are no airborne targets, return
+
+        Entity closestTarget = nearbyAirborneTargets[0];
         Vector3 playerCenter = player.GetColliderCenterPosition();
         Vector3 closestTargetCenter = closestTarget.GetColliderCenterPosition();
         player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * Mathf.Sign(closestTargetCenter.y - playerCenter.y) * Vector3.up); // move the player up towards the target
