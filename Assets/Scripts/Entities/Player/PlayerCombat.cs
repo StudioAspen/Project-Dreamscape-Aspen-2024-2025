@@ -95,17 +95,12 @@ public class PlayerCombat : MonoBehaviour
         AkSoundEngine.PostEvent("WeaponSwing", gameObject);
     }
 
-    private void Weapon_OnWeaponStartSwing(Entity attacker)
-    {
-        AkSoundEngine.PostEvent("WeaponSwing", gameObject);
-    }
-
-    private void Player_OnAirborne(Vector3 startAirbornePosition)
+    private void Player_OnAirborne(Entity airbornedEntity, Vector3 startAirbornePosition)
     {
         //ResetCombos();
     }
 
-    private void Player_OnGrounded(Vector3 startGroundedPosition)
+    private void Player_OnGrounded(Entity groundedEntity, Vector3 startGroundedPosition)
     {
         //ResetCombos();
     }

@@ -217,7 +217,7 @@ public class Leaper : Enemy
         Launch(hopVelocity.normalized, hopVelocity.magnitude);
     }
 
-    private void Leaper_OnGrounded(Vector3 groundedPosition)
+    private void Leaper_OnGrounded(Entity groundedEntity, Vector3 groundedPosition)
     {
         if (CurrentState == EntityDeathState) return;
         if (CurrentState == EntitySpawnState) return;
