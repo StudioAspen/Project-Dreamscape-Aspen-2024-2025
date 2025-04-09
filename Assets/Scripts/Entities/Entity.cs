@@ -511,6 +511,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnOnDisable()
     {
         CurrentState?.OnExit();
+        CurrentState?.OnEntityDestroyed();
 
         Warp(new Vector3(0f, 10000f, 0f));
     }
