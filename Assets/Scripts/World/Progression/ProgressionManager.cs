@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
@@ -25,8 +23,8 @@ public class ProgressionManager : MonoBehaviour
     // Tutorial Counts as a wave
     public int WaveIndex { get; private set; } = 0;
 
-    [Header("Quests")]
-    [SerializeField] private List<ProgressionQuestSO> possibleProgressionQuests = new();
+    [field: Header("Quests")]
+    [field: SerializeField] public List<ProgressionQuestSO> PossibleProgressionQuests { get; private set; } = new();
     public List<ProgressionQuestSO> CurrentQuests { get; private set; } = new();
     public Action<ProgressionQuestSO> OnQuestComplete = delegate { };
 
@@ -50,10 +48,10 @@ public class ProgressionManager : MonoBehaviour
         WeakenTokens = baseWeakenTokens;
 
         // Sort the Quests in order of difficulty from least to greatest, just once.
-        possibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
+        PossibleProgressionQuests.Sort((a, b) => a.Difficulty.CompareTo(b.Difficulty));
 
         // Filter the Quests into lists based on their class, just once.
-        foreach(ProgressionQuestSO quest in possibleProgressionQuests)
+        foreach(ProgressionQuestSO quest in PossibleProgressionQuests)
         {
           switch (quest)
           {
@@ -145,7 +143,7 @@ public class ProgressionManager : MonoBehaviour
     private void CreateNewQuests()
     {
 
-        if(possibleProgressionQuests.Count < 1)
+        if(PossibleProgressionQuests.Count < 1)
         {
             Debug.LogWarning($"Progression Manager needs at least 1 possible quest before creating any");
             return;
@@ -156,13 +154,11 @@ public class ProgressionManager : MonoBehaviour
         // After completing the first wave, we'll introduce the first quest type: Skillful Play.
         if (WaveIndex >= 1)
         {
-          if (player == null)
-            player = FindFirstObjectByType<Player>();
-          if (levelSystem == null)
-            levelSystem = FindFirstObjectByType<LevelSystem>();
+          player ??= FindFirstObjectByType<Player>();
+          levelSystem ??= FindFirstObjectByType<LevelSystem>();
 
           SkillfulQuestSO skillfulQuestInstance = FindProgressionQuestByType(skillfulQuests);
-          if (skillfulQuestInstance != null)
+          if (skillfulQuestInstance)
           {
             Instantiate(skillfulQuestInstance);
             skillfulQuestInstance.Init(this);
@@ -174,14 +170,13 @@ public class ProgressionManager : MonoBehaviour
         // By the 5th wave, we can assume the player has already unlocked an aspect.
         if (WaveIndex >= 5)
         {
-          if (aspectsManager == null)
-            aspectsManager = FindFirstObjectByType<AspectsManager>();
+          aspectsManager ??= FindFirstObjectByType<AspectsManager>();
 
           // We'll introduce the second quest type: Aspects.
           if (aspectsManager.EquippedAspectTrees.Length > 0)
           {
             AspectQuestSO aspectQuestInstance = FindProgressionQuestByType(aspectQuests);
-            if (aspectQuestInstance != null)
+            if (aspectQuestInstance)
             {
               Instantiate(aspectQuestInstance);
               aspectQuestInstance.Init(this);
@@ -192,16 +187,15 @@ public class ProgressionManager : MonoBehaviour
         }
 
         // By the 8th wave, the player has had enough time to experience each event at least once.
-        if (WaveIndex >= 1) 
+        if (WaveIndex >= 8) 
         {
-          if (eventManager == null)
-            eventManager = GetComponent<EventManager>();
+          eventManager ??= GetComponent<EventManager>();
 
           // We'll introduce the third quest type: World Events.
-          if (eventManager.CurrentEvent != null)
+          if (eventManager.CurrentEvent)
           {
             WorldEventQuestSO worldEventQuestInstance = FindProgressionQuestByType(worldEventQuests);
-            if (worldEventQuestInstance != null)
+            if (worldEventQuestInstance)
             {
               Instantiate(worldEventQuestInstance);
               worldEventQuestInstance.Init(this);

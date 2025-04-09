@@ -1,57 +1,95 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "_x_FearStacksByIntimidationQuestSO", menuName = "World/Progression Quest/Aspect Quests/Indimidation Fear Stacks")]
 public class IntimidationFearStacksQuest : AspectQuestSO
 {
-  [field: Header("Config")]
+  [field: Header("Indimidation Fear Stacks Configuration")]
+
+  /// <summary>
+  /// The minimum Fear stacks the player must achieve with the Intimidation Passive Ability to complete the quest.
+  /// </summary>
+  [Tooltip("The minimum Fear stacks the player must achieve with the Intimidation Passive Ability to complete the quest.")]
   [field: Range(0, 5)]
   [field: SerializeField] public int FearStacksGoal { get; private set; }
-  private Player player;
-  private EntityStatusEffector playerStatusEffector;
-  private AspectOfFearPassiveBStatusEffectSO playerIntimidation;
+
+  /// <summary>
+  /// The number of Fear stacks the player has achieved with the Intimidation Passive Ability.
+  /// </summary>
   private int fearStacks = 0;
 
-  private protected override void OnActivated()
-  {
-    player = progressionManager?.player;
+  /// <summary>
+  /// Reference to the Player via the Progression Manager.
+  /// </summary>
+  private Player player;
 
-    if (player == null)
+  /// <summary>
+  /// Reference to the Player Status Effector via the Progression Manager and Player.
+  /// </summary>
+  private EntityStatusEffector playerStatusEffector;
+
+  /// <summary>
+  /// Reference to the Intimidation Passive Ability via the Player Status Effector.
+  /// </summary>
+  private AspectOfFearPassiveBStatusEffectSO playerIntimidationPassive;
+
+  public override bool MeetsCriteria(ProgressionManager progressionManager)
+  {
+    if (!progressionManager.player)
     {
-      CleanUp();
-      return;
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the player.");
+
+      return false;
     }
 
-    playerStatusEffector = player.GetComponent<EntityStatusEffector>();
-    playerIntimidation = playerStatusEffector?.TryGetStatusEffect<AspectOfFearPassiveBStatusEffectSO>();
+    player ??= progressionManager.player;
 
-    if (playerStatusEffector != null && playerIntimidation != null)
+    if (!player.TryGetComponent(out EntityStatusEffector entityStatusEffectorRef))
     {
-      fearStacks = playerIntimidation.CurrentStacks;
-      playerIntimidation.OnStunEntity += PlayerIntimidation_OnEntityStunned;
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find Player Status Effector component on the player.");
+
+      return false;  
     }
-  }
-
-
-  private protected override void OnCleanUp()
-  {
-    if (playerStatusEffector != null && playerIntimidation != null)
+    else if (!entityStatusEffectorRef.TryGetStatusEffect<AspectOfFearPassiveBStatusEffectSO>())
     {
-      fearStacks = 0;
-      playerIntimidation.OnStunEntity -= PlayerIntimidation_OnEntityStunned;
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find reference to the Intimidation Passive Ability.");
+
+      return false;
     }
+
+    // Assign the references to the corresponding variables.
+    playerStatusEffector ??= entityStatusEffectorRef;
+    playerIntimidationPassive ??= entityStatusEffectorRef.TryGetStatusEffect<AspectOfFearPassiveBStatusEffectSO>();
+
+    if (playerIntimidationPassive.CurrentStacks >= FearStacksGoal)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Player has already achieved the minimum Fear stacks goal.");
+
+      return false;
+    }
+
+    // Check the base criteria.
+    return base.MeetsCriteria(progressionManager);
   }
 
-  private protected override void OnUpdate()
-  {
-    if (fearStacks >= FearStacksGoal)
-      Complete();
-  }
+  // Subscribe to the necessary Actions.
+  private protected override void OnActivated() => playerIntimidationPassive.OnStunEntity += PlayerIntimidation_OnEntityStunned;
+
+  // Unsubscribe to any Actions used for the quest.
+  private protected override void OnCleanUp() => playerIntimidationPassive.OnStunEntity -= PlayerIntimidation_OnEntityStunned;
+
+  private protected override void OnUpdate() { }
 
   private void PlayerIntimidation_OnEntityStunned(Entity stunner, Entity victim, float stunDuration)
   {
-    fearStacks = playerIntimidation.CurrentStacks;
-    Debug.Log($"Current tracked Fear Stacks: {fearStacks}");
+    fearStacks = playerIntimidationPassive.CurrentStacks;
+    
+    // Check if the updated Fear stacks meets the goal.
+    if (fearStacks >= FearStacksGoal)
+      Complete();
   }
 }

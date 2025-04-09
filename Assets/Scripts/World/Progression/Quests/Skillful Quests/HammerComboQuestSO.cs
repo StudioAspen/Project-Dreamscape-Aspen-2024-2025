@@ -1,34 +1,40 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_x_Times_y_ByChargedAttackQuestSO", menuName = "World/Progression Quest/Aspect Quests/Charged Attack")]
-public class ChargedAttackQuestSO : AspectQuestSO
+[CreateAssetMenu(fileName = "_x_Times_y_z_ComboQuestSO", menuName = "World/Progression Quest/Skillful Quests/Hammer Combo")]
+public class HammerComboQuestSO : SkillfulQuestSO
 {
-  [field: Header("Charged Attack Configuration")]
+  [field: Header("Hammer Combo Configuration")]
 
   /// <summary>
-  /// The number of times the player must hit Dreamons with a charged attack to complete the quest.
+  /// The number of times the player must perform the target Combo to complete the quest.
   /// </summary>
-  [field: Tooltip("The number of times the player must hit Dreamons with a charged attack to complete the quest.")]
-  [field: Range(0, 10)]
+  [field: Tooltip("The number of times the player must perform the target Combo to complete the quest.")]
+  [field: Range(0, 5)]
+  [field: SerializeField] public int SuccessfulPerformancesGoal { get; private set; }
+
+  /// <summary>
+  /// The number of times the player must hit Dreamons with the target Combo to complete the quest.
+  /// </summary>
+  [field: Tooltip("The number of times the player must hit Dreamons with the target Combo to complete the quest.")]
+  [field: Range(0, 5)]
   [field: SerializeField] public int SuccessfulHitsGoal { get; private set; }
 
   /// <summary>
-  /// The number of times the player must defeat Dreamons with a charged attack to complete the quest.
+  /// The Combo used to determine the completion of the quest.
   /// </summary>
-  [field: Tooltip("The number of times the player must defeat Dreamons with a charged attack to complete the quest.")]
-  [field: Range(0, 10)]
-  [field: SerializeField] public int SuccessfulDefeatsGoal { get; private set; }
+  [field: Tooltip("The Combo used to determine the completion of the quest.")]
+  [field: SerializeField] public ComboDataSO TargetComboData { get; private set; } 
 
   /// <summary>
-  /// The number of times the player has hit Dreamons with a charged attack.
+  /// The number of times the player has performed the target Combo.
+  /// </summary>
+  private int successfulPerformances = 0;
+
+  /// <summary>
+  /// The number of times the player has hit Dreamons with the target Combo.
   /// </summary>
   private int successfulHits = 0;
-
-  /// <summary>
-  /// The number of times the player has defeated Dreamons with a charged attack.
-  /// </summary>
-  private int successfulDefeats = 0;
 
   /// <summary>
   /// Reference to the Player via the Progression Manager.
@@ -88,13 +94,34 @@ public class ChargedAttackQuestSO : AspectQuestSO
     return base.MeetsCriteria(progressionManager);
   }
 
-  // Subscribe to the necessary Actions.
-  private protected override void OnActivated() => playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+  private protected override void OnActivated()
+  {
+    // Subscribe to the necessary Actions.
+    playerCombat.Weapon.OnWeaponStartSwing += PlayerWeapon_OnWeaponStartSwing;
+    playerCombat.Weapon.OnWeaponHit += PlayerWeapon_OnWeaponHit;
+  }
 
-  // Unsubscribe to any Actions used for the quest.
-  private protected override void OnCleanUp() => playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
+
+  private protected override void OnCleanUp()
+  {
+    // Unsubscribe to any Actions used for the quest.
+    playerCombat.Weapon.OnWeaponStartSwing -= PlayerWeapon_OnWeaponStartSwing;
+    playerCombat.Weapon.OnWeaponHit -= PlayerWeapon_OnWeaponHit;
+  }
 
   private protected override void OnUpdate() { }
+
+  private void PlayerWeapon_OnWeaponStartSwing(Entity entity, ComboDataSO sO)
+  {
+    if (player.CurrentState != playerAttackState || !playerAttackState.ComboData)
+      return;
+
+    if (playerAttackState.ComboData.DisplayName == TargetComboData.DisplayName)
+      successfulPerformances++;
+
+    if(successfulPerformances >= SuccessfulPerformancesGoal && successfulHits >= SuccessfulHitsGoal)
+      Complete();
+  }
 
   private void PlayerWeapon_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue) 
   {
@@ -113,19 +140,11 @@ public class ChargedAttackQuestSO : AspectQuestSO
       return;
     }
 
-    List<ComboAction> comboInputs = playerAttackState.ComboData.ComboInputs;
-
-    // Check the Combo Inputs for a Charged Attack Combo Action.
-    if (comboInputs.Contains(ComboAction.CHARGED_ATTACK1) || comboInputs.Contains(ComboAction.CHARGED_ATTACK2))
-    {
+    if (playerAttackState.ComboData.DisplayName == TargetComboData.DisplayName)
       successfulHits++;
 
-      if (victim.CurrentHealth <= damageValue)
-        successfulDefeats++;
-    }
-
-    // Check if the updated successful hits and defeats meet the goals.
-    if (successfulHits >= SuccessfulHitsGoal && successfulDefeats >= SuccessfulDefeatsGoal)
+    // Check if the updated successful performances and hits meet the goals.
+    if(successfulPerformances >= SuccessfulPerformancesGoal && successfulHits >= SuccessfulHitsGoal)
       Complete();
   }
 }
