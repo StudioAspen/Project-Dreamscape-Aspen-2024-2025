@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Dreamscape.Abilities
 {
@@ -8,26 +9,30 @@ namespace Dreamscape.Abilities
     {
         //Should Not be Accessable as a setting's Change within the Scriptable Object:
         [Header("Settings")] 
-        [SerializeField] private float slimeIndex = 1; //Index used to determine if slime can split
+        private float slimeIndex = 1; //Index used to determine if slime can split
 
-        [SerializeField] private int numberOfSlimes = 8;
-        [SerializeField] private int numberOfSplitSlimes = 4;
+        private int numberOfSlimes = 8;
+        private int numberOfSplitSlimes = 4;
 
-        [SerializeField] private float playerSlimeLaunch = Mathf.PI / 4;
-        [SerializeField] private float deployedSlimeLaunch = Mathf.PI / 2;
+        private float playerSlimeLaunch = Mathf.PI / 4;
+        private float deployedSlimeLaunch = Mathf.PI / 2;
 
 
         //y(t) = 1/2 * At^2 + V_0 * t + H_0
         //H_0 = "Player Height"
         //V_0 = "Velocity"
         //A = "Gravity (-9.8)
-        [SerializeField] private float slimeVelocity; //Customizable in the Scriptable Object
-
+        [SerializeField] private float slimeVelocity; 
+        [SerializeField] private float arcHeight; 
         [SerializeField] private float playerHeight;
         [SerializeField] private float projectileMotionHeight;
 
-        //Slime Object itself: "Called in Scriptable Object"
         [SerializeField] private GameObject slimeObject;
+        [SerializeField] private GameObject slimeTrail;
+        [SerializeField] private LayerMask slimeTrailLayer;
+        [SerializeField] private float raycastDistance = 1.5f;
+        [SerializeField] private float trailSpawnRate = 0.1f;
+        private float trailTimer = 0f;
 
 
         //Setting Variable Values given from the Scriptable Object:
@@ -35,22 +40,59 @@ namespace Dreamscape.Abilities
         {
             this.slimeObject = slime;
         }
+        public void SetSlimeTrail(GameObject trial)
+        {
+            this.slimeTrail = trial;
+        }
         public void SetVelocity(float velocity)
         {
             this.slimeVelocity = velocity;
+        }
+        public void SetArc(float arc)
+        {
+            this.arcHeight = arc;
+        }
+        public void SetIgnoredLayers(LayerMask layers)
+        {
+            slimeTrailLayer = layers;
         }
 
 
         //Start by Getting Value for Player Height:
         private void Start()
         {
-            playerHeight = casterEntity.CharacterController.height;
+
+        }
+
+        private void Update()
+        {
+            trailTimer += Time.deltaTime;
+            if (trailTimer >= trailSpawnRate)
+            {
+                trailTimer = 0f;
+                CastTrailRayFromSlimes();
+            }
+        }
+
+        private void CastTrailRayFromSlimes()
+        {
+            GameObject[] slimes = GameObject.FindGameObjectsWithTag("Launchable Slime");
+
+            foreach (GameObject slime in slimes)
+            {
+                Vector3 origin = slime.transform.position;
+                Ray ray = new Ray(origin, Vector3.down);
+                if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance, slimeTrailLayer))
+                {
+                    Instantiate(slimeTrail, hit.point, Quaternion.identity);
+                }
+            }
         }
 
         //As Time Changes -> The Height Changes creating the Projectile Motion Effect:
         private void FixedUpdate()
         {
-            projectileMotionHeight = .5f * casterEntity.PhysicsConfig.Gravity * (Time.fixedDeltaTime) * (Time.fixedDeltaTime) + slimeVelocity * (Time.fixedDeltaTime) + playerHeight;
+
         }
 
         //Triggered When the Memory Ability is Activated:
@@ -72,31 +114,17 @@ namespace Dreamscape.Abilities
                 //Force Application:
                 if (rb != null)
                 {
-                    Vector3 launchVelocity = new Vector3(Mathf.Cos(angle) * slimeVelocity, projectileMotionHeight, Mathf.Sin(angle) * slimeVelocity);
+                    Vector3 horizontalDir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)).normalized;
+                    Vector3 launchVelocity = horizontalDir * slimeVelocity + Vector3.up * arcHeight;
                     rb.velocity = launchVelocity;
                 }
-            }
-        }
-
-
-        //Visualization of SpawnPositions for Slimes:
-        private void OnDrawGizmos()
-        {
-            if (casterEntity == null) return;
-
-            for (int i = 0; i < numberOfSlimes; i++)
-            {
-                float angle = i * (Mathf.PI / 4);
-                Vector3 spawnPos = casterEntity.transform.position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(spawnPos, 0.2f);
             }
         }
 
         //Called When the Memory Ability Starts:
         private protected override void OnSpawn()
         {
+            Debug.Log("ABILITY STARTED!!!");
             LaunchSlimes();
         }
 
@@ -104,22 +132,13 @@ namespace Dreamscape.Abilities
         private protected override void OnOnDisable()
         {
             //Resetting Any Values Changes:
-
         }
-
-
-
-        // Logic Implemented for When Enemy Entites collide With the Slime Prefab:
-        private void CheckForEnemyHit(Collider other)
-        {
-            SecondLaunchSlimes();
-        }
-
 
         //Triggered When The Launched Slime Prefab Collides With an Enemy:
         // - Gets the [4] Positions to Instantiate The Slime
         // - Then Instantiate Them while also giving a Rb Component
         // - Then With the Rb Apply Force
+        // *** SPAWN POSITION SHOULD NOT BE CASTERENTITY --> SHOULD BE SLIME THAT WAS COLLIDED WITH:
         private void SecondLaunchSlimes()
         {
             for (int i = 0; i < numberOfSplitSlimes; i++)
@@ -143,5 +162,6 @@ namespace Dreamscape.Abilities
 
 
     }
+
 }
 

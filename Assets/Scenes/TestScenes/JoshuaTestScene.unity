@@ -922,60 +922,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5671f7e8d8d5ab7448c31b9a9c047932, type: 3}
---- !u!1 &1137791535
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1137791537}
-  - component: {fileID: 1137791538}
-  m_Layer: 0
-  m_Name: SlimeTestManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1137791537
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1137791535}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1050.9532, y: 416.82956, z: 4.521994}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1137791538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1137791535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9390c429c367c4f13892550fcabf03ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slimeIndex: 1
-  numberOfSlimes: 8
-  numberOfSplitSlimes: 4
-  playerSlimeLaunch: 0.7853982
-  deployedSlimeLaunch: 1.5707964
-  playerHeight: 0
-  slimeVelocity: 5
-  projectileMotionHeight: 0
-  slimeObject: {fileID: 4518511054676028987, guid: a668ae943b833fa4a9329a48e461e47a,
-    type: 3}
 --- !u!1 &1231333731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2245,6 +2191,32 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6639080308347767829, guid: a668ae943b833fa4a9329a48e461e47a,
+        type: 3}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6639080308347767829, guid: a668ae943b833fa4a9329a48e461e47a,
+        type: 3}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6639080308347767829, guid: a668ae943b833fa4a9329a48e461e47a,
+        type: 3}
+      propertyPath: color.r
+      value: 0.23066425
+      objectReference: {fileID: 0}
+    - target: {fileID: 6639080308347767829, guid: a668ae943b833fa4a9329a48e461e47a,
+        type: 3}
+      propertyPath: memoryAbility
+      value: 
+      objectReference: {fileID: 11400000, guid: 17be7c1d027724e8bb9efe3ac99c4b65,
+        type: 2}
+    - target: {fileID: 6639080308347767829, guid: a668ae943b833fa4a9329a48e461e47a,
+        type: 3}
+      propertyPath: shardDropCount
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2626,4 +2598,3 @@ SceneRoots:
   - {fileID: 602888464}
   - {fileID: 552994380}
   - {fileID: 939322494}
-  - {fileID: 1137791537}
