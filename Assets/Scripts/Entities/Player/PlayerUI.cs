@@ -57,6 +57,8 @@ public class PlayerUI : MonoBehaviour
     private void Start()
     {
         UpdateAspectsIcons();
+
+        memoryText.text = $"{memorySystem.GetTotalShards()}/{memorySystem.GetMaxShards()}";
     }
 
     private void Update()
