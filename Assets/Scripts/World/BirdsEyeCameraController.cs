@@ -22,7 +22,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     private float zoomDelta;
 
     [Header("Movement Settings")]
-    [SerializeField] private float moveDistance = 1000; // Amount to move the camera per input event (default is 1 unit)
+    [SerializeField] private float moveDistance = 10f;
 
 
     private void Start()
@@ -96,7 +96,9 @@ public class BirdsEyeCameraController : MonoBehaviour
         {
             // Convert move direction to Vector3 (using x and z axes only).
             Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
+            Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
             transform.Translate(movement, Space.World);  // Move the player 
+            ClampToLandBounds();
         }
     }
 
@@ -184,5 +186,16 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         worldManager.DisableLandLevelTexts();
         worldManager.DisableGhostLand();
+    }
+
+    void ClampToLandBounds()
+    {
+        Bounds bounds = worldManager.GetWorldBoundsOfSpawnedLands();
+
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
+        pos.z = Mathf.Clamp(pos.z, bounds.min.z, bounds.max.z);
+
+        transform.position = pos;
     }
 }

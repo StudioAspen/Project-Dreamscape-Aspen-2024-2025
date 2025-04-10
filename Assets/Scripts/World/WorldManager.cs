@@ -403,6 +403,27 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
+    public Bounds GetWorldBoundsOfSpawnedLands()
+    {
+        if (Borders.Count == 0)
+            return new Bounds(Vector3.zero, Vector3.zero);
+
+        int minX = Borders.Keys.Min(pos => pos.x);
+        int maxX = Borders.Keys.Max(pos => pos.x);
+        int minY = Borders.Keys.Min(pos => pos.y);
+        int maxY = Borders.Keys.Max(pos => pos.y);
+
+        float worldMinX = minX * LandScale;
+        float worldMaxX = maxX * LandScale;
+        float worldMinZ = minY * LandScale;
+        float worldMaxZ = maxY * LandScale;
+
+        Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
+        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale, 0, worldMaxZ - worldMinZ + LandScale);
+
+        return new Bounds(center, size);
+    }
+
     #region Ghost Land Functions
     public void EnableGhostLand()
     {
