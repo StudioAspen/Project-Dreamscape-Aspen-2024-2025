@@ -61,18 +61,18 @@ MonoBehaviour:
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 50
+    <BaseValue>k__BackingField: 65
   <Defense>k__BackingField:
     <BaseValue>k__BackingField: 0
-  <BaseSpeed>k__BackingField: 2
+  <BaseSpeed>k__BackingField: 3
   rotationSpeed: 5
   mass: 1
   <StatusSpeedModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   IsGrounded: 0
-  targetDetectionRadius: 10
+  targetDetectionRadius: 14
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <BaseDamageRange>k__BackingField: {x: 7, y: 11}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   UseRootMotion: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 20
   <CustomCollisionRadius>k__BackingField: 0
-  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
+  <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.8
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
   <FollowerAttackState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 9df1da0ce407d0641a89278cc6022e15,

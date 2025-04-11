@@ -62,7 +62,7 @@ MonoBehaviour:
   model: {fileID: 120504194580606376}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 160
+    <BaseValue>k__BackingField: 200
   <Defense>k__BackingField:
     <BaseValue>k__BackingField: 0
   <BaseSpeed>k__BackingField: 1
@@ -71,9 +71,9 @@ MonoBehaviour:
   <StatusSpeedModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   IsGrounded: 0
-  targetDetectionRadius: 2.25
+  targetDetectionRadius: 4
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 10, y: 15}
+  <BaseDamageRange>k__BackingField: {x: 4, y: 12}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   UseRootMotion: 0
@@ -82,7 +82,7 @@ MonoBehaviour:
   <EntityStaggeredState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: ef714b2ac14fdcd48b56888fc4dcf23e,
       type: 3}
-    <StaggerDuration>k__BackingField: 0.5
+    <StaggerDuration>k__BackingField: 4
   <EntityDeathState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 36ffa4ca123b8cf48ace032eaac641f9,
       type: 3}
@@ -106,7 +106,7 @@ MonoBehaviour:
   <CustomCollisionRadius>k__BackingField: 0.58
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0.25}
-  <DetectionDistance>k__BackingField: 15
+  <DetectionDistance>k__BackingField: 30
   <DetectionConeHalfAngle>k__BackingField: 20
   staggerDamageThreshold: 40
   superArmorDamageReduction: 0.5
@@ -121,7 +121,7 @@ MonoBehaviour:
   <ChargerChargeState>k__BackingField:
     <ChargeContactDamageMultiplier>k__BackingField: 2
     <ChargeSpeedModifier>k__BackingField: 5
-    <ChargeDuration>k__BackingField: 20
+    <ChargeDuration>k__BackingField: 8
     <ChargeRotationSpeed>k__BackingField: 5
     <ChargeOnImpactLaunchForce>k__BackingField: 10
     <ChargeStunDuration>k__BackingField: 4
@@ -140,7 +140,7 @@ MonoBehaviour:
     <LeftJabAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 44874b0791fcf524fa9bb0d0383502c7,
       type: 3}
     <JabCount>k__BackingField: 5
-    <JabDuration>k__BackingField: 0.45
+    <JabDuration>k__BackingField: 0.65
     <JabDamageMultiplier>k__BackingField: 1
     <JabStandStillRadius>k__BackingField: 1.5
     <JabRotationSpeed>k__BackingField: 25

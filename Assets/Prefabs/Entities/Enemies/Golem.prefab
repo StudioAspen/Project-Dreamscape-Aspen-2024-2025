@@ -61,7 +61,7 @@ MonoBehaviour:
   model: {fileID: 4150967214179094889}
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
-    <BaseValue>k__BackingField: 200
+    <BaseValue>k__BackingField: 250
   <Defense>k__BackingField:
     <BaseValue>k__BackingField: 0
   <BaseSpeed>k__BackingField: 3
@@ -105,14 +105,14 @@ MonoBehaviour:
   <CustomCollisionRadius>k__BackingField: 0
   <CustomCollisionOffsetFromGroundDistance>k__BackingField: 0.5
   <CustomCollisionCenterOffset>k__BackingField: {x: 0, y: 0, z: 0}
-  dazeDamageThreshold: 25
+  dazeDamageThreshold: 30
   staggerDamageThreshold: 10
   <GolemGroundSmashState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: e169be8521aae734b88a8524ad3da798,
       type: 3}
     <AOERadius>k__BackingField: 7
     <AOEDamageMultiplier>k__BackingField: 1
-    <AOELaunchForce>k__BackingField: 7.5
+    <AOELaunchForce>k__BackingField: 12
     <AOEStunDuration>k__BackingField: 3
   <GolemWanderState>k__BackingField:
     <WanderIntervalDurationRange>k__BackingField: {x: 3, y: 5}
