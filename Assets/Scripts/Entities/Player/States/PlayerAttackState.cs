@@ -11,8 +11,13 @@ public class PlayerAttackState : PlayerBaseState
 {
     private PlayerCombat playerCombat;
 
+    [field: Header("Nearby Attack Config")]
     [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
     [field: SerializeField] public float AttackNearbyInFrontHalfAngle { get; private set; } = 25f;
+
+    [field: Header("Air Nearby Attack Config")]
+    [field: SerializeField] public float AirAttackMagnetSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float AirAttackMagnetStopRadius { get; private set; } = 2f;
 
     public ComboDataSO ComboData { get; private set; }
 
@@ -23,10 +28,15 @@ public class PlayerAttackState : PlayerBaseState
 
     private Coroutine weaponScaleCoroutine;
 
+    private bool canAirCombo = true;
+    private bool isAirComboPerfomed;
+
     public override void Init(Entity entity)
     {
         base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
+
+        player.OnGrounded += Player_OnGrounded;
     }
 
     public override void OnDrawGizmos()
@@ -44,6 +54,8 @@ public class PlayerAttackState : PlayerBaseState
 
         Gizmos.DrawLine(entity.transform.position, entity.transform.position + leftPoint * AttackNearbyRadius);
         Gizmos.DrawLine(entity.transform.position, entity.transform.position + rightPoint * AttackNearbyRadius);
+
+        Gizmos.DrawWireSphere(entity.transform.position, AirAttackMagnetStopRadius);
     }
 
     /// <summary>
@@ -89,6 +101,8 @@ public class PlayerAttackState : PlayerBaseState
         ScaleWeapon(ComboData.WeaponScale, ComboData.WeaponScalingDuration);
 
         playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
+
+        if (isAirComboPerfomed && ComboData.IsFinalAirCombo) canAirCombo = false;
     }
 
     public override void OnExit()
@@ -113,6 +127,11 @@ public class PlayerAttackState : PlayerBaseState
         playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
 
+    public override void OnEntityDestroyed()
+    {
+        player.OnGrounded -= Player_OnGrounded;
+    }
+
     public override void OnUpdate()
     {
         player.ApplyGravity();
@@ -126,6 +145,7 @@ public class PlayerAttackState : PlayerBaseState
         }
 
         TryLookAtClosestTarget();
+        MagnetTowardsAirborneEnemy();
 
         player.AccelerateToHorizontalSpeed(0f);
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
@@ -163,6 +183,36 @@ public class PlayerAttackState : PlayerBaseState
                 else player.LookAt(nearbyTargets[0].transform.position); // If no target is in front of you, look at the closest target
             }
         }
+    }
+
+    /// <summary>
+    /// Magnets the player towards an airborne enemy if the player is airborne and there is a nearby target.
+    /// </summary>
+    private void MagnetTowardsAirborneEnemy()
+    {
+        if (player.IsGrounded) return;
+
+        List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
+        if (nearbyTargets.Count == 0) return;
+
+        List<Entity> nearbyAirborneTargets = new List<Entity>();
+        foreach (Entity entity in new List<Entity>(nearbyTargets))
+        {
+            if (entity.IsGrounded) continue; // skip grounded targets
+            nearbyAirborneTargets.Add(entity);
+        }
+        if (nearbyAirborneTargets.Count == 0) return; // if there are no airborne targets, return
+
+        Entity closestTarget = nearbyAirborneTargets[0];
+        Vector3 playerCenter = player.GetColliderCenterPosition();
+        Vector3 closestTargetCenter = closestTarget.GetColliderCenterPosition();
+        player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * Mathf.Sign(closestTargetCenter.y - playerCenter.y) * Vector3.up); // move the player up towards the target
+
+        if(Vector3.Distance(playerCenter, closestTargetCenter) < AirAttackMagnetStopRadius) return; // if the target is within the stop radius, stop moving towards it
+
+        Vector3 directionToTarget = (closestTargetCenter - playerCenter).normalized;
+        directionToTarget.y = 0;
+        player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * directionToTarget);
     }
 
     /// <summary>
@@ -209,10 +259,14 @@ public class PlayerAttackState : PlayerBaseState
     /// <param name="damage">The damage inflicted on the victim.</param>
     private void TryLaunchVictim(Entity victim, int damage)
     {
+        if (!canAirCombo) return;
+
         if (!ComboData.WillLaunchUpwards) return;
         if (victim.WillDieFromDamage(damage)) return;
 
         victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
+
+        isAirComboPerfomed = true;
     }
 
     /// <summary>
@@ -222,6 +276,8 @@ public class PlayerAttackState : PlayerBaseState
     /// <param name="damage">The damage inflicted on the victim.</param>
     private void TryAirComboVictim(Entity victim, int damage)
     {
+        if(!canAirCombo) return;
+
         if (player.IsGrounded) return;
         if (victim.IsGrounded) return;
 
@@ -232,6 +288,8 @@ public class PlayerAttackState : PlayerBaseState
         else player.ResetYVelocity();
 
         player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+
+        isAirComboPerfomed = true;
     }
 
     /// <summary>
@@ -296,6 +354,12 @@ public class PlayerAttackState : PlayerBaseState
 
         CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
         spawnedAbility.Init(player);
+    }
+
+    private void Player_OnGrounded(Vector3 groundPoint)
+    {
+        canAirCombo = true;
+        isAirComboPerfomed = false;
     }
 }
 

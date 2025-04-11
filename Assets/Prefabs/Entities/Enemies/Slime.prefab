@@ -167,7 +167,9 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 50
-  baseSpeed: 3
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 3
   rotationSpeed: 5
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -195,6 +197,7 @@ MonoBehaviour:
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
+  <EnemyType>k__BackingField: Slime
   <Cost>k__BackingField: 2
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 40

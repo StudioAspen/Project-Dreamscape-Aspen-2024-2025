@@ -28,4 +28,9 @@ public abstract class EntityBaseState : BaseState
     /// Called by the entity to draw the gizmos during the state
     /// </summary>
     public virtual void OnDrawGizmos() { }
+
+    /// <summary>
+    /// Called when the entity is destroyed or disabled.
+    /// </summary>
+    public virtual void OnEntityDestroyed() { }
 }

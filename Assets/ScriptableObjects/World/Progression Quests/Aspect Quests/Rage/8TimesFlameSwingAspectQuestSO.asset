@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81b773fe6662977418caa987d2b4e158, type: 3}
+  m_Name: 8TimesFlameSwingAspectQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: '[Aspect of Rage] Hit Dreamons with Flame Swing
+    8 times.'
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 2
+  requiredAspectTree: {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
+  requiredAspectNode: {fileID: -3918194093017296719, guid: 4aef8062b306a4b48a5e04d3b2209534,
+    type: 2}
+  nodeLevel: 0
+  <SuccessfulHitsGoal>k__BackingField: 8
