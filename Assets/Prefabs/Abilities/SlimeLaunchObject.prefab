@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 8086878812218728649}
   - component: {fileID: 1371924406379532338}
   - component: {fileID: -3697667266918703954}
-  m_Layer: 0
+  - component: {fileID: 946161346202226617}
+  m_Layer: 8
   m_Name: SlimeLaunchObject
   m_TagString: Launchable Slime
   m_Icon: {fileID: 0}
@@ -119,19 +120,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9390c429c367c4f13892550fcabf03ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slimeIndex: 0
-  slimeVelocity: 0
-  arcHeight: 0
-  playerHeight: 0
-  projectileMotionHeight: 0
-  slimeObject: {fileID: 0}
-  slimeTrail: {fileID: 0}
+  slimeIndex: 1
+  slimeVelocity: 15
+  projectileMotionHeight: 3
+  slimeObject: {fileID: 8583652847560221169}
+  slimeTrail: {fileID: 3345396474379288471, guid: b2e72adce7ffb774f92a5d0d943640be,
+    type: 3}
   slimeTrailLayer:
     serializedVersion: 2
-    m_Bits: 0
-  raycastDistance: 1.5
+    m_Bits: 256
+  raycastDistance: 10
   trailSpawnRate: 0.1
-  slimeLifeSpan: 0
+  slimeLifeSpan: 1
+  trailLifeSpan: 5
 --- !u!54 &-3697667266918703954
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -159,3 +160,24 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!135 &946161346202226617
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8583652847560221169}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}

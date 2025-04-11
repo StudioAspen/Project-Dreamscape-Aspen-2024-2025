@@ -22,8 +22,6 @@ namespace Dreamscape.Abilities
         //A = "Gravity (-9.8)
         [SerializeField] private float slimeIndex;
         [SerializeField] private float slimeVelocity; 
-        [SerializeField] private float arcHeight; 
-        [SerializeField] private float playerHeight;
         [SerializeField] private float projectileMotionHeight;
 
         [SerializeField] private GameObject slimeObject;
@@ -32,8 +30,9 @@ namespace Dreamscape.Abilities
         [SerializeField] private float raycastDistance = 1.5f;
         [SerializeField] private float trailSpawnRate = 0.1f;
         [SerializeField] private float slimeLifeSpan;
+        [SerializeField] private float trailLifeSpan;
 
-        private float lifeTimer = 0f;
+
         private float trailTimer = 0f;
 
 
@@ -50,22 +49,11 @@ namespace Dreamscape.Abilities
         {
             this.slimeTrail = trial;
         }
-        public void SetVelocity(float velocity)
-        {
-            this.slimeVelocity = velocity;
-        }
-        public void SetArc(float arc)
-        {
-            this.arcHeight = arc;
-        }
         public void SetIgnoredLayers(LayerMask layers)
         {
             this.slimeTrailLayer = layers;
         }
-        public void SetSlimeLifeSpan(float life)
-        {
-            this.slimeLifeSpan = life;
-        }
+       
 
 
 
@@ -82,6 +70,12 @@ namespace Dreamscape.Abilities
             {
                 trailTimer = 0f;
                 SlimeTrail();
+            }
+
+            GameObject[] trails = GameObject.FindGameObjectsWithTag("Slime Trail");
+            foreach (GameObject trail in trails)
+            {
+                Destroy(trail, trailLifeSpan);
             }
         }
 
@@ -110,7 +104,7 @@ namespace Dreamscape.Abilities
             // Check if the slime's collision is not with something in the slimeTrailLayer
             if ((slimeTrailLayer.value & (1 << collision.gameObject.layer)) == 0)
             {               
-                SecondLaunchSlimes(collision.gameObject); 
+                SecondLaunchSlimes(this.gameObject); 
             }
         }
 
@@ -134,10 +128,11 @@ namespace Dreamscape.Abilities
                 //Force Application:
                 if (rb != null)
                 {
-                    Vector3 horizontalDir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)).normalized;
-                    Vector3 launchVelocity = horizontalDir * slimeVelocity + Vector3.up * arcHeight;
+                    Vector3 launchVelocity = new Vector3(Mathf.Cos(angle) * slimeVelocity, projectileMotionHeight, Mathf.Sin(angle) * slimeVelocity);
                     rb.velocity = launchVelocity;
                 }
+
+                Destroy(slimeProjectile, slimeLifeSpan); //Destroy Initial after Specified time
             }
         }
 
@@ -158,6 +153,7 @@ namespace Dreamscape.Abilities
                     float angle = i * deployedSlimeLaunch;
                     Vector3 spawnPosiion = collidedSlime.transform.position + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
 
+                    Destroy(collidedSlime); //Destroy Initial On Split
                     GameObject slimeProjectile = Instantiate(slimeObject, spawnPosiion, Quaternion.identity);
                     Rigidbody rb = slimeProjectile.GetComponent<Rigidbody>();
 
@@ -168,6 +164,8 @@ namespace Dreamscape.Abilities
                         Vector3 launchVelocity = new Vector3(Mathf.Cos(angle) * slimeVelocity, projectileMotionHeight, Mathf.Sin(angle) * slimeVelocity);
                         rb.velocity = launchVelocity;
                     }
+
+                    Destroy(slimeProjectile, slimeLifeSpan);
                 }
             }    
         }
@@ -179,6 +177,7 @@ namespace Dreamscape.Abilities
             trailTimer = 0f;
             Debug.Log("ABILITY STARTED!!!");
             LaunchSlimes();
+            DestroyAndRelease();
         }
 
         //Called When the Memory Ability Ends:
