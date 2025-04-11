@@ -9,13 +9,13 @@ public class AmbitionDashState: PlayerDashState
     private protected Collider[] colliderHits;
     private protected TemporaryWindWackerStatusEffectSO WindWackerStatusEffect;
     private protected HashSet<Entity> hitEntities;
-    private protected bool dashedThroughEnemy = false;
+    public bool dashedThroughEnemy = false;
 
     public override void OnEnter()
     {
         base.OnEnter();
 
-        ambitionMovementSpeed = player.MovementSpeed * speedBuff;
+        //ambitionMovementSpeed = player.MovementSpeed * speedBuff;
         player.IgnoreOtherEntityCollisions(true);
     }
 

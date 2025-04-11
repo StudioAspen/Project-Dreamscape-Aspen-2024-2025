@@ -18,7 +18,7 @@ public class AspectofAmbitionPassiveAStatusEffectSO: StatusEffectSO
 
         if (ambitionDashState.dashedThroughEnemy)
         {
-            player.StatusSpeedModifier.AddMultiplier(speedBuff, this);
+            entity.StatusSpeedModifier.AddMultiplier(speedBuff, this);
         }
     }
 
