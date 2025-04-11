@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3699956398048329574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -193.5, y: -101}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -3699956398048329574}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -3699956398048329574}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 0}
+  Children: []
+  <DisplayName>k__BackingField: Freedom of Movment
+  <Description>k__BackingField: "- Dash Upgrade\n\t-Allows passing through enemies\n\t-Windwacker\n\t-Speed
+    buff"
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: d364d8dbdede734498fb07f8e89807af,
+    type: 2}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 585e5f22252d25641b4432be95b30b80, type: 3}
+  m_Name: Ambition Tree
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: -3699956398048329574}
+  <DisplayName>k__BackingField: Aspect Tree
+  <Description>k__BackingField: Description
+  <AspectSprite>k__BackingField: {fileID: 0}
+  <AspectTextColor>k__BackingField: {r: 1, g: 0.927144, b: 0.4764151, a: 1}
