@@ -60,7 +60,23 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void OnClickCard()
     {
+        PlayBiomeSelectSFX();
+        
         worldManager.AssignBiomeToSpawnNext(CurrentBiome);
+    }
+
+    private void PlayBiomeSelectSFX()
+    {
+        switch (CurrentBiome)
+        {
+            case Biome.FOOD:
+                AkSoundEngine.PostEvent("FoodBiomeSelect", gameObject);
+                break;
+            
+            default:
+                AkSoundEngine.PostEvent("ButtonSelect", gameObject);
+                break;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

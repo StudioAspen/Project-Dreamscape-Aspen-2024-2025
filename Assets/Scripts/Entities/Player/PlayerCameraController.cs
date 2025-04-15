@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    
-    
+    private InputManager inputManager;
     private GameManager gameManager;
     private CinemachineVirtualCamera vCam;
     private CinemachineInputProvider inputProvider;
@@ -21,13 +20,19 @@ public class PlayerCameraController : MonoBehaviour
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        inputManager = FindAnyObjectByType<InputManager>();
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         DisableCameraInputs();
 
-        Player.OnPlayerLoaded += Player_OnPlayerLoaded;
+        Player player = FindObjectOfType<Player>(); // tries to find player first
+        if(player != null) AttachToTarget(player.transform);
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
+
         PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera
     }
 
     private void OnDestroy()
@@ -52,6 +57,8 @@ public class PlayerCameraController : MonoBehaviour
     private void Player_OnPlayerLoaded(Player player)
     {
         AttachToTarget(player.transform);
+
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
     }
 
     private void AttachToTarget(Transform targetTransform)
@@ -72,7 +79,8 @@ public class PlayerCameraController : MonoBehaviour
 
     private void SetCameraSensitivity(float sensitivity) {
         CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
-        if (pov != null) {
+        if (pov != null) 
+        {
             pov.m_HorizontalAxis.m_MaxSpeed = sensitivity;
             pov.m_VerticalAxis.m_MaxSpeed = sensitivity;
         }

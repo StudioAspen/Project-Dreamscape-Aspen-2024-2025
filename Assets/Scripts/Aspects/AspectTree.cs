@@ -254,4 +254,37 @@ public class AspectTree : NodeGraph
         List<AspectNodeNode> nextNodes = GetNextUnappliedNodes();
         return nextNodes == null || nextNodes.Count == 0;
     }
+
+    /// <summary>
+    /// Gets the node at the specified index. The index can't be greater than 6. The 6th node is the first unlockable node in that layer.
+    /// </summary>
+    /// <param name="index">The index to find the node at.</param>
+    /// <returns>The node at the index.</returns>
+    public AspectNodeNode GetNodeAtIndex(int index)
+    {
+        if (index < 0 || index >= nodes.Count) return null;
+
+        // If asking for last layer
+        if(index == 6)
+        {
+            List<AspectNodeNode> lastLevelNodes = GetNodesAtLevel(GetMultiNodeLevels()[1]);
+            foreach(var node in lastLevelNodes)
+            {
+                if(CanMultiNodeLevelNodeBeChosen(node)) return node;
+            }
+            return lastLevelNodes[0];
+        }
+
+        int currentIndex = 0;
+        for(int i = 0; i < GetTotalLevels(); i++)
+        {
+            List<AspectNodeNode> nodes = GetNodesAtLevel(i);
+            foreach(var node in nodes)
+            {
+                if(currentIndex == index) return node;
+                currentIndex++;
+            }
+        }
+        return null;
+    }
 }

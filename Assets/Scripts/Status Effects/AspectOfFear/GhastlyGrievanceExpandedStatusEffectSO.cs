@@ -24,7 +24,6 @@ public class GhastlyGrievanceExpandedStatusEffectSO : StatusEffectSO
     {
         entity.OnEntityDeath -= Entity_OnEntityDeath;
         base.Cancel();
-
     }
 
     private void Entity_OnEntityDeath(GameObject @object)

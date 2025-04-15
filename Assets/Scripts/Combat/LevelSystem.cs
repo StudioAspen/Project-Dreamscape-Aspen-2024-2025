@@ -6,9 +6,12 @@ public class LevelSystem : MonoBehaviour
     private Entity entity;
 
     [Header("Config")]
-    [SerializeField] private int baseMaxEXP = 10;
-    [SerializeField] private int maxEXPLinearGrowth = 10;
-    [SerializeField] private float maxEXPExponentialGrowth = 1.2f;
+
+    [Range(50, 300)]
+    [SerializeField] private int baseMaxEXP;
+    
+    [Range (1.01f, 1.50f)]
+    [SerializeField] private float growthRate;
 
     public int Level { get; private set; } = 1;
     public int CurrentEXP { get; private set; }
@@ -52,14 +55,27 @@ public class LevelSystem : MonoBehaviour
         entity.OnKillEntity -= Entity_OnKillEntity;
     }
 
-    private void Entity_OnKillEntity(Entity victim)
+  private void Update()
+  {
+            // Cheat for leveling  up
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.LogWarning("Cheat: Automatically leveling up");
+            CurrentEXP = 0;
+            AddEXP(CalculateMaxEXP());
+        }
+  }
+
+  private void Entity_OnKillEntity(Entity victim)
     {
         if (Slime.IsEntityACloneSlime(victim)) return; // Cloned slimes dont drop exp
 
         Enemy victimAsEnemy = victim as Enemy;
-        int expReward = victimAsEnemy == null ? 0 : victimAsEnemy.EXPValue.GetIntValue();
+        if(victimAsEnemy == null) return;
 
+        int expReward = victimAsEnemy.EXPValue.GetIntValue();
         AddEXP(expReward);
+        //Debug.Log($"Added {expReward} from {victimAsEnemy.gameObject.name}");
     }
 
     #region EXP Handling
@@ -114,14 +130,6 @@ public class LevelSystem : MonoBehaviour
     /// Calculates the maximum experience points (EXP) based on the current level.
     /// </summary>
     /// <returns>The maximum EXP for the current level.</returns>
-    private int CalculateMaxEXP()
-    {
-        int linearGrowth = maxEXPLinearGrowth * (Level - 1);
-
-        int useExponentialGrowthMultiplier = (Level <= 1) ? 0 : 1; // If the level is at most 1, don't use exponential growth
-        int exponentialGrowth = useExponentialGrowthMultiplier * (int)Mathf.Pow(maxEXPExponentialGrowth, Level - 1);
-
-        return baseMaxEXP + linearGrowth + exponentialGrowth;
-    }    
+    private int CalculateMaxEXP() => baseMaxEXP * Mathf.RoundToInt(Mathf.Pow(growthRate, Level - 1));
     #endregion
 }

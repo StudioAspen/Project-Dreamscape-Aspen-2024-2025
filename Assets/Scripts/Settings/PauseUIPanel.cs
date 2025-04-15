@@ -24,6 +24,9 @@ public class PauseUIPanel : UIPanel
     [Header("Options Menu Buttons")]
     [SerializeField] private PauseButtonUI vSyncButton;
     [SerializeField] private PauseButtonUI qualityPresetButton;
+    [SerializeField] private PauseButtonUI maxFramerateButton;
+    [SerializeField] private PauseButtonUI screenResolutionButton;
+    [SerializeField] private PauseButtonUI fullScreenModeButton;
     [SerializeField] private PauseButtonUI optionsConfirmButton;
 
     [Header("Options Sliders")] 
@@ -43,7 +46,7 @@ public class PauseUIPanel : UIPanel
 
 
     private Slider volumeSliderComponent, cameraSensitivitySliderComponent;
-    private TMP_Text vSyncButtonTextComponent, qualityPresetButtonTextComponent;
+    private TMP_Text vSyncButtonTextComponent, qualityPresetButtonTextComponent, maxFramerateButtonTextComponent, screenResolutionButtonTextComponent, fullScreenModeButtonTextComponent;
     
     private void Awake() {
         optionsMenuObject.SetActive(true);
@@ -64,7 +67,10 @@ public class PauseUIPanel : UIPanel
         
         vSyncButton.OnButtonClicked += VSyncButton_OnButtonClicked;
         qualityPresetButton.OnButtonClicked += QualityPresetButton_OnButtonClicked;
+        maxFramerateButton.OnButtonClicked += MaxFramerateButton_OnButtonClicked;
         optionsConfirmButton.OnButtonClicked += OptionsConfirmButton_OnButtonClicked;
+        screenResolutionButton.OnButtonClicked += ScreenResolutionButton_OnButtonClicked;
+        fullScreenModeButton.OnButtonClicked += FullScreenModeButton_OnButtonClicked;
 
         //confirmQuitButton.OnButtonClicked += ConfirmQuitButton_OnButtonClicked;
     }
@@ -72,27 +78,42 @@ public class PauseUIPanel : UIPanel
     private void OnEnable() {
         // Update setting values every time after opening options
         volumeSliderComponent.onValueChanged.AddListener(OnVolumeSliderValueChanged);
-        volumeSliderComponent.value = PlayerPreferences.Instance.MasterVolume;
-        volumeSlider.SetSliderOriginalText($"Volume: {Mathf.RoundToInt(PlayerPreferences.Instance.MasterVolume * 100f)}%");
+        volumeSliderComponent.value = PlayerPreferences.Instance.PlayerPreferencesData.MasterVolume;
+        volumeSlider.SetSliderOriginalText($"Volume: {Mathf.RoundToInt(PlayerPreferences.Instance.PlayerPreferencesData.MasterVolume * 100f)}%");
         volumeSlider.ForceUpdateText();
         
         cameraSensitivitySliderComponent.onValueChanged.AddListener(OnCameraSensitivitySliderValueChanged);
-        cameraSensitivitySliderComponent.value = PlayerPreferences.Instance.CameraSensitivity;
-        cameraSensitivitySlider.SetSliderOriginalText($"Sensitivity: {(float)Math.Round(PlayerPreferences.Instance.CameraSensitivity, 2)}");
+        cameraSensitivitySliderComponent.value = PlayerPreferences.Instance.PlayerPreferencesData.CameraSensitivity;
+        cameraSensitivitySlider.SetSliderOriginalText($"Sensitivity: {(float)Math.Round(PlayerPreferences.Instance.PlayerPreferencesData.CameraSensitivity, 2)}");
         cameraSensitivitySlider.ForceUpdateText();
         
-        vSyncButtonTextComponent.text = $"VSync: {(PlayerPreferences.Instance.IsVSync ? "ON" : "OFF")}";
+        vSyncButtonTextComponent.text = $"VSync: {(PlayerPreferences.Instance.PlayerPreferencesData.IsVSync ? "ON" : "OFF")}";
         vSyncButton.SetOriginalText(vSyncButtonTextComponent.text);
         
         qualityPresetButtonTextComponent.text = $"Quality Level: {PlayerPreferences.Instance.GetQualityLevelDisplay()}";
         qualityPresetButton.SetOriginalText(qualityPresetButtonTextComponent.text); 
+        
+        maxFramerateButtonTextComponent.text = $"Max Framerate: {(PlayerPreferences.Instance.PlayerPreferencesData.MaxFramerate == -1 ? "Unlimited" : $"{PlayerPreferences.Instance.PlayerPreferencesData.MaxFramerate} FPS")}";
+        maxFramerateButton.SetOriginalText(maxFramerateButtonTextComponent.text); 
+        maxFramerateButton.SetInteractable(!PlayerPreferences.Instance.PlayerPreferencesData.IsVSync);
+        
+        screenResolutionButtonTextComponent.text = $"Screen Resolution: {PlayerPreferences.Instance.GetScreenResolutionDisplay()} ";
+        screenResolutionButton.SetOriginalText(screenResolutionButtonTextComponent.text);
+
+        fullScreenModeButtonTextComponent.text = $"Full Screen Mode: {PlayerPreferences.Instance.GetFullScreenModeDisplay()}";
+        fullScreenModeButton.SetOriginalText(fullScreenModeButtonTextComponent.text);
+
     }
 
     private void InitializeInactiveComponents() {
         volumeSliderComponent = volumeSlider.GetComponent<Slider>();
         cameraSensitivitySliderComponent = cameraSensitivitySlider.GetComponent<Slider>();
+        
         vSyncButtonTextComponent = vSyncButton.GetComponentInChildren<TMP_Text>();
         qualityPresetButtonTextComponent = qualityPresetButton.GetComponentInChildren<TMP_Text>();
+        maxFramerateButtonTextComponent = maxFramerateButton.GetComponentInChildren<TMP_Text>();
+        screenResolutionButtonTextComponent = screenResolutionButton.GetComponentInChildren<TMP_Text>();
+        fullScreenModeButtonTextComponent = fullScreenModeButton.GetComponentInChildren<TMP_Text>();
     }
 
     private void OnDisable() {
@@ -106,8 +127,11 @@ public class PauseUIPanel : UIPanel
         optionsButton.OnButtonClicked -= OptionsButton_OnButtonClicked;
         saveButton.OnButtonClicked -= SaveButton_OnButtonClicked;
         menuButton.OnButtonClicked -= MenuButton_OnButtonClicked;
+        maxFramerateButton.OnButtonClicked -= MaxFramerateButton_OnButtonClicked;
         quitButton.OnButtonClicked -= QuitButton_OnButtonClicked;
-
+        screenResolutionButton.OnButtonClicked -= ScreenResolutionButton_OnButtonClicked;
+        fullScreenModeButton.OnButtonClicked -= FullScreenModeButton_OnButtonClicked;
+        
         //confirmQuitButton.OnButtonClicked -= ConfirmQuitButton_OnButtonClicked;
     }
 
@@ -155,14 +179,20 @@ public class PauseUIPanel : UIPanel
     #region Options Menu Button Click Events
 
     private void VSyncButton_OnButtonClicked() {
-        PlayerPreferences.Instance.SetVSync(!PlayerPreferences.Instance.IsVSync);
+        PlayerPreferences.Instance.SetVSync(!PlayerPreferences.Instance.PlayerPreferencesData.IsVSync);
         TMP_Text textField = vSyncButton.GetComponentInChildren<TMP_Text>();
-        textField.text = $"VSync: {(PlayerPreferences.Instance.IsVSync ? "ON" : "OFF")}";
+        textField.text = $"VSync: {(PlayerPreferences.Instance.PlayerPreferencesData.IsVSync ? "ON" : "OFF")}";
         vSyncButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
         textField.text = $">{textField.text}<";
+        
+        // Make max framerate button interactable or uninteractable depending on the setting
+        maxFramerateButton.SetInteractable(!PlayerPreferences.Instance.PlayerPreferencesData.IsVSync);
     }
 
     private void OptionsConfirmButton_OnButtonClicked() {
+        // Save player preferences to JSON after exiting options menu
+        PlayerPreferences.Instance.TrySavePlayerPreferences();
+        
         pauseMenuObject.SetActive(true);
         optionsMenuObject.SetActive(false);
         EventSystem.current.SetSelectedGameObject(resumeButton.gameObject);
@@ -182,11 +212,37 @@ public class PauseUIPanel : UIPanel
     }
 
     private void QualityPresetButton_OnButtonClicked() {
-        PlayerPreferences.Instance.SetQualityLevel((PlayerPreferences.Instance.QualityLevel + 1) % 5);
+        PlayerPreferences.Instance.SetQualityLevel((PlayerPreferences.Instance.PlayerPreferencesData.QualityLevel + 1) % 4);
         TMP_Text textField = qualityPresetButton.GetComponentInChildren<TMP_Text>();
         textField.text = $"Quality Level: {PlayerPreferences.Instance.GetQualityLevelDisplay()}";
         qualityPresetButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
-        textField.text = ">" + textField.text + "<";
+        textField.text = $">{textField.text}<";
+    }
+
+    private void MaxFramerateButton_OnButtonClicked() {
+        int newFrameRate = PlayerPreferences.Instance.CycleMaxFramerate();
+        TMP_Text textField = maxFramerateButton.GetComponentInChildren<TMP_Text>();
+        textField.text = $"Max Framerate: {(newFrameRate == -1 ? "Unlimited" : $"{newFrameRate} FPS")}";
+        maxFramerateButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
+        textField.text = $">{textField.text}<";
+    }
+
+    private void ScreenResolutionButton_OnButtonClicked() {
+        // Cycle new screen resolution
+        PlayerPreferences.Instance.CycleScreenResolution();
+        TMP_Text textField = screenResolutionButton.GetComponentInChildren<TMP_Text>();
+        textField.text = $"Screen Resolution: {PlayerPreferences.Instance.GetScreenResolutionDisplay()}";
+        screenResolutionButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
+        textField.text = $">{textField.text}<";
+    }
+
+    private void FullScreenModeButton_OnButtonClicked() {
+        // Cycle full screen mode
+        PlayerPreferences.Instance.CycleFullScreenMode();
+        TMP_Text textField = fullScreenModeButton.GetComponentInChildren<TMP_Text>();
+        textField.text = $"Full Screen Mode: {PlayerPreferences.Instance.GetFullScreenModeDisplay()}";
+        fullScreenModeButton.GetComponentInChildren<PauseButtonUI>().SetOriginalText(textField.text);
+        textField.text = $">{textField.text}<";
     }
     
     

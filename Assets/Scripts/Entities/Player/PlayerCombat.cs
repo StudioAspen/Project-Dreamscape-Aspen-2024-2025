@@ -42,6 +42,16 @@ public class PlayerCombat : MonoBehaviour
     /// </remarks>
     public Action<int, float> OnChargeRelease = delegate { };
 
+    /// <summary>
+    /// Action that is invoked when the FireAbility animation event is called.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>AnimationEvent eventData</c>: The animation event data.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<AnimationEvent> OnFireAbility = delegate { };
+
     private void Awake()
     {
         player = GetComponent<Player>();
@@ -56,6 +66,7 @@ public class PlayerCombat : MonoBehaviour
         player.OnAirborne += Player_OnAirborne;
 
         Weapon.OnWeaponHit += Weapon_OnWeaponHit;
+        Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
     }
 
     private void OnDisable()
@@ -79,14 +90,24 @@ public class PlayerCombat : MonoBehaviour
         CameraShakeManager.Instance.ShakeCamera(5f, 0.1f, 0.25f);
     }
 
+    private void Weapon_OnWeaponStartSwing(Entity attacker, ComboDataSO combo)
+    {
+        AkSoundEngine.PostEvent("WeaponSwing", gameObject);
+    }
+
+    private void Weapon_OnWeaponStartSwing(Entity attacker)
+    {
+        AkSoundEngine.PostEvent("WeaponSwing", gameObject);
+    }
+
     private void Player_OnAirborne(Vector3 startAirbornePosition)
     {
-        ResetCombos();
+        //ResetCombos();
     }
 
     private void Player_OnGrounded(Vector3 startGroundedPosition)
     {
-        ResetCombos();
+        //ResetCombos();
     }
 
     private void PlayerInputReader_OnComboAction(ComboAction incomingAction)
@@ -294,10 +315,8 @@ public class PlayerCombat : MonoBehaviour
     /// <summary>
     /// Called by animation through an event.
     /// </summary>
-    public void FireAbility()
+    public void FireAbility(AnimationEvent animationEventData)
     {
-        if (player.CurrentState != player.PlayerAttackState) return;
-
-        player.PlayerAttackState.FireAbility();
+        OnFireAbility.Invoke(animationEventData);
     }
 }

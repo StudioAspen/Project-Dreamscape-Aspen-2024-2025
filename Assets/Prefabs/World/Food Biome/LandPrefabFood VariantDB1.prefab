@@ -528,6 +528,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1.01
       objectReference: {fileID: 0}
+    - target: {fileID: 3640750570613228965, guid: 49c0821873b175d49a205072816ef99f,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.49019608
+      objectReference: {fileID: 0}
     - target: {fileID: 4268802148643592228, guid: 49c0821873b175d49a205072816ef99f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -634,6 +639,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 796325873204930862, guid: a668ae943b833fa4a9329a48e461e47a,
         type: 3}
+    - target: {fileID: 9135026080326764453, guid: 49c0821873b175d49a205072816ef99f,
+        type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3186551913032381361, guid: 49c0821873b175d49a205072816ef99f, type: 3}
@@ -819,22 +829,22 @@ PrefabInstance:
     - target: {fileID: 3181443288206725857, guid: 8146f68db92b6e34f95fedacfc501f86,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3181443288206725857, guid: 8146f68db92b6e34f95fedacfc501f86,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3181443288206725857, guid: 8146f68db92b6e34f95fedacfc501f86,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3181443288206725857, guid: 8146f68db92b6e34f95fedacfc501f86,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3181443288206725857, guid: 8146f68db92b6e34f95fedacfc501f86,
         type: 3}

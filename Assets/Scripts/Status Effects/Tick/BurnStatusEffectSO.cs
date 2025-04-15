@@ -19,7 +19,7 @@ public class BurnStatusEffectSO : TickStatusEffectSO
 
         if(entityRendererManager) entityRendererManager.TweenTint(Color.red);
 
-        if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false);
+        if(HasExtraTickOnApply) entity.TakeDamage(DamagePerTick, entity.GetRandomPositionOnCollider(), source, false, true);
     }
 
     private protected override void OnTick()

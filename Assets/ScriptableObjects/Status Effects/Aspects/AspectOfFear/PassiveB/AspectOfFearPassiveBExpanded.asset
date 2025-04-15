@@ -15,6 +15,7 @@ MonoBehaviour:
   <DisplayName>k__BackingField: Status Effect
   <Description>k__BackingField: Status effect description
   <Stackable>k__BackingField: 1
+  <BuffType>k__BackingField: 1
   <MaxStacks>k__BackingField: 5
   <StackTimerReset>k__BackingField: 3
   <StatBuffs>k__BackingField:
@@ -22,6 +23,8 @@ MonoBehaviour:
     - Key: 0
       Value: 1.25
     - Key: 1
+      Value: 1.25
+    - Key: 2
       Value: 1.25
   <OnKillBuffExtension>k__BackingField: 3
   <OnKillStatStealFraction>k__BackingField: 0.05

@@ -25,7 +25,7 @@ public class ZonesWorldEventSO : WorldEventSO
     [field: Range(3f, 30f)]
     [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
 
-    private List<LandManager> affectedLands = new List<LandManager>();
+    public List<LandManager> affectedLands { get; private set; } = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
@@ -144,6 +144,7 @@ public class ZonesWorldEventSO : WorldEventSO
     int s = Mathf.FloorToInt(Mathf.Sqrt(worldManager.SpawnedLands.Count));
     // Returns the largest integer that, when squared, will be <= the number of spawned lands
     int outbreakSize = Mathf.FloorToInt(Mathf.Pow(s, 2));
+    Debug.Log($"Greatest Perfect Square: {s}");
     Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
 
     // Gets a land by its weight, which increases proportionally with its land level.
@@ -239,7 +240,7 @@ public class ZonesWorldEventSO : WorldEventSO
         enemiesRemaining--;
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

@@ -77,7 +77,6 @@ public class ShielderDefensiveState : ShielderBaseState
         
         if(damage >= StaggerDamageThreshold)
         {
-            Debug.Log("Stagger");
             shielder.ChangeState(shielder.EntityStaggeredState);
             return;
         }

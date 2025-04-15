@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,24 +48,19 @@ public class VisitAllWorldEventSO : WorldEventSO
     [field: Range(3f, 30f)]
     [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
 
-    private List<Player> players = new List<Player>();
-
-    private Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary = new Dictionary<Vector2Int, GameObject>();
-
+    private Player player;
+    public Dictionary<Vector2Int, GameObject> visitIndicatorsDictionary { get; private set; } = new Dictionary<Vector2Int, GameObject>();
+    public List<LandManager> highlightedLands { get; private set; } = new List<LandManager>();
     private int totalLands;
 
     private protected override void OnStarted()
     {
         visitIndicatorsDictionary = new();
+        highlightedLands = new();
 
-        // Find all players and if there are none, clear the event
-        players = GameObject.FindObjectsByType<Player>(FindObjectsSortMode.None).ToList();
-        if(players == null)
-        {
-            eventManager.ClearEvent();
-            return;
-        }
-        if(players.Count <= 0)
+        // Find player and if there are none, clear the event
+        player = FindObjectOfType<Player>();
+        if(player == null)
         {
             eventManager.ClearEvent();
             return;
@@ -78,7 +74,7 @@ public class VisitAllWorldEventSO : WorldEventSO
         while (visitIndicatorsDictionary.Count < indicatorCount) 
         {
           // Get a random index from worldManager.SpawnedLands
-          LandManager land = worldManager.GetRandomLand();
+          LandManager land = worldManager.GetRandomLandByWeight();
 
           // If we already selected that land, try again
           if (visitIndicatorsDictionary.ContainsKey(land.GridPosition))
@@ -90,20 +86,19 @@ public class VisitAllWorldEventSO : WorldEventSO
           int absLandLevel = land.Level + 5;
           float sphereRadius = YIntercept * Mathf.Pow(1 - RadiusDecayRate, absLandLevel) + MinimumRadius;
 
+          highlightedLands.Add(land);
           visitIndicatorsDictionary.Add(land.GridPosition, CustomDebug.InstantiateTemporarySphere(land.transform.position + 5f * Vector3.up, sphereRadius, Mathf.Infinity, new Color(1, 0, 0, 0.5f)));
         }
 
-        for (int i = 0; i < players.Count; i++)
-        {
-            Player player = players[i];
-            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
+        Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
+        LandManager occupiedLand = worldManager.GetLandByGridPosition(playerGridPosition);
 
-            // Automatically remove the visit Indicator of the land the player is standing on at the start of the event.
-            if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
-            {
-                GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
-                visitIndicatorsDictionary.Remove(playerGridPosition);
-            }   
+        // Automatically remove the visit Indicator of the land the player is standing on at the start of the event.
+        if (visitIndicatorsDictionary.ContainsKey(playerGridPosition) && highlightedLands.Contains(worldManager.GetLandByGridPosition(playerGridPosition)))
+        {
+            GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
+            visitIndicatorsDictionary.Remove(playerGridPosition);
+            highlightedLands.Remove(occupiedLand);
         }
 
         totalLands = visitIndicatorsDictionary.Count;
@@ -124,6 +119,7 @@ public class VisitAllWorldEventSO : WorldEventSO
             GameObject.Destroy(sphere);
         }
         visitIndicatorsDictionary.Clear();
+        highlightedLands.Clear();
     }
 
     private protected override void OnUpdate()
@@ -134,15 +130,18 @@ public class VisitAllWorldEventSO : WorldEventSO
             return;
         }
 
-        for (int i = 0; i < players.Count; i++)
+        Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
+        LandManager occupiedLand = worldManager.GetLandByGridPosition(playerGridPosition);
+        if (visitIndicatorsDictionary.ContainsKey(playerGridPosition) && highlightedLands.Contains(occupiedLand))
         {
-            Player player = players[i];
-            Vector2Int playerGridPosition = worldManager.GetGridPosition(player.transform.position);
+            GameObject visitIndicator = visitIndicatorsDictionary[playerGridPosition];
+            float sphereRadius = visitIndicator.transform.localScale.x / 2;
 
-            if (visitIndicatorsDictionary.ContainsKey(playerGridPosition))
+            //Debug.Log($"Land Level: {worldManager.GetLandByGridPosition(playerGridPosition).Level} \n Radius: {sphereRadius}");
+
+            //Check if the player is within the visit indicator, and remove the visit indicator if so.
+            if (Vector3.Distance(player.transform.position, visitIndicator.transform.position) <= sphereRadius)
             {
-                GameObject visitIndicator = visitIndicatorsDictionary[playerGridPosition];
-                float sphereRadius = visitIndicator.transform.localScale.x / 2;
 
                 Debug.Log($"Land Level: {worldManager.GetLandByGridPosition(playerGridPosition).Level} \n Radius: {sphereRadius}");
 
@@ -151,12 +150,13 @@ public class VisitAllWorldEventSO : WorldEventSO
                 {
                   GameObject.Destroy(visitIndicatorsDictionary[playerGridPosition]);
                   visitIndicatorsDictionary.Remove(playerGridPosition);
+                  highlightedLands.Remove(occupiedLand);
                 }
             } 
         }
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalLands - visitIndicatorsDictionary.Count}/{totalLands}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

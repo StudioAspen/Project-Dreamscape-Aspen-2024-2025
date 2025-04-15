@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class Enemy : Entity
 {
     [field: Header("Enemy: Settings")]
+    [field: SerializeField] public string EnemyType { get; protected set; }
     [field: SerializeField] public int Cost { get; protected set; }
     [field: SerializeField] public Stat EXPValue { get; protected set; }
 
@@ -134,7 +135,7 @@ public class Enemy : Entity
     {
         if(!IsValidPointOnNavMesh(dest, 100f, out Vector3 groundedPoint))
         {
-            return null;
+            return new List<Vector3>() { transform.position, dest };
         }
 
         NavMeshPath path = new NavMeshPath();

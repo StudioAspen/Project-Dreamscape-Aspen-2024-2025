@@ -40,7 +40,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-    private Dictionary<Enemy, Marker> enemyMarkers = new();
+    public Dictionary<Enemy, Marker> enemyMarkers { get; private set; } = new();
 
     private int enemiesRemaining;
     private int totalEnemiesToKill;
@@ -184,7 +184,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
         }
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{totalEnemiesToKill - enemiesRemaining}/{totalEnemiesToKill}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

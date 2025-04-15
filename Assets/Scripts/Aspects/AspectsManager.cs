@@ -9,7 +9,7 @@ public class AspectsManager : MonoBehaviour
     private LevelSystem levelSystem;
 
     [field: SerializeField] public List<AspectTree> AllAspectTrees { get; private set; } = new List<AspectTree>();
-    public AspectTree[] EquippedAspectTrees { get; private set; } = new AspectTree[3];
+    public AspectTree[] EquippedAspectTrees { get; private set; } = new AspectTree[2];
     public int AspectTokens { get; private set; } = 0;
 
     /// <summary>

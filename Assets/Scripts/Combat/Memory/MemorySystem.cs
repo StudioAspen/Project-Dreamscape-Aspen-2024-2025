@@ -77,7 +77,7 @@ public class MemorySystem : MonoBehaviour
     {
         if (GetMemoryLevel() < 3)
         {
-            Debug.Log("Memory meter is not level 3");
+            Debug.Log("Memory meter is not full");
             return;
         }
 
@@ -153,7 +153,7 @@ public class MemorySystem : MonoBehaviour
     /// Gets the shard type with the most shard count.
     /// If there is a tie, it gets the first one it finds.
     /// </summary>
-    private string GetLargestShardType()
+    public string GetLargestShardType()
     {
         int largestCount = 0;
         string largestShardType = "";
