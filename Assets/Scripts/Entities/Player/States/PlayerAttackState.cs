@@ -195,11 +195,11 @@ public class PlayerAttackState : PlayerBaseState
         if (player.IsGrounded) return;
         if (airbornedEntities.Count == 0) return;
 
-        List<Entity> nearbyAirborneTargets = airbornedEntities.OrderBy(e => Vector3.Distance(player.GetColliderCenterPosition(), e.GetColliderCenterPosition())).ToList();
+        Vector3 playerCenter = player.GetColliderCenterPosition();
+        List<Entity> nearbyAirborneTargets = airbornedEntities.OrderBy(e => Vector3.Distance(playerCenter, e.GetColliderCenterPosition())).ToList();
         if (nearbyAirborneTargets == null) return;
 
         Entity closestTarget = nearbyAirborneTargets[0];
-        Vector3 playerCenter = player.GetColliderCenterPosition();
         Vector3 closestTargetCenter = closestTarget.GetColliderCenterPosition();
         player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * Mathf.Sign(closestTargetCenter.y - playerCenter.y) * Vector3.up); // move the player up towards the target
 
