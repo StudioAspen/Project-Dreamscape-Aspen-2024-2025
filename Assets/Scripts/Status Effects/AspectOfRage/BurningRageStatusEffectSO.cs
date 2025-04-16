@@ -90,7 +90,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
     }
 
-    private void Entity_OnEntityDeath(GameObject killer)
+    private void Entity_OnEntityDeath(Entity victim, GameObject killer)
     {
         Vector3 explosionPosition = entity.GetColliderCenterPosition();
 

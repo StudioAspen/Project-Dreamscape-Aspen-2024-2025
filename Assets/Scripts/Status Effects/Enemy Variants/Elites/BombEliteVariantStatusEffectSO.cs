@@ -31,7 +31,7 @@ public class BombEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
         enemy.OnEntityDeath -= Enemy_OnEntityDeath;
     }
 
-    private void Enemy_OnEntityDeath(GameObject killer)
+    private void Enemy_OnEntityDeath(Entity victim, GameObject killer)
     {
         Vector3 explosionCenter = enemy.transform.position;
 

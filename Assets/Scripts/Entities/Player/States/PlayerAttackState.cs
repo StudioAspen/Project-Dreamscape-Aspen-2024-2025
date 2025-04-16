@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Dreamscape.Abilities;
+using System.Linq;
 
 [System.Serializable]
 public class PlayerAttackState : PlayerBaseState
@@ -18,6 +19,7 @@ public class PlayerAttackState : PlayerBaseState
     [field: Header("Air Nearby Attack Config")]
     [field: SerializeField] public float AirAttackMagnetSpeed { get; private set; } = 5f;
     [field: SerializeField] public float AirAttackMagnetStopRadius { get; private set; } = 2f;
+    private HashSet<Entity> airbornedEntities = new();
 
     public ComboDataSO ComboData { get; private set; }
 
@@ -191,20 +193,13 @@ public class PlayerAttackState : PlayerBaseState
     private void MagnetTowardsAirborneEnemy()
     {
         if (player.IsGrounded) return;
+        if (airbornedEntities.Count == 0) return;
 
-        List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
-        if (nearbyTargets.Count == 0) return;
-
-        List<Entity> nearbyAirborneTargets = new List<Entity>();
-        foreach (Entity entity in new List<Entity>(nearbyTargets))
-        {
-            if (entity.IsGrounded) continue; // skip grounded targets
-            nearbyAirborneTargets.Add(entity);
-        }
-        if (nearbyAirborneTargets.Count == 0) return; // if there are no airborne targets, return
+        Vector3 playerCenter = player.GetColliderCenterPosition();
+        List<Entity> nearbyAirborneTargets = airbornedEntities.OrderBy(e => Vector3.Distance(playerCenter, e.GetColliderCenterPosition())).ToList();
+        if (nearbyAirborneTargets == null) return;
 
         Entity closestTarget = nearbyAirborneTargets[0];
-        Vector3 playerCenter = player.GetColliderCenterPosition();
         Vector3 closestTargetCenter = closestTarget.GetColliderCenterPosition();
         player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * Mathf.Sign(closestTargetCenter.y - playerCenter.y) * Vector3.up); // move the player up towards the target
 
@@ -265,6 +260,7 @@ public class PlayerAttackState : PlayerBaseState
         if (victim.WillDieFromDamage(damage)) return;
 
         victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
+        TrackAirborneEntity(victim);
 
         isAirComboPerfomed = true;
     }
@@ -283,6 +279,7 @@ public class PlayerAttackState : PlayerBaseState
 
         if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
         else victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
+        TrackAirborneEntity(victim);
 
         if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
         else player.ResetYVelocity();
@@ -356,10 +353,37 @@ public class PlayerAttackState : PlayerBaseState
         spawnedAbility.Init(player);
     }
 
-    private void Player_OnGrounded(Vector3 groundPoint)
+    private void Player_OnGrounded(Entity groundedEntity, Vector3 groundPoint)
     {
         canAirCombo = true;
         isAirComboPerfomed = false;
+    }
+
+    private void TrackAirborneEntity(Entity airbornedEntity)
+    {
+        if (airbornedEntities.Contains(airbornedEntity)) return;
+
+        airbornedEntities.Add(airbornedEntity);
+        airbornedEntity.OnGrounded += AirborneEntity_OnGrounded;
+        airbornedEntity.OnEntityDeath += AirborneEntity_OnEntityDeath;
+    }
+
+    private void UntrackAirborneEntity(Entity airbornedEntity)
+    {
+        if (!airbornedEntities.Contains(airbornedEntity)) return;
+        airbornedEntities.Remove(airbornedEntity);
+        airbornedEntity.OnGrounded -= AirborneEntity_OnGrounded;
+        airbornedEntity.OnEntityDeath -= AirborneEntity_OnEntityDeath;
+    }
+
+    private void AirborneEntity_OnGrounded(Entity groundedEntity, Vector3 groundPoint)
+    {
+        UntrackAirborneEntity(groundedEntity);
+    }
+
+    private void AirborneEntity_OnEntityDeath(Entity victim, GameObject source)
+    {
+        UntrackAirborneEntity(victim);
     }
 }
 
