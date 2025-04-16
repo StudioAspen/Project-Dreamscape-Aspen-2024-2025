@@ -15,6 +15,7 @@ public class Slime : Enemy
     [field: SerializeField] public float SmallSize { get; private set; } = 0.5f;
     [field: SerializeField] public float SmallMaxHealth { get; private set; } = 0.5f;
     [field: SerializeField] public int OriginalBaseMaxHealth { get; private set; } = 50;
+    [field: SerializeField] public float SmallDamageModifier { get; private set; } = 0.5f;
     public bool IsSmall { get; private set; } = false;
     public bool IsClone { get; private set; } = false;
     private float timeSinceLastDamage;
@@ -277,6 +278,7 @@ public class Slime : Enemy
 
         MaxHealth.SetBaseValue(IsSmall ? OriginalBaseMaxHealth * SmallMaxHealth : OriginalBaseMaxHealth);
         SizeScale.SetBaseValue(IsSmall ? SmallSize : 1f);
+        DamageModifier.SetBaseValue(IsSmall ? SmallDamageModifier : 1f);
     }
 
     /// <summary>

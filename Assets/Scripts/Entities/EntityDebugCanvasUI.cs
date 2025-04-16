@@ -20,14 +20,13 @@ public class EntityDebugCanvasUI : MonoBehaviour
         entityStatusEffector = entity.GetComponent<EntityStatusEffector>();
         healthBarUI = GetComponentInChildren<HealthBarUI>();
 
-#if UNITY_EDITOR
-#else
-        entityStateText.color = Color.black;
-#endif
+        entityNameText.color = Color.white;
+        entity.OnEntityTakeDamage += Entity_OnEntityTakeDamage;
     }
 
     private void OnDestroy()
     {
+        entity.OnEntityTakeDamage -= Entity_OnEntityTakeDamage;
     }
 
     private void OnEnable()
@@ -72,6 +71,8 @@ public class EntityDebugCanvasUI : MonoBehaviour
                 $"{(eliteStatus == null ? "" : $"Elite {eliteStatus.Name} ")}" +
                 $"{(biomeVariantStatus == null ? "" : $"{biomeVariantStatus.Name} ")}" +
                 $"{entity.GetType()}";
+
+        healthBarUI.gameObject.SetActive(false); // Disable health bar at first
     }
 
     private IEnumerator LateOnEnableCoroutine()
@@ -92,5 +93,12 @@ public class EntityDebugCanvasUI : MonoBehaviour
 #else
         entityStateText.text = "";
 #endif
+    }
+
+    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
+    {
+        if(damage <= 0) return; // Ignore non-damage hits
+
+        if(!healthBarUI.gameObject.activeSelf) healthBarUI.gameObject.SetActive(true); // Enable health bar when taking damage for the first time
     }
 }

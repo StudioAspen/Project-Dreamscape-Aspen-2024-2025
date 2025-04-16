@@ -32,7 +32,7 @@ public class UIPanel : MonoBehaviour
     /// Changes the default selected gameObject for switching control schemes at runtime.
     /// </summary>
     /// <param name="newObject">The new default selected object</param>
-    private protected void ChangeDefaultSelectedObject(GameObject newObject) 
+    public void ChangeDefaultSelectedObject(GameObject newObject) 
     {
         DefaultSelectedObject = newObject;
     }
@@ -40,7 +40,7 @@ public class UIPanel : MonoBehaviour
     /// <summary>
     /// Restores the default selected gameObject to be the original one.
     /// </summary>
-    private protected void RestoreDefaultSelectedObject()
+    public void RestoreDefaultSelectedObject()
     {
         DefaultSelectedObject = originalDefaultSelectedObject;
     }

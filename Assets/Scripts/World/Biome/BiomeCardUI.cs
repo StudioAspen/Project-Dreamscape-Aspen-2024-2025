@@ -15,7 +15,6 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public Biome CurrentBiome { get; private set; }
 
-    public bool IsReady => worldManager != null;
     private bool isSelected;
 
     // Awake is safe here since UI scene loads last
@@ -61,7 +60,23 @@ public class BiomeCardUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void OnClickCard()
     {
+        PlayBiomeSelectSFX();
+        
         worldManager.AssignBiomeToSpawnNext(CurrentBiome);
+    }
+
+    private void PlayBiomeSelectSFX()
+    {
+        switch (CurrentBiome)
+        {
+            case Biome.FOOD:
+                AkSoundEngine.PostEvent("FoodBiomeSelect", gameObject);
+                break;
+            
+            default:
+                AkSoundEngine.PostEvent("ButtonSelect", gameObject);
+                break;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

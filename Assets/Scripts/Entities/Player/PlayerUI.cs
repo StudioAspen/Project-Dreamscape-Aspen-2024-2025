@@ -28,7 +28,7 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
 
     [Header("Aspects")]
-    [SerializeField] private Image[] aspectsIcons = new Image[3];
+    [SerializeField] private Image[] aspectsIcons = new Image[2];
     [SerializeField] private Sprite defaultAspectsIconSprite;
 
     [Header("Memory")]
@@ -57,6 +57,8 @@ public class PlayerUI : MonoBehaviour
     private void Start()
     {
         UpdateAspectsIcons();
+
+        memoryText.text = $"{memorySystem.GetTotalShards()}/{memorySystem.GetMaxShards()}";
     }
 
     private void Update()
@@ -144,12 +146,16 @@ public class PlayerUI : MonoBehaviour
 
     private void UpdateExpBar()
     {
-        expBar.value = (float)levelSystem.CurrentEXP / levelSystem.MaxEXP;
+        float targetExpValue = levelSystem.CurrentEXP / (float)levelSystem.MaxEXP;
+        expBar.value = Mathf.Lerp(expBar.value, targetExpValue, 10f * Time.unscaledDeltaTime);
         levelText.text = $"{levelSystem.Level}";
+        //Debug.Log($"Current: {levelSystem.CurrentEXP}, Max: {levelSystem.MaxEXP}, Bar value: {expBar.value}, Target value: {targetExpValue}");
     }
 
     private void UpdateCombatUI()
     {
+        // TODO: Need to make these invisible when at 0 and cool popup animation when they change
+
         momentumText.text = $"MOMENTUM: {momentumSystem.Momentum}";
         chainText.text = $"CHAIN: {chainingSystem.ChainCount}";
     }

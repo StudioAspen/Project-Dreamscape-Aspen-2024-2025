@@ -67,4 +67,14 @@ public class Follower : Enemy
     {
         FollowerAttackState.Weapon.DisableTriggers();
     }
+
+    public override void PlayFootstepLeft()
+    {
+        AkSoundEngine.PostEvent("Play_FollowerFootstepLeft", gameObject);
+    }
+
+    public override void PlayFootstepRight()
+    {
+        AkSoundEngine.PostEvent("Play_FollowerFootstepRight", gameObject);
+    }
 }

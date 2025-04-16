@@ -83,7 +83,7 @@ public class MinimapUI : MonoBehaviour
             rawImage.rectTransform.localPosition = rawImageMinimizedPosition;
 
             minimapCamera.ResetCameraSize();
-            minimapCamera.EnableCameraBackground(true);
+            minimapCamera.EnableCameraBackground(false);
         }
     }
 }
