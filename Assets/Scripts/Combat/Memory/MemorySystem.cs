@@ -70,6 +70,7 @@ public class MemorySystem : MonoBehaviour
         player = GetComponent<Player>();
     }
 
+    [SerializeField] private PlayerFollowerThrowAbilityStateSO playerFollowerFollowAbilityStateSO;
     /// <summary>
     /// Tries to activate a memory ability based on the shard counts
     /// </summary>
@@ -89,8 +90,14 @@ public class MemorySystem : MonoBehaviour
             return;
         }
 
-        // Try to activate ability
+/*        // Try to activate ability
         if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        {
+            OnMemoryAbilityActivated.Invoke(largestShardType);
+            ShardDictionary.Clear();
+        }*/
+
+        if (player.PlayerAbilityState.TryChangeAbilityState(playerFollowerFollowAbilityStateSO, false))
         {
             OnMemoryAbilityActivated.Invoke(largestShardType);
             ShardDictionary.Clear();

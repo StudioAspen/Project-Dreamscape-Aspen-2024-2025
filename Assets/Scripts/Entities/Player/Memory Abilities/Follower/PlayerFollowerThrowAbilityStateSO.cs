@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.VisualScripting.Member;
-using static UnityEngine.EventSystems.EventTrigger;
 
-[CreateAssetMenu(fileName = "Follower Memory Charge Ability", menuName = "Memory Abilities/Follower/Follow")]
-public class PlayerFollowerFollowAbilityStateSO : PlayerAbilityStateSO
+[CreateAssetMenu(fileName = "Follower Memory Throw Ability", menuName = "Memory Abilities/Follower/Throw Hammer")]
+public class PlayerFollowerThrowAbilityStateSO : PlayerAbilityStateSO
 {
     [field: Header("Config")]
     [field: SerializeField] public AnimationClip HammerAnimationClip { get; private set; }
