@@ -20,13 +20,10 @@ namespace GetMikyled.DebugSystem
     
 		static void InitializeDebugSystem(Scene scene, LoadSceneMode mode)
 		{
-			if (GameObject.Find("DebugSystem") == null)
+			if (GameObject.FindObjectOfType(typeof(DebugSystemManager)) == null)
 			{
-				Object.Instantiate(Resources.Load<GameObject>("DebugSystem"));
-			}
-			if (GameObject.FindObjectOfType(typeof(EventSystem)) == null)
-			{
-				new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+				GameObject debugSystem = Object.Instantiate(Resources.Load<GameObject>("DebugSystem"));
+				GameObject.DontDestroyOnLoad(debugSystem);
 			}
 		}
 	}
