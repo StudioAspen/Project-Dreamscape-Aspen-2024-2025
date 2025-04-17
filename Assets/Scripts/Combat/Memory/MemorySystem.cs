@@ -90,7 +90,7 @@ public class MemorySystem : MonoBehaviour
         }
 
         // Try to activate ability
-        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        if (player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
         {
             OnMemoryAbilityActivated.Invoke(largestShardType);
             ShardDictionary.Clear();
