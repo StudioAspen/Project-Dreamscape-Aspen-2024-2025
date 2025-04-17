@@ -28,7 +28,7 @@ public class PlayerLowHealthVFX : MonoBehaviour
         player.OnEntityTakeDamage += Player_OnEntityTakeDamage;
         player.OnEntityHeal += Player_OnEntityHeal;
 
-        OnHealthChanged();
+        OnHealthChanged(1);
     }
 
     private void OnDisable()
@@ -41,18 +41,16 @@ public class PlayerLowHealthVFX : MonoBehaviour
 
     private void Player_OnEntityHeal(Entity entity, int healAmount)
     {
-        OnHealthChanged();
+        OnHealthChanged(player.CurrentHealth / player.MaxHealth.GetFloatValue());
     }
 
     private void Player_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
     {
-        OnHealthChanged();
+        OnHealthChanged(player.CurrentHealth / player.MaxHealth.GetFloatValue());
     }
 
-    private void OnHealthChanged()
+    private void OnHealthChanged(float healthPercent)
     {
-        float healthPercent = player.CurrentHealth / player.MaxHealth.GetFloatValue();
-
         if(healthPercent < lowHealthThreshold)
         {
             lowHealthVFX.EnableKeyword(ACTIVE_PROPERTY);
