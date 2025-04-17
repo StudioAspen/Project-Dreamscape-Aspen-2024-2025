@@ -70,18 +70,11 @@ public class MemorySystem : MonoBehaviour
         player = GetComponent<Player>();
     }
 
-    [SerializeField] private PlayerFollowerThrowAbilityStateSO playerFollowerFollowAbilityStateSO;
     /// <summary>
     /// Tries to activate a memory ability based on the shard counts
     /// </summary>
     public void TryActivateMemoryAbility()
     {
-        if (player.PlayerAbilityState.TryChangeAbilityState(playerFollowerFollowAbilityStateSO, false))
-        {
-            OnMemoryAbilityActivated.Invoke("");
-            ShardDictionary.Clear();
-        }
-
         if (GetMemoryLevel() < 3)
         {
             Debug.Log("Memory meter is not full");
@@ -96,12 +89,12 @@ public class MemorySystem : MonoBehaviour
             return;
         }
 
-/*        // Try to activate ability
-        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        // Try to activate ability
+        if (player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
         {
             OnMemoryAbilityActivated.Invoke(largestShardType);
             ShardDictionary.Clear();
-        }*/
+        }
     }
 
     /// <summary>
