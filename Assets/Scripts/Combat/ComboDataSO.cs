@@ -27,6 +27,7 @@ public class ComboDataSO : ScriptableObject
     [field: Header("Launch Options")]
     [field: SerializeField, Tooltip("Determines if the hit will launch grounded enemies upwards")] public bool WillLaunchUpwards { get; private set; }
     [field: SerializeField, Tooltip("Upwards launch force on hit. Only works on airborne targets")] public float AirLaunchForce { get; private set; }
+    [field: SerializeField, Tooltip("If this air combo is the end animation of the combo sequence")] public bool IsFinalAirCombo { get; private set; }
 
     [field: Header("Stun Options")]
     [field: SerializeField] public bool WillStun { get; private set; }

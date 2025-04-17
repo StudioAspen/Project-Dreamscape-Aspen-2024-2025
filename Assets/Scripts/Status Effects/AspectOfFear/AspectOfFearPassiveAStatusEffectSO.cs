@@ -1,6 +1,7 @@
 ﻿using Dreamscape.Abilities;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Aspect of Fear Passive A", menuName = "Status Effect/Aspects/Aspect of Fear/Passive A")]
@@ -17,7 +18,9 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
 
     [field: Header("Aspect of Fear Passive A Expanded: Settings")]
     [field: SerializeField] public float DamageUpPerSkulledEntity { get; private set; } = 0f;
-    private int skulledEntityCount;
+    public Dictionary<Entity, ExtendedDebuffStatusEffectSO> skulledEntities = new Dictionary<Entity, ExtendedDebuffStatusEffectSO>();
+
+    public Action<ExtendedDebuffStatusEffectSO> OnEntitySkulled, OnSkulledEntityExecuted;
 
     private void OnValidate()
     {
@@ -44,7 +47,7 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
             return;
         }
 
-        skulledEntityCount = 0;
+        skulledEntities.Clear();
 
         playerInputReader.OnComboAction += PlayerInputReader_OnComboAction;
     }
@@ -54,13 +57,6 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
         base.Update();
 
         HandleSwitchInputTimer();
-
-        // Debug
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            GhastlyGrievanceSkull skull = ObjectPoolerManager.Instance.SpawnPooledObject<GhastlyGrievanceSkull>(GhastlyGrievanceSkullPrefab.gameObject, entity.GetColliderCenterPosition());
-            skull.Init(entity);
-        }
     }
 
     public override void Cancel()
@@ -116,16 +112,48 @@ public class AspectOfFearPassiveAStatusEffectSO : StatusEffectSO
     }
 
     /// <summary>
-    /// Adds to the skulled entity count.
+    /// Adds to the skulled entities dictionary.
     /// </summary>
-    public void AddSkulledEntity(int count)
+    public void AddSkulledEntity(Entity newSkulledEntity, ExtendedDebuffStatusEffectSO ghastlyGrievance)
     {
-        if (DamageUpPerSkulledEntity <= 0f) return;
+        if(skulledEntities.ContainsKey(newSkulledEntity))
+          return;
+          
+        skulledEntities.Add(newSkulledEntity, ghastlyGrievance);
+        ghastlyGrievance.OnExecution += RemoveSkulledEntity;
+        OnEntitySkulled?.Invoke(ghastlyGrievance);
+        
+        if (DamageUpPerSkulledEntity <= 0f) 
+          return;
 
-        skulledEntityCount += count;
         entity.DamageModifier.ClearMultipliersFromSource(this);
         
-        if(skulledEntityCount >= 0) entity.DamageModifier.AddMultiplier(1f + skulledEntityCount * DamageUpPerSkulledEntity, this);
-        Debug.Log($"Skulled entity count: {skulledEntityCount}, with damage modifier: {entity.DamageModifier.GetTotalMultiplier()}");
+        if(skulledEntities.Count >= 0) 
+          entity.DamageModifier.AddMultiplier(1f + skulledEntities.Count * DamageUpPerSkulledEntity, this);
+
+        Debug.Log($"Skulled entities: {skulledEntities.Count}, with damage modifier: {entity.DamageModifier.GetTotalMultiplier()}");
+    }
+
+    /// <summary>
+    /// Removes from the skulled entities dictionary.
+    /// </summary>
+    public void RemoveSkulledEntity(Entity skulledEntity)
+    {
+        if (!skulledEntities.ContainsKey(skulledEntity))
+          return;
+
+        skulledEntities[skulledEntity].OnExecution = null;
+        OnSkulledEntityExecuted?.Invoke(skulledEntities[skulledEntity]);
+        skulledEntities.Remove(skulledEntity);
+        
+        if (DamageUpPerSkulledEntity <= 0f) 
+          return;
+
+        entity.DamageModifier.ClearMultipliersFromSource(this);
+
+        if(skulledEntities.Count >= 0) 
+          entity.DamageModifier.AddMultiplier(1f + skulledEntities.Count * DamageUpPerSkulledEntity, this);
+
+        Debug.Log($"Skulled entities: {skulledEntities.Count}, with damage modifier: {entity.DamageModifier.GetTotalMultiplier()}");
     }
 }

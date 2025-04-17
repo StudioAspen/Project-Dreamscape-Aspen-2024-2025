@@ -16,6 +16,13 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
 
     private ObjectPool<GameObject> pool;
 
+    private float startScale;
+
+    private void Awake()
+    {
+        startScale = transform.localScale.x;
+    }
+
     private void OnDisable()
     {
         // cancel all tweens
@@ -40,9 +47,10 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
     public void ActivateHitNumberText(int damage, Vector3 spawnPoint, Vector3 direction, Color color)
     {
         transform.position = spawnPoint;
+        transform.localScale = Vector3.zero;
 
         numberText.text = damage.ToString();
-        numberText.fontSize = (maxTextSize - minTextSize) * (damage / (float)maxDamage) + minTextSize;
+        numberText.fontSize = Mathf.Lerp(minTextSize, maxTextSize, damage / (float)maxDamage);
         numberText.color = color;
 
         FloatAndFade(2f, 1f, direction);
@@ -59,6 +67,8 @@ public class HitNumbers : MonoBehaviour, IPoolableObject
         Sequence sequence = DOTween.Sequence();
         sequence.Append(transform.DOMove(transform.position + distance * direction, duration / 2f).SetEase(Ease.OutCubic).SetUpdate(true));
         sequence.Append(numberText.DOFade(0f, duration / 2f)).SetUpdate(true);
+
+        transform.DOScale(startScale * Vector3.one, duration / 5f).SetEase(Ease.OutCubic).SetUpdate(true);
 
         sequence.OnComplete(() => { pool.Release(gameObject); });
     }

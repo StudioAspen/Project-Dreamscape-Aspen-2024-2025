@@ -95,7 +95,7 @@ public class DefendWorldEventSO : WorldEventSO
       float timeLimit = BaseTimeLimit + (Mathf.FloorToInt((activeLands.Count - 1) / (EndLayer + 1)) * TimeIncrement);
 
       float interval = timeLimit / BaseIntervals;
-      StartEnemySpawnersWithDuration(activeLands, new Vector2(interval, interval), spawnAmount, timeLimit);
+      StartEnemySpawnersWithDuration(activeLands, new Vector2(interval, interval), timeLimit, spawnAmount);
 
       RemainingTime = timeLimit;
     }
@@ -129,7 +129,7 @@ public class DefendWorldEventSO : WorldEventSO
         }
     }
 
-    private void DefendEventEntity_OnEntityDeath(GameObject killerObject)
+    private void DefendEventEntity_OnEntityDeath(Entity victim, GameObject killerObject)
     {
         DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
 
@@ -138,7 +138,7 @@ public class DefendWorldEventSO : WorldEventSO
         eventManager.FailEvent();
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 409a490ed4b7d444c9ee1853cb12665f, type: 3}
+  m_Name: LightCombosOnlyPrioritiesQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: Hit marked Dreamons with light swings only.
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 1
+  requiredWorldEvent: {fileID: 11400000, guid: a8e95b779c0c9b24480329f27eb31f34, type: 2}
+  allowedCombos:
+  - {fileID: 11400000, guid: 00d269358e037cb45b41ba880a256c9b, type: 2}
+  - {fileID: 11400000, guid: 046e4e3432103fc45a6c198aaf95c3a9, type: 2}
+  - {fileID: 11400000, guid: 7fbb47c60cae2014f98ef5ea9907ae61, type: 2}
+  - {fileID: 11400000, guid: e1a98987da9049e45a48d1c9cc1d34d3, type: 2}
+  - {fileID: 11400000, guid: ed5fba988c30b9645af847b51526eb5b, type: 2}
+  - {fileID: 11400000, guid: 2544063d1ad4634409b17d12c1501932, type: 2}
+  - {fileID: 11400000, guid: f7d03451ea410c944a4f215dc90eeb78, type: 2}
+  - {fileID: 11400000, guid: ed3149a8ae9d6ab448475f34e98b4794, type: 2}

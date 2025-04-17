@@ -122,7 +122,7 @@ public class EscortWorldEventSO : WorldEventSO
         StartEnemySpawnerWithCurrency(newLand, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount, false);
     }
 
-    private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
+    private void EscortEventEntity_OnEntityDeath(Entity victim, GameObject killerObject)
     {
         EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         
@@ -146,7 +146,7 @@ public class EscortWorldEventSO : WorldEventSO
         }
     }
 
-    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText)
+    public override void UpdateEventUIElements(TMP_Text feedbackText, TMP_Text nameText, TMP_Text optionalDescriptionText)
     {
         feedbackText.text = $"{GetFormattedFloatTimer(RemainingTime)}";
         nameText.text = $"{EventProgressionUIName.ToUpper()}";

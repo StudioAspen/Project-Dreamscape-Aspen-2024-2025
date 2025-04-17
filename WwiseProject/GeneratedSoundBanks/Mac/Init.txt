@@ -1,3 +1,21 @@
+State Group	ID	Name			Wwise Object Path	Notes
+	261089142	GameMode			\Default Work Unit\GameMode	
+	835576787	Biome			\Default Work Unit\Biome	
+	1548586727	MenuState			\Default Work Unit\MenuState	
+
+State	ID	Name	State Group			Notes
+	748895195	None	GameMode			
+	2280308571	ActiveGameplay	GameMode			
+	2716678721	Victory	GameMode			
+	3705726509	Title	GameMode			
+	540301611	Lava	Biome			
+	748895195	None	Biome			
+	813526661	DreamForest	Biome			
+	3031504781	Food	Biome			
+	748895195	None	MenuState			
+	1858159279	OutsideMenu	MenuState			
+	3374585465	InMenu	MenuState			
+
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
 

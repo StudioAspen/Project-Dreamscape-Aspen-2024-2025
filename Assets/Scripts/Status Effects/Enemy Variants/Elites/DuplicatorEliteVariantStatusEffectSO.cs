@@ -25,7 +25,7 @@ public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
         enemy.OnEntityDeath -= Enemy_OnEntityDeath;
     }
 
-    private void Enemy_OnEntityDeath(GameObject killer)
+    private void Enemy_OnEntityDeath(Entity victim, GameObject killer)
     {
         if (enemyPrefab == null) return;
 

@@ -7,17 +7,14 @@ namespace Dreamscape.Abilities
     public class GhastlyGrievanceSkull : CastedAbility, IPoolableObject
     {
         [Header("Settings")]
-        [SerializeField] private GhastlyGrievanceStatusEffectSO ghastlyGrievanceStatusEffect;
+        [SerializeField] private ExtendedDebuffStatusEffectSO ghastlyGrievanceStatusEffect;
         [SerializeField] private float speed = 5f;
         [SerializeField] private float maxDistance = 10f;
 
         private Coroutine moveCoroutine;
-        private HashSet<Entity> skulledEntities = new();
 
         private protected override void OnSpawn()
         {
-            skulledEntities.Clear();
-
             transform.position = casterEntity.GetColliderCenterPosition();
 
             if (moveCoroutine != null) StopCoroutine(moveCoroutine);
@@ -57,9 +54,6 @@ namespace Dreamscape.Abilities
 
             if (hitEntity.CurrentState == hitEntity.EntityDeathState) return; // if theyre already dying
             if (hitEntity.Team == casterEntity.Team) return; // if theyre on the same team
-
-            if(skulledEntities.Contains(hitEntity)) return;
-            skulledEntities.Add(hitEntity);
 
             EntityStatusEffector.TryApplyStatusEffect(hitEntity.gameObject, ghastlyGrievanceStatusEffect, casterEntity.gameObject);
             Debug.Log($"Ghastly grievanced {hitEntity.gameObject.name}");

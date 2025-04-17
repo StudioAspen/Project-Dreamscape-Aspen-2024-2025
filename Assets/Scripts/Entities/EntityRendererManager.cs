@@ -25,8 +25,10 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void CacheOriginalMaterials()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
+            if (renderer == null) continue;
+
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
 
@@ -40,8 +42,10 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="newMaterial">The new material to add.</param>
     public void AddMaterial(Material newMaterial)
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
+            if (renderer == null) continue;
+
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
             materials.Add(newMaterial);
@@ -55,8 +59,10 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="material">The material to remove.</param>
     public void RemoveMaterial(Material material)
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
+            if (renderer == null) continue;
+
             List<Material> materials = new List<Material>();
             renderer.GetSharedMaterials(materials);
             if (materials.Contains(material)) materials.Remove(material);
@@ -74,8 +80,10 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void RemoveAllMaterials()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
+            if (renderer == null) continue;
+
             renderer.SetSharedMaterials(new List<Material>());
         }
     }
@@ -87,6 +95,8 @@ public class EntityRendererManager : MonoBehaviour
     {
         foreach (Renderer renderer in originalMaterials.Keys)
         {
+            if (renderer == null) continue;
+
             renderer.SetSharedMaterials(originalMaterials[renderer]);
         }
     }
@@ -98,8 +108,10 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     private void CacheOriginalTints()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
+            if (renderer == null) continue;
+
             List<Color> colors = new List<Color>();
             for (int i = 0; i < renderer.materials.Length; i++)
             {
@@ -120,6 +132,8 @@ public class EntityRendererManager : MonoBehaviour
     {
         foreach (Renderer renderer in originalColors.Keys)
         {
+            if (renderer == null) continue;
+
             DOTween.Kill(renderer);
             foreach (Material material in renderer.materials)
             {
@@ -140,6 +154,8 @@ public class EntityRendererManager : MonoBehaviour
     {
         foreach (Renderer renderer in originalColors.Keys)
         {
+            if (renderer == null) continue;
+
             DOTween.Kill(renderer);
             foreach (Material material in renderer.materials)
             {
@@ -157,11 +173,13 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="duration">The duration of the tween</param>
     public void TweenUnTint(float duration = 0.2f)
     {
-        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in new Dictionary<Renderer, List<Color>>(originalColors))
         {
+
             Renderer renderer = entry.Key;
             List<Color> colors = entry.Value;
 
+            if (renderer == null) continue;
             for (int i = 0; i < renderer.materials.Length; i++)
             {
                 DOTween.Kill(renderer);
@@ -178,11 +196,12 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void ResetTint()
     {
-        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in new Dictionary<Renderer, List<Color>>(originalColors))
         {
             Renderer renderer = entry.Key;
             List<Color> colors = entry.Value;
 
+            if (renderer == null) continue;
             for (int i = 0; i < renderer.materials.Length; i++)
             {
                 DOTween.Kill(renderer);

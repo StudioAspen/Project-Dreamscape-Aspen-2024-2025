@@ -172,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -132}
+  m_AnchoredPosition: {x: -316, y: -52}
   m_SizeDelta: {x: 267.9263, y: 93.267}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8549304156734066885
@@ -304,10 +304,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2067890182128302494}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 86}
-  m_SizeDelta: {x: 1358.3584, y: 380.3468}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -151.76062}
+  m_SizeDelta: {x: 1358.3584, y: 303.5213}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2984724168616040159
 CanvasRenderer:
@@ -337,7 +337,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Over
+  m_text: Game Over!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 88cc48d72fd86854fbbed03fb0289647, type: 2}
   m_sharedMaterial: {fileID: 1222065609000672791, guid: 88cc48d72fd86854fbbed03fb0289647,
@@ -418,7 +418,8 @@ GameObject:
   - component: {fileID: 2067890182128302494}
   - component: {fileID: 772509402810598590}
   - component: {fileID: 4279191785121137840}
-  - component: {fileID: 8660955539034235729}
+  - component: {fileID: 905696418635496587}
+  - component: {fileID: 8382980357927859595}
   m_Layer: 5
   m_Name: GameOverUIPanel
   m_TagString: Untagged
@@ -460,10 +461,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <DefaultSelectedObject>k__BackingField: {fileID: 3384713149515594446}
-  menuScene:
-    asset: {fileID: 102900000, guid: 61ce8085d84349243ada7ef0a7d03895, type: 3}
-    guid: 61ce8085d84349243ada7ef0a7d03895
   menuButton: {fileID: 1383441357442720654}
+  videoPlayer: {fileID: 8382980357927859595}
 --- !u!222 &4279191785121137840
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -472,7 +471,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7667575444178330448}
   m_CullTransparentMesh: 1
---- !u!114 &8660955539034235729
+--- !u!114 &905696418635496587
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -481,24 +480,55 @@ MonoBehaviour:
   m_GameObject: {fileID: 7667575444178330448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_Texture: {fileID: 8400000, guid: 75cb0a80424c53346a5ff70d1f5e6c65, type: 2}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!328 &8382980357927859595
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667575444178330448}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 61ed1c6438a674b4c896c0b65c74048b, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 75cb0a80424c53346a5ff70d1f5e6c65, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_TimeUpdateMode: 2
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources: []
+  m_DirectAudioVolumes: []
+  m_Url: 
+  m_EnabledAudioTracks: 
+  m_DirectAudioMutes: 
+  m_ControlledAudioTrackCount: 0
+  m_PlayOnAwake: 0
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []

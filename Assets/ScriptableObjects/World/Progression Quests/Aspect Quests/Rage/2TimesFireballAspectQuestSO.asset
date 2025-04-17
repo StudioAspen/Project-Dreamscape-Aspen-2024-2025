@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed5f149e35981854280a10df94423983, type: 3}
+  m_Name: 2TimesFireballAspectQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: '[Aspect of Rage] Hit Dreamons with Fireball 2
+    times.'
+  <CompletionReward>k__BackingField: 0
+  difficulty: 2
+  requiredAspectTree: {fileID: 11400000, guid: 4aef8062b306a4b48a5e04d3b2209534, type: 2}
+  requiredAspectNode: {fileID: 4095001867604409900, guid: 4aef8062b306a4b48a5e04d3b2209534,
+    type: 2}
+  nodeLevel: 4
+  <SuccessfulHitsGoal>k__BackingField: 2
+  <TargetComboData>k__BackingField: {fileID: 11400000, guid: 3ce1959bd8a0e194490c62b305ab31dd,
+    type: 2}

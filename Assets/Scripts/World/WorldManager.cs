@@ -27,7 +27,7 @@ public class WorldManager : MonoBehaviour
     [field: Header("Pseudo Grid")]
     public Dictionary<Vector2Int, LandManager> SpawnedLands { get; private set; } = new Dictionary<Vector2Int, LandManager>(); // a list of all currently spawned lands
     public Dictionary<Vector2Int, List<LandBorder>> Borders { get; private set; } = new Dictionary<Vector2Int, List<LandBorder>>(); // a list of all currently available borders
-    [SerializeField] private float landScale = 30f;
+    [field: SerializeField] public float LandScale { get; private set; } = 30f;
 
     [Header("Land Position Selection")]
     [SerializeField] private Transform ghostLandTransform;
@@ -48,11 +48,47 @@ public class WorldManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
 
-        SpawnedLands.Add(new Vector2Int(0, 0), GetComponentInChildren<LandManager>());
+        // Spawn a 2x2 Dream at the start
+        currentBiomeSelection = Biome.DREAM;
+        SpawnLand(Vector2Int.zero, BiomeDatabase.DefaultLandPrefab);
+        SpawnLand(new Vector2Int(1, 0), BiomeDatabase.DefaultLandPrefab);
+        SpawnLand(new Vector2Int(0, 1), BiomeDatabase.DefaultLandPrefab);
+        SpawnLand(new Vector2Int(1, 1), BiomeDatabase.DefaultLandPrefab);
 
         BuildNavMesh();
 
         DisableGhostLand();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            ToggleLandLevelStyle(!LandLevelStyleIsSimple);
+        }
+    }
+
+    public bool LandLevelStyleIsSimple { get; private set; } = false;
+    // Debug Cheat
+    public void ToggleLandLevelStyle(bool isSimple)
+    {
+        LandLevelStyleIsSimple = isSimple;
+
+        if (isSimple)
+        {
+            DisableLandLevelTexts();
+            // Sort the lands by level in descending order
+            List<LandManager> sortedLands = SpawnedLands.Values.OrderByDescending(land => land.Level).ToList();
+            // Add the top 3 lands to the result list
+            for (int i = 0; i < 3 && i < sortedLands.Count; i++)
+            {
+                sortedLands[i].EnableLevelText();
+            }
+        }
+        else
+        {
+            EnableLandLevelTexts();
+        }
     }
 
     #region Grid Functions
@@ -193,7 +229,7 @@ public class WorldManager : MonoBehaviour
     /// <returns>The grid position.</returns>
     public Vector2Int GetGridPosition(Vector3 worldPos)
     {
-        Vector3 floatGridPosition = worldPos / landScale;
+        Vector3 floatGridPosition = worldPos / LandScale;
 
         return new Vector2Int(Mathf.RoundToInt(floatGridPosition.x), Mathf.RoundToInt(floatGridPosition.z));
     }
@@ -206,7 +242,7 @@ public class WorldManager : MonoBehaviour
     /// <returns>The new position for the land.</returns>
     public Vector3 CalculateNewLandWorldPosition(Vector2Int gridPosition, float height)
     {
-        return new Vector3(landScale * gridPosition.x, height, landScale * gridPosition.y);
+        return new Vector3(LandScale * gridPosition.x, height, LandScale * gridPosition.y);
     }
 
     /// <summary>
@@ -262,7 +298,7 @@ public class WorldManager : MonoBehaviour
     /// Spawns a new land at the given grid position.
     /// </summary>
     /// <param name="gridPosition">The grid position of the land.</param>
-    private void SpawnLand(Vector2Int gridPosition)
+    private LandManager SpawnLand(Vector2Int gridPosition)
     {
         LandManager landPrefabToUse = null;
         if (BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count == 0)
@@ -275,10 +311,22 @@ public class WorldManager : MonoBehaviour
             landPrefabToUse = BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands[UnityEngine.Random.Range(0, BiomeDatabase.BiomesDictionary[currentBiomeSelection].PossibleLands.Count)];
         }
 
-        LandManager spawnedLand = Instantiate(landPrefabToUse, new Vector3(landScale * gridPosition.x, 0, landScale * gridPosition.y), Quaternion.identity, transform);
+        return SpawnLand(gridPosition, landPrefabToUse);
+    }
+
+    /// <summary>
+    /// Spawns a new land at the given grid position with a specific land prefab.
+    /// </summary>
+    /// <param name="gridPosition">The grid position of the land.</param>
+    /// <param name="landPrefab">The land prefab to spawn.</param>
+    private LandManager SpawnLand(Vector2Int gridPosition, LandManager landPrefab)
+    {
+        LandManager spawnedLand = Instantiate(landPrefab, new Vector3(LandScale * gridPosition.x, 0, LandScale * gridPosition.y), Quaternion.identity, transform);
         spawnedLand.Init(gridPosition, currentBiomeSelection);
 
         SpawnedLands.Add(gridPosition, spawnedLand);
+
+        return spawnedLand;
     }
 
     /// <summary>

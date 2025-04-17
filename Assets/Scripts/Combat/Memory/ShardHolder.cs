@@ -28,7 +28,7 @@ public class ShardHolder : MonoBehaviour
         entity.OnEntityDeath -= Entity_OnEntityDeath;
     }
 
-    private void Entity_OnEntityDeath(GameObject killer)
+    private void Entity_OnEntityDeath(Entity victim, GameObject killer)
     {
         if (killer == null) return;
         if(!killer.TryGetComponent(out MemorySystem memorySystem)) return; // Player must last hit the enemy to get shard drop

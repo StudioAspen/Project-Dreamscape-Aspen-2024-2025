@@ -42,7 +42,9 @@ public class GameManager : MonoBehaviour
 
         playerControls.Gameplay.Pause.performed += PlayerControls_OnPausePerformed;
 
-        ForceChangeState(GameState.EVENT_SELECTION);
+        OnGameStateChanged += ChangeAudioState;
+
+        ForceChangeState(GameState.PLAYING);
     }
 
     private void OnDestroy()
@@ -59,7 +61,6 @@ public class GameManager : MonoBehaviour
     public void ChangeState(GameState newState)
     {
         if(CurrentState == newState) return;
-
         ForceChangeState(newState);
     }
 
@@ -102,6 +103,38 @@ public class GameManager : MonoBehaviour
 
         OnGameStateChanged?.Invoke(newState);
     }
+
+    public void ChangeAudioState(GameState newState)
+    {
+        Debug.Log("ChangeAudioState called");
+
+        switch (newState)
+        {
+            case GameState.PLAYING:
+                AkSoundEngine.SetState("GameMode", "ActiveGameplay");
+                break;
+            case GameState.GAME_OVER:
+                AkSoundEngine.SetState("GameMode", "GameOver");
+                break;
+            default:
+                break;
+        }
+
+        switch (newState)
+        {
+            case GameState.PAUSED:
+            case GameState.BIOME_SELECTION:
+            case GameState.LAND_PLACEMENT:
+            case GameState.LAND_EMPOWERMENT:
+            case GameState.EVENT_SELECTION:
+            case GameState.ASPECT_SELECTION:
+                AkSoundEngine.SetState("MenuState", "InMenu");
+                break;
+            default:
+                AkSoundEngine.SetState("MenuState", "OutsideMenu");
+                break;
+        }
+    }
     #endregion
 
     #region Time Scale Functions
@@ -129,4 +162,6 @@ public class GameManager : MonoBehaviour
         SetTimeScale(1f);
         SceneManager.LoadScene(menuScene.Name, LoadSceneMode.Single);
     }
+
+    
 }

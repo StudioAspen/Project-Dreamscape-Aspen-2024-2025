@@ -16,7 +16,6 @@ public class EnemySpawner : MonoBehaviour
     [field: SerializeField] public List<Enemy> EnemyPrefabs { get; private set; } = new();
     private Dictionary<Enemy, float> enemySpawnChanceDictionary = new();
     [SerializeField] private List<Transform> enemySpawnPoints;
-    [SerializeField] private MaterializeVFX materializeVFXPrefab;
 
     [Header("Currency Settings")]
     [SerializeField] private float weightingSkewPower = 2.2f;
@@ -71,10 +70,10 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="spawnIntervalRange"></param>
     /// <param name="spawnAmount"></param>
     /// <param name="willRestockCurrency">Whether to restock currency</param>
-    public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount, bool willRestockCurrency = true)
+    public void StartSpawnerWithCurrency(Vector2 spawnIntervalRange, int spawnAmount = 1, bool willRestockCurrency = true)
     {
-      StopSpawner();
-      currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
+        StopSpawner();
+        currentSpawnerCoroutine = StartCoroutine(SpawnWithCurrencyCoroutine(willRestockCurrency ? CalculateShopCurrency() : currentRemainingCurrency, spawnIntervalRange, spawnAmount));
     }
 
     /// <summary>
@@ -82,10 +81,10 @@ public class EnemySpawner : MonoBehaviour
     /// Stops any existing spawning coroutine.
     /// </summary>
     /// <param name="duration">The duration to spawn enemies for.</param>
-    public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    public void StartSpawnerWithDuration(Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
       StopSpawner();
-      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, spawnAmount, duration));
+      currentSpawnerCoroutine = StartCoroutine(SpawnWithDurationCoroutine(spawnIntervalRange, duration, spawnAmount));
     }
 
     /// <summary>
@@ -102,28 +101,27 @@ public class EnemySpawner : MonoBehaviour
     /// Stores the remaining currency.
     /// <param name="startingCurrency">The starting currency</param>
     /// </summary>
-    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency, Vector2 spawnIntervalRange, int spawnAmount)
+    private IEnumerator SpawnWithCurrencyCoroutine(float startingCurrency, Vector2 spawnIntervalRange, int spawnAmount = 1)
     {
         currentRemainingCurrency = startingCurrency;
         List<(Enemy, float)> enemyRemainingCurrencyQueue = GetEnemyPrefabQueue(startingCurrency);
 
         float randomDelay = UnityEngine.Random.Range(spawnIntervalRange.x, spawnIntervalRange.y);
-        int spawned = 0;
 
+        int spawnCount = 0;
         foreach ((Enemy enemyPrefab, float remainingCurrency) in enemyRemainingCurrencyQueue)
         {
             SpawnEnemy(enemyPrefab, GetRandomEnemySpawnPoint(1), true, true);
             currentRemainingCurrency = remainingCurrency;
-            
-            if(spawned < spawnAmount)
+            spawnCount++;
+            if(spawnCount >= spawnAmount)
             {
-              spawned++;
-              yield return null;
+                spawnCount = 0;
+                yield return new WaitForSeconds(randomDelay);
             }
             else
             {
-              spawned = 0;
-              yield return new WaitForSeconds(randomDelay);
+                yield return null;
             }
         }
         currentSpawnerCoroutine = null;
@@ -134,9 +132,9 @@ public class EnemySpawner : MonoBehaviour
     /// This does not use currency.
     /// </summary>
     /// <param name="spawnIntervalRange">The random range for the spawning interval.</param>
-    /// <param name="spawnAmount">The number of enemies to spawn per interval.</param>
     /// <param name="duration">The duration of the spawning process.</param>
-    private IEnumerator SpawnWithDurationCoroutine(Vector2 spawnIntervalRange, int spawnAmount, float duration)
+    /// <param name="spawnAmount">The number of enemies to spawn per interval.</param>
+    private IEnumerator SpawnWithDurationCoroutine(Vector2 spawnIntervalRange, float duration, int spawnAmount = 1)
     {
         List<(Enemy, float)> enemySpawnDelayQueue = GetEnemyPrefabQueue(duration, spawnIntervalRange, spawnAmount);
         foreach ((Enemy enemyPrefab, float delay) in enemySpawnDelayQueue)
@@ -200,20 +198,20 @@ public class EnemySpawner : MonoBehaviour
 
         while (remainingDuration > randomDelay)
         {
-          for(int i = 0; i < spawnAmount; i++)
-          {
-            Enemy enemyPrefab = GetRandomEnemyPrefab();
-            if (enemyPrefab == null)
+            for (int i = 0; i < spawnAmount && remainingDuration > randomDelay; i++)
             {
-                Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
-                return new List<(Enemy, float)>();
+                Enemy enemyPrefab = GetRandomEnemyPrefab();
+                if (enemyPrefab == null)
+                {
+                    Debug.LogWarning($"{gameObject.name} Enemy Spawner: Failed to get enemy queue because it failed to get a random enemy prefab");
+                    return new List<(Enemy, float)>();
+                }
+
+                // add the first enemy in the batch with the interval, but set every interval after to be 0.1f seconds
+                float delay = i == 0 ? randomDelay : 0.1f;
+                enemySpawnDelayQueue.Add((enemyPrefab, delay));
+                remainingDuration -= delay;
             }
-
-            // add the first enemy in the batch with the interval, but set every interval after to be 0.1 seconds
-            enemySpawnDelayQueue.Add((enemyPrefab, i == 0 ? randomDelay : 0.1f));
-
-            remainingDuration -= randomDelay;
-          }
         }
 
         return enemySpawnDelayQueue;
@@ -290,7 +288,7 @@ public class EnemySpawner : MonoBehaviour
         EntityRendererManager entityRendererManager = entity.GetComponent<EntityRendererManager>();
         if (entityRendererManager == null) return;
 
-        MaterializeVFX materializeVFX = ObjectPoolerManager.Instance.SpawnPooledObject<MaterializeVFX>(materializeVFXPrefab.gameObject, entity.transform.position);
+        MaterializeVFX materializeVFX = ObjectPoolerManager.Instance.SpawnPooledObject<MaterializeVFX>(ObjectPoolerManager.Instance.MaterializeVFXPrefab.gameObject, entity.transform.position);
 
         for(int i = 0; i < entityRendererManager.Renderers.Count; i++)
         {

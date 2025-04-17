@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d205a282f88dc4da002626b6acd1a1, type: 3}
   m_Name: Light Burn
   m_EditorClassIdentifier: 
-  duration: 2
-  damagePerTick: 1
-  tickDuration: 0.5
+  <DisplayName>k__BackingField: Status Effect
+  <Description>k__BackingField: Status effect description
+  <Stackable>k__BackingField: 0
+  <BuffType>k__BackingField: 2
+  <Ticks>k__BackingField: 2
+  <TickDuration>k__BackingField: 0.5
+  <DamagePerTick>k__BackingField: 1
+  <HasExtraTickOnApply>k__BackingField: 0

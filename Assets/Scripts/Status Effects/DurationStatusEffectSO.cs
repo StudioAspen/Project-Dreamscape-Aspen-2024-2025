@@ -26,7 +26,7 @@ public class DurationStatusEffectSO : StatusEffectSO
     {
         base.Update();
 
-        RemainingDuration -= Time.deltaTime;
+        RemainingDuration -= GetLocalDeltaTime();
 
         if (RemainingDuration <= 0)
         {
