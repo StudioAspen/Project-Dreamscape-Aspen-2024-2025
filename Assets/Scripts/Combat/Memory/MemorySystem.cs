@@ -76,6 +76,12 @@ public class MemorySystem : MonoBehaviour
     /// </summary>
     public void TryActivateMemoryAbility()
     {
+        if (player.PlayerAbilityState.TryChangeAbilityState(playerFollowerFollowAbilityStateSO, false))
+        {
+            OnMemoryAbilityActivated.Invoke("");
+            ShardDictionary.Clear();
+        }
+
         if (GetMemoryLevel() < 3)
         {
             Debug.Log("Memory meter is not full");
@@ -96,12 +102,6 @@ public class MemorySystem : MonoBehaviour
             OnMemoryAbilityActivated.Invoke(largestShardType);
             ShardDictionary.Clear();
         }*/
-
-        if (player.PlayerAbilityState.TryChangeAbilityState(playerFollowerFollowAbilityStateSO, false))
-        {
-            OnMemoryAbilityActivated.Invoke(largestShardType);
-            ShardDictionary.Clear();
-        }
     }
 
     /// <summary>
