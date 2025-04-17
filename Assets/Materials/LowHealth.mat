@@ -82,6 +82,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ACTIVE: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -89,7 +90,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Contrast: 1
+    - _Contrast: 2.31
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -108,11 +109,11 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Scale: 100
-    - _Size: 5
+    - _Size: 1.6
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0.0073
+    - _Speed: 0.01034
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
