@@ -25,7 +25,7 @@ public class ZonesWorldEventSO : WorldEventSO
     [field: Range(3f, 30f)]
     [field: SerializeField] public float BaseSpawnInterval { get; private set; } = 3f;
 
-    private List<LandManager> affectedLands = new List<LandManager>();
+    public List<LandManager> affectedLands { get; private set; } = new List<LandManager>();
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
@@ -43,11 +43,10 @@ public class ZonesWorldEventSO : WorldEventSO
         totalEnemiesToKill = 0;
 
         // Get a random 3x3 of lands and start the enemy spawners on them if they have positive levels
-        // affectedLands = AffectLandsFromEpicenter();
-        affectedLands = GetRandom3x3Land();
+        affectedLands = AffectLandsFromEpicenter();
         foreach(LandManager land in affectedLands)
         {
-            if (land.Level <= 0) continue;
+            // if (land.Level <= 0) continue;
             // Track when the enemy spawner is depleted to decrement the activeLands counter
             land.EnemySpawner.OnSpawnerDepleted += EnemySpawner_OnSpawnerDepleted;
 
@@ -145,6 +144,7 @@ public class ZonesWorldEventSO : WorldEventSO
     int s = Mathf.FloorToInt(Mathf.Sqrt(worldManager.SpawnedLands.Count));
     // Returns the largest integer that, when squared, will be <= the number of spawned lands
     int outbreakSize = Mathf.FloorToInt(Mathf.Pow(s, 2));
+    Debug.Log($"Greatest Perfect Square: {s}");
     Debug.Log($"Spawned Lands: {worldManager.SpawnedLands.Count} \nOutbreak Size: {outbreakSize}");
 
     // Gets a land by its weight, which increases proportionally with its land level.

@@ -199,19 +199,21 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
+    /// <item><description><c>Entity groundedEntity</c>: The entity that got grounded.</description></item>
     /// <item><description><c>Vector3 groundPoint</c>: Where you got grounded.</description></item>
     /// </list>
     /// </remarks>
-    public Action<Vector3> OnGrounded = delegate { };
+    public Action<Entity, Vector3> OnGrounded = delegate { };
     /// <summary>
     /// Action that is invoked when the entity becomes airborne.
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
+    /// <item><description><c>Entity airbornedEntity</c>: The entity that got airborned.</description></item>
     /// <item><description><c>Vector3 groundPoint</c>: Where you left the ground.</description></item>
     /// </list>
     /// </remarks>
-    public Action<Vector3> OnAirborne = delegate { };
+    public Action<Entity, Vector3> OnAirborne = delegate { };
     private bool prevIsGrounded;
     private bool isKilledFromBeingOutOfBounds;
 
@@ -224,11 +226,11 @@ public class Entity : MonoBehaviour, IPoolableObject
         {
             if (IsGrounded)
             {
-                OnGrounded?.Invoke(transform.position);
+                OnGrounded?.Invoke(this, transform.position);
             }
             else
             {
-                OnAirborne?.Invoke(transform.position);
+                OnAirborne?.Invoke(this, transform.position);
             }
             prevIsGrounded = IsGrounded;
         }
@@ -274,10 +276,11 @@ public class Entity : MonoBehaviour, IPoolableObject
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
+    /// <item><description><c>Entity victim</c>: The entity that died.</description></item>
     /// <item><description><c>GameObject killer</c>: The killer source.</description></item>
     /// </list>
     /// </remarks>
-    public Action<GameObject> OnEntityDeath = delegate { };
+    public Action<Entity, GameObject> OnEntityDeath = delegate { };
     /// <summary>
     /// Action that is invoked right before the entity is destroyed after the death state. If the entity is pooled, this invokes right before it gets released.
     /// </summary>
@@ -511,6 +514,7 @@ public class Entity : MonoBehaviour, IPoolableObject
     private protected virtual void OnOnDisable()
     {
         CurrentState?.OnExit();
+        CurrentState?.OnEntityDestroyed();
 
         Warp(new Vector3(0f, 10000f, 0f));
     }
@@ -952,7 +956,7 @@ public class Entity : MonoBehaviour, IPoolableObject
 
         AttemptToNotifyKiller();
 
-        OnEntityDeath?.Invoke(lastHitSource);
+        OnEntityDeath?.Invoke(this, lastHitSource);
     }
 
     /// <summary>

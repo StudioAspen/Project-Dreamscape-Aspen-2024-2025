@@ -270,10 +270,8 @@ namespace GetMikyled.DebugSystem
 
         void SetKillable(bool state)
         {
-            throw new NotImplementedException("SetKillable on Player is not implemented!");
             if (state)
             {
-                
                 AddToConsoleLog("Player is now killable"); // sends message to the console
             }
             else
@@ -281,6 +279,7 @@ namespace GetMikyled.DebugSystem
                 
                 AddToConsoleLog("Player is now unkillable"); // sends message to the console
             }
+            throw new NotImplementedException("SetKillable on Player is not implemented!");
         }
 
         ///-/////////////////////////////////////////////////////////////////////////////
@@ -293,8 +292,8 @@ namespace GetMikyled.DebugSystem
             {
                 if (player != null)
                 {
-                    throw new NotImplementedException("Kill Player not Implemented");
                     AddToConsoleLog("Killed the player");
+                    throw new NotImplementedException("Kill Player not Implemented");
                 }
                 else
                 {

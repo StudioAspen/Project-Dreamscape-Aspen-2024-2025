@@ -25,7 +25,7 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void CacheOriginalMaterials()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
             if (renderer == null) continue;
 
@@ -42,7 +42,7 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="newMaterial">The new material to add.</param>
     public void AddMaterial(Material newMaterial)
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
             if (renderer == null) continue;
 
@@ -59,7 +59,7 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="material">The material to remove.</param>
     public void RemoveMaterial(Material material)
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
             if (renderer == null) continue;
 
@@ -80,7 +80,7 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void RemoveAllMaterials()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
             if (renderer == null) continue;
 
@@ -108,7 +108,7 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     private void CacheOriginalTints()
     {
-        foreach (Renderer renderer in Renderers)
+        foreach (Renderer renderer in new List<Renderer>(Renderers))
         {
             if (renderer == null) continue;
 
@@ -173,7 +173,7 @@ public class EntityRendererManager : MonoBehaviour
     /// <param name="duration">The duration of the tween</param>
     public void TweenUnTint(float duration = 0.2f)
     {
-        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in new Dictionary<Renderer, List<Color>>(originalColors))
         {
 
             Renderer renderer = entry.Key;
@@ -196,7 +196,7 @@ public class EntityRendererManager : MonoBehaviour
     /// </summary>
     public void ResetTint()
     {
-        foreach (KeyValuePair<Renderer, List<Color>> entry in originalColors)
+        foreach (KeyValuePair<Renderer, List<Color>> entry in new Dictionary<Renderer, List<Color>>(originalColors))
         {
             Renderer renderer = entry.Key;
             List<Color> colors = entry.Value;

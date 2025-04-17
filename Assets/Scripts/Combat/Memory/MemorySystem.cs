@@ -90,7 +90,7 @@ public class MemorySystem : MonoBehaviour
         }
 
         // Try to activate ability
-        if(player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
+        if (player.PlayerAbilityState.TryChangeAbilityState(ShardDictionary[largestShardType].MemoryAbility, false))
         {
             OnMemoryAbilityActivated.Invoke(largestShardType);
             ShardDictionary.Clear();
@@ -153,7 +153,7 @@ public class MemorySystem : MonoBehaviour
     /// Gets the shard type with the most shard count.
     /// If there is a tie, it gets the first one it finds.
     /// </summary>
-    private string GetLargestShardType()
+    public string GetLargestShardType()
     {
         int largestCount = 0;
         string largestShardType = "";

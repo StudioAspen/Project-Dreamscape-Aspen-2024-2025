@@ -122,7 +122,7 @@ public class EscortWorldEventSO : WorldEventSO
         StartEnemySpawnerWithCurrency(newLand, new Vector2(BaseSpawnInterval, BaseSpawnInterval), BaseSpawnAmount, false);
     }
 
-    private void EscortEventEntity_OnEntityDeath(GameObject killerObject)
+    private void EscortEventEntity_OnEntityDeath(Entity victim, GameObject killerObject)
     {
         EscortEventEntity.OnEntityDeath -= EscortEventEntity_OnEntityDeath;
         

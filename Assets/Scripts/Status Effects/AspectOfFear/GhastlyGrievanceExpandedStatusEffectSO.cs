@@ -26,7 +26,7 @@ public class GhastlyGrievanceExpandedStatusEffectSO : StatusEffectSO
         base.Cancel();
     }
 
-    private void Entity_OnEntityDeath(GameObject @object)
+    private void Entity_OnEntityDeath(Entity victim, GameObject killerSource)
     {
         Vector3 grievancePosition = entity.GetColliderCenterPosition();
 

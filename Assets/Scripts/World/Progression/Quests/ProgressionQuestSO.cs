@@ -2,29 +2,76 @@
 
 public abstract class ProgressionQuestSO : ScriptableObject
 {
-    private protected ProgressionManager progressionManager;
-
     public enum Reward
     {
+        WEAKEN_TOKEN,
         EMPOWER_TOKEN,
-        WEAKEN_TOKEN
+        // below are other potential rewards 
+
+        // HEALTH_RECOVERY,
+        // EXP_POINTS,
+        // RAGE_UPGRADE,
+        // FEAR_UPGRADE
     }
 
-    [field: SerializeField] public string ObjectiveText { get; private set; } = "";
-    [field: SerializeField] public Reward CompletionReward { get; private set; }
-    public bool IsCompleted { get; protected set; }
+    [field: Header("Quest Settings")]
 
+    /// <summary>
+    /// The quest objective statement displayed to players.
+    /// </summary>
+    [field: Tooltip("The quest objective statement displayed to players.")]
+    [field: SerializeField] public string ObjectiveText { get; protected set; }
+
+    /// <summary>
+    /// The reward for completing the quest.
+    /// </summary>
+    [field: Tooltip("The reward for completing the quest")]
+    [field: SerializeField] public Reward CompletionReward { get; private set; }
+
+    /// <summary>
+    /// If checked, the quest will log error messages in the Console.
+    /// </summary>
+    [field: Tooltip("If checked, the quest will log error messages in the Console.")]
+    [field: SerializeField] public bool LogErrorMessages { get; private set; } = false;
+
+
+    [field: Header("Basic Criteria")]
+
+    /// <summary>
+    /// The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.
+    /// </summary>
+    [field: Tooltip("The difficulty level of the quest on a scale from 1-3. The Progression Manager prioritizes lower difficulty quests when selecting them.")]
+    [field: Range(1, 3)]
+    [field: SerializeField] public int Difficulty { get; private set; }
+
+    /// <summary>
+    /// Did the player complete this quest?
+    /// </summary>
+    public bool IsCompleted { get; protected set; } = false;
+
+    /// <summary>
+    /// Reference to the Progression Manager.
+    /// </summary>
+    protected ProgressionManager progressionManager;
+    
     /// <summary>
     /// Initializes instance of quest and calls the OnActivated() method.
     /// </summary>
-    /// <param name="progressionManager">Reference to the progression manager</param>
+    /// <param name="progressionManager">Reference to the Progression Manager.</param>
     public void Init(ProgressionManager progressionManager)
     {
-        this.progressionManager = progressionManager;
+      this.progressionManager ??= progressionManager;
 
-        //Debug.Log($"Activated progression quest: {name}");
-        OnActivated();
+      Debug.Log($"Activated progression quest: {name}");
+      OnActivated();
     }
+
+    /// <summary>
+    /// Checks if the quest meets the minimum criteria before the Progression Manager assigns it.
+    /// </summary>
+    /// <param name="progressionManager">Reference to the Progression Manager.</param>
+    /// <returns>A boolean</returns>
+    public abstract bool MeetsCriteria(ProgressionManager progressionManager);
 
     /// <summary>
     /// Fires once when the game enters the PLAYING state. The player auto accepts progression quests every new event.
@@ -35,9 +82,9 @@ public abstract class ProgressionQuestSO : ScriptableObject
     /// Call this function to complete the quest and trigger the CleanUp() cleanup method.
     /// Awards the player with the reward token.
     /// </summary>
-    public void Complete()
+    public void Complete(bool withCleanUp = true)
     {
-        //Debug.Log($"Completed progression quest: {name}");
+        Debug.Log($"Completed progression quest: {name}");
 
         IsCompleted = true;
 
@@ -52,34 +99,16 @@ public abstract class ProgressionQuestSO : ScriptableObject
 
         progressionManager.OnQuestComplete.Invoke(this);
 
-        CleanUp();
+        if(withCleanUp)
+          CleanUp();
     }
 
     /// <summary>
-    /// Can be called if you want to avoid clean up 
-    /// </summary>
-    private protected void CompleteWithoutCleanUp()
-    {
-        IsCompleted = true;
-
-        if (CompletionReward == Reward.EMPOWER_TOKEN)
-        {
-            progressionManager.AddEmpowerTokens(1);
-        }
-        else
-        {
-            progressionManager.AddWeakenTokens(1);
-        }
-
-        progressionManager.OnQuestComplete.Invoke(this);
-    }
-
-    /// <summary>
-    /// Cleans up the quest. Fired when quest is completed or by the progression manager when clearing the event.
+    /// Cleans up the quest. Fired when quest is completed or by the Progression Manager when clearing the event.
     /// </summary>
     public void CleanUp()
     {
-        //Debug.Log($"Cleaned Up progression quest: {name}");
+        Debug.Log($"Cleaned Up progression quest: {name}");
         OnCleanUp();
     }
 
@@ -89,13 +118,14 @@ public abstract class ProgressionQuestSO : ScriptableObject
     private protected abstract void OnCleanUp();
 
     /// <summary>
-    /// Called by the progression manager's Update method.
+    /// Called by the Progression Manager's Update method.
     /// </summary>
     public void Update()
     {
-        if(IsCompleted) return;
+      if(IsCompleted) 
+        return;
 
-        OnUpdate();
+      OnUpdate();
     }
 
     /// <summary>

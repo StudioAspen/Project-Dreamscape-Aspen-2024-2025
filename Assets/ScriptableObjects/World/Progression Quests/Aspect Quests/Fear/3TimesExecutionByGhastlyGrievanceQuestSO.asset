@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38ed8aa2df921bd4eb5d0a321f0e21bf, type: 3}
+  m_Name: 3TimesExecutionByGhastlyGrievanceQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: '[Aspect of Fear] Execute 3 Dreamons with Ghastly
+    Grievance.'
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 2
+  requiredAspectTree: {fileID: 11400000, guid: a28dd62f121619a46a6b807c141ad513, type: 2}
+  requiredAspectNode: {fileID: -5092554926121242106, guid: a28dd62f121619a46a6b807c141ad513,
+    type: 2}
+  nodeLevel: 1
+  <SuccessfulHitsGoal>k__BackingField: 0
+  <SuccessfulExecutionsGoal>k__BackingField: 3

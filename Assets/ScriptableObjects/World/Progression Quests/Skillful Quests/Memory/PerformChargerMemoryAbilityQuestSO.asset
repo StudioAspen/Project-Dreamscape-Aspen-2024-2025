@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30918cc1389abf54d8371b539a00f8ae, type: 3}
+  m_Name: PerformChargerMemoryAbilityQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: Perform the Charger-Type Memory Ability.
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 3
+  requiredPlayerLevel: 6
+  <MinRequiredMemoryLevel>k__BackingField: 2
+  <RequiredMemoryAbility>k__BackingField: Charger

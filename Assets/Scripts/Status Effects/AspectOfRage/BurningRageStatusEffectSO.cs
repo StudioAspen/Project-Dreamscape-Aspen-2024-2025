@@ -17,6 +17,18 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     private int damagePerTick;
     private int currentStacks;
 
+    /// <summary>
+    /// An action that is invoked when the dying entity deals damage to another friendly entity via Burning Rage Combustion.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity source</c>: The source entity.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity.</description></item>
+    /// <item><description><c>int damageValue</c>: The damage dealt to the victim entity.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, int> OnCombustionDamage = delegate { };
+
     private protected override void OnApply()
     {
         base.OnApply();
@@ -78,7 +90,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
     }
 
-    private void Entity_OnEntityDeath(GameObject killer)
+    private void Entity_OnEntityDeath(Entity victim, GameObject killer)
     {
         Vector3 explosionPosition = entity.GetColliderCenterPosition();
 
@@ -102,10 +114,12 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
             if(source.TryGetComponent(out Entity sourceEntity))
             {
                 sourceEntity.DealDamageToOtherEntity(enemy, combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition));
+                OnCombustionDamage?.Invoke(entity, enemy, combustExplosionDamage);
             }
             else
             {
                 enemy.TakeDamage(combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
+                // OnCombustionDamage?.Invoke(entity, enemy, combustExplosionDamage);
             }
         }
 
@@ -147,4 +161,5 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
         // repeatedly apply the status effect to the target entity based on the number of stacks
         for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, source);
     }
+
 }

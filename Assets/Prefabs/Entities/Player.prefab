@@ -368,7 +368,7 @@ MonoBehaviour:
   IsGrounded: 0
   targetDetectionRadius: 10
   <Team>k__BackingField: 0
-  <BaseDamageRange>k__BackingField: {x: 5, y: 10}
+  <BaseDamageRange>k__BackingField: {x: 5, y: 8}
   <DamageModifier>k__BackingField:
     <BaseValue>k__BackingField: 1
   UseRootMotion: 0
@@ -393,14 +393,14 @@ MonoBehaviour:
   <EntitySpawnState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 0}
     <SpawnDuration>k__BackingField: 1.5
-  groundedAcceleration: 4
+  groundedAcceleration: 5
   <PlayerDashState>k__BackingField:
     dashTrailParticle: {fileID: 8508715176541134875}
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: ab69ca9e285bf8b4aa58270be79beed0,
       type: 2}
     <DashDuration>k__BackingField: 0.25
     <InitialDashVelocity>k__BackingField: 75
-    <DashCooldown>k__BackingField: 1
+    <DashCooldown>k__BackingField: 0.75
   <PlayerJumpState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 39c1e8b66fab3ba418b191caaf714f42,
       type: 3}
@@ -413,6 +413,8 @@ MonoBehaviour:
   <PlayerAttackState>k__BackingField:
     <AttackNearbyRadius>k__BackingField: 5
     <AttackNearbyInFrontHalfAngle>k__BackingField: 25
+    <AirAttackMagnetSpeed>k__BackingField: 15
+    <AirAttackMagnetStopRadius>k__BackingField: 1.75
   <PlayerChargeState>k__BackingField:
     <AnimationClip>k__BackingField: {fileID: 7400000, guid: 27132927d460295409a8e98c70ef17b3,
       type: 3}
@@ -428,6 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3994e165571b624590722e7e6e5ffee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableOutOfCombatRegen: 0
   healthRegenAmount: 5
   healthRegenRate: 1
   durationOutOfCombatToRegen: 5
@@ -459,13 +462,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801673e6a91face43b8adc4de0de7aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseTimeBetween: 10
-  timeBetweenMultiplier: 0.975
-  percentDamageBonus: 0.05
-  maxDamageBonus: 2
-  percentMoveSpeedBonus: 0.05
-  maxMoveSpeedBonus: 2
-  healAmount: 10
+  timeBetween: 10
+  chainRewards:
+    _serializedList:
+    - Key: 4
+      Value: 1.2
+    - Key: 6
+      Value: 1.3
+    - Key: 8
+      Value: 1.4
+    - Key: 10
+      Value: 1.5
 --- !u!114 &3702187593430642151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,17 +485,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12bf518af5db3b148ab7eaa67d685769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBetween: 2
-  chainRewards:
-    _serializedList:
-    - Key: 6
-      Value: 0.25
-    - Key: 12
-      Value: 0.5
-    - Key: 18
-      Value: 0.75
-    - Key: 24
-      Value: 1
+  baseTimeBetween: 5
+  timeBetweenMultiplier: 0.98
+  percentDamageBonus: 0.02
+  maxDamageBonus: 1
+  percentMoveSpeedBonus: 0.02
+  maxMoveSpeedBonus: 1
+  healAmount: 3
 --- !u!114 &5066363359248579512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,9 +516,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a05f0ec93e9c8a43bd1e8b06656cce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMaxEXP: 50
-  maxEXPLinearGrowth: 15
-  maxEXPExponentialGrowth: 1.1
+  baseMaxEXP: 80
+  growthRate: 1.2
 --- !u!114 &6950320168933061115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -531,6 +533,8 @@ MonoBehaviour:
   <ShardDictionary>k__BackingField:
     _serializedList: []
   <MaxShardsPerLevel>k__BackingField: 25
+  playerFollowerFollowAbilityStateSO: {fileID: 11400000, guid: 91543b360a24d45b1ab8eb62f445db5b,
+    type: 2}
 --- !u!114 &4562688828567907799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6678,6 +6682,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7536978621657743438}
     m_Modifications:
+    - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.00000013240823
+      objectReference: {fileID: 0}
+    - target: {fileID: 454195991047243508, guid: 6aab3603f6d8a4745b542f385342d4c9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.00000013240823
+      objectReference: {fileID: 0}
     - target: {fileID: 2725540357861909793, guid: 6aab3603f6d8a4745b542f385342d4c9,
         type: 3}
       propertyPath: m_LocalScale.x
