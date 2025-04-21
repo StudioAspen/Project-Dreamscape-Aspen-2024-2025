@@ -448,7 +448,7 @@ public class WorldManager : MonoBehaviour
         float worldMaxZ = secondMaxY * LandScale;
 
         Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
-        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale, 0, worldMaxZ - worldMinZ + LandScale);
+        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale - 25, 0, worldMaxZ - worldMinZ + LandScale - 25);
 
         return new Bounds(center, size);
     }
