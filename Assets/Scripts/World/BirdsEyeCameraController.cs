@@ -38,7 +38,7 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandPlacement.Zoom.canceled += PlayerControls_OnZoomCanceled;
         playerControls.LandPlacement.Select.performed += PlayerControls_LandPlacement_OnSelectedPerformed;
 
-        playerControls.LandEmpowerment.Movement.performed += PlayerControls_OnMovementPerformed;
+        playerControls.LandEmpowerment.Movement.performed += PlayerControlsEmpowerment_OnMovementPerformed;
         playerControls.LandEmpowerment.Movement.canceled += PlayerControls_OnMovementCanceled;
         playerControls.LandEmpowerment.Zoom.performed += PlayerControls_OnZoomPerformed;
         playerControls.LandEmpowerment.Empower.performed += PlayerControls_LandEmpowerment_OnEmpowerPerformed;
@@ -59,7 +59,7 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandPlacement.Zoom.performed -= PlayerControls_OnZoomPerformed;
         playerControls.LandPlacement.Select.performed -= PlayerControls_LandPlacement_OnSelectedPerformed;
 
-        playerControls.LandEmpowerment.Movement.performed -= PlayerControls_OnMovementPerformed;
+        playerControls.LandEmpowerment.Movement.performed -= PlayerControlsEmpowerment_OnMovementPerformed;
         playerControls.LandEmpowerment.Zoom.performed -= PlayerControls_OnZoomPerformed;
         playerControls.LandEmpowerment.Empower.performed -= PlayerControls_LandEmpowerment_OnEmpowerPerformed;
         playerControls.LandEmpowerment.Weaken.performed -= PlayerControls_LandEmpowerment_OnWeakenPerformed;
@@ -88,17 +88,39 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void PlayerControls_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        // Store movement as a Vector2
-        moveDirection = context.ReadValue<Vector2>();
-
-        // If there's input (non-zero direction), move the player one unit in that direction.
-        if (moveDirection != Vector2.zero)
+        if (gameManager.CurrentState == GameState.LAND_PLACEMENT)
         {
-            // Convert move direction to Vector3 (using x and z axes only).
-            Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
-            Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
-            transform.Translate(movement, Space.World);  // Move the player 
-            ClampToLandBounds();
+            // Store movement as a Vector2
+            moveDirection = context.ReadValue<Vector2>();
+
+            // If there's input (non-zero direction), move the player one unit in that direction.
+            if (moveDirection != Vector2.zero)
+            {
+                // Convert move direction to Vector3 (using x and z axes only).
+                Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
+                Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
+                transform.Translate(movement, Space.World);  // Move the player 
+                ClampToLandBounds();
+            }
+        }
+    }
+
+    private void PlayerControlsEmpowerment_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        if (gameManager.CurrentState == GameState.LAND_EMPOWERMENT)
+        {
+            // Store movement as a Vector2
+            moveDirection = context.ReadValue<Vector2>();
+
+            // If there's input (non-zero direction), move the player one unit in that direction.
+            if (moveDirection != Vector2.zero)
+            {
+                // Convert move direction to Vector3 (using x and z axes only).
+                Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
+                Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
+                transform.Translate(movement, Space.World);  // Move the player 
+                EmpowermentClampToLandBounds();
+            }
         }
     }
 
@@ -195,6 +217,17 @@ public class BirdsEyeCameraController : MonoBehaviour
         Vector3 pos = transform.position;
         pos.x = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
         pos.z = Mathf.Clamp(pos.z, bounds.min.z, bounds.max.z);
+
+        transform.position = pos;
+    }
+
+    void EmpowermentClampToLandBounds()
+    {
+        Bounds empowermentBounds = worldManager.EmpowermentGetWorldBoundsOfSpawnedLands();
+
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, empowermentBounds.min.x, empowermentBounds.max.x);
+        pos.z = Mathf.Clamp(pos.z, empowermentBounds.min.z, empowermentBounds.max.z);
 
         transform.position = pos;
     }

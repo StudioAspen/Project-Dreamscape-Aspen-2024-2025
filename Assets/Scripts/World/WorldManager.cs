@@ -419,6 +419,35 @@ public class WorldManager : MonoBehaviour
         float worldMaxZ = maxY * LandScale;
 
         Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
+        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale - 25, 0, worldMaxZ - worldMinZ + LandScale - 25);
+
+        return new Bounds(center, size);
+    }
+
+    public Bounds EmpowermentGetWorldBoundsOfSpawnedLands()
+    {
+        if (Borders.Count == 0)
+            return new Bounds(Vector3.zero, Vector3.zero);
+
+        var xValues = Borders.Keys.Select(pos => pos.x).Distinct().OrderBy(x => x).ToList();
+        var yValues = Borders.Keys.Select(pos => pos.y).Distinct().OrderBy(y => y).ToList();
+
+        int minX = xValues.First();
+        int maxX = xValues.Last();
+        int secondMinX = xValues.Count > 1 ? xValues[1] : minX;
+        int secondMaxX = xValues.Count > 1 ? xValues[^2] : maxX;
+
+        int minY = yValues.First();
+        int maxY = yValues.Last();
+        int secondMinY = yValues.Count > 1 ? yValues[1] : minY;
+        int secondMaxY = yValues.Count > 1 ? yValues[^2] : maxY;
+
+        float worldMinX = secondMinX * LandScale;
+        float worldMaxX = secondMaxX * LandScale;
+        float worldMinZ = secondMinY * LandScale;
+        float worldMaxZ = secondMaxY * LandScale;
+
+        Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
         Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale, 0, worldMaxZ - worldMinZ + LandScale);
 
         return new Bounds(center, size);
