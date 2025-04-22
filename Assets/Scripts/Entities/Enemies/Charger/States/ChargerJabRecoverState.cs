@@ -2,46 +2,36 @@
 using System.Linq;
 using UnityEngine;
 
-public class ChargerJabRecoverState : EnemyBaseState
+[System.Serializable]
+public class ChargerJabRecoverState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
 
     private float timer;
 
-    public ChargerJabRecoverState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
-
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("RightJab");
+        charger.PlayOneShotAnimation(AnimationClip, JabRecoverDuration);
 
         timer = 0f;
     }
 
     public override void OnExit()
     {
-
+        charger.PlayDefaultAnimation();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.JabRecoverDuration)
+        if (timer > JabRecoverDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
-
-        charger.TransitionToAnimation("RightJab");
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

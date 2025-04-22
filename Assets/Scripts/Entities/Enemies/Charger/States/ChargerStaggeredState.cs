@@ -1,17 +1,20 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class ChargerStaggeredState : EntityStaggeredState
 {
     private Charger charger;
 
-    public ChargerStaggeredState(Charger enemy) : base(enemy)
+    public override void Init(Entity entity)
     {
-        charger = enemy;
+        base.Init(entity);
+
+        charger = entity as Charger;
     }
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("GetUp");
+        charger.PlayOneShotAnimation(AnimationClip, StaggerDuration);
 
         charger.SetSpeedModifier(0f);
 
@@ -25,21 +28,16 @@ public class ChargerStaggeredState : EntityStaggeredState
         charger.UseRootMotion = false;
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.StaggerDuration)
+        if (timer > StaggerDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

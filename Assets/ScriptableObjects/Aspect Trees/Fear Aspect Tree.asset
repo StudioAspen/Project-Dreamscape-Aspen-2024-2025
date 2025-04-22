@@ -1,0 +1,450 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6323877592038428020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 248, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -6323877592038428020}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -5092554926121242106}
+        reroutePoints: []
+      - fieldName: Children
+        node: {fileID: 2763769569843930792}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -6323877592038428020}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: 1864611941190978949}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -5092554926121242106}
+  Children:
+  - {fileID: 1864611941190978949}
+  <DisplayName>k__BackingField: 'Basic Stat Upgrade '
+  <Description>k__BackingField: Increases player health by 50
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: a0fd25768d3b5ef46a82d6bbf54955c4,
+    type: 2}
+--- !u!114 &-5359809309940247393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1016, y: 120}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -5359809309940247393}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -5359809309940247393}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 4095001867604409900}
+  Children: []
+  <DisplayName>k__BackingField: Intimidation Expansion
+  <Description>k__BackingField: "Killing an enemy during your stat buff will\r\nGrants
+    portion of enemy stats, further boosting your temporary buff\r\nExtends your
+    buff\u2019s duration\r\nPhysically grows the player\u2019s scale\r\n"
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: a852b42469e39194ca9048da38c2a70f,
+    type: 2}
+--- !u!114 &-5092554926121242106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -24, y: -248}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -5092554926121242106}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -3918194093017296719}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -5092554926121242106}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -3918194093017296719}
+  Children:
+  - {fileID: -6323877592038428020}
+  <DisplayName>k__BackingField: Ghastly Grievance
+  <Description>k__BackingField: "Switching inputs in a combo (X\u2192Y or Y\u2192X)
+    will launch a large, piercing skull that moves forward from where the player
+    is facing and applies a skull debuff to any enemies hit by the skull.\r\nEnemies
+    with this skull debuff will be executed upon reaching 10% health."
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 554ddfbd3af2a83478970fab9ed42aba,
+    type: 2}
+--- !u!114 &-3918194093017296719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -296, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -3918194093017296719}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -3918194093017296719}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -5092554926121242106}
+        reroutePoints: []
+      - fieldName: Parent
+        node: {fileID: 2763769569843930792}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 0}
+  Children:
+  - {fileID: -5092554926121242106}
+  - {fileID: 2763769569843930792}
+  <DisplayName>k__BackingField: Intimidating Slam
+  <Description>k__BackingField: "Grounded X\u2192X\u2192X\u2192Y\r\nLarge slam on
+    the ground that launches enemies away, stunning them\r\n"
+  <ComboData>k__BackingField: {fileID: 11400000, guid: e8cdc0955bbe20449b75994e182b9b72,
+    type: 2}
+--- !u!114 &-3194902288124324442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1016, y: -184}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -3194902288124324442}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -3194902288124324442}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 4095001867604409900}
+  Children: []
+  <DisplayName>k__BackingField: Ghastly Grievance Expanded
+  <Description>k__BackingField: "Each active skull debuff provides global damage
+    up, this lasts for X seconds\r\nALL debuffs now increase the execution threshold\r\nExecutions
+    will deal that threshold\u2019s damage to all enemies within a range\n"
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: c64b4765a4cfd19469665a45016550aa,
+    type: 2}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 585e5f22252d25641b4432be95b30b80, type: 3}
+  m_Name: Fear Aspect Tree
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 4095001867604409900}
+  - {fileID: -3918194093017296719}
+  - {fileID: 1864611941190978949}
+  - {fileID: -5092554926121242106}
+  - {fileID: 2763769569843930792}
+  - {fileID: -6323877592038428020}
+  - {fileID: -3194902288124324442}
+  - {fileID: -5359809309940247393}
+  <DisplayName>k__BackingField: Aspect of Fear
+  <Description>k__BackingField: "Enhances attacks with debuffing effects, provides
+    stack-based power scaling, rewards aggressive play with temporary stat boosts.
+    Encourages the use of combos and abilities that either swap inputs mid-combo
+    or stuns/launches enemies\r"
+  <AspectSprite>k__BackingField: {fileID: 21300000, guid: a2ceee80f19dcfc41a6369bbfac7c7e9,
+    type: 3}
+  <AspectTextColor>k__BackingField: {r: 0.76470596, g: 0.6901961, b: 0.7686275, a: 1}
+--- !u!114 &1864611941190978949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 488, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 1864611941190978949}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 1864611941190978949}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -6323877592038428020}
+  Children:
+  - {fileID: 4095001867604409900}
+  <DisplayName>k__BackingField: 'Unique Stat Upgrade '
+  <Description>k__BackingField: Debuffs you apply last longer
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: 6ed83ea01c3bf4648898b5b46fea0fa0,
+    type: 2}
+--- !u!114 &2763769569843930792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -24, y: 88}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 2763769569843930792}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -3918194093017296719}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 2763769569843930792}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -3918194093017296719}
+  Children:
+  - {fileID: -6323877592038428020}
+  <DisplayName>k__BackingField: Intimidation
+  <Description>k__BackingField: Stunning enemies grants the player fear stacks that
+    last for x seconds. This timer gets reset each time a stack is added. At X stacks,
+    gain buffs.
+  <StatusEffect>k__BackingField: {fileID: 11400000, guid: b942d46754e6cea4c96fb1be83bd039f,
+    type: 2}
+--- !u!114 &4095001867604409900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 744, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 4095001867604409900}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 1864611941190978949}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 4095001867604409900}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -3194902288124324442}
+        reroutePoints: []
+      - fieldName: Parent
+        node: {fileID: -5359809309940247393}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 1864611941190978949}
+  Children:
+  - {fileID: -3194902288124324442}
+  - {fileID: -5359809309940247393}
+  <DisplayName>k__BackingField: Shadow Dash
+  <Description>k__BackingField: "During Dash\u2192X\u2192Y\r\nA quick, whirling spin
+    that launches and stuns enemies caught in it\r\n"
+  <ComboData>k__BackingField: {fileID: 11400000, guid: 97ae1355d2427534bb0490559d8e4657,
+    type: 2}

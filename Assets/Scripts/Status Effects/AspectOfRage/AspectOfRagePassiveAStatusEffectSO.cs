@@ -7,9 +7,7 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     private Weapon ownerWeapon;
 
     [field: Header("Aspect of Rage Passive A: Settings")]
-    [field: SerializeField] public StatusEffectSO BurningRageStack { get; private set; }
-    [field: SerializeField] public StatusEffectSO BurningRageStackExtension { get; private set; }
-    private StatusEffectSO currentBurningRageStack;
+    [field: SerializeField] public BurningRageStatusEffectSO BurningRageStack { get; private set; }
 
     private void OnValidate()
     {
@@ -20,37 +18,35 @@ public class AspectOfRagePassiveAStatusEffectSO : StatusEffectSO
     {
         base.OnApply();
 
-        currentBurningRageStack = BurningRageStack;
-
         ownerWeapon = entity.GetComponentInChildren<Weapon>();
-        if(ownerWeapon == null)
+        if (ownerWeapon == null)
         {
             Debug.LogError($"{name}: Weapon not found on entity: {entity.name}");
+            RemoveSelf(); // If theres no Weapon, remove this passive
             return;
         }
 
-        ownerWeapon.OnWeaponHit.AddListener(WeaponStacks_OnWeaponHit);
+        ownerWeapon.OnWeaponHit += Weapon_OnWeaponHit;
     }
 
     public override void Cancel()
     {
         base.Cancel();
 
-        ownerWeapon.OnWeaponHit.RemoveListener(WeaponStacks_OnWeaponHit);
+        ownerWeapon.OnWeaponHit -= Weapon_OnWeaponHit;
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (!base.OnStack(newStatusEffect)) return false;
- 
-        currentBurningRageStack = (newStatusEffect as AspectOfRagePassiveAStatusEffectSO).BurningRageStackExtension;
+        AspectOfRagePassiveAStatusEffectSO overridingStatusEffect = newStatusEffect as AspectOfRagePassiveAStatusEffectSO;
 
-        return true;
+        BurningRageStack = overridingStatusEffect.BurningRageStack;
     }
+
 
     // for stacks
-    private void WeaponStacks_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damageValue)
+    private void Weapon_OnWeaponHit(Entity attacker, Entity victim, Vector3 hitPoint, int damageValue)
     {
-        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, currentBurningRageStack, entity.gameObject);
+        EntityStatusEffector.TryApplyStatusEffect(victim.gameObject, BurningRageStack, attacker.gameObject);
     }
 }

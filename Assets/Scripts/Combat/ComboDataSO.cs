@@ -4,39 +4,42 @@ using System.IO;
 using UnityEngine;
 using Dreamscape;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Animations;
-#endif
-
-[CreateAssetMenu(fileName = "Data", menuName = "ComboData", order = 1)]
+[CreateAssetMenu(fileName = "Data", menuName = "Combo/Default", order = 1)]
 public class ComboDataSO : ScriptableObject
 {
-#if UNITY_EDITOR
-    // Serialize AnimatorController for validating animation states
-    [SerializeField, HideInInspector] private AnimatorController _animatorController;
-#endif // UNITY_EDITOR
-    
+
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Combo";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Combo description";
+
     [field: Header("Combo Data")]
-    [field: SerializeField] public List<PlayerActions> ComboInputs { get; private set; } = new List<PlayerActions>();
+    [field: SerializeField] public List<ComboAction> ComboInputs { get; private set; } = new List<ComboAction>();
     [field: SerializeField] public AnimationClip ComboClip { get; private set; }
-    [HideInInspector]
-    [field: SerializeField] private AnimationClip _ComboClipChecChangeCheck;
-    [HideInInspector] 
-    [field: SerializeField] public bool IsComboClipValid = true;
     [field: SerializeField] [field: Range(0.25f, 5f)] public float ComboClipAnimationSpeed { get; private set; } = 1f;
 
-    [field: Header("Filter Options")]
-    [field: SerializeField] public bool HasRootMotion { get; private set; } = true;
-    [field: SerializeField] public bool IsAirCombo { get; private set; }
-    [field: SerializeField] public bool WillLaunchUpwards { get; private set; }
+    [field: Header("Position Options")]
+    [field: SerializeField, Tooltip("Root motion is when the animation moves the player")] public bool HasRootMotion { get; private set; } = true;
+    [field: SerializeField, Tooltip("If this combo is meant to be performed midair")] public bool IsAirCombo { get; private set; }
 
-    [field: Header("Hit Options")]
-    [field: SerializeField] public float PercentDamage { get; private set; } = 100f;
-    [field: Tooltip("Upwards launch force on hit. Only works on airborne targets.")]
-    [field: SerializeField] public float AirLaunchForce { get; private set; } = 7.5f;
-    [field: SerializeField] public float ImpactFramesTimeScale { get; private set; }
+    [field: Header("Damage")]
+    [field: SerializeField] public float DamageMultiplier { get; private set; } = 1f;
+
+    [field: Header("Launch Options")]
+    [field: SerializeField, Tooltip("Determines if the hit will launch grounded enemies upwards")] public bool WillLaunchUpwards { get; private set; }
+    [field: SerializeField, Tooltip("Upwards launch force on hit. Only works on airborne targets")] public float AirLaunchForce { get; private set; }
+    [field: SerializeField, Tooltip("If this air combo is the end animation of the combo sequence")] public bool IsFinalAirCombo { get; private set; }
+
+    [field: Header("Stun Options")]
+    [field: SerializeField] public bool WillStun { get; private set; }
+    [field: SerializeField] public float StunDuration { get; private set; }
+
+    [field: Header("Impact Frames")]
+    [field: SerializeField] public float ImpactFramesTimeScale { get; private set; } = 0.05f;
     [field: SerializeField] public float ImpactFramesDuration { get; private set; } = 0.25f;
+
+    [field: Header("Weapon Size")]
+    [field: SerializeField] public float WeaponScale { get; private set; } = 1f;
+    [field: SerializeField] public float WeaponScalingDuration { get; private set; } = 0.1f;
 
     /// <summary>
     /// Checks to see if the given combo (starting from the front) is potentially in the other combo
@@ -44,11 +47,11 @@ public class ComboDataSO : ScriptableObject
     /// <param name="givenComboList"></param>
     /// <param name="otherComboList"></param>
     /// <returns></returns>
-    public static bool IsPotentiallyIn(List<PlayerActions> givenComboList, List<PlayerActions> otherComboList)
+    public static bool IsPotentiallyIn(List<ComboAction> givenComboList, List<ComboAction> otherComboList)
     {
         if (otherComboList.Count > givenComboList.Count) return false;
 
-        List<PlayerActions> subList = givenComboList.GetRange(0, Mathf.Min(givenComboList.Count, otherComboList.Count));
+        List<ComboAction> subList = givenComboList.GetRange(0, Mathf.Min(givenComboList.Count, otherComboList.Count));
 
         return IsIn(subList, otherComboList);
     }
@@ -59,7 +62,7 @@ public class ComboDataSO : ScriptableObject
     /// <param name="givenComboList"></param>
     /// <param name="otherComboList"></param>
     /// <returns></returns>
-    public static bool IsIn(List<PlayerActions> givenComboList, List<PlayerActions> otherComboList)
+    public static bool IsIn(List<ComboAction> givenComboList, List<ComboAction> otherComboList)
     {
         if (givenComboList.Count > otherComboList.Count) return false;
 
@@ -71,8 +74,8 @@ public class ComboDataSO : ScriptableObject
             {
                 if (i + j >= otherComboList.Count) break;
 
-                PlayerActions otherAction = otherComboList[i + j];
-                PlayerActions currAction = givenComboList[j];
+                ComboAction otherAction = otherComboList[i + j];
+                ComboAction currAction = givenComboList[j];
 
                 if (otherAction == currAction) matches++;
             }
@@ -89,7 +92,7 @@ public class ComboDataSO : ScriptableObject
     /// <param name="combos"></param>
     /// <param name="action"></param>
     /// <returns></returns>
-    public static ComboDataSO GetSingleActionCombo(List<ComboDataSO> combos, PlayerActions action)
+    public static ComboDataSO GetSingleActionCombo(List<ComboDataSO> combos, ComboAction action)
     {
         foreach (ComboDataSO combo in combos)
         {
@@ -127,20 +130,4 @@ public class ComboDataSO : ScriptableObject
 
         return result;
     }
-
-#if UNITY_EDITOR
-    
-    ///-/////////////////////////////////////////////////////////////////////////////////////
-    ///
-    private void OnValidate()
-    {
-        if (_ComboClipChecChangeCheck != ComboClip)
-        {
-            IsComboClipValid = _animatorController.ValidateAnimationClip("Combos", ComboClip);
-            Debug.Log(ComboClip.name + " - " + IsComboClipValid);
-            _ComboClipChecChangeCheck = ComboClip;
-        }
-    }
-    
-#endif // UNITY_EDITOR
 }

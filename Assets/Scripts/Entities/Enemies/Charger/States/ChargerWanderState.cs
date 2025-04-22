@@ -4,28 +4,26 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ChargerWanderState : EnemyBaseState
+[System.Serializable]
+public class ChargerWanderState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
+    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
 
     private float wanderTimeElapsed;
     private float randomWanderIntervalDuration;
     private Vector3 currentWanderDestination;
 
-    public ChargerWanderState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         charger.SetSpeedModifier(1f);
 
         charger.ClearTarget();
 
         wanderTimeElapsed = Mathf.Infinity;
-        randomWanderIntervalDuration = Random.Range(charger.WanderIntervalDurationRange.x, charger.WanderIntervalDurationRange.y);
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
     }
 
     public override void OnExit()
@@ -33,7 +31,7 @@ public class ChargerWanderState : EnemyBaseState
         charger.CancelPath();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
@@ -41,13 +39,14 @@ public class ChargerWanderState : EnemyBaseState
 
         charger.TryAssignTarget();
 
+        if(!charger.IsCurrentPathValid())
+        {
+            SetNewWanderDestination();
+        }
+
         if(wanderTimeElapsed > randomWanderIntervalDuration)
         {
-            wanderTimeElapsed = 0f;
-            randomWanderIntervalDuration = Random.Range(charger.WanderIntervalDurationRange.x, charger.WanderIntervalDurationRange.y);
-
-            currentWanderDestination = charger.GetRandomWanderPoint(charger.WanderRadiusRange);
-            charger.SetDestination(currentWanderDestination);
+            SetNewWanderDestination();
         }
 
         charger.MoveTowardsDestination();
@@ -61,8 +60,15 @@ public class ChargerWanderState : EnemyBaseState
         }
     }
 
-    public override void FixedUpdate()
+    /// <summary>
+    /// Sets a new wander destination for the entity;
+    /// </summary>
+    private void SetNewWanderDestination()
     {
-        
+        wanderTimeElapsed = 0f;
+        randomWanderIntervalDuration = Random.Range(WanderIntervalDurationRange.x, WanderIntervalDurationRange.y);
+
+        currentWanderDestination = charger.GetRandomWanderPoint(WanderRadiusRange);
+        charger.SetDestination(currentWanderDestination);
     }
 }

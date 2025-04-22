@@ -1,26 +1,30 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
 public class PlayerFallState : PlayerBaseState
 {
-    public PlayerFallState(Player player) : base(player)
-    {
-        this.player = player;
-    }
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
 
     public override void OnEnter()
     {
-        player.TransitionToAnimation("Falling", 0.25f);
+        player.PlayOneShotAnimation(AnimationClip, 0, 0.25f);
     }
 
     public override void OnExit()
     {
-       
+        AkSoundEngine.PostEvent("PlayerLand", player.gameObject);
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
+
+        if (player.IsGrounded)
+        {
+            player.ChangeState(player.PlayerIdleState);
+            return;
+        }
 
         if (player.MoveDirection != Vector3.zero)
         {
@@ -36,16 +40,5 @@ public class PlayerFallState : PlayerBaseState
         player.RotateToTargetRotation(); 
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
-
-        if (player.IsGrounded)
-        {
-            player.ChangeState(player.PlayerIdleState);
-            return;
-        }
-    }
-
-    public override void FixedUpdate()
-    {
-
     }
 }

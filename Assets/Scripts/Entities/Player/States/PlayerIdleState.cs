@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class PlayerIdleState : PlayerBaseState
 {
-    public PlayerIdleState(Player player) : base(player)
-    {
-        this.player = player;
-    }
-
     public override void OnEnter()
     {
-        player.TransitionToAnimation("FlatMovement");
+        player.PlayDefaultAnimation();
 
         player.SetSpeedModifier(0f);
     }
@@ -19,27 +15,16 @@ public class PlayerIdleState : PlayerBaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
         player.AccelerateToHorizontalSpeed(0f);
         player.ApplyHorizontalVelocity();
 
-        if (player.MoveDirection != Vector3.zero && player.IsSprinting)
-        {
-            player.ChangeState(player.PlayerSprintingState);
-            return;
-        }
-
         if (player.MoveDirection != Vector3.zero)
         {
-            player.ChangeState(player.PlayerWalkingState);
+            player.ChangeState(player.PlayerWalkState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

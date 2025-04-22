@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60aad13350c08ac458666a61ea5ae678, type: 3}
+  m_Name: Biome Database
+  m_EditorClassIdentifier: 
+  <DefaultLandPrefab>k__BackingField: {fileID: 3081110013812948682, guid: 17627ad1775e36b479898cc5cecf8822,
+    type: 3}
+  <BiomesDictionary>k__BackingField:
+    _serializedList:
+    - Key: 0
+      Value:
+        <BiomeName>k__BackingField: Dream
+        <Description>k__BackingField: Description of biome.
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: f38ac8696b55cd84fa1153baa6329aed,
+          type: 3}
+        <PossibleLands>k__BackingField:
+        - {fileID: 3081110013812948682, guid: df77b620737507142b13a21ed6399b9a, type: 3}
+    - Key: 1
+      Value:
+        <BiomeName>k__BackingField: Lava
+        <Description>k__BackingField: Description of biome.
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: 96efedc18e27db442a8e16fb100b5bc1,
+          type: 3}
+        <PossibleLands>k__BackingField:
+        - {fileID: 6052383663745716427, guid: 1c648dc8b09af594891c9968c44bee10, type: 3}
+    - Key: 2
+      Value:
+        <BiomeName>k__BackingField: Food
+        <Description>k__BackingField: Description of biome.
+        <IconSprite>k__BackingField: {fileID: 21300000, guid: 8c1929517bab2744e8955dff0c97f357,
+          type: 3}
+        <PossibleLands>k__BackingField:
+        - {fileID: 1761470350273787396, guid: 5c6ff3304b2249c4ea556fe2e11f9f19, type: 3}
+        - {fileID: 6195584749733237375, guid: 75378857f01589540b71ce35f15122e3, type: 3}
+  checkForAnyErrors: 0

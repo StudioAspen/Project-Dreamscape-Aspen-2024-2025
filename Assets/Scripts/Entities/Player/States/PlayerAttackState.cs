@@ -1,23 +1,63 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Unity.Burst.Intrinsics;
-using UnityEditor;
 using UnityEngine;
+using Dreamscape.Abilities;
+using System.Linq;
 
+[System.Serializable]
 public class PlayerAttackState : PlayerBaseState
 {
     private PlayerCombat playerCombat;
 
+    [field: Header("Nearby Attack Config")]
+    [field: SerializeField] public float AttackNearbyRadius { get; private set; } = 5f;
+    [field: SerializeField] public float AttackNearbyInFrontHalfAngle { get; private set; } = 25f;
+
+    [field: Header("Air Nearby Attack Config")]
+    [field: SerializeField] public float AirAttackMagnetSpeed { get; private set; } = 5f;
+    [field: SerializeField] public float AirAttackMagnetStopRadius { get; private set; } = 2f;
+    private HashSet<Entity> airbornedEntities = new();
+
     public ComboDataSO ComboData { get; private set; }
+
+    private float extraDamageMultiplier = 1f;
 
     private float duration;
     private float timer;
 
-    public PlayerAttackState(Player player) : base(player)
+    private Coroutine weaponScaleCoroutine;
+
+    private bool canAirCombo = true;
+    private bool isAirComboPerfomed;
+
+    public override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
         playerCombat = player.GetComponent<PlayerCombat>();
+
+        player.OnGrounded += Player_OnGrounded;
+    }
+
+    public override void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(entity.transform.position, AttackNearbyRadius);
+
+        if (player == null) return;
+        if (!player.IsMoving) return;
+
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + player.TargetForwardDirection * AttackNearbyRadius);
+
+        Vector3 leftPoint = Quaternion.Euler(0f, -AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
+        Vector3 rightPoint = Quaternion.Euler(0f, AttackNearbyInFrontHalfAngle, 0f) * player.TargetForwardDirection;
+
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + leftPoint * AttackNearbyRadius);
+        Gizmos.DrawLine(entity.transform.position, entity.transform.position + rightPoint * AttackNearbyRadius);
+
+        Gizmos.DrawWireSphere(entity.transform.position, AirAttackMagnetStopRadius);
     }
 
     /// <summary>
@@ -30,85 +70,179 @@ public class PlayerAttackState : PlayerBaseState
         ComboData = comboData;
     }
 
+    /// <summary>
+    /// Sets the extra damage multiplier for this swing.
+    /// </summary>
+    /// <param name="extraDamageMultiplier">The extra damage multiplier to set.</param>
+    public void SetBonusDamageMultiplier(float extraDamageMultiplier)
+    {
+        this.extraDamageMultiplier = extraDamageMultiplier;
+    }
+
     public override void OnEnter()
     {
-        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player); // invoke the weapon start swing event
+        playerCombat.Weapon.OnWeaponStartSwing?.Invoke(player, ComboData); // invoke the weapon start swing event
 
-        playerCombat.Weapon.ClearEnemiesHitList(); // allows all enemies to get hit again
+        playerCombat.Weapon.ClearObjectHitList(); // allows all enemies to get hit again
 
-        playerCombat.Weapon.SetPercentDamage(ComboData.PercentDamage); // set the damage percent for this combo
+        playerCombat.Weapon.SetDamageMultiplier(ComboData.DamageMultiplier * extraDamageMultiplier); // set the damage mult for this combo
         playerCombat.Weapon.ConfigureImpactFrames(ComboData.ImpactFramesTimeScale, ComboData.ImpactFramesDuration); // configure the impact frames for this combo
 
-        playerCombat.SetComboAnimationSpeed(ComboData.ComboClipAnimationSpeed); // set the animation speed for this combo
-
-        player.TransitionToAnimation($"Combos.{ComboData.ComboClip.name}"); // play the combo animations
-
-        playerCombat.CanCancelAnimation = false; // prevents the player from cancelling the animation
-        playerCombat.IsAnimationPlaying = true; // true when combo is playing, false when done, becomes false from the animation event
-
-        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed; // set the duration of the combo
+        duration = ComboData.ComboClip.length / ComboData.ComboClipAnimationSpeed;
         timer = 0f; // reset the timer
 
+        player.PlayOneShotAnimation(ComboData.ComboClip, duration); // play the combo animation
+
         player.UseRootMotion = ComboData.HasRootMotion; // apply root motion if the combo has it
+        playerCombat.CanCombo = false; 
 
-        if(player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
+        if (player.IsGrounded) player.ApplyRotationToNextMovement(); // if grounded makes the player face the direction they are facing and moving
 
-        playerCombat.Weapon.OnWeaponHit.AddListener(PlayerCombat_OnWeaponHit); // listen for weapon hits
+        playerCombat.Weapon.OnWeaponHit += PlayerCombat_OnWeaponHit; // listen for weapon hits
+
+        ScaleWeapon(ComboData.WeaponScale, ComboData.WeaponScalingDuration);
+
+        playerCombat.OnFireAbility += PlayerCombat_OnFireAbility;
+
+        if (isAirComboPerfomed && ComboData.IsFinalAirCombo) canAirCombo = false;
     }
 
     public override void OnExit()
     {
-        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player); // invoke the weapon end swing event
+        playerCombat.Weapon.OnWeaponEndSwing?.Invoke(player, ComboData); // invoke the weapon end swing event
 
-        playerCombat.IsAnimationPlaying = false; // disables the animation playing bool in case the animation event doesnt do it
         player.UseRootMotion = false; // stops root motion
         playerCombat.CanCombo = false; // prevents the player from comboing again since they missed the window
 
         playerCombat.EndHit(); // stops the hitbox on the weapon
 
+        playerCombat.StartDelayedComboListsReset(playerCombat.AttackComboResetDelay);
+
         player.InstantlySetHorizontalSpeed(0f); // stops the player from moving
 
-        playerCombat.Weapon.OnWeaponHit.RemoveListener(PlayerCombat_OnWeaponHit); // remove the onhit listener
+        extraDamageMultiplier = 1f; // reset the extra damage multiplier
+
+        playerCombat.Weapon.OnWeaponHit -= PlayerCombat_OnWeaponHit; // remove the onhit listener
+
+        ScaleWeapon(1f, ComboData.WeaponScalingDuration); // reset the weapon scale to normal
+
+        playerCombat.OnFireAbility -= PlayerCombat_OnFireAbility;
     }
 
-    public override void Update()
+    public override void OnEntityDestroyed()
+    {
+        player.OnGrounded -= Player_OnGrounded;
+    }
+
+    public override void OnUpdate()
     {
         player.ApplyGravity();
 
-        if (!playerCombat.IsAnimationPlaying) // if the animation is done playing, go back to the default state
+        timer += player.LocalDeltaTime;
+
+        if (timer > duration) // if the animation is done playing, go back to the default state
         {
             player.ChangeState(player.DefaultState);
             return;
         }
 
-        HandleAnimationCancellingBuffer();
+        TryLookAtClosestTarget();
+        MagnetTowardsAirborneEnemy();
 
-        // update new target rotation player if they are moving and grounded
-        if (player.IsGrounded && player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement(); 
-
-        player.RotateToTargetRotation();
         player.AccelerateToHorizontalSpeed(0f);
         player.InstantlySetHorizontalSpeed(player.GetHorizontalVelocity().magnitude);
         player.ApplyHorizontalVelocity();
     }
 
-    public override void FixedUpdate()
+    /// <summary>
+    /// Tries to look at the closest target for the player to attack.
+    /// If there is no nearby target, the player will look at the direction they are moving.
+    /// If there is a nearby target, the player will look at the target.
+    /// </summary>
+    private void TryLookAtClosestTarget()
     {
+        List<Entity> nearbyTargets = player.GetNearbyHostileEntities(AttackNearbyRadius, false);
 
+        if (nearbyTargets.Count == 0)
+        {
+            // If there is no nearby target, look at the direction the player is moving
+            if(player.IsMoving) player.ApplyRotationToNextMovement(); // If moving calculate the target rotation/forward based on the input and camera
+            player.RotateToTargetRotation();
+        }
+        else
+        {
+            player.ApplyRotationToNextMovement(); // Calculate the target rotation/forward based on the input and camera
+
+            // If there is a nearby target, look at the target based off your camera/moving direction
+            Entity closestEntityInFront = GetClosestEntityFromPieCutout(nearbyTargets, player.TargetForwardDirection, AttackNearbyInFrontHalfAngle);
+            if(closestEntityInFront != null)
+            {
+                player.LookAt(closestEntityInFront.transform.position);
+            }
+            else
+            {
+                if(player.IsMoving) player.RotateToTargetRotation(); // If no target is in front of you, look at the direction you are moving
+                else player.LookAt(nearbyTargets[0].transform.position); // If no target is in front of you, look at the closest target
+            }
+        }
     }
 
     /// <summary>
-    /// Prevents the player from cancelling the animation for the first half of the animation.
-    /// Ensures that the player cant unexpectedly cancel the animation in a bug.
+    /// Magnets the player towards an airborne enemy if the player is airborne and there is a nearby target.
     /// </summary>
-    private void HandleAnimationCancellingBuffer()
+    private void MagnetTowardsAirborneEnemy()
     {
-        timer += player.LocalDeltaTime;
-        if (timer > duration / 2) playerCombat.CanCancelAnimation = true;
+        if (player.IsGrounded) return;
+        if (airbornedEntities.Count == 0) return;
+
+        Vector3 playerCenter = player.GetColliderCenterPosition();
+        List<Entity> nearbyAirborneTargets = airbornedEntities.OrderBy(e => Vector3.Distance(playerCenter, e.GetColliderCenterPosition())).ToList();
+        if (nearbyAirborneTargets == null) return;
+
+        Entity closestTarget = nearbyAirborneTargets[0];
+        Vector3 closestTargetCenter = closestTarget.GetColliderCenterPosition();
+        player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * Mathf.Sign(closestTargetCenter.y - playerCenter.y) * Vector3.up); // move the player up towards the target
+
+        if(Vector3.Distance(playerCenter, closestTargetCenter) < AirAttackMagnetStopRadius) return; // if the target is within the stop radius, stop moving towards it
+
+        Vector3 directionToTarget = (closestTargetCenter - playerCenter).normalized;
+        directionToTarget.y = 0;
+        player.CharacterController.Move(player.LocalDeltaTime * AirAttackMagnetSpeed * directionToTarget);
+    }
+
+    /// <summary>
+    /// Gets the closest entity from a pie cutout defined by a forward direction and a half angle.
+    /// </summary>
+    /// <param name="entities">The list of entities to search from.</param>
+    /// <param name="forwardDirection">The forward direction of the pie cutout.</param>
+    /// <param name="halfAngle">The half angle of the pie cutout.</param>
+    /// <returns>The closest entity within the pie cutout, or null if no entities are found.</returns>
+    private Entity GetClosestEntityFromPieCutout(List<Entity> entities, Vector3 forwardDirection, float halfAngle)
+    {
+        if (entities.Count == 0) return null;
+
+        List<Entity> entitiesInPieCutout = new List<Entity>();
+
+        foreach (Entity entity in new List<Entity>(entities))
+        {
+            Vector3 flattenedForwardDirection = new Vector3(forwardDirection.x, 0f, forwardDirection.z);
+            Vector3 flattenedVectorToEntity = entity.transform.position - player.transform.position;
+            flattenedVectorToEntity.y = 0f;
+
+            float angle = Vector3.Angle(flattenedForwardDirection, flattenedVectorToEntity);
+
+            if(angle < halfAngle) entitiesInPieCutout.Add(entity);
+        }
+
+        if (entitiesInPieCutout.Count == 0) return null;
+
+        return entitiesInPieCutout[0];
     }
 
     private void PlayerCombat_OnWeaponHit(Entity source, Entity victim, Vector3 hitPoint, int damage)
     {
+        if (ComboData.WillStun) victim.EntityStunnedState.StunEntity(player, ComboData.StunDuration);
+
         TryLaunchVictim(victim, damage);
         TryAirComboVictim(victim, damage);
     }
@@ -120,14 +254,15 @@ public class PlayerAttackState : PlayerBaseState
     /// <param name="damage">The damage inflicted on the victim.</param>
     private void TryLaunchVictim(Entity victim, int damage)
     {
+        if (!canAirCombo) return;
+
         if (!ComboData.WillLaunchUpwards) return;
         if (victim.WillDieFromDamage(damage)) return;
 
-        victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
+        TrackAirborneEntity(victim);
 
-        if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
-
-        player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+        isAirComboPerfomed = true;
     }
 
     /// <summary>
@@ -137,16 +272,118 @@ public class PlayerAttackState : PlayerBaseState
     /// <param name="damage">The damage inflicted on the victim.</param>
     private void TryAirComboVictim(Entity victim, int damage)
     {
+        if(!canAirCombo) return;
+
         if (player.IsGrounded) return;
         if (victim.IsGrounded) return;
 
         if (victim.WillDieFromDamage(damage)) victim.Launch(Vector3.up, ComboData.AirLaunchForce);
-        else victim.ForceChangeToLaunchState(Vector3.up, ComboData.AirLaunchForce, 2f);
+        else victim.ForceChangeToLaunchState(player, Vector3.up, ComboData.AirLaunchForce, 2f);
+        TrackAirborneEntity(victim);
 
         if (ComboData.AirLaunchForce > 0) player.Launch(Vector3.up, ComboData.AirLaunchForce);
         else player.ResetYVelocity();
 
         player.ApplyRotationToNextMovement(player.LookAt(victim.transform.position));
+
+        isAirComboPerfomed = true;
+    }
+
+    /// <summary>
+    /// Checks if the player can perform a basic attack.
+    /// </summary>
+    /// <returns>True if the player can basic attack, false otherwise.</returns>
+    public bool CanBasicAttack()
+    {
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
+        if (player.CurrentState == player.PlayerAttackState && !playerCombat.CanCombo) return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// Scales the weapon to the target scale over the specified duration.
+    /// </summary>
+    /// <param name="targetScale"></param>
+    /// <param name="duration"></param>
+    private void ScaleWeapon(float targetScale, float duration)
+    {
+        if (weaponScaleCoroutine != null) player.StopCoroutine(weaponScaleCoroutine);
+
+        if (player == null) return;
+        if (!player.enabled) return;
+        if (!player.gameObject.activeSelf) return;
+        weaponScaleCoroutine = player.StartCoroutine(WeaponScaleCoroutine(targetScale, duration));
+    }
+
+    private IEnumerator WeaponScaleCoroutine(float targetScale, float duration)
+    {
+        Ease easeType = Ease.OutQuint;
+
+        float startScale = playerCombat.Weapon.transform.localScale.x;
+        float endScale = targetScale * playerCombat.Weapon.OriginalScale;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            float currentScale = DOVirtual.EasedValue(startScale, endScale, elapsedTime / duration, easeType);
+            playerCombat.Weapon.transform.localScale = currentScale * Vector3.one;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        playerCombat.Weapon.transform.localScale = endScale * Vector3.one;
+
+        weaponScaleCoroutine = null;
+    }
+
+    /// <summary>
+    /// Called from playerCombat's FireAbility() method. That method is called from an animation event.
+    /// </summary>
+    public void PlayerCombat_OnFireAbility(AnimationEvent eventData)
+    {
+        AbilityComboDataSO abilityComboData = ComboData as AbilityComboDataSO;
+        if (abilityComboData == null) return;
+
+        CastedAbility spawnedAbility = ObjectPoolerManager.Instance.SpawnPooledObject<CastedAbility>(abilityComboData.AbilityPrefab.gameObject);
+        spawnedAbility.Init(player);
+    }
+
+    private void Player_OnGrounded(Entity groundedEntity, Vector3 groundPoint)
+    {
+        canAirCombo = true;
+        isAirComboPerfomed = false;
+    }
+
+    private void TrackAirborneEntity(Entity airbornedEntity)
+    {
+        if (airbornedEntities.Contains(airbornedEntity)) return;
+
+        airbornedEntities.Add(airbornedEntity);
+        airbornedEntity.OnGrounded += AirborneEntity_OnGrounded;
+        airbornedEntity.OnEntityDeath += AirborneEntity_OnEntityDeath;
+    }
+
+    private void UntrackAirborneEntity(Entity airbornedEntity)
+    {
+        if (!airbornedEntities.Contains(airbornedEntity)) return;
+        airbornedEntities.Remove(airbornedEntity);
+        airbornedEntity.OnGrounded -= AirborneEntity_OnGrounded;
+        airbornedEntity.OnEntityDeath -= AirborneEntity_OnEntityDeath;
+    }
+
+    private void AirborneEntity_OnGrounded(Entity groundedEntity, Vector3 groundPoint)
+    {
+        UntrackAirborneEntity(groundedEntity);
+    }
+
+    private void AirborneEntity_OnEntityDeath(Entity victim, GameObject source)
+    {
+        UntrackAirborneEntity(victim);
     }
 }
 

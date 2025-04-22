@@ -1,24 +1,21 @@
 ﻿using UnityEngine;
 
-public class FollowerReadyAttackState : EnemyBaseState
+[System.Serializable]
+public class FollowerReadyAttackState : FollowerBaseState
 {
-    private Follower follower;
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
 
     private float readyTimer;
     private float readyDuration;
 
-    public FollowerReadyAttackState(Follower enemy) : base(enemy)
-    {
-        follower = enemy;
-    }
-
     public override void OnEnter()
     {
-        follower.TransitionToAnimation("Attack", follower.AttackReadyDuration);
+        follower.PlayOneShotAnimation(AnimationClip, AttackReadyDuration);
 
         follower.SetSpeedModifier(0f);
 
-        readyDuration = Random.Range(0.5f * follower.AttackReadyDuration, 1.25f * follower.AttackReadyDuration);
+        readyDuration = Random.Range(0.5f * AttackReadyDuration, 1.25f * AttackReadyDuration);
         readyTimer = 0f;
     }
 
@@ -27,11 +24,9 @@ public class FollowerReadyAttackState : EnemyBaseState
         
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         follower.ApplyGravity();
-
-        follower.TransitionToAnimation("Attack");
 
         readyTimer += follower.LocalDeltaTime;
 
@@ -40,10 +35,5 @@ public class FollowerReadyAttackState : EnemyBaseState
             follower.ChangeState(follower.FollowerAttackState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

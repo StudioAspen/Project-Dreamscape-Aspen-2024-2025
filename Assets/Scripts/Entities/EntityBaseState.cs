@@ -1,31 +1,36 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 
-public class EntityBaseState
+public abstract class EntityBaseState : BaseState
 {
     /// <summary>
-    /// Called once when entering the state.
+    /// The entity that this state belongs to.
+    /// Entity is found in the parent object.
     /// </summary>
-    public virtual void OnEnter() { }
+    private protected Entity entity;
 
     /// <summary>
-    /// Called once when exiting the state.
+    /// Initializes the entity reference.
+    /// Override this method to add custom initialization behavior.
     /// </summary>
-    public virtual void OnExit() { }
-
-    /// <summary>
-    /// Called every frame to update the state.
-    /// </summary>
-    public virtual void Update() { }
-
-    /// <summary>
-    /// Called every fixed frame rate to update the state.
-    /// </summary>
-    public virtual void FixedUpdate() { }
+    public virtual void Init(Entity entity)
+    {
+        this.entity = entity;
+    }
 
     /// <summary>
     /// Called when the character controller hits a collider.
     /// </summary>
     /// <param name="hit">The collision information.</param>
-    public virtual void OnControllerColliderHit(ControllerColliderHit hit) { }
+    public virtual void OnOnControllerColliderHit(ControllerColliderHit hit) { }
+
+    /// <summary>
+    /// Called by the entity to draw the gizmos during the state
+    /// </summary>
+    public virtual void OnDrawGizmos() { }
+
+    /// <summary>
+    /// Called when the entity is destroyed or disabled.
+    /// </summary>
+    public virtual void OnEntityDestroyed() { }
 }

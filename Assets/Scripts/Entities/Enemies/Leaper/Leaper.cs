@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using System.Runtime.InteropServices;
 
 public class Leaper : Enemy
 {
@@ -9,43 +8,25 @@ public class Leaper : Enemy
     [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
     [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 40f;
 
-    [field: Header("Leaper: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public float WanderHopHeight { get; private set; } = 2f;
-
-    [field: Header("Leaper: Chase Settings")]
-    [field: SerializeField] public float ChaseHopHeight { get; private set; } = 1.25f;
-    [field: SerializeField] public float ChaseHopDistance { get; private set; } = 2f;
-    [field: SerializeField] public float StartReadyAttackDistance { get; private set; } = 2f;
-
-    [field: Header("Leaper: Attack Settings")]
-    [field: SerializeField] public LayerMask LeapAttackLayerMask { get; private set; }
-    [field: SerializeField] public float AttackContactDamagePercent { get; private set; } = 150f;
-    [field: SerializeField] public float RegularContactDamagePercent { get; private set; } = 100f;
-    [field: SerializeField] public float AttackHopDuration { get; private set; } = .75f;
-
-    [field: Header("Leaper: Ready Attack (Hop) Settings")]
-    [field: SerializeField] public int ReadyAttackHopCount { get; private set; } = 2;
-    [field: SerializeField] public float ReadyAttackHopDistance { get; private set; } = 3f;
-    [field: SerializeField] public float ReadyAttackHopHeight { get; private set; } = .75f;
-    [field: SerializeField] public float ReadyAttackStartDelay { get; private set; } = 0.75f;
+    [field: Header("Leaper: Animation")]
+    [field:SerializeField] public AnimationClip JumpAnimationClip { get; private set; }
 
     #region States
-    public LeaperWanderState LeaperWanderState { get; private set; }
-    public LeaperChaseState LeaperChaseState { get; private set; }
-    public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
-    public LeaperAttackState LeaperAttackState { get; private set; }
+    [field: Header("Leaper: States")]
+    [field: SerializeField] public LeaperWanderState LeaperWanderState { get; private set; }
+    [field: SerializeField] public LeaperChaseState LeaperChaseState { get; private set; }
+    [field: SerializeField] public LeaperReadyAttackState LeaperReadyAttackState { get; private set; }
+    [field: SerializeField] public LeaperAttackState LeaperAttackState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        LeaperWanderState = new LeaperWanderState(this);
-        EnemyChaseState = new LeaperChaseState(this);
-        LeaperReadyAttackState = new LeaperReadyAttackState(this);
-        LeaperAttackState = new LeaperAttackState(this);
-        LeaperChaseState = EnemyChaseState as LeaperChaseState;
+        LeaperWanderState.Init(this);
+        LeaperReadyAttackState.Init(this);
+        LeaperAttackState.Init(this);
+        LeaperChaseState.Init(this);
+        EnemyChaseState = LeaperChaseState;
     }
     #endregion
 
@@ -58,16 +39,14 @@ public class Leaper : Enemy
     {
         base.OnOnEnable();
 
-        SetStartState(LeaperWanderState);
-
-        OnGrounded.AddListener(Leaper_OnGrounded);
+        OnGrounded += Leaper_OnGrounded;
     }
 
     private protected override void OnOnDisable()
     {
         base.OnOnDisable();
 
-        OnGrounded.RemoveListener(Leaper_OnGrounded);
+        OnGrounded -= Leaper_OnGrounded;
     }
 
     private protected override void OnStart()
@@ -91,9 +70,11 @@ public class Leaper : Enemy
     {
         base.OnOnDrawGizmos();
 
+#if UNITY_EDITOR
         Gizmos.color = Color.red;
-        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+        CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+#endif
     }
 
     public override void TryAssignTarget()
@@ -106,10 +87,11 @@ public class Leaper : Enemy
     /// Checks for collisions with enemy entities and applies damage if a collision occurs.
     /// Pass in a reference to a list of hit entities to prevent multiple hits on the same entity.
     /// </summary>
+    /// <param name="damageMultiplier">The multiplier damage to apply.</param>
     /// <param name="hitEntities">A reference to the list of hit entities.</param>
-    public void CheckCollisions(float damagePercent, ref List<Entity> hitEntities)
+    public void CheckCollisions(float damageMultiplier, ref List<Entity> hitEntities)
     {
-        List<Collider> hits = GetCustomCollisionHits(LeapAttackLayerMask);
+        List<Collider> hits = GetCustomCollisionHits(LeaperAttackState.LeapAttackLayerMask);
 
         foreach (Collider hit in hits)
         {
@@ -118,9 +100,7 @@ public class Leaper : Enemy
                 if (hitEntities.Contains(enemyEntity)) continue;
                 hitEntities.Add(enemyEntity);
 
-                enemyEntity.TakeDamage(CalculateDamage(damagePercent), hit.ClosestPoint(GetColliderCenterPosition()), gameObject, true);
-
-                //switch to some state
+                DealDamageToOtherEntity(enemyEntity, CalculateDamage(damageMultiplier), hit.ClosestPoint(GetColliderCenterPosition()));
             }
         }
     }
@@ -137,7 +117,7 @@ public class Leaper : Enemy
     private Vector3 CalculateHopVelocity(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         // Gravity constant (positive value, assuming downward acceleration)
-        float gravity = Mathf.Abs(Physics.gravity.y);
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
 
         // Current position of the entity
         Vector3 startPosition = transform.position;
@@ -161,11 +141,9 @@ public class Leaper : Enemy
         if (hopDuration == 0f)
         {
             // Calculate initial vertical velocity required to reach hopHeight
-            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * hopHeight);
+            initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
 
-            // Total time of flight
-            float timeToApex = initialVerticalVelocity / gravity; // Time to reach the peak
-            totalFlightTime = timeToApex + Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+            totalFlightTime = CalculateHopDuration(endPosition, hopHeight);
         }
         else
         {
@@ -176,16 +154,53 @@ public class Leaper : Enemy
             // s = v*t - 0.5*g*t^2
             // verticalDisplacement = v * totalFlightTime - 0.5 * gravity * totalFlightTime^2
             initialVerticalVelocity = (verticalDisplacement + 0.5f * gravity * Mathf.Pow(totalFlightTime, 2)) / totalFlightTime;
+            if(float.IsNaN(initialVerticalVelocity)) initialVerticalVelocity = 0f;
         }
 
         // Calculate the horizontal velocity
         Vector3 horizontalVelocity = horizontalDisplacement / totalFlightTime;
+        if(totalFlightTime == 0f) horizontalVelocity = Vector3.zero;
 
         // Combine horizontal and vertical components into the final velocity vector
         Vector3 hopVelocity = horizontalVelocity + Vector3.up * initialVerticalVelocity;
 
         return hopVelocity;
     }
+
+    /// <summary>
+    /// Calculates the total duration required to hop from the current position to the end position
+    /// with a specified maximum hop height.
+    /// </summary>
+    /// <param name="endPosition">The target position to reach.</param>
+    /// <param name="hopHeight">The maximum height of the hop.</param>
+    /// <returns>The total duration of the hop.</returns>
+    public float CalculateHopDuration(Vector3 endPosition, float hopHeight)
+    {
+        // Gravity constant (positive value, assuming downward acceleration)
+        float gravity = Mathf.Abs(PhysicsConfig.Gravity);
+
+        // Current position of the entity
+        Vector3 startPosition = transform.position;
+
+        // Vertical displacement (difference in height)
+        float verticalDisplacement = endPosition.y - startPosition.y;
+
+        // Calculate initial vertical velocity required to reach hopHeight
+        float initialVerticalVelocity = Mathf.Sqrt(2 * gravity * Mathf.Abs(hopHeight));
+
+        // Time to reach the apex of the hop
+        float timeToApex = initialVerticalVelocity / gravity;
+
+        // Time to descend from the apex to the end position
+        float timeToDescend = Mathf.Sqrt(2 * (hopHeight - verticalDisplacement) / gravity);
+        if(float.IsNaN(timeToDescend)) timeToDescend = 0f;
+
+        // Total flight time (ascent + descent)
+        float totalFlightTime = timeToApex + timeToDescend;
+
+        return totalFlightTime;
+    }
+
 
     /// <summary>
     /// Makes the enemy hop to a specified end position with a given hop height.
@@ -196,14 +211,20 @@ public class Leaper : Enemy
     public void Hop(Vector3 endPosition, float hopHeight, float hopDuration = 0f)
     {
         Vector3 hopVelocity = CalculateHopVelocity(endPosition, hopHeight, hopDuration);
+        
+        if(hopVelocity == Vector3.zero) return;
 
         Launch(hopVelocity.normalized, hopVelocity.magnitude);
     }
 
-    private void Leaper_OnGrounded(Vector3 groundedPosition)
+    private void Leaper_OnGrounded(Entity groundedEntity, Vector3 groundedPosition)
     {
         if (CurrentState == EntityDeathState) return;
+        if (CurrentState == EntitySpawnState) return;
+        if (CurrentState == EntityLaunchState) return;
+        if (CurrentState == EntityStunnedState) return;
+        if (CurrentState == EntityStaggeredState) return;
 
-        TransitionToAnimation("FlatMovement");
+        PlayDefaultAnimation();
     }
 }

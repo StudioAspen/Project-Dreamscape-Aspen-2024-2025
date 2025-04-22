@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class EntityLaunchState : EntityBaseState
 {
-    private Entity entity;
+    [field: SerializeField] public AnimationClip LaunchAnimationClip { get; private set; }
+    [field: SerializeField] public AnimationClip GroundImpactAnimationClip { get; private set; }
 
     private protected float timer;
     private protected float stunDuration;
@@ -11,11 +13,6 @@ public class EntityLaunchState : EntityBaseState
     private protected float force;
 
     private protected bool touchedGround;
-
-    public EntityLaunchState(Entity entity)
-    {
-        this.entity = entity;
-    }
 
     public virtual void SetLaunchSettings(Vector3 direction, float force, float stunDuration)
     {
@@ -26,7 +23,7 @@ public class EntityLaunchState : EntityBaseState
 
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("FlatFall");
+        entity.PlayOneShotAnimation(LaunchAnimationClip);
 
         timer = 0f;
         touchedGround = false;
@@ -34,14 +31,16 @@ public class EntityLaunchState : EntityBaseState
         entity.SetSpeedModifier(0);
 
         entity.Launch(direction, force);
+
+        entity.IgnoreOtherEntityCollisions();
     }
 
     public override void OnExit()
     {
-
+        entity.IgnoreOtherEntityCollisions(false);
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         entity.ApplyGravity();
 
@@ -61,16 +60,11 @@ public class EntityLaunchState : EntityBaseState
 
             entity.SetVelocity(Vector3.zero);
 
-            entity.TransitionToAnimation("FlatFallImpact");
+            entity.PlayOneShotAnimation(GroundImpactAnimationClip);
         }
     }
 
-    public override void FixedUpdate()
-    {
-
-    }
-
-    public override void OnControllerColliderHit(ControllerColliderHit hit)
+    public override void OnOnControllerColliderHit(ControllerColliderHit hit)
     {
         if(hit.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
 

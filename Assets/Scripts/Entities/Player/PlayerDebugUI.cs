@@ -1,4 +1,3 @@
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,46 +6,46 @@ using UnityEngine;
 
 public class PlayerDebugUI : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Parent] private Player player;
+    private Player player;
     private PlayerCombat playerCombat;
     private ChainingSystem chainingSystem;
     private MomentumSystem momentumSystem;
-    [SerializeField, Child] private HealthBarUI healthBarUI;
+    private LevelSystem levelSystem;
 
     [SerializeField] private TMP_Text stateText;
     [SerializeField] private TMP_Text inputsText;
     [SerializeField] private TMP_Text comboText;
     [SerializeField] private TMP_Text chainText;
     [SerializeField] private TMP_Text momentumText;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
-
-    private void Awake()
-    {
-        playerCombat = player.GetComponent<PlayerCombat>();
-        chainingSystem = player.GetComponent<ChainingSystem>();
-        momentumSystem = player.GetComponent<MomentumSystem>();
-
-        player.OnEntityTakeDamage.AddListener(Entity_OnEntityTakeDamage);
-        
-        if(playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.AddListener(Weapon_OnWeaponStartSwing);
-    }
+    [SerializeField] private TMP_Text levelText;
 
     private void Start()
     {
-        healthBarUI.SetHealthBar(player.CurrentHealth, player.MaxHealth);
+        player = GetComponentInParent<Player>();
+        playerCombat = player.GetComponent<PlayerCombat>();
+        chainingSystem = player.GetComponent<ChainingSystem>();
+        momentumSystem = player.GetComponent<MomentumSystem>();
+        levelSystem = player.GetComponent<LevelSystem>();
+
+        if (playerCombat != null) if(playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing += Weapon_OnWeaponStartSwing;
+
+        StartCoroutine(LateStartCoroutine());
+    }
+
+    private void LateStart()
+    {
+    }
+
+    private IEnumerator LateStartCoroutine()
+    {
+        yield return null;
+
+        LateStart();
     }
 
     private void OnDestroy()
     {
-        player.OnEntityTakeDamage.RemoveListener(Entity_OnEntityTakeDamage);
-
-        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing.RemoveListener(Weapon_OnWeaponStartSwing);
-
+        if (playerCombat != null) if (playerCombat.Weapon != null) playerCombat.Weapon.OnWeaponStartSwing -= Weapon_OnWeaponStartSwing;
     }
 
     private void LateUpdate()
@@ -55,14 +54,10 @@ public class PlayerDebugUI : MonoBehaviour
         inputsText.text = playerCombat == null ? "Missing PlayerCombat component." : $"Inputs: {GetInputsListString()}";
         chainText.text = chainingSystem == null ? "Missing ChainingSystem component." : $"Chain: {chainingSystem.ChainCount}";
         momentumText.text = momentumSystem == null ? "Missing MomentumSystem component." : $"Momentum: {momentumSystem.Momentum}";
+        levelText.text = levelSystem == null ? "Missing LevelSystem component." : $"Level: {levelSystem.Level}, EXP: {levelSystem.CurrentEXP}/{levelSystem.MaxEXP}";
     }
 
-    private void Entity_OnEntityTakeDamage(int damage, Vector3 hitPoint, GameObject source)
-    {
-        healthBarUI.SetHealthBar(player.CurrentHealth - damage, player.MaxHealth);
-    }
-
-    private void Weapon_OnWeaponStartSwing(Entity source)
+    private void Weapon_OnWeaponStartSwing(Entity source, ComboDataSO combo)
     {
         comboText.text = playerCombat == null ? "Missing PlayerCombat component." : $"Combo: {player.PlayerAttackState.ComboData.name}";
     }

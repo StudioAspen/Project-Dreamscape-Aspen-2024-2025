@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4132873254648488860
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ca8bd5dacd86d468a11e8df2707532, type: 3}
+  m_Name: FogEffectComponent
+  m_EditorClassIdentifier: 
+  active: 1
+  primaryFogColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.36477983, b: 0.87629825, a: 1}
+  secondaryFogColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.6753846, g: 0.30853203, b: 0.9433962, a: 1}
+  gradientStrength:
+    m_OverrideState: 1
+    m_Value: 4.99
+  fogOffset:
+    m_OverrideState: 1
+    m_Value: 13.7
+  primaryFogColorOffset:
+    m_OverrideState: 1
+    m_Value: 17.2
+  secondaryFogColorOffset:
+    m_OverrideState: 1
+    m_Value: 13.54
+  fogDensity:
+    m_OverrideState: 1
+    m_Value: 0.08
+  fogScattering:
+    m_OverrideState: 1
+    m_Value: 0.01
+  skyBoxFogColor:
+    m_OverrideState: 0
+    m_Value: {r: 0.11320752, g: 0.021003904, b: 0.080050915, a: 1}
+  skyBoxFogDensity:
+    m_OverrideState: 0
+    m_Value: 0.48
+  noiseTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 2800000, guid: 2a9b2c4b34d88354295ccfdbd46f791f, type: 3}
+    dimension: 1
+  rotateFogNoise:
+    m_OverrideState: 1
+    m_Value: 0.44
+  fogNoiseScale:
+    m_OverrideState: 1
+    m_Value: 1
+  fogNoiseVelocity:
+    m_OverrideState: 1
+    m_Value: 0.48
+  rotateSkyBoxNoise:
+    m_OverrideState: 0
+    m_Value: 0
+  skyBoxNoiseScale:
+    m_OverrideState: 0
+    m_Value: 0
+  skyBoxNoiseVelocity:
+    m_OverrideState: 0
+    m_Value: -4.01
+  skyBoxNoiseTransparency:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: DreamscapeFogPreset
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -4132873254648488860}

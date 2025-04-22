@@ -1,31 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
+[System.Serializable]
 public class PlayerDashState : PlayerBaseState
 {
-    private float timer;
+    [Header("References")]
+    [SerializeField] private ParticleSystem dashTrailParticle;
 
+    [field: Header("Config")]
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float DashDuration { get; private set; } = 0.25f;
+    [field: SerializeField] public float InitialDashVelocity { get; private set; } = 75f;
+    [field: SerializeField] public float DashCooldown { get; private set; } = 1f;
+
+    private bool isReadyToDash => dashCooldownTimer >= DashCooldown;
+    private float dashCooldownTimer = Mathf.Infinity;
+
+    private float timer;
     private float currDashSpeed;
     private float maxSpeed;
 
-    public PlayerDashState(Player player) : base(player)
+    public override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
+
+        InitializeDashTrail();
     }
 
     public override void OnEnter()
     {
-        player.ResetDashDelay();
+        player.PlayOneShotAnimation(AnimationClip, DashDuration);
+        AkSoundEngine.PostEvent("PlayerDash", player.gameObject);
 
-        player.TransitionToAnimation("Dash");
-
+        dashCooldownTimer = 0f; // Reset the dash cooldown timer when you start dashing
+        
         timer = 0f;
-        currDashSpeed = player.InitialDashVelocity;
-        maxSpeed = player.GetMaxSpeed();
+        currDashSpeed = InitialDashVelocity;
+        maxSpeed = player.BaseSpeed * player.StatusSpeedModifier.GetFloatValue();
 
         player.ApplyRotationToNextMovement();
 
-        player.InstantlySetHorizontalSpeed(player.InitialDashVelocity);
+        player.InstantlySetHorizontalSpeed(InitialDashVelocity);
     }
 
     public override void OnExit()
@@ -34,11 +49,25 @@ public class PlayerDashState : PlayerBaseState
         player.ResetYVelocity();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
+        if (timer > DashDuration)
+        {
+            if (!player.IsGrounded)
+            {
+                player.ChangeState(player.PlayerFallState);
+                return;
+            }
+            else
+            {
+                player.ChangeState(player.PlayerWalkState);
+                return;
+            }
+        }
+
         timer += player.LocalDeltaTime;
 
-        currDashSpeed = (player.InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / player.DashDuration - 1, 2))) + maxSpeed;
+        currDashSpeed = (InitialDashVelocity - maxSpeed) * (1 - Mathf.Sqrt(1 - Mathf.Pow(timer / DashDuration - 1, 2))) + maxSpeed;
 
         if (player.MoveDirection != Vector3.zero) player.ApplyRotationToNextMovement();
         player.RotateToTargetRotation();
@@ -46,24 +75,76 @@ public class PlayerDashState : PlayerBaseState
         player.InstantlySetHorizontalSpeed(currDashSpeed);
         player.ApplyHorizontalVelocity();
 
-        if (timer > player.DashDuration)
+        dashCooldownTimer = 0; // keeps dash cooldown timer at 0 so that once you stop dashing, the timer goes up
+    }
+
+    /// <summary>
+    /// Initializes the dash trail particle system by finding the dash trail GameObject and getting the ParticleSystem component.
+    /// If the dash trail particle system is not found, it logs an error message.
+    /// </summary>
+    private void InitializeDashTrail()
+    {
+        if(dashTrailParticle != null)
         {
-            if (!player.IsGrounded)
+            dashTrailParticle.Stop();
+            return;
+        }
+
+        // Find the dash trail particle system if it is not set
+        dashTrailParticle = GameObject.Find("Trail").GetComponent<ParticleSystem>();
+        if(dashTrailParticle == null)
+        {
+            Debug.LogError("Cannot find player dash trail");
+        }
+    }
+
+    /// <summary>
+    /// Handles the cooldown timer for the player's dash ability by incrementing the timer by the player's local delta time.
+    /// </summary>
+    public void HandleDashCooldown()
+    {
+        if (dashCooldownTimer < DashCooldown)
+        {
+            dashCooldownTimer += player.LocalDeltaTime;
+        }
+    }
+
+    private bool isTrailPreviouslyPlaying;
+    /// <summary>
+    /// Handles the dash trail effect based on the player's speed.
+    /// </summary>
+    public void HandleDashTrail()
+    {
+        bool isPlayerExceedingMaxSpeed = player.GetHorizontalVelocity().magnitude > player.BaseSpeed;
+
+        if(isPlayerExceedingMaxSpeed != isTrailPreviouslyPlaying)
+        {
+            isTrailPreviouslyPlaying = isPlayerExceedingMaxSpeed;
+
+            if(isPlayerExceedingMaxSpeed)
             {
-                player.ChangeState(player.PlayerFallState);
+                dashTrailParticle.Play();
             }
             else
             {
-                player.PlayerSprintingState.SetSprintDuration(player.SprintDurationAfterDash);
-                player.ChangeState(player.PlayerSprintingState);
-            }  
+                dashTrailParticle.Stop();
+            }
         }
-
-        player.ResetDashDelay(); // keeps dash delay timer at 0 so that once you stop dashing, the timer goes up
     }
 
-    public override void FixedUpdate()
+    /// <summary>
+    /// Determines whether the player can perform a dash.
+    /// </summary>
+    /// <returns>True if the player can dash, false otherwise.</returns>
+    public bool CanDash()
     {
-        
+        if (!isReadyToDash) return false;
+        if (player.CurrentState == player.PlayerChargeState) return false;
+        if (player.CurrentState == player.PlayerDashState) return false;
+        if (player.CurrentState == player.EntityStaggeredState) return false;
+        if (player.CurrentState == player.EntityLaunchState) return false;
+        if (player.CurrentState == player.EntityStunnedState) return false;
+
+        return true;
     }
 }

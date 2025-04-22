@@ -7,6 +7,12 @@ using XNode;
 [CreateAssetMenu(menuName = "Aspect Tree")]
 public class AspectTree : NodeGraph
 {
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Tree";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Description";
+    [field: SerializeField] public Sprite AspectSprite { get; private set; }
+    [field: SerializeField] public Color AspectTextColor { get; private set; } = Color.white;
+
     /// <summary>
     /// Makes a runtime copy of this aspect tree so that it can be modified without affecting the original.
     /// </summary>
@@ -237,5 +243,48 @@ public class AspectTree : NodeGraph
 
         // if the node is at the same y as the applied node at the first multi-node level, it can be chosen and isnt locked out
         return currentNodePosition.y == appliedNodeY;
+    }
+
+    /// <summary>
+    /// Checks if the tree as all upgrades exhausted
+    /// </summary>
+    /// <returns>Whether the tree is completed</returns>
+    public bool IsCompleted()
+    {
+        List<AspectNodeNode> nextNodes = GetNextUnappliedNodes();
+        return nextNodes == null || nextNodes.Count == 0;
+    }
+
+    /// <summary>
+    /// Gets the node at the specified index. The index can't be greater than 6. The 6th node is the first unlockable node in that layer.
+    /// </summary>
+    /// <param name="index">The index to find the node at.</param>
+    /// <returns>The node at the index.</returns>
+    public AspectNodeNode GetNodeAtIndex(int index)
+    {
+        if (index < 0 || index >= nodes.Count) return null;
+
+        // If asking for last layer
+        if(index == 6)
+        {
+            List<AspectNodeNode> lastLevelNodes = GetNodesAtLevel(GetMultiNodeLevels()[1]);
+            foreach(var node in lastLevelNodes)
+            {
+                if(CanMultiNodeLevelNodeBeChosen(node)) return node;
+            }
+            return lastLevelNodes[0];
+        }
+
+        int currentIndex = 0;
+        for(int i = 0; i < GetTotalLevels(); i++)
+        {
+            List<AspectNodeNode> nodes = GetNodesAtLevel(i);
+            foreach(var node in nodes)
+            {
+                if(currentIndex == index) return node;
+                currentIndex++;
+            }
+        }
+        return null;
     }
 }

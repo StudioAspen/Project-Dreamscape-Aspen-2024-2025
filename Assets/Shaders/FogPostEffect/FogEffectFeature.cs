@@ -5,8 +5,8 @@ using UnityEngine.Rendering.Universal;
 [System.Serializable]
 public class FogEffectFeature : ScriptableRendererFeature
 {
+
     private RenderPass renderPass;
-    private Color primaryFogColor;
     public override void Create()
     {
         renderPass = new RenderPass();
@@ -14,7 +14,7 @@ public class FogEffectFeature : ScriptableRendererFeature
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (renderingData.cameraData.postProcessEnabled) // Only add if post-processing is enabled
+        if (renderingData.cameraData.postProcessEnabled)
         {
             renderer.EnqueuePass(renderPass);
         }
@@ -52,10 +52,19 @@ public class FogEffectFeature : ScriptableRendererFeature
         {
             if (material == null) return;
 
+            //var cameraData = renderingData.cameraData;
+            //if (cameraData.isSceneViewCamera) return;
+        
             CommandBuffer cmd = CommandBufferPool.Get("FogEffectFeature");
-            /*var stack = VolumeManager.instance.stack;
+            var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
             var fogEffect = stack.GetComponent<FogEffectComponent>();
-            // Apply fog properties if fog effect is active
+
+            if (fogEffect == null || !fogEffect.IsActive())
+            {
+                CommandBufferPool.Release(cmd);
+                return;
+            }
+
             if (fogEffect != null && fogEffect.IsActive())
             {
                 material.SetColor("_PFogColor", fogEffect.primaryFogColor.value);
@@ -64,7 +73,8 @@ public class FogEffectFeature : ScriptableRendererFeature
                 material.SetFloat("_FogDensity", fogEffect.fogDensity.value);
                 material.SetFloat("_SkyBoxFogDensity", fogEffect.skyBoxFogDensity.value);
                 material.SetFloat("_FogOffset", fogEffect.fogOffset.value);
-                material.SetFloat("_SecondaryFogOffset", fogEffect.secondaryFogOffset.value);
+                material.SetFloat("_PrimaryFogColorOffset", fogEffect.primaryFogColorOffset.value);
+                material.SetFloat("_SecondaryFogColorOffset", fogEffect.secondaryFogColorOffset.value);
                 material.SetFloat("_GradientStrength", fogEffect.gradientStrength.value);
                 material.SetFloat("_FogScattering", fogEffect.fogScattering.value);
                 material.SetTexture("_NoiseTex", fogEffect.noiseTexture.value);
@@ -75,7 +85,7 @@ public class FogEffectFeature : ScriptableRendererFeature
                 material.SetFloat("_SkyBoxNoiseTransparency", fogEffect.skyBoxNoiseTransparency.value);
                 material.SetFloat("_RotateFogNoise", fogEffect.rotateFogNoise.value);
                 material.SetFloat("_RotateSkyBoxNoise", fogEffect.rotateSkyBoxNoise.value);
-            }*/
+            }
 
             RenderTargetIdentifier tempTexture = new RenderTargetIdentifier("_TemporaryTexture");
             cmd.GetTemporaryRT(Shader.PropertyToID("_TemporaryTexture"), renderingData.cameraData.cameraTargetDescriptor);

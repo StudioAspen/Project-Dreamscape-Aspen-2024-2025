@@ -1,12 +1,13 @@
 using DG.Tweening;
-using KBCore.Refs;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Burning Rage Stacks")]
+[CreateAssetMenu(fileName = "Data", menuName = "Status Effect/Aspect of Rage/Passive A/Burning Rage Stacks")]
 public class BurningRageStatusEffectSO : TickStatusEffectSO
 {
+    private EntityRendererManager entityRendererManager;
+
     [field: Header("Burning Rage Stacks: Settings")]
     [field: SerializeField] public int MaxStacks { get; private set; } = 5;
     [SerializeField] private float defaultCombustRadius = 7.5f;
@@ -16,6 +17,18 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     private int damagePerTick;
     private int currentStacks;
 
+    /// <summary>
+    /// An action that is invoked when the dying entity deals damage to another friendly entity via Burning Rage Combustion.
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item><description><c>Entity source</c>: The source entity.</description></item>
+    /// <item><description><c>Entity victim</c>: The victim entity.</description></item>
+    /// <item><description><c>int damageValue</c>: The damage dealt to the victim entity.</description></item>
+    /// </list>
+    /// </remarks>
+    public Action<Entity, Entity, int> OnCombustionDamage = delegate { };
+
     private protected override void OnApply()
     {
         base.OnApply();
@@ -24,61 +37,60 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate initial damage per tick
 
-        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks));
+        entityRendererManager = entity.GetComponent<EntityRendererManager>();
+        if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks));
 
-        entity.OnEntityDeath.AddListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath += Entity_OnEntityDeath;
     }
 
     private protected override void OnTick()
     {
         base.OnTick();
 
-        if(damagePerTick > 0) entity.TakeDamage(damagePerTick, entity.GetRandomPositionOnCollider(), source, false);
+        if(damagePerTick > 0) entity.TakeDamage(damagePerTick, entity.GetRandomPositionOnCollider(), source, false); // Don't use DealDamageToEntity as we don't want DOT to count as lifesteal
     }
 
     private protected override void OnExpire()
     {
-        entity.TweenUnTintEntity();
+        if (entityRendererManager) entityRendererManager.TweenUnTint();
 
-        entity.OnEntityDeath.RemoveListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath -= Entity_OnEntityDeath;
 
         base.OnExpire();
     }
 
     public override void Cancel()
     {
-        entity.ResetTint();
+        if (entityRendererManager) entityRendererManager.ResetTint();
 
-        entity.OnEntityDeath.RemoveListener(Entity_OnEntityDeath);
+        entity.OnEntityDeath -= Entity_OnEntityDeath;
 
         base.Cancel();
     }
 
-    public override bool OnStack(StatusEffectSO newStatusEffect)
+    private protected override void OnStack(StatusEffectSO newStatusEffect)
     {
-        if (newStatusEffect.GetType() != GetType())
-        {
-            Debug.LogError($"Cannot override {name} with a different status effect type.");
-            return false;
-        }
+        base.OnStack(newStatusEffect);
+
+        BurningRageStatusEffectSO overridingStatusEffect = newStatusEffect as BurningRageStatusEffectSO;
+
+        Ticks = overridingStatusEffect.Ticks; // So the total number of ticks doesn't skyrocket to a high number. Default is +=.
 
         currentTicks = 0; // reset the ticks
-        TickDamageMultiplierPerStack = (newStatusEffect as BurningRageStatusEffectSO).TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
+        TickDamageMultiplierPerStack = overridingStatusEffect.TickDamageMultiplierPerStack; // For when we get the extended version of burning rage
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Recalculate damage per tick based on our multiplier
 
-        if (currentStacks >= MaxStacks) return true; // still successful, we just hit max stacks
+        if (currentStacks >= MaxStacks) return; // we hit max stacks
 
         currentStacks++;
 
         damagePerTick = CalculateDamagePerTick(currentStacks); // Calculate again based on new stacks
 
-        entity.TweenTintEntity(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
-
-        return true;
+        if (entityRendererManager) entityRendererManager.TweenTint(GetColorBasedOnStacks(currentStacks)); // Change entity color based on new stacks
     }
 
-    private void Entity_OnEntityDeath(GameObject killer)
+    private void Entity_OnEntityDeath(Entity victim, GameObject killer)
     {
         Vector3 explosionPosition = entity.GetColliderCenterPosition();
 
@@ -97,12 +109,21 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
 
             if (enemy.Team != entity.Team) continue; // filter out unfriendly entities
 
-            TrySpreadToNearbyAlly(enemy, source, ref hasSpreadedToNearestAlly); // try to spread to nearby ally (if not already spreaded)
+            TrySpreadToNearbyAlly(enemy, ref hasSpreadedToNearestAlly); // try to spread to nearby ally (if not already spreaded)
 
-            enemy.TakeDamage(combustExplosionDamage, enemy.GetComponent<Collider>().ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
+            if(source.TryGetComponent(out Entity sourceEntity))
+            {
+                sourceEntity.DealDamageToOtherEntity(enemy, combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition));
+                OnCombustionDamage?.Invoke(entity, enemy, combustExplosionDamage);
+            }
+            else
+            {
+                enemy.TakeDamage(combustExplosionDamage, enemy.CharacterController.ClosestPointOnBounds(explosionPosition), source); // deal damage to enemy entities
+                // OnCombustionDamage?.Invoke(entity, enemy, combustExplosionDamage);
+            }
         }
 
-        CreateTemporaryVisualizer(explosionPosition, currentCombustRadius, 0.25f);
+        CustomDebug.InstantiateTemporarySphere(explosionPosition, currentCombustRadius, 0.25f, new Color(1f, 0, 0, 0.2f));
     }
 
     /// <summary>
@@ -112,9 +133,7 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     /// <returns>The color based on the number of stacks.</returns>
     private Color GetColorBasedOnStacks(int stacks)
     {
-
         return new Color((float)stacks / MaxStacks, 0f, 0f);
-
     }
 
     /// <summary>
@@ -131,51 +150,16 @@ public class BurningRageStatusEffectSO : TickStatusEffectSO
     /// Tries to spread the status effect to a nearby ally entity.
     /// </summary>
     /// <param name="target">The target entity to spread the status effect to.</param>
-    /// <param name="killerObject">The object responsible for killing the entity.</param>
     /// <param name="hasSpreadedToNearbyAlly">A reference to a boolean indicating whether the status effect has already spread to a nearby ally.</param>
-    private void TrySpreadToNearbyAlly(Entity target, GameObject killerObject, ref bool hasSpreadedToNearbyAlly)
+    private void TrySpreadToNearbyAlly(Entity target, ref bool hasSpreadedToNearbyAlly)
     {
         if (hasSpreadedToNearbyAlly) return;
         hasSpreadedToNearbyAlly = true;
 
         if (TickDamageMultiplierPerStack == 0) return; // This isnt the extended version of the status effect
 
-        for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, killerObject);
+        // repeatedly apply the status effect to the target entity based on the number of stacks
+        for (int j = 0; j < currentStacks; j++) EntityStatusEffector.TryApplyStatusEffect(target.gameObject, this, source);
     }
 
-    private void CreateTemporaryVisualizer(Vector3 hitPoint, float radius, float expireDuration)
-    {
-        // creates a sphere of the explosion radius
-        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.transform.position = hitPoint;
-        sphere.GetComponent<Collider>().isTrigger = true;
-        sphere.transform.localScale = radius * Vector3.one;
-        SetTransparent(sphere.GetComponent<Renderer>().material);
-        sphere.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        sphere.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 0.2f);
-        Destroy(sphere, expireDuration);
-    }
-
-    private void SetTransparent(Material targetMaterial)
-    {
-        if (targetMaterial == null) return;
-
-        targetMaterial.shader = Shader.Find("Universal Render Pipeline/Unlit");
-
-        // Change Surface Type to Transparent
-        targetMaterial.SetFloat("_Surface", 1); // 1 = Transparent, 0 = Opaque
-
-        // Enable required shader keywords
-        targetMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-        targetMaterial.DisableKeyword("_SURFACE_TYPE_OPAQUE");
-
-        // Set rendering mode for transparency
-        targetMaterial.SetOverrideTag("RenderType", "Transparent");
-        targetMaterial.SetInt("_ZWrite", 0); // Disable ZWrite for transparency
-        targetMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        targetMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-
-        // Apply the changes to the material
-        targetMaterial.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-    }
 }

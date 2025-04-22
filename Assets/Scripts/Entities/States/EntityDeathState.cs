@@ -1,21 +1,26 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 public class EntityDeathState : EntityBaseState
 {
-    private Entity entity;
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float DeathDuration { get; private set; } = 1f;
+    private protected float timer;
 
-    public EntityDeathState(Entity entity)
-    {
-        this.entity = entity;
-    }
+    private protected bool isDestroyed;
 
     public override void OnEnter()
     {
-        entity.TransitionToAnimation("Death");
+        entity.PlayOneShotAnimation(AnimationClip, DeathDuration);
 
         entity.SetSpeedModifier(0f);
 
-        entity.SetLocalTimeScale(1f);
+        entity.LocalTimeScale.ClearAllBuffs();
+
+        entity.IgnoreOtherEntityCollisions(true);
+
+        timer = 0f;
+        isDestroyed = false;
     }
 
     public override void OnExit()
@@ -23,13 +28,16 @@ public class EntityDeathState : EntityBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         entity.ApplyGravity();
-    }
 
-    public override void FixedUpdate()
-    {
-        
+        timer += entity.LocalDeltaTime;
+        if(timer > DeathDuration && !isDestroyed)
+        {
+            isDestroyed = true;
+            entity.Die();
+            return;
+        }
     }
 }

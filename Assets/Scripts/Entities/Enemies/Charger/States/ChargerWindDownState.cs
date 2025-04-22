@@ -4,24 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ChargerWindDownState : EnemyBaseState
+[System.Serializable]
+public class ChargerWindDownState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
 
     private float timer;
     private float halfWindDownDuration;
 
-    public ChargerWindDownState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
-
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("FlatMovement");
+        charger.PlayDefaultAnimation();
 
         timer = 0f;
-        halfWindDownDuration = charger.WindDownDuration / 2f;
+        halfWindDownDuration = WindDownDuration / 2f;
     }
 
     public override void OnExit()
@@ -29,13 +25,13 @@ public class ChargerWindDownState : EnemyBaseState
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if (timer > charger.WindDownDuration)
+        if (timer > WindDownDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
@@ -43,7 +39,7 @@ public class ChargerWindDownState : EnemyBaseState
 
         if(timer < halfWindDownDuration)
         {
-            float easedSpeedModifier = DOVirtual.EasedValue(charger.ChargeSpeedModifier, 0, timer / halfWindDownDuration, Ease.OutQuad);
+            float easedSpeedModifier = DOVirtual.EasedValue(charger.ChargerChargeState.ChargeSpeedModifier, 0, timer / halfWindDownDuration, Ease.OutQuad);
             charger.SetSpeedModifier(easedSpeedModifier);
 
             CheckCollisions();
@@ -53,14 +49,9 @@ public class ChargerWindDownState : EnemyBaseState
         charger.ApplyHorizontalVelocity();
     }
 
-    public override void FixedUpdate()
-    {
-
-    }
-
     private void CheckCollisions()
     {
-        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargeLayerMask);
+        List<Collider> orderedHits = charger.GetCustomCollisionHits(charger.ChargerChargeState.ChargeLayerMask);
 
         foreach (Collider hit in orderedHits)
         {

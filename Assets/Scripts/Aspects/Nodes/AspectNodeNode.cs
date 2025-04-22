@@ -7,6 +7,10 @@ public class AspectNodeNode : Node
     [Input] public AspectNodeNode Parent;
     [Output(connectionType = ConnectionType.Multiple)] public List<AspectNodeNode> Children;
 
+    [field: Header("Display")]
+    [field: SerializeField] public string DisplayName { get; private set; } = "Aspect Node";
+    [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Aspect Node Description";
+
     public bool IsApplied { get; protected set; }
 
     // updates the node connections in the editor

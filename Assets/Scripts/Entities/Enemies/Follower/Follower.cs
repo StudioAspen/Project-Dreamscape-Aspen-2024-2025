@@ -1,45 +1,28 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Follower : Enemy
 {
-    [field: Header("Follower: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
-
-    [field: Header("Follower: Circle Settings")]
-    [field: SerializeField] public int CircleFollowerCountThreshold { get; private set; } = 2;
-    [field: SerializeField] public float ChangeDirectionInterval { get; private set; } = 0.5f;
-    [field: SerializeField] public int ChangeDirectionReciprocal { get; private set; } = 50;
-    [field: SerializeField] public float CircleRadius { get; private set; } = 5f;
-    [field: SerializeField] public float MaxCircleRadius { get; private set; } = 8f;
-
-    [field: Header("Follower: Attack Settings")]
-    [field: SerializeField, Child] public Weapon Weapon { get; protected set; }
-    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
-    [field: SerializeField] public float AttackPercentDamage { get; private set; } = 100f;
-    [field: SerializeField] public float AttackReadyDuration { get; private set; } = 0.5f;
-    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
-
     #region States
-    public FollowerAttackState FollowerAttackState { get; private set; }
-    public FollowerWanderState FollowerWanderState { get; private set; }
-    public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
-    public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
-    public FollowerCircleState FollowerCircleState { get; private set; }
+    [field: Header("Follower: States")]
+    [field: SerializeField] public FollowerChaseState FollowerChaseState { get; private set; }
+    [field: SerializeField] public FollowerAttackState FollowerAttackState { get; private set; }
+    [field: SerializeField] public FollowerWanderState FollowerWanderState { get; private set; }
+    [field: SerializeField] public FollowerReadyAttackState FollowerReadyAttackState { get; private set; }
+    [field: SerializeField] public FollowerAttackRecoverState FollowerAttackRecoverState { get; private set; }
+    [field: SerializeField] public FollowerCircleState FollowerCircleState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyChaseState = new FollowerChaseState(this);
-        FollowerWanderState = new FollowerWanderState(this);
-        FollowerCircleState = new FollowerCircleState(this);
-        FollowerAttackState = new FollowerAttackState(this);
-        FollowerReadyAttackState = new FollowerReadyAttackState(this);
-        FollowerAttackRecoverState = new FollowerAttackRecoverState(this);
+        FollowerChaseState.Init(this);
+        FollowerWanderState.Init(this);
+        FollowerCircleState.Init(this);
+        FollowerAttackState.Init(this);
+        FollowerReadyAttackState.Init(this);
+        FollowerAttackRecoverState.Init(this);
     }
     #endregion
 
@@ -51,10 +34,6 @@ public class Follower : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        SetStartState(FollowerWanderState);
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -67,8 +46,6 @@ public class Follower : Enemy
         base.OnStart();
 
         SetDefaultState(FollowerWanderState);
-
-        FinishAnimation();
     }
 
     private protected override void OnUpdate()
@@ -81,19 +58,23 @@ public class Follower : Enemy
         base.OnFixedUpdate();
     }
 
-    public void FinishAnimation()
+    public void StartHit()
     {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
+        FollowerAttackState.Weapon.EnableTriggers();
     }
 
-    public void EnableWeaponTriggers()
+    public void EndHit()
     {
-        Weapon.EnableTriggers();
+        FollowerAttackState.Weapon.DisableTriggers();
     }
 
-    public void DisableWeaponTriggers()
+    public override void PlayFootstepLeft()
     {
-        Weapon.DisableTriggers();
+        AkSoundEngine.PostEvent("Play_FollowerFootstepLeft", gameObject);
+    }
+
+    public override void PlayFootstepRight()
+    {
+        AkSoundEngine.PostEvent("Play_FollowerFootstepRight", gameObject);
     }
 }

@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargerDazedState : EnemyBaseState
+[System.Serializable]
+public class ChargerDazedState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
 
     private float timer;
 
-    public ChargerDazedState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
-
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("Hit");
+        charger.PlayOneShotAnimation(AnimationClip);
 
         charger.SetSpeedModifier(0f);
 
@@ -24,24 +21,19 @@ public class ChargerDazedState : EnemyBaseState
 
     public override void OnExit()
     {
-
+        charger.PlayDefaultAnimation();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
         timer += charger.LocalDeltaTime;
 
-        if(timer > charger.DazedDuration)
+        if(timer > DazedDuration)
         {
             charger.ChangeState(charger.ChargerWanderState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

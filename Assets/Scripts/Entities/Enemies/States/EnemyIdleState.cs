@@ -1,13 +1,9 @@
-﻿public class EnemyIdleState : EnemyBaseState
+﻿[System.Serializable]
+public class EnemyIdleState : EnemyBaseState
 {
-    public EnemyIdleState(Enemy enemy) : base(enemy)
-    {
-        this.enemy = enemy;
-    }
-
     public override void OnEnter()
     {
-        enemy.TransitionToAnimation("FlatMovement");
+        enemy.PlayDefaultAnimation();
 
         enemy.SetSpeedModifier(0f);
     }
@@ -17,7 +13,7 @@
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         enemy.ApplyGravity();
 
@@ -25,10 +21,5 @@
         {
             enemy.ChangeState(enemy.EnemyChaseState);
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

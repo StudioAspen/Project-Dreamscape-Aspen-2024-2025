@@ -1,0 +1,428 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6323877592038428020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 248, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -6323877592038428020}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -5092554926121242106}
+        reroutePoints: []
+      - fieldName: Children
+        node: {fileID: 2763769569843930792}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -6323877592038428020}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: 1864611941190978949}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -5092554926121242106}
+  Children:
+  - {fileID: 1864611941190978949}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &-5359809309940247393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1016, y: 120}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -5359809309940247393}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -5359809309940247393}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 4095001867604409900}
+  Children: []
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &-5092554926121242106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -24, y: -200}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -5092554926121242106}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -3918194093017296719}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -5092554926121242106}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -3918194093017296719}
+  Children:
+  - {fileID: -6323877592038428020}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &-3918194093017296719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -296, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -3918194093017296719}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -3918194093017296719}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -5092554926121242106}
+        reroutePoints: []
+      - fieldName: Parent
+        node: {fileID: 2763769569843930792}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 0}
+  Children:
+  - {fileID: -5092554926121242106}
+  - {fileID: 2763769569843930792}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <ComboData>k__BackingField: {fileID: 0}
+--- !u!114 &-3194902288124324442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 1016, y: -184}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: -3194902288124324442}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: -3194902288124324442}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 4095001867604409900}
+  Children: []
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 585e5f22252d25641b4432be95b30b80, type: 3}
+  m_Name: Hope Aspect Tree
+  m_EditorClassIdentifier: 
+  nodes:
+  - {fileID: 4095001867604409900}
+  - {fileID: -3918194093017296719}
+  - {fileID: 1864611941190978949}
+  - {fileID: -5092554926121242106}
+  - {fileID: 2763769569843930792}
+  - {fileID: -6323877592038428020}
+  - {fileID: -3194902288124324442}
+  - {fileID: -5359809309940247393}
+  <DisplayName>k__BackingField: Aspect of WIP
+  <Description>k__BackingField: WIP
+  <AspectSprite>k__BackingField: {fileID: 21300000, guid: 68c66bb3807bd764888c469e47f6ee57,
+    type: 3}
+  <AspectTextColor>k__BackingField: {r: 0.78823537, g: 0.63529414, b: 0.3254902, a: 1}
+--- !u!114 &1864611941190978949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 488, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 1864611941190978949}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 1864611941190978949}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: 4095001867604409900}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -6323877592038428020}
+  Children:
+  - {fileID: 4095001867604409900}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &2763769569843930792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92381981ca1d25b4cacf80a555f30407, type: 3}
+  m_Name: Status Effect Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: -24, y: 120}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 2763769569843930792}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: -3918194093017296719}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 2763769569843930792}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -6323877592038428020}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: -3918194093017296719}
+  Children:
+  - {fileID: -6323877592038428020}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <StatusEffect>k__BackingField: {fileID: 0}
+--- !u!114 &4095001867604409900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a558a62a0bc6c942b4dad3d5d8f90d6, type: 3}
+  m_Name: Combo Aspect Node
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000}
+  position: {x: 744, y: -72}
+  ports:
+    keys:
+    - Parent
+    - Children
+    values:
+    - _fieldName: Parent
+      _node: {fileID: 4095001867604409900}
+      _typeQualifiedName: AspectNodeNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      connections:
+      - fieldName: Children
+        node: {fileID: 1864611941190978949}
+        reroutePoints: []
+      _direction: 0
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+    - _fieldName: Children
+      _node: {fileID: 4095001867604409900}
+      _typeQualifiedName: System.Collections.Generic.List`1[[AspectNodeNode, Assembly-CSharp,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0,
+        Culture=neutral, PublicKeyToken=b77a5c561934e089
+      connections:
+      - fieldName: Parent
+        node: {fileID: -3194902288124324442}
+        reroutePoints: []
+      - fieldName: Parent
+        node: {fileID: -5359809309940247393}
+        reroutePoints: []
+      _direction: 1
+      _connectionType: 0
+      _typeConstraint: 0
+      _dynamic: 0
+  Parent: {fileID: 1864611941190978949}
+  Children:
+  - {fileID: -3194902288124324442}
+  - {fileID: -5359809309940247393}
+  <DisplayName>k__BackingField: WIP
+  <Description>k__BackingField: WIP
+  <ComboData>k__BackingField: {fileID: 0}

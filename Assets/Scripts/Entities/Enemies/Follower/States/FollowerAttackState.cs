@@ -1,59 +1,64 @@
 ﻿using UnityEngine;
 
-public class FollowerAttackState : EnemyBaseState
+[System.Serializable]
+public class FollowerAttackState : FollowerBaseState
 {
-    private Follower follower;
+    [field: SerializeField] public AnimationClip AnimationClip { get; private set; }
+    [field: SerializeField] public float AttackDuration { get; private set; } = 1f;
+    [field: SerializeField] public float AttackRange { get; private set; } = 1f;
+    [field: SerializeField] public float AttackDamageMultiplier { get; private set; } = 1f;
+    public Weapon Weapon { get; protected set; }
 
-    private Vector3 attackDir;
+    private Vector3 attackDirection;
 
-    public FollowerAttackState(Follower enemy) : base(enemy)
+    private float timer;
+
+    public override void Init(Entity entity)
     {
-        follower = enemy;
+        base.Init(entity);
+
+        Weapon = entity.GetComponentInChildren<Weapon>();
     }
 
-    public void SetAttackDirection(Vector3 dir)
+    public void SetAttackDirection(Vector3 direction)
     {
-        attackDir = dir;
+        attackDirection = direction;
     }
 
     public override void OnEnter()
     {
-        follower.TransitionToAnimation("Attack");
+        follower.PlayOneShotAnimation(AnimationClip, AttackDuration);
 
         follower.SetSpeedModifier(0f);
 
-        follower.Weapon.OnWeaponStartSwing?.Invoke(follower);
-        follower.Weapon.ClearEnemiesHitList();
+        Weapon.OnWeaponStartSwing?.Invoke(follower, null);
+        Weapon.ClearObjectHitList();
 
-        follower.Weapon.SetPercentDamage(follower.AttackPercentDamage);
+        Weapon.SetDamageMultiplier(AttackDamageMultiplier);
 
-        follower.IsAttackAnimationPlaying = true;
         follower.UseRootMotion = true;
+
+        timer = 0f;
     }
 
     public override void OnExit()
     {
-        follower.Weapon.OnWeaponEndSwing?.Invoke(follower);
-        follower.IsAttackAnimationPlaying = false;
+        Weapon.OnWeaponEndSwing?.Invoke(follower, null);
         follower.UseRootMotion = false;
-        follower.DisableWeaponTriggers();
+        follower.EndHit();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         follower.ApplyGravity();
 
-        follower.LookAt(follower.transform.position + attackDir);
+        follower.LookAt(follower.transform.position + attackDirection);
 
-        if (!follower.IsAttackAnimationPlaying)
+        timer += follower.LocalDeltaTime;
+        if (timer > AttackDuration)
         {
             follower.ChangeState(follower.FollowerAttackRecoverState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

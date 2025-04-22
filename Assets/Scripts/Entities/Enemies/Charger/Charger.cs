@@ -1,69 +1,40 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Charger : Enemy
 {
+    [field: Header("Charger: Cone Detection Settings")]
+    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
+    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
+
     [Header("Charger: Armor Settings")]
     [SerializeField] private int staggerDamageThreshold = 40;
     [SerializeField] private float superArmorDamageReduction = 0.5f; // takes (100 - superArmorDamageReduction)% of damage when hit
 
-    [field: Header("Charger: Wander Settings")]
-    [field: SerializeField] public Vector2 WanderIntervalDurationRange { get; private set; } = new Vector2(3f, 5f);
-    [field: SerializeField] public Vector2 WanderRadiusRange { get; private set; } = new Vector2(3f, 5f);
-
-    [field: Header("Charger: Player Detected Settings")]
-    [field: SerializeField] public float DetectionDistance { get; private set; } = 15f;
-    [field: SerializeField] public float DetectionConeHalfAngle { get; private set; } = 30f;
-    [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
-    [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
-
-    [field: Header("Charger: Charge Settings")]
-    [field: SerializeField] public float ChargeContactPercentDamage { get; private set; } = 200f;
-    [field: SerializeField] public float ChargeSpeedModifier { get; private set; } = 5f;
-    [field: SerializeField] public float ChargeDuration { get; private set; } = 20f;
-    [field: SerializeField] public float ChargeRotationSpeed { get; private set; } = 5f;
-    [field: SerializeField] public float ChargeOnImpactLaunchForce { get; private set; } = 10f;
-    [field: SerializeField] public float ChargeStunDuration { get; private set; } = 4f;
-    [field: SerializeField] public LayerMask ChargeLayerMask { get; private set; }
-
-    [field: Header("Charger: Wind Down Settings")]
-    [field: SerializeField] public float WindDownDuration { get; private set; } = 2f;
-
-    [field: Header("Charger: Jabbing Attack Settings")]
-    [field: SerializeField] public int JabCount { get; private set; } = 5;
-    [field: SerializeField] public float JabPercentDamage { get; private set; } = 100;
-    [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
-    [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
-    [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
-    [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
-    [field: SerializeField] public float JabRecoverDuration { get; private set; } = 2f;
-    public int RemainingJabs { get; private set; }
-
-    [field: Header("Charger: Dazed Settings")]
-    [field: SerializeField] public float DazedDuration { get; private set; } = 5f;
-
     #region States
-    public ChargerWanderState ChargerWanderState { get; private set; }
-    public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
-    public ChargerChargeState ChargerChargeState { get; private set; }
-    public ChargerWindDownState ChargerWindDownState { get; private set; }
-    public ChargerDazedState ChargerDazedState { get; private set; }
-    public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
-    public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: Header("Charger: States")]
+    [field: SerializeField] public ChargerWanderState ChargerWanderState { get; private set; }
+    [field: SerializeField] public ChargerTargetDetectedState ChargerTargetDetectedState { get; private set; }
+    [field: SerializeField] public ChargerChargeState ChargerChargeState { get; private set; }
+    [field: SerializeField] public ChargerWindDownState ChargerWindDownState { get; private set; }
+    [field: SerializeField] public ChargerDazedState ChargerDazedState { get; private set; }
+    [field: SerializeField] public ChargerJabbingAttackState ChargerJabbingAttackState { get; private set; }
+    [field: SerializeField] public ChargerJabRecoverState ChargerJabRecoverState { get; private set; }
+    [field: SerializeField] public ChargerStaggeredState ChargerStaggeredState { get; private set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        ChargerWanderState = new ChargerWanderState(this);
-        ChargerTargetDetectedState = new ChargerTargetDetectedState(this);
-        ChargerChargeState = new ChargerChargeState(this);
-        ChargerDazedState = new ChargerDazedState(this);
-        ChargerWindDownState = new ChargerWindDownState(this);
-        EntityStaggeredState = new ChargerStaggeredState(this);
-        ChargerJabbingAttackState = new ChargerJabbingAttackState(this);
-        ChargerJabRecoverState = new ChargerJabRecoverState(this);
+        ChargerWanderState.Init(this);
+        ChargerTargetDetectedState.Init(this);
+        ChargerChargeState.Init(this);
+        ChargerDazedState.Init(this);
+        ChargerWindDownState.Init(this);
+        ChargerJabbingAttackState.Init(this);
+        ChargerJabRecoverState.Init(this);
+        ChargerStaggeredState.Init(this);
+        EntityStaggeredState = ChargerStaggeredState;
     }
     #endregion
 
@@ -75,10 +46,6 @@ public class Charger : Enemy
     private protected override void OnOnEnable()
     {
         base.OnOnEnable();
-
-        SetStartState(ChargerWanderState);
-
-        FinishAnimation();
     }
 
     private protected override void OnOnDisable()
@@ -108,19 +75,16 @@ public class Charger : Enemy
         // dont inherit base to leave target assignment to certain states
     }
 
-    private protected override void OnOnAnimatorMove()
-    {
-        base.OnOnAnimatorMove();
-    }
-
     private protected override void OnOnDrawGizmos()
     {
         base.OnOnDrawGizmos();
 
+#if UNITY_EDITOR
         Gizmos.color = Color.red;
-        CustomGizmos.DrawWireCircle(transform.position, targetDetectionRadius);
-        CustomGizmos.DrawWireCircle(transform.position, NearbyAttackRadiusThreshold);
-        CustomGizmos.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+        CustomDebug.DrawWireCircle(transform.position, targetDetectionRadius);
+        CustomDebug.DrawWireCircle(transform.position, ChargerTargetDetectedState.NearbyAttackRadiusThreshold);
+        CustomDebug.DrawWireCone(CustomCollisionTopPoint, transform.forward, DetectionConeHalfAngle, DetectionDistance);
+#endif
     }
 
     public override void TryAssignTarget()
@@ -129,41 +93,39 @@ public class Charger : Enemy
         TryAssignTargetWithCone(DetectionDistance, DetectionConeHalfAngle);
     }
 
-    public override void TakeDamage(int dmg, Vector3 hitPoint, GameObject source, bool willTryStagger = true)
+    public override void TakeDamage(int damage, Vector3 hitPoint, GameObject source, bool willTryStagger = true, bool willIgnoreDefense = false)
     {
         if (CurrentState == EntityDeathState) return;
 
-        int newDamage = dmg;
+        int newDamage = damage;
 
         if(HasSuperArmorActive())
         {
-            if(dmg >= staggerDamageThreshold)
+            if(damage >= staggerDamageThreshold)
             {
-                ForceChangeState(EntityStaggeredState);
+                if(willTryStagger) ChangeState(EntityStaggeredState, true);
             }
             else
             {
-                newDamage = Mathf.RoundToInt(superArmorDamageReduction * dmg);
+                newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
             }
         }
-        else
-        {
-            if(CanBeStaggered())
-            {
-                ForceChangeState(EntityStaggeredState);
-            }
-        }
+
+        if (willIgnoreDefense) newDamage = Mathf.Clamp(newDamage - Defense.GetIntValue(), 0, int.MaxValue);
+
+
+        if (willTryStagger) TryChangeStaggeredState();
+
+        if(!IsInvicible) CurrentHealth -= newDamage;
 
         OnEntityTakeDamage?.Invoke(newDamage, hitPoint, source);
-
-        CurrentHealth -= newDamage;
 
         AttemptToSpawnHitNumbers(newDamage, hitPoint, Color.red);
 
         lastHitSource = source;
 
         //after calculating current health, check if the player has taken enough damage to die
-        if (CurrentHealth <= 0 && MaxHealth > 0)
+        if (CurrentHealth <= 0 && !IsInvicible)
         {
             OnDeath();
         }
@@ -178,7 +140,7 @@ public class Charger : Enemy
             if (damage < staggerDamageThreshold) newDamage = Mathf.RoundToInt(superArmorDamageReduction * damage);
         }
 
-        return MaxHealth > 0 && CurrentHealth - newDamage <= 0;
+        return MaxHealth.GetIntValue() > 0 && CurrentHealth - newDamage <= 0;
     }
 
     /// <summary>
@@ -196,42 +158,43 @@ public class Charger : Enemy
     /// Determines if the Charger can be staggered based on its current state.
     /// </summary>
     /// <returns>True if the Charger can be staggered, false otherwise.</returns>
-    private bool CanBeStaggered()
+    public override bool CanBeStaggered()
     {
+        if (HasSuperArmorActive()) return false;
+
         return CurrentState == ChargerWanderState
             || CurrentState == ChargerDazedState
             || CurrentState == ChargerWindDownState
             || CurrentState == ChargerJabRecoverState;
     }
 
-    public void ResetJabCount()
+    public void StartHit()
     {
-        RemainingJabs = JabCount;
-    }
-
-    public void FinishAnimation()
-    {
-        IsAttackAnimationPlaying = false;
-        DisableWeaponTriggers();
-    }
-
-    public void EnableWeaponTriggers()
-    {
-        if (RemainingJabs % 2 == 1)
+        if (ChargerJabbingAttackState.RemainingJabs % 2 == 1)
         {
-            RightFistWeapon.EnableTriggers();
+            ChargerJabbingAttackState.RightFistWeapon.EnableTriggers();
         }
         else
         {
-            LeftFistWeapon.EnableTriggers();
+            ChargerJabbingAttackState.LeftFistWeapon.EnableTriggers();
         }
 
-        RemainingJabs--;
+        ChargerJabbingAttackState.DecrementJabCount();
     }
 
-    public void DisableWeaponTriggers()
+    public void EndHit()
     {
-        RightFistWeapon.DisableTriggers();
-        LeftFistWeapon.DisableTriggers();
+        ChargerJabbingAttackState.RightFistWeapon.DisableTriggers();
+        ChargerJabbingAttackState.LeftFistWeapon.DisableTriggers();
+    }
+
+    public override void PlayFootstepLeft()
+    {
+        AkSoundEngine.PostEvent("Play_ChargerFootstepLeft", gameObject);
+    }
+
+    public override void PlayFootstepRight()
+    {
+        AkSoundEngine.PostEvent("Play_ChargerFootstepRight", gameObject);
     }
 }

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 
-public class EnemyBaseState : EntityBaseState
+public abstract class EnemyBaseState : EntityBaseState
 {
     private protected Enemy enemy;
 
-    public EnemyBaseState(Enemy enemy)
+    public override void Init(Entity entity)
     {
-        this.enemy = enemy;
+        base.Init(entity);
+
+        enemy = entity as Enemy;
     }
 }

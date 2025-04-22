@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1edf6fb36abc974b8094ce92b8ae385, type: 3}
+  m_Name: Charger Memory Charge Ability
+  m_EditorClassIdentifier: 
+  <ChargeAnimationClip>k__BackingField: {fileID: -203655887218126122, guid: cf0a258924874bf49be9933925aa645b,
+    type: 3}
+  <WindDownState>k__BackingField: {fileID: 11400000, guid: c816baa781dfc9c4b86f968ba60efc5b,
+    type: 2}
+  <ChargeContactDamageMultiplier>k__BackingField: 1.5
+  <ChargeSpeedModifier>k__BackingField: 3
+  <ChargeDuration>k__BackingField: 7.5
+  <ChargeRotationSpeed>k__BackingField: 5
+  <ChargeOnImpactLaunchForce>k__BackingField: 10
+  <ChargeStunDuration>k__BackingField: 4

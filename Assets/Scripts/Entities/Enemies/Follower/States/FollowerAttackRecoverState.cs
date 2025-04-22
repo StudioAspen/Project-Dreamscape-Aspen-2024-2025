@@ -1,13 +1,11 @@
-﻿public class FollowerAttackRecoverState : EnemyBaseState
+﻿using UnityEngine;
+
+[System.Serializable]
+public class FollowerAttackRecoverState : FollowerBaseState
 {
-    private Follower follower;
+    [field: SerializeField] public float AttackRecoverDuration { get; private set; } = 1f;
 
     private float recoverTimer;
-
-    public FollowerAttackRecoverState(Follower enemy) : base(enemy)
-    {
-        follower = enemy;
-    }
 
     public override void OnEnter()
     {
@@ -21,21 +19,16 @@
 
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         follower.ApplyGravity();
 
         recoverTimer += follower.LocalDeltaTime;
 
-        if (recoverTimer > follower.AttackRecoverDuration)
+        if (recoverTimer > AttackRecoverDuration)
         {
             follower.ChangeState(follower.DefaultState);
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

@@ -1,14 +1,33 @@
 ﻿using UnityEngine;
 
-public class ChargerJabbingAttackState : EnemyBaseState
+[System.Serializable]
+public class ChargerJabbingAttackState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public AnimationClip RightJabAnimationClip { get; protected set; }
+    [field: SerializeField] public AnimationClip LeftJabAnimationClip { get; protected set; }
+    [field: SerializeField] public int JabCount { get; private set; } = 5;
+    [field: SerializeField] public float JabDuration { get; private set; } = 0.45f;
+    [field: SerializeField] public float JabDamageMultiplier { get; private set; } = 1f;
+    [field: SerializeField] public float JabStandStillRadius { get; private set; } = 1.5f;
+    [field: SerializeField] public float JabRotationSpeed { get; private set; } = 25f;
+    [field: SerializeField] public Weapon LeftFistWeapon { get; private set; }
+    [field: SerializeField] public Weapon RightFistWeapon { get; private set; }
+    public int RemainingJabs { get; private set; }
 
     private Entity rememberedTarget;
+    private Vector3 directionToTarget;
+    private float timer;
+    private bool leftMissEnabled = true;
+    private bool rightMissEnabled = true;
 
-    public ChargerJabbingAttackState(Charger enemy) : base(enemy)
+    public override void Init(Entity entity)
     {
-        charger = enemy;
+        base.Init(entity);
+
+        LeftFistWeapon.OnWeaponEndSwing += ConditionallyPlayLeftMiss;
+        RightFistWeapon.OnWeaponEndSwing += ConditionallyPlayRightMiss;
+        LeftFistWeapon.OnWeaponHit += PlayLeftHit;
+        RightFistWeapon.OnWeaponHit += PlayRightHit;
     }
 
     public void AssignCurrentRememberedTarget(Entity target)
@@ -18,51 +37,55 @@ public class ChargerJabbingAttackState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.IsAttackAnimationPlaying = true;
+        timer = 0f;
+
         charger.UseRootMotion = true;
 
-        if (charger.RemainingJabs % 2 == 1)
+        if (RemainingJabs % 2 == 1)
         {
-            charger.TransitionToAnimation("RightJab");
+            charger.PlayOneShotAnimation(RightJabAnimationClip, JabDuration);
 
-            charger.RightFistWeapon.OnWeaponStartSwing?.Invoke(charger);
+            RightFistWeapon.OnWeaponStartSwing?.Invoke(charger, null);
 
-            charger.RightFistWeapon.ClearEnemiesHitList();
+            RightFistWeapon.ClearObjectHitList();
 
-            charger.RightFistWeapon.SetPercentDamage(charger.JabPercentDamage);
+            RightFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
         else
         {
-            charger.TransitionToAnimation("LeftJab");
+            charger.PlayOneShotAnimation(LeftJabAnimationClip, JabDuration);
 
-            charger.LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger);
+            LeftFistWeapon.OnWeaponStartSwing?.Invoke(charger, null);
 
-            charger.LeftFistWeapon.ClearEnemiesHitList();
+            LeftFistWeapon.ClearObjectHitList();
 
-            charger.LeftFistWeapon.SetPercentDamage(charger.JabPercentDamage);
+            LeftFistWeapon.SetDamageMultiplier(JabDamageMultiplier);
         }
+
+        directionToTarget = rememberedTarget.transform.position - charger.transform.position;
     }
 
     public override void OnExit()
     {
-        charger.IsAttackAnimationPlaying = false;
         charger.UseRootMotion = false;
 
-        if (charger.RemainingJabs % 2 == 1)
+        if (RemainingJabs % 2 == 1)
         {
-            charger.RightFistWeapon.OnWeaponEndSwing?.Invoke(charger);
+            RightFistWeapon.OnWeaponEndSwing?.Invoke(charger, null);
         }
         else
         {
-            charger.LeftFistWeapon.OnWeaponEndSwing?.Invoke(charger);
+            LeftFistWeapon.OnWeaponEndSwing?.Invoke(charger, null);
         }
 
-        charger.DisableWeaponTriggers();
+        charger.EndHit();
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
+
+        timer += charger.LocalDeltaTime;
 
         if (rememberedTarget == null)
         {
@@ -70,22 +93,57 @@ public class ChargerJabbingAttackState : EnemyBaseState
             return;
         }
 
-        charger.LookAt(rememberedTarget.transform.position, charger.JabRotationSpeed);
+        charger.LookAt(charger.transform.position + directionToTarget, JabRotationSpeed);
 
         // blocks update until attack animation is done
-        if (charger.IsAttackAnimationPlaying) return;
+        if (timer < JabDuration) return;
 
-        if (charger.RemainingJabs <= 0)
+        if (RemainingJabs <= 0)
         {
             charger.ChangeState(charger.ChargerJabRecoverState);
             return;
         }
 
-        charger.ForceChangeState(charger.ChargerJabbingAttackState);
+        charger.ChangeState(charger.ChargerJabbingAttackState, true);
     }
 
-    public override void FixedUpdate()
+    public void ResetJabCount()
     {
+        RemainingJabs = JabCount;
+    }
 
+    public void DecrementJabCount()
+    {
+        RemainingJabs--;
+    }
+
+    public void PlayLeftHit(Entity entity, Entity target, Vector3 hitPoint, int damage)
+    {
+        AkSoundEngine.PostEvent("Play_ChargerHitLeft", charger.gameObject);
+        leftMissEnabled = false;
+    }
+
+    public void PlayRightHit(Entity entity, Entity target, Vector3 hitPoint, int damage)
+    {
+        AkSoundEngine.PostEvent("Play_ChargerHitRight", charger.gameObject);
+        rightMissEnabled = false;
+    }
+
+    public void ConditionallyPlayLeftMiss(Entity entity, ComboDataSO combo)
+    {
+        if (leftMissEnabled)
+        {
+            AkSoundEngine.PostEvent("Play_ChargerMissLeft", charger.gameObject);
+        }
+        leftMissEnabled = true;
+    }
+
+    public void ConditionallyPlayRightMiss(Entity entity, ComboDataSO combo)
+    {
+        if (rightMissEnabled)
+        {
+            AkSoundEngine.PostEvent("Play_ChargerMissRight", charger.gameObject);
+        }
+        rightMissEnabled = true;
     }
 }

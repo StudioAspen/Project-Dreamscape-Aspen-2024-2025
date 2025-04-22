@@ -1,27 +1,22 @@
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.Pool;
 
 public class Enemy : Entity
 {
-    [field : Header("Enemy: Settings")]
+    [field: Header("Enemy: Settings")]
+    [field: SerializeField] public string EnemyType { get; protected set; }
     [field: SerializeField] public int Cost { get; protected set; }
+    [field: SerializeField] public Stat EXPValue { get; protected set; }
 
     [field: Header("Enemy: Custom Collider Settings")]
     [field: SerializeField] public float CustomCollisionRadius { get; private set; }
     [field: SerializeField] public float CustomCollisionOffsetFromGroundDistance { get; private set; } = 0.5f;
     [field: SerializeField] public Vector3 CustomCollisionCenterOffset { get; private set; }
-    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset - (controller.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
-    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + CustomCollisionCenterOffset + (controller.height / 2 - CustomCollisionRadius) * Vector3.up;
+    public Vector3 ChargeCollisionBottomPoint => GetColliderCenterPosition() + transform.localScale.x * (Quaternion.LookRotation(transform.forward) * CustomCollisionCenterOffset) - transform.localScale.x * (CharacterController.height / 2 - CustomCollisionRadius - CustomCollisionOffsetFromGroundDistance) * Vector3.up;
+    public Vector3 CustomCollisionTopPoint => GetColliderCenterPosition() + transform.localScale.x * (Quaternion.LookRotation(transform.forward) * CustomCollisionCenterOffset) + transform.localScale.x * (CharacterController.height / 2 -  CustomCollisionRadius) * Vector3.up;
 
     #region Custom Pathfinding
     public Vector3 Destination {  get; protected set; }
@@ -30,26 +25,30 @@ public class Enemy : Entity
 
     public Entity Target { get; protected set; }
 
-    private EnemySpawner spawner;
-
-    [HideInInspector] public bool IsAttackAnimationPlaying;
+    public EnemySpawner Spawner { get; private set; }
 
     #region States
-    public EnemyIdleState EnemyIdleState { get; protected set; }
-    public EnemyChaseState EnemyChaseState { get; protected set; }
+    [field: Header("Enemy: States")]
+    [field: SerializeField] public EnemyIdleState EnemyIdleState { get; protected set; }
+    [field: SerializeField] public EnemyChaseState EnemyChaseState { get; protected set; }
 
     private protected override void InitializeStates()
     {
         base.InitializeStates();
 
-        EnemyIdleState = new EnemyIdleState(this);
-        EnemyChaseState = new EnemyChaseState(this);
+        EnemyIdleState.Init(this);
+        EnemyChaseState.Init(this);
     }
     #endregion
 
+    /// <summary>
+    /// Initializes the enemy with the specified enemy spawner.
+    /// Used to delete the enemy from the spawner's list when it dies.
+    /// </summary>
+    /// <param name="enemySpawner">The enemy spawner.</param>
     public void Init(EnemySpawner enemySpawner)
     {
-        spawner = enemySpawner;
+        Spawner = enemySpawner;
     }
 
     private protected override void OnAwake()
@@ -61,9 +60,9 @@ public class Enemy : Entity
     {
         base.OnOnEnable();
 
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.AddListener(OnTick);
+        if (Ticker.Instance != null) Ticker.Instance.OnTick += OnTick;
 
-        SetStartState(EnemyIdleState);
+        SetStartState(EntitySpawnState);
 
         Target = null;
     }
@@ -72,7 +71,7 @@ public class Enemy : Entity
     {
         base.OnOnDisable();
 
-        if (Ticker.Instance != null) Ticker.Instance.OnTick.RemoveListener(OnTick);
+        if (Ticker.Instance != null) Ticker.Instance.OnTick -= OnTick;
     }
 
     private protected override void OnStart()
@@ -105,15 +104,17 @@ public class Enemy : Entity
 
         if(CustomCollisionRadius <= 0) return;
 
+#if UNITY_EDITOR
         Gizmos.color = Color.white;
-        CustomGizmos.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius);
+        CustomDebug.DrawWireCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius * transform.localScale.x);
+#endif
     }
 
     public override void Die()
     {
         base.Die();
 
-        if (spawner != null) spawner.RemoveEnemyFromList(this);
+        if (Spawner != null) Spawner.RemoveEnemy(this);
     }
 
     /// <summary>
@@ -132,9 +133,14 @@ public class Enemy : Entity
     /// <returns>The list of positions representing the calculated path.</returns>
     public List<Vector3> GetPathToDestination(Vector3 dest)
     {
+        if(!IsValidPointOnNavMesh(dest, 100f, out Vector3 groundedPoint))
+        {
+            return new List<Vector3>() { transform.position, dest };
+        }
+
         NavMeshPath path = new NavMeshPath();
 
-        bool hasPath = NavMesh.CalculatePath(transform.position, dest, NavMesh.AllAreas, path);
+        bool hasPath = NavMesh.CalculatePath(transform.position, groundedPoint, NavMesh.AllAreas, path);
 
         if (!hasPath) return null;
         if (path.corners.Length == 0) return null;
@@ -149,30 +155,52 @@ public class Enemy : Entity
     /// </summary>
     public void MoveTowardsDestination(bool lookAtPath = true)
     {
-        if (path == null) return;
-        if (path.Count < 2) return;
+        if (path == null)
+        {
+            Debug.LogWarning($"{gameObject.name} has no path to follow. Make sure you handle this using bool IsCurrentPathValid().");
+            return;
+        }
+        if (path.Count < 2)
+        {
+            Debug.LogWarning($"{gameObject.name} has a path with only 1 waypoint. Make sure you handle this bool IsCurrentPathValid().");
+            return;
+        }
 
         #region Debug
 /*        Vector3 prevCorner = transform.position;
         foreach (Vector3 wayPoint in path)
         {
-            Debug.DrawLine(prevCorner, wayPoint, Color.red);
+            Debug.DrawLine(prevCorner, wayPoint, Color.green);
             prevCorner = wayPoint;
         }*/
         #endregion
 
         Vector3 currentDestination = path[1];
-        if (lookAtPath) LookAt(currentDestination);
 
         Vector3 direction = (currentDestination - transform.position).normalized;
+        //direction = CalculateDirectionAwayFromObstacle(direction);
+
+        if (lookAtPath) LookAt(transform.position + direction);
 
         UpdateHorizontalVelocity(direction);
         ApplyHorizontalVelocity();
 
-        if (CloseToPoint(currentDestination, 0.05f))
+        if (Vector3.Dot(direction, (path[1] - path[0]).normalized) < 0 || CloseToPoint(currentDestination, 0.05f))
         {
             path.RemoveAt(0);
         }
+    }
+
+    /// <summary>
+    /// Checks if the current path of the enemy is valid.
+    /// </summary>
+    /// <returns>True if the path is valid, false otherwise.</returns>
+    public bool IsCurrentPathValid()
+    {
+        if (path == null) return false;
+        if (path.Count < 2) return false;
+
+        return true;
     }
 
     /// <summary>
@@ -240,6 +268,30 @@ public class Enemy : Entity
     }
 
     /// <summary>
+    /// Generates a random wander point within a specified radius range about a center position.
+    /// Returns itself it cannot find a valid point after a certain number of iterations.
+    /// Iteration count is set to 16 by default.
+    /// </summary>
+    /// <param name="center">The center position for generating the wander point.</param>
+    /// <param name="wanderRadiusRange">The range of the wander radius.</param>
+    /// <param name="iterationTryCount">The number of iterations to try finding a valid point.</param>
+    /// <returns>The randomly generated wander point.</returns>
+    public Vector3 GetRandomWanderPoint(Vector3 center, Vector2 wanderRadiusRange, int iterationTryCount = 16)
+    {
+        for (int i = 0; i < iterationTryCount; i++)
+        {
+            float randomRadius = Random.Range(wanderRadiusRange.x, wanderRadiusRange.y);
+            Vector3 randomPointOnUnitCircle = Random.onUnitSphere;
+            randomPointOnUnitCircle.y = 0;
+            Vector3 randomPoint = randomRadius * randomPointOnUnitCircle + center;
+
+            if (IsValidPointOnNavMesh(randomPoint, 100f, out Vector3 validPoint)) return validPoint;
+        }
+
+        return transform.position;
+    }
+
+    /// <summary>
     /// Tries to assign a target to the enemy by getting nearby targets and selecting the first one.
     /// If no targets are found, sets the target to null.
     /// </summary>
@@ -264,7 +316,7 @@ public class Enemy : Entity
     private protected void TryAssignTargetWithCone(float detectionDistance, float detectionConeHalfAngle)
     {
         List<Entity> smallRadiusTargets = GetNearbyTargets();
-        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance);
+        List<Entity> largeRadiusTargets = GetNearbyHostileEntities(detectionDistance, false);
         List<Entity> filteredTargetsByCone = FilterTargetsInConeShape(largeRadiusTargets, CustomCollisionTopPoint, detectionConeHalfAngle);
 
         if (largeRadiusTargets.Count == 0) // if no targets in large radius that includes cone
@@ -332,7 +384,7 @@ public class Enemy : Entity
 
         if (CustomCollisionRadius <= 0) return result;
 
-        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius, mask);
+        Collider[] hits = Physics.OverlapCapsule(ChargeCollisionBottomPoint, CustomCollisionTopPoint, CustomCollisionRadius * transform.localScale.x, mask);
         if (hits == null) return result;
         if (hits.Length == 0) return result;
 

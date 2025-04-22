@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965c9a9120766e74c9963895d5e47c40, type: 3}
+  m_Name: 3TimesLandThirdGroundedLightComboQuestSO
+  m_EditorClassIdentifier: 
+  <ObjectiveText>k__BackingField: Hit Dreamons with a light third swing on the ground
+    3 times.
+  <CompletionReward>k__BackingField: 0
+  <LogErrorMessages>k__BackingField: 0
+  <Difficulty>k__BackingField: 2
+  requiredPlayerLevel: 1
+  <SuccessfulPerformancesGoal>k__BackingField: 0
+  <SuccessfulHitsGoal>k__BackingField: 3
+  <TargetComboData>k__BackingField: {fileID: 11400000, guid: e1a98987da9049e45a48d1c9cc1d34d3,
+    type: 2}

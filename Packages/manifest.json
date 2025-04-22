@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.eflatun.scenereference": "4.1.1",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "1.1.5",
     "com.unity.animation.rigging": "1.2.1",
@@ -10,7 +11,9 @@
     "com.unity.ide.visualstudio": "2.0.18",
     "com.unity.ide.vscode": "1.2.5",
     "com.unity.inputsystem": "1.6.3",
+    "com.unity.playablegraph-visualizer": "0.2.1-preview.3",
     "com.unity.postprocessing": "3.2.2",
+    "com.unity.probuilder": "5.1.1",
     "com.unity.recorder": "4.0.3",
     "com.unity.render-pipelines.universal": "14.0.8",
     "com.unity.splines": "2.3.0",
@@ -53,5 +56,14 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.eflatun.scenereference"
+      ]
+    }
+  ]
 }

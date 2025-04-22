@@ -1,5 +1,4 @@
 using Cinemachine;
-using KBCore.Refs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,35 +6,45 @@ using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField, Scene] private GameManager gameManager;
-    [SerializeField, Self] private CinemachineVirtualCamera vCam;
-    [SerializeField, Self] private CinemachineInputProvider inputProvider;
-    [SerializeField, Scene] private Player player;
-
-    private void OnValidate()
-    {
-        this.ValidateRefs();
-    }
+    private InputManager inputManager;
+    private GameManager gameManager;
+    private CinemachineVirtualCamera vCam;
+    private CinemachineInputProvider inputProvider;
 
     private void Awake()
     {
+        vCam = GetComponent<CinemachineVirtualCamera>();
+        inputProvider = GetComponent<CinemachineInputProvider>();
+    }
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        inputManager = FindAnyObjectByType<InputManager>();
+
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        DisableCameraInputs();
+
+        Player player = FindObjectOfType<Player>(); // tries to find player first
+        if(player != null) AttachToTarget(player.transform);
+        Player.OnPlayerLoaded += Player_OnPlayerLoaded; // If player doesnt exist yet, wait for it to be loaded
+
+        PlayerPreferences.Instance.OnCameraSensitivityChanged += SetCameraSensitivity;
+
+        GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera
     }
 
     private void OnDestroy()
     {
         gameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
-
-    private void Start()
-    {
-        AttachToPlayer();
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
+        PlayerPreferences.Instance.OnCameraSensitivityChanged -= SetCameraSensitivity;
     }
 
     private void GameManager_OnGameStateChanged(GameState newState)
     {
-        if(newState == GameState.PLAYING)
+        if (newState == GameState.PLAYING)
         {
             EnableCameraInputs();
         }
@@ -45,10 +54,22 @@ public class PlayerCameraController : MonoBehaviour
         }
     }
 
-    private void AttachToPlayer()
+    private void Player_OnPlayerLoaded(Player player)
     {
-        vCam.LookAt = player.transform;
-        vCam.Follow = player.transform;
+        AttachToTarget(player.transform);
+
+        Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
+    }
+
+    private void AttachToTarget(Transform targetTransform)
+    {
+        vCam.LookAt = targetTransform;
+        vCam.Follow = targetTransform;
+    }
+
+    private void EnableCameraInputs()
+    {
+        inputProvider.enabled = true;
     }
 
     private void DisableCameraInputs()
@@ -56,8 +77,13 @@ public class PlayerCameraController : MonoBehaviour
         inputProvider.enabled = false;
     }
 
-    private void EnableCameraInputs()
-    {
-        inputProvider.enabled = true;
+    private void SetCameraSensitivity(float sensitivity) {
+        CinemachinePOV pov = vCam.GetCinemachineComponent<CinemachinePOV>();
+        if (pov != null) 
+        {
+            pov.m_HorizontalAxis.m_MaxSpeed = sensitivity;
+            pov.m_VerticalAxis.m_MaxSpeed = sensitivity;
+        }
     }
+    
 }

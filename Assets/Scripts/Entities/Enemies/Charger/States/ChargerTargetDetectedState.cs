@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargerTargetDetectedState : EnemyBaseState
+[System.Serializable]
+public class ChargerTargetDetectedState : ChargerBaseState
 {
-    private Charger charger;
+    [field: SerializeField] public AnimationClip AnimationClip { get; protected set; }
+    [field: SerializeField] public float TargetDetectedDuration { get; private set; } = 2f;
+    [field: SerializeField] public float NearbyAttackRadiusThreshold { get; private set; } = 6f;
 
     private Entity rememberedTarget;
 
     private float timer;
-
-    public ChargerTargetDetectedState(Charger enemy) : base(enemy)
-    {
-        charger = enemy;
-    }
 
     public void AssignCurrentRememberedTarget(Entity target)
     {
@@ -22,21 +20,21 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
     public override void OnEnter()
     {
-        charger.TransitionToAnimation("TargetDetected");
+        charger.PlayOneShotAnimation(AnimationClip, TargetDetectedDuration);
 
         charger.SetSpeedModifier(0f);
 
-        charger.ResetJabCount();
+        charger.ChargerJabbingAttackState.ResetJabCount();
 
         timer = 0f;
     }
 
     public override void OnExit()
     {
-
+        
     }
 
-    public override void Update()
+    public override void OnUpdate()
     {
         charger.ApplyGravity();
 
@@ -46,15 +44,13 @@ public class ChargerTargetDetectedState : EnemyBaseState
             return;
         }
 
-        charger.LookAt(rememberedTarget.transform.position);
-
         timer += charger.LocalDeltaTime;
         
-        if(timer > charger.TargetDetectedDuration)
+        if(timer > TargetDetectedDuration)
         {
             float distanceToTarget = charger.Distance(rememberedTarget.transform.position);
 
-            if(distanceToTarget < charger.NearbyAttackRadiusThreshold)
+            if(distanceToTarget < NearbyAttackRadiusThreshold)
             {
                 charger.ChargerJabbingAttackState.AssignCurrentRememberedTarget(rememberedTarget);
                 charger.ChangeState(charger.ChargerJabbingAttackState);
@@ -67,10 +63,5 @@ public class ChargerTargetDetectedState : EnemyBaseState
 
             return;
         }
-    }
-
-    public override void FixedUpdate()
-    {
-        
     }
 }

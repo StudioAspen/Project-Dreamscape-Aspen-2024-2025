@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 
-public class PlayerBaseState : EntityBaseState
+public abstract class PlayerBaseState : EntityBaseState
 {
     private protected Player player;
 
-    public PlayerBaseState(Player player)
+    public override void Init(Entity entity)
     {
-        this.player = player;
+        base.Init(entity);
+
+        player = entity as Player;
     }
 }
