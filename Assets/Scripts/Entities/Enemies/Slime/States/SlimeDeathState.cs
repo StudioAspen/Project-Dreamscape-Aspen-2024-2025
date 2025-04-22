@@ -44,6 +44,12 @@ public class SlimeDeathState : EntityDeathState
     {
         // small slimes dont split, they die
         if (slime.IsSmall) return;
+        
+        // Play Split Smoke Poof VFX
+        GameObject splitVFX = Object.Instantiate(slime.splitVfxPrefab) as GameObject;
+        splitVFX.transform.position = slime.transform.position;
+        splitVFX.transform.localScale = slime.splitVfxScale;
+        splitVFX.GetComponent<SmokePoofVFX>().Play();
 
         Enemy slimeEnemyPrefab = slime.Spawner.GetPrefabFromEnemyInstance(slime);
         if (slimeEnemyPrefab == null) return;
