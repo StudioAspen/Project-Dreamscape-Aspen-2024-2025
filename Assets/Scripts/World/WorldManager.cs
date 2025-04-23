@@ -403,56 +403,6 @@ public class WorldManager : MonoBehaviour
         gameManager.ChangeState(GameState.LAND_PLACEMENT);
     }
 
-    public Bounds GetWorldBoundsOfSpawnedLands()
-    {
-        if (Borders.Count == 0)
-            return new Bounds(Vector3.zero, Vector3.zero);
-
-        int minX = Borders.Keys.Min(pos => pos.x);
-        int maxX = Borders.Keys.Max(pos => pos.x);
-        int minY = Borders.Keys.Min(pos => pos.y);
-        int maxY = Borders.Keys.Max(pos => pos.y);
-
-        float worldMinX = minX * LandScale;
-        float worldMaxX = maxX * LandScale;
-        float worldMinZ = minY * LandScale;
-        float worldMaxZ = maxY * LandScale;
-
-        Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
-        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale - 25, 0, worldMaxZ - worldMinZ + LandScale - 25);
-
-        return new Bounds(center, size);
-    }
-
-    public Bounds EmpowermentGetWorldBoundsOfSpawnedLands()
-    {
-        if (Borders.Count == 0)
-            return new Bounds(Vector3.zero, Vector3.zero);
-
-        var xValues = Borders.Keys.Select(pos => pos.x).Distinct().OrderBy(x => x).ToList();
-        var yValues = Borders.Keys.Select(pos => pos.y).Distinct().OrderBy(y => y).ToList();
-
-        int minX = xValues.First();
-        int maxX = xValues.Last();
-        int secondMinX = xValues.Count > 1 ? xValues[1] : minX;
-        int secondMaxX = xValues.Count > 1 ? xValues[^2] : maxX;
-
-        int minY = yValues.First();
-        int maxY = yValues.Last();
-        int secondMinY = yValues.Count > 1 ? yValues[1] : minY;
-        int secondMaxY = yValues.Count > 1 ? yValues[^2] : maxY;
-
-        float worldMinX = secondMinX * LandScale;
-        float worldMaxX = secondMaxX * LandScale;
-        float worldMinZ = secondMinY * LandScale;
-        float worldMaxZ = secondMaxY * LandScale;
-
-        Vector3 center = new Vector3((worldMinX + worldMaxX) / 2f, 0, (worldMinZ + worldMaxZ) / 2f);
-        Vector3 size = new Vector3(worldMaxX - worldMinX + LandScale - 25, 0, worldMaxZ - worldMinZ + LandScale - 25);
-
-        return new Bounds(center, size);
-    }
-
     #region Ghost Land Functions
     public void EnableGhostLand()
     {

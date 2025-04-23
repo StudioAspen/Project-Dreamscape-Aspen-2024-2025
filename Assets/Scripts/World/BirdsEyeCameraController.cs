@@ -20,10 +20,7 @@ public class BirdsEyeCameraController : MonoBehaviour
     private Vector2 moveDirection;  // Now a Vector2 for 2D movement.
     private float currentMoveSpeed;
     private float zoomDelta;
-
-    [Header("Movement Settings")]
-    [SerializeField] private float moveDistance = 10f;
-
+    private Vector2Int currentTilePostition = Vector2Int.zero;
 
     private void Start()
     {
@@ -93,15 +90,39 @@ public class BirdsEyeCameraController : MonoBehaviour
             // Store movement as a Vector2
             moveDirection = context.ReadValue<Vector2>();
 
-            // If there's input (non-zero direction), move the player one unit in that direction.
-            if (moveDirection != Vector2.zero)
+            if (moveDirection.y > 0.5f)
             {
-                // Convert move direction to Vector3 (using x and z axes only).
-                Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
-                Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
-                transform.Translate(movement, Space.World);  // Move the player 
-                ClampToLandBounds();
+                if(worldManager.Borders.ContainsKey(currentTilePostition + Vector2Int.up) || worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.up))
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + worldManager.LandScale);
+                    currentTilePostition += Vector2Int.up;
+                }
             }
+            else if (moveDirection.y < -0.5f)
+            {
+                if (worldManager.Borders.ContainsKey(currentTilePostition + Vector2Int.down) || worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.down))
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - worldManager.LandScale);
+                    currentTilePostition += Vector2Int.down;
+                }
+            }
+            else if (moveDirection.x < -0.5f)
+            {
+                if (worldManager.Borders.ContainsKey(currentTilePostition + Vector2Int.left) || worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.left))
+                {
+                    transform.position = new Vector3(transform.position.x - worldManager.LandScale, transform.position.y, transform.position.z);
+                    currentTilePostition += Vector2Int.left;
+                }
+            }
+            else if (moveDirection.x > 0.5f)
+            {
+                if (worldManager.Borders.ContainsKey(currentTilePostition + Vector2Int.right) || worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.right))
+                {
+                    transform.position = new Vector3(transform.position.x + worldManager.LandScale, transform.position.y, transform.position.z);
+                    currentTilePostition += Vector2Int.right;
+                }
+            }
+            Debug.Log("no land to move");
         }
     }
 
@@ -112,15 +133,39 @@ public class BirdsEyeCameraController : MonoBehaviour
             // Store movement as a Vector2
             moveDirection = context.ReadValue<Vector2>();
 
-            // If there's input (non-zero direction), move the player one unit in that direction.
-            if (moveDirection != Vector2.zero)
+            if (moveDirection.y > 0.5f)
             {
-                // Convert move direction to Vector3 (using x and z axes only).
-                Vector3 movement = new Vector3(moveDirection.x * moveDistance, 0, moveDirection.y * moveDistance);
-                Debug.Log($"MoveDir: {moveDirection}, MoveDist: {moveDistance}, Final: {movement}");
-                transform.Translate(movement, Space.World);  // Move the player 
-                EmpowermentClampToLandBounds();
+                if (worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.up))
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + worldManager.LandScale);
+                    currentTilePostition += Vector2Int.up;
+                }
             }
+            else if (moveDirection.y < -0.5f)
+            {
+                if (worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.down))
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - worldManager.LandScale);
+                    currentTilePostition += Vector2Int.down;
+                }
+            }
+            else if (moveDirection.x < -0.5f)
+            {
+                if (worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.left))
+                {
+                    transform.position = new Vector3(transform.position.x - worldManager.LandScale, transform.position.y, transform.position.z);
+                    currentTilePostition += Vector2Int.left;
+                }
+            }
+            else if (moveDirection.x > 0.5f)
+            {
+                if (worldManager.SpawnedLands.ContainsKey(currentTilePostition + Vector2Int.right))
+                {
+                    transform.position = new Vector3(transform.position.x + worldManager.LandScale, transform.position.y, transform.position.z);
+                    currentTilePostition += Vector2Int.right;
+                }
+            }
+            Debug.Log("no land to move");
         }
     }
 
@@ -208,27 +253,5 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         worldManager.DisableLandLevelTexts();
         worldManager.DisableGhostLand();
-    }
-
-    void ClampToLandBounds()
-    {
-        Bounds bounds = worldManager.GetWorldBoundsOfSpawnedLands();
-
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
-        pos.z = Mathf.Clamp(pos.z, bounds.min.z, bounds.max.z);
-
-        transform.position = pos;
-    }
-
-    void EmpowermentClampToLandBounds()
-    {
-        Bounds empowermentBounds = worldManager.EmpowermentGetWorldBoundsOfSpawnedLands();
-
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, empowermentBounds.min.x, empowermentBounds.max.x);
-        pos.z = Mathf.Clamp(pos.z, empowermentBounds.min.z, empowermentBounds.max.z);
-
-        transform.position = pos;
     }
 }
