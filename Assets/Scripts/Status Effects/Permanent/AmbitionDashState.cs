@@ -14,6 +14,7 @@ public class AmbitionDashState: PlayerDashState
     public override void OnEnter()
     {
         base.OnEnter();
+        Debug.Log("entered ambition dash state");
 
         //ambitionMovementSpeed = player.MovementSpeed * speedBuff;
         player.IgnoreOtherEntityCollisions(true);
@@ -57,5 +58,5 @@ public class AmbitionDashState: PlayerDashState
     //
     // use hashmap or hashset to do so *DONE*
     //
-    // implement speed buff after dashing through enemy
+    // implement speed buff after dashing through enemy *DONE*
 }

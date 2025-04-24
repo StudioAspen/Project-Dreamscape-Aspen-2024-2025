@@ -16,6 +16,12 @@ public class AspectofAmbitionPassiveAStatusEffectSO: StatusEffectSO
     {
         base.OnApply();
 
+        Player player = entity as Player;
+
+        // Replace the existing PlayerDashState with ambitionDashState using ReplaceExistingState
+        player.ReplaceExistingState(player.PlayerDashState, ambitionDashState);
+
+        // Check if the ambition dash state dashed through an enemy
         if (ambitionDashState.dashedThroughEnemy)
         {
             entity.StatusSpeedModifier.AddMultiplier(speedBuff, this);
