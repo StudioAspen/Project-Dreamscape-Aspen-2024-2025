@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [CreateAssetMenu(fileName = "Duplicator Elite Variant", menuName = "Status Effect/Enemy Variants/Elite/Duplicator")]
 public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
@@ -8,6 +9,12 @@ public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     [field: Header("Config")]
     [field: SerializeField] public int SplitCount { get; private set; } = 2;
     private Enemy enemyPrefab;
+
+    [Space] 
+    
+    [Header("VFX")] 
+    [field: SerializeField] private GameObject splitVfxPrefab;
+    [field: SerializeField] private Vector3 splitVfxScale = new Vector3(1, 2, 1);
 
     private protected override void OnApply()
     {
@@ -28,6 +35,12 @@ public class DuplicatorEliteVariantStatusEffectSO : EliteVariantStatusEffectSO
     private void Enemy_OnEntityDeath(Entity victim, GameObject killer)
     {
         if (enemyPrefab == null) return;
+        
+        // Play Split Smoke Poof VFX
+        GameObject splitVFX = Instantiate(splitVfxPrefab);
+        splitVFX.transform.position = enemy.transform.position;
+        splitVFX.transform.localScale = splitVfxScale;
+        splitVFX.GetComponent<SmokePoofVFX>().Play();
 
         // Spawn neutral duplicates in a circle around the original enemy
         for (int i = 0; i < SplitCount; i++)
