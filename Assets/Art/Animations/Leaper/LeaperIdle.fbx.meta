@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: efa659ef5da84574b81cb08d96c830cb
+guid: 0a0be52d23e934842b4c502b99d0d54b
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: LeaperDeath
+      name: LeaperIdle
       takeName: rigAction.001
       internalID: -445483484564741274
       firstFrame: 0
@@ -44,8 +44,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -66,7 +66,7 @@ ModelImporter:
       takeName: rig_deform|rigAction.001
       internalID: -2208397254539482054
       firstFrame: 0
-      lastFrame: 19
+      lastFrame: 99
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -157,7 +157,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
