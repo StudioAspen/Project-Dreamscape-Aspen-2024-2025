@@ -24,10 +24,7 @@ public class BedroomManager : MonoBehaviour
         originalCameraTransform = new GameObject("OriginalCameraTransform").transform;
         originalCameraTransform.position = bedroomCameraTransform.position;
         originalCameraTransform.rotation = bedroomCameraTransform.rotation;
-    }
 
-    private void Start()
-    {
         SelectFirstItem();
     }
 
@@ -37,7 +34,7 @@ public class BedroomManager : MonoBehaviour
         currentItemIndex %= bedroomItems.Count;
         SelectedItem = bedroomItems[currentItemIndex];
 
-        TweenCameraToTransform(SelectedItem.CameraTargetTransform);
+        TweenCameraToItem(SelectedItem);
     }
 
     public void SelectPreviousItem()
@@ -49,7 +46,7 @@ public class BedroomManager : MonoBehaviour
         }
         SelectedItem = bedroomItems[currentItemIndex];
 
-        TweenCameraToTransform(SelectedItem.CameraTargetTransform);
+        TweenCameraToItem(SelectedItem);
     }
 
     public void SelectFirstItem()
@@ -57,17 +54,18 @@ public class BedroomManager : MonoBehaviour
         currentItemIndex = 0;
         SelectedItem = bedroomItems[currentItemIndex];
 
-        TweenCameraToTransform(SelectedItem.CameraTargetTransform);
+        TweenCameraToItem(SelectedItem);
     }
 
-    private void TweenCameraToTransform(Transform targetTransform)
+    private void TweenCameraToItem(BedroomItem item)
     {
         DOTween.Kill(bedroomCameraTransform);
 
-        bedroomCameraTransform.DOMove(targetTransform.position, cameraTweenDuration).SetEase(cameraTweenEase);
+        Vector3 targetPosition = item.CameraTargetTransform.position;
 
-        // get quaternion lookat from bedroomcamera to the target transform
-        Vector3 lookAtDirection = targetTransform.position - bedroomCameraTransform.position;
+        bedroomCameraTransform.DOMove(targetPosition, cameraTweenDuration).SetEase(cameraTweenEase);
+
+        Vector3 lookAtDirection = item.transform.position - targetPosition;
         Quaternion lookAtRotation = Quaternion.LookRotation(lookAtDirection, Vector3.up);
         bedroomCameraTransform.DORotateQuaternion(lookAtRotation, cameraTweenDuration).SetEase(cameraTweenEase);
     }
