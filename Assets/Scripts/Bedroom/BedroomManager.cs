@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BedroomManager : MonoBehaviour
 {
-    [SerializeField] private List<BedroomItem> bedroomItems = new();
+    [SerializeField] private List<BedroomItem> bedroomItems;
 
     private int currentItemIndex = 0;
     public BedroomItem SelectedItem { get; private set; }
@@ -25,7 +25,47 @@ public class BedroomManager : MonoBehaviour
         originalCameraTransform.position = bedroomCameraTransform.position;
         originalCameraTransform.rotation = bedroomCameraTransform.rotation;
 
+        Currency = 100000;
+
+        TryLoadSavedItems();
+
         SelectFirstItem();
+    }
+
+    private void TryLoadSavedItems()
+    {
+        Dictionary<int, bool> loadedItems = SaveLoadManager.LoadBedroomItems();
+        if (loadedItems == null)
+        {
+            Debug.LogWarning("Loaded items list is null. All items will be deactive.");
+            return;
+        }
+
+        foreach (var item in loadedItems)
+        {
+            Debug.Log($"Item ID: {item.Key}, Is Activated: {item.Value}");
+        }
+
+        Debug.Log($"Loading items from save file");
+        for(int i = 0; i < bedroomItems.Count; i++)
+        {
+            if (bedroomItems[i] == null)
+            {
+                Debug.LogWarning($"Bedroom item at index {i} is null.");
+                continue;
+            }
+
+            if (bedroomItems[i].Config == null)
+            {
+                Debug.LogWarning($"Bedroom item config at index {i} is null.");
+                continue;
+            }
+
+            if (!loadedItems.ContainsKey(bedroomItems[i].Config.UniqueID)) continue;
+            if (!loadedItems[bedroomItems[i].Config.UniqueID]) continue;
+
+            ActivateItem(bedroomItems[i]);
+        }
     }
 
     public void SelectNextItem()
@@ -108,8 +148,9 @@ public class BedroomManager : MonoBehaviour
             return false;
         }
 
-        if (!ActivateItem(item))
+        if(item.Config == null)
         {
+            Debug.LogWarning($"Item config is null, can't purchase.");
             return false;
         }
 
@@ -118,6 +159,13 @@ public class BedroomManager : MonoBehaviour
             return false;
         }
 
+        if (!ActivateItem(item))
+        {
+            return false;
+        }
+
+        Debug.Log($"Purchased item: {item.Config.DisplayName}");
+        SaveLoadManager.SaveBedroomItems(bedroomItems);
         return true;
     }
 

@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Item", menuName = "Bedroom Item Config")]
 public class BedroomItemConfig : ScriptableObject
 {
+    [field: Tooltip("MUST BE UNIQUE!")]
+    [field: SerializeField] public int UniqueID { get; private set; } = 0;
     [field: Header("Display")]
     [field: SerializeField] public string DisplayName { get; private set; } = "Bedroom Item";
     [field: SerializeField, TextArea(5, 20)] public string Description { get; private set; } = "Description";
