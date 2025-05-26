@@ -7,6 +7,7 @@ public class BedroomManagerUI : MonoBehaviour
     [SerializeField] private BedroomManager bedroomManager;
 
     [Header("UI Elements")]
+    [SerializeField] private TMP_Text currencyText;
     [SerializeField] private TMP_Text costText;
     [SerializeField] private TMP_Text displayNameText;
     [SerializeField] private TMP_Text descriptionText;
@@ -25,6 +26,7 @@ public class BedroomManagerUI : MonoBehaviour
             return;
         }
 
+        currencyText.text = $"Currency: {bedroomManager.Currency}";
         costText.text = $"Cost: {bedroomManager.SelectedItem.Config.Cost}";
         displayNameText.text = $"{bedroomManager.SelectedItem.Config.DisplayName}";
         descriptionText.text = $"{bedroomManager.SelectedItem.Config.Description}";

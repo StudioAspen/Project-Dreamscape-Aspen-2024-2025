@@ -20,6 +20,7 @@ public class BedroomManager : MonoBehaviour
     private Transform originalCameraTransform;
 
     // Debug button
+    [Header("Debug")]
     public bool ClearSaveData = false;
     private void OnValidate()
     {
