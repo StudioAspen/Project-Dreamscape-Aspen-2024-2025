@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 1815536099431545359}
   - component: {fileID: 1783508924061164814}
   - component: {fileID: 2554313367092936705}
+  - component: {fileID: 6587572906937461595}
   m_Layer: 16
   m_Name: Player
   m_TagString: Untagged
@@ -533,8 +534,6 @@ MonoBehaviour:
   <ShardDictionary>k__BackingField:
     _serializedList: []
   <MaxShardsPerLevel>k__BackingField: 25
-  playerFollowerFollowAbilityStateSO: {fileID: 11400000, guid: 91543b360a24d45b1ab8eb62f445db5b,
-    type: 2}
 --- !u!114 &4562688828567907799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -786,6 +785,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lowHealthVFX: {fileID: 2100000, guid: 95f3229023a00654c95ffc7801df2f23, type: 2}
+  lowHealthThreshold: 0.25
+--- !u!114 &6587572906937461595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617256968821117999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75d0d6450e956524e82d700c0dc1802e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bedroomItemCollection: {fileID: 11400000, guid: 0dfec7313eed1ae458581cd4dc631ed3,
+    type: 2}
 --- !u!1 &3838707299719629397
 GameObject:
   m_ObjectHideFlags: 0

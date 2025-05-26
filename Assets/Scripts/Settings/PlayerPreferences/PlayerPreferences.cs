@@ -236,6 +236,4 @@ public class PlayerPreferences : MonoBehaviour
       SetFullScreenMode(nextFullScreenMode);
       return nextFullScreenMode;
    }
-   
-   
 }
