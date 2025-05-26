@@ -24,30 +24,32 @@ public static class SaveLoadManager {
         return null;
     }
     
-    public static void SaveBedroomItems(List<BedroomItem> bedroomItems) {
-        Dictionary<int, bool> activatedItemsDict = new();
+    public static void SaveActivatedBedroomItems(List<BedroomItem> bedroomItems) {
+        List<int> activatedItemIDs = new();
         foreach (var item in bedroomItems) {
             if (item == null || item.Config == null) {
                 Debug.LogWarning("Item or Item Config is null, skipping save.");
                 continue;
             }
-            // TODO:
-            activatedItemsDict.Add(item.Config.UniqueID, item.IsActivated);
+            if (!item.IsActivated) continue;
+            activatedItemIDs.Add(item.Config.UniqueID);
         }
 
-        string json = JsonUtility.ToJson(activatedItemsDict, true);
+        BedroomSaveData bedroomSaveData = new BedroomSaveData { ActivatedItemIDs = activatedItemIDs };
+
+        string json = JsonUtility.ToJson(bedroomSaveData, true);
         File.WriteAllText(bedroomItemsPath, json);
-        Debug.Log($"Bedroom items data saved to {bedroomItemsPath}");
+        Debug.Log($"Bedroom items data {json} saved to {bedroomItemsPath}");
     }
 
-    public static Dictionary<int, bool> LoadBedroomItems()
+    public static HashSet<int> LoadActivatedBedroomItemIDs()
     {
         if (File.Exists(bedroomItemsPath))
         {
             string json = File.ReadAllText(bedroomItemsPath);
-            Dictionary<int, bool> loadedItems = JsonUtility.FromJson<Dictionary<int, bool>>(json);
-            Debug.Log($"Bedroom item data loaded from {playerPreferencesPath}");
-            return loadedItems;
+            BedroomSaveData loadedItems = JsonUtility.FromJson<BedroomSaveData>(json);
+            Debug.Log($"Bedroom item data {json} loaded from {playerPreferencesPath}");
+            return new HashSet<int>(loadedItems.ActivatedItemIDs);
         }
         Debug.LogWarning("No player preferences data found");
         return null;

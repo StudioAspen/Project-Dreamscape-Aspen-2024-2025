@@ -19,6 +19,18 @@ public class BedroomManager : MonoBehaviour
     [SerializeField] private Ease cameraTweenEase = Ease.InQuart;
     private Transform originalCameraTransform;
 
+    // Debug button
+    public bool ClearSaveData = false;
+    private void OnValidate()
+    {
+        if(ClearSaveData)
+        {
+            SaveLoadManager.ClearBedroomSaveData();
+            ClearSaveData = false;
+            Debug.LogWarning("Cleared bedroom save data.");
+        }
+    }
+
     private void Awake()
     {
         originalCameraTransform = new GameObject("OriginalCameraTransform").transform;
@@ -34,16 +46,11 @@ public class BedroomManager : MonoBehaviour
 
     private void TryLoadSavedItems()
     {
-        Dictionary<int, bool> loadedItems = SaveLoadManager.LoadBedroomItems();
-        if (loadedItems == null)
+        HashSet<int> activatedItemIDs = SaveLoadManager.LoadActivatedBedroomItemIDs();
+        if (activatedItemIDs == null)
         {
             Debug.LogWarning("Loaded items list is null. All items will be deactive.");
             return;
-        }
-
-        foreach (var item in loadedItems)
-        {
-            Debug.Log($"Item ID: {item.Key}, Is Activated: {item.Value}");
         }
 
         Debug.Log($"Loading items from save file");
@@ -61,8 +68,7 @@ public class BedroomManager : MonoBehaviour
                 continue;
             }
 
-            if (!loadedItems.ContainsKey(bedroomItems[i].Config.UniqueID)) continue;
-            if (!loadedItems[bedroomItems[i].Config.UniqueID]) continue;
+            if (!activatedItemIDs.Contains(bedroomItems[i].Config.UniqueID)) continue;
 
             ActivateItem(bedroomItems[i]);
         }
@@ -165,7 +171,7 @@ public class BedroomManager : MonoBehaviour
         }
 
         Debug.Log($"Purchased item: {item.Config.DisplayName}");
-        SaveLoadManager.SaveBedroomItems(bedroomItems);
+        SaveLoadManager.SaveActivatedBedroomItems(bedroomItems);
         return true;
     }
 
