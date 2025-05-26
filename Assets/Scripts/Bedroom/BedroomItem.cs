@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BedroomItem : MonoBehaviour
 {
-    [field: SerializeField] public BedroomItemConfig Config { get; private set; }
+    [field: SerializeField] public BedroomItemConfigSO Config { get; private set; }
     public bool IsActivated { get; private set; } = false;
     [field: SerializeField] public Transform CameraTargetTransform { get; private set; }
 

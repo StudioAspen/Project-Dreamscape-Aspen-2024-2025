@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 
 [System.Serializable]
-public struct BedroomSaveData
+public class BedroomSaveData
 {
+    public int Currency;
     public List<int> ActivatedItemIDs;
 }

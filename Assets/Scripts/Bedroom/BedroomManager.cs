@@ -10,7 +10,7 @@ public class BedroomManager : MonoBehaviour
     public BedroomItem SelectedItem { get; private set; }
 
     #region Shop
-    public int Currency { get; private set; }
+    [field: SerializeField] public int Currency { get; private set; }
     #endregion
 
     [Header("Camera Config")]
@@ -38,23 +38,18 @@ public class BedroomManager : MonoBehaviour
         originalCameraTransform.position = bedroomCameraTransform.position;
         originalCameraTransform.rotation = bedroomCameraTransform.rotation;
 
-        Currency = 100000;
-
-        TryLoadSavedItems();
+        LoadSave();
 
         SelectFirstItem();
     }
 
-    private void TryLoadSavedItems()
+    private void LoadSave()
     {
-        HashSet<int> activatedItemIDs = SaveLoadManager.LoadActivatedBedroomItemIDs();
-        if (activatedItemIDs == null)
-        {
-            Debug.LogWarning("Loaded items list is null. All items will be deactive.");
-            return;
-        }
+        BedroomSaveData bedroomSaveData = SaveLoadManager.LoadBedroomData();
 
-        Debug.Log($"Loading items from save file");
+        Currency = bedroomSaveData.Currency;
+
+        HashSet<int> activatedItemIDs = new HashSet<int>(bedroomSaveData.ActivatedItemIDs);
         for(int i = 0; i < bedroomItems.Count; i++)
         {
             if (bedroomItems[i] == null)
@@ -172,7 +167,7 @@ public class BedroomManager : MonoBehaviour
         }
 
         Debug.Log($"Purchased item: {item.Config.DisplayName}");
-        SaveLoadManager.SaveActivatedBedroomItems(bedroomItems);
+        SaveBedroomData();
         return true;
     }
 
@@ -181,4 +176,26 @@ public class BedroomManager : MonoBehaviour
         PurchaseItem(SelectedItem);
     }
     #endregion
+
+    private void SaveBedroomData()
+    {
+        List<int> activatedItemIDs = new();
+        foreach (var item in bedroomItems)
+        {
+            if (item == null || item.Config == null)
+            {
+                Debug.LogWarning("Item or Item Config is null, skipping save.");
+                continue;
+            }
+            if (!item.IsActivated) continue;
+            activatedItemIDs.Add(item.Config.UniqueID);
+        }
+
+        BedroomSaveData bedroomSaveData = new BedroomSaveData { 
+            Currency = Currency,
+            ActivatedItemIDs = activatedItemIDs,
+        };
+
+        SaveLoadManager.SaveBedroomData(bedroomSaveData);
+    }
 }

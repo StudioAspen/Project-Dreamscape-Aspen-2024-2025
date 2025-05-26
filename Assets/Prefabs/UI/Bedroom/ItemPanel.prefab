@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3145457865360327812}
   - component: {fileID: 8226859022489464302}
   - component: {fileID: 6274159774715047350}
-  - component: {fileID: 8692460495447833207}
   m_Layer: 5
   m_Name: ItemPanel
   m_TagString: Untagged
@@ -71,36 +70,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 692941638576018710}
   m_CullTransparentMesh: 1
---- !u!114 &8692460495447833207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 692941638576018710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1751687162197455560
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +82,7 @@ GameObject:
   - component: {fileID: 3919257886573760806}
   - component: {fileID: 4592637272406277180}
   - component: {fileID: 89955091399312688}
+  - component: {fileID: 7915024470917271026}
   m_Layer: 5
   m_Name: LeftButton
   m_TagString: Untagged
@@ -233,6 +203,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7915024470917271026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751687162197455560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75c2469d7eebcc418744734c846f75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  tweenDuration: 0.1
+  tweenEase: 9
 --- !u!1 &1762491370896511183
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,7 +657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 14.623, y: -62}
+  m_AnchoredPosition: {x: 14.622986, y: -62}
   m_SizeDelta: {x: -29.2461, y: 80.726}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7711489796332648964
@@ -785,6 +770,7 @@ GameObject:
   - component: {fileID: 1136276916080330218}
   - component: {fileID: 4871768925821261065}
   - component: {fileID: 5515044800818750983}
+  - component: {fileID: 4718092376032292356}
   m_Layer: 5
   m_Name: PurchaseButton
   m_TagString: Untagged
@@ -906,6 +892,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4718092376032292356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6596105416830041385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75c2469d7eebcc418744734c846f75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  tweenDuration: 0.1
+  tweenEase: 9
 --- !u!1 &7501552489063946669
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,6 +919,7 @@ GameObject:
   - component: {fileID: 7575679794509553095}
   - component: {fileID: 4821166810493970801}
   - component: {fileID: 2523933399914724085}
+  - component: {fileID: 2040166496633097177}
   m_Layer: 5
   m_Name: RightButton
   m_TagString: Untagged
@@ -1038,6 +1040,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2040166496633097177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7501552489063946669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75c2469d7eebcc418744734c846f75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverScale: 1.1
+  tweenDuration: 0.1
+  tweenEase: 9
 --- !u!1 &8887016398894357573
 GameObject:
   m_ObjectHideFlags: 0

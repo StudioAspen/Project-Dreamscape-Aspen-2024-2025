@@ -24,35 +24,28 @@ public static class SaveLoadManager {
         return null;
     }
     
-    public static void SaveActivatedBedroomItems(List<BedroomItem> bedroomItems) {
-        List<int> activatedItemIDs = new();
-        foreach (var item in bedroomItems) {
-            if (item == null || item.Config == null) {
-                Debug.LogWarning("Item or Item Config is null, skipping save.");
-                continue;
-            }
-            if (!item.IsActivated) continue;
-            activatedItemIDs.Add(item.Config.UniqueID);
-        }
-
-        BedroomSaveData bedroomSaveData = new BedroomSaveData { ActivatedItemIDs = activatedItemIDs };
-
-        string json = JsonUtility.ToJson(bedroomSaveData, true);
+    public static void SaveBedroomData(BedroomSaveData saveData)
+    {
+        string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(bedroomItemsPath, json);
         Debug.Log($"Bedroom items data {json} saved to {bedroomItemsPath}");
     }
 
-    public static HashSet<int> LoadActivatedBedroomItemIDs()
+    public static BedroomSaveData LoadBedroomData()
     {
         if (File.Exists(bedroomItemsPath))
         {
             string json = File.ReadAllText(bedroomItemsPath);
-            BedroomSaveData loadedItems = JsonUtility.FromJson<BedroomSaveData>(json);
-            Debug.Log($"Bedroom item data {json} loaded from {playerPreferencesPath}");
-            return new HashSet<int>(loadedItems.ActivatedItemIDs);
+            BedroomSaveData loadedData = JsonUtility.FromJson<BedroomSaveData>(json);
+            Debug.Log($"Bedroom item data {json} loaded from {bedroomItemsPath}");
+            return loadedData;
         }
-        Debug.LogWarning("No player preferences data found");
-        return null;
+        Debug.LogWarning("No bedroom items data found, returning empty save");
+        return new BedroomSaveData
+        {
+            Currency = 0,
+            ActivatedItemIDs = new List<int>(),
+        };
     }
 
     public static void ClearBedroomSaveData()
