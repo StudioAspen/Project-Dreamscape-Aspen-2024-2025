@@ -105,11 +105,13 @@ public class BedroomManager : MonoBehaviour
 
         Vector3 targetPosition = item.CameraTargetTransform.position;
 
+        bedroomCameraTransform.DORotateQuaternion(item.CameraTargetTransform.rotation, cameraTweenDuration).SetEase(cameraTweenEase);
         bedroomCameraTransform.DOMove(targetPosition, cameraTweenDuration).SetEase(cameraTweenEase);
 
-        Vector3 lookAtDirection = item.transform.position - targetPosition;
-        Quaternion lookAtRotation = Quaternion.LookRotation(lookAtDirection, Vector3.up);
-        bedroomCameraTransform.DORotateQuaternion(lookAtRotation, cameraTweenDuration).SetEase(cameraTweenEase);
+        //old way
+        //Vector3 lookAtDirection = item.transform.position - targetPosition;
+        //Quaternion lookAtRotation = Quaternion.LookRotation(lookAtDirection, Vector3.up);
+        //bedroomCameraTransform.DORotateQuaternion(lookAtRotation, cameraTweenDuration).SetEase(cameraTweenEase);
     }
 
     private bool ActivateItem(BedroomItem item)
