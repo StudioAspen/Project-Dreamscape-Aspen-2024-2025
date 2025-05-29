@@ -6,6 +6,7 @@ using System.IO;
 public static class SaveLoadManager {
     private static string playerPreferencesPath = $"{Application.persistentDataPath}/playerPreferencesData.json";
     private static string bedroomItemsPath = $"{Application.persistentDataPath}/bedroomItemsData.json";
+    private static string gameDataPath = $"{Application.persistentDataPath}/gameData.json";
 
     public static void SavePlayerPreferences(PlayerPreferencesData playerPreferences) {
         string json = JsonUtility.ToJson(playerPreferences, true);
@@ -41,11 +42,7 @@ public static class SaveLoadManager {
             return loadedData;
         }
         Debug.LogWarning("No bedroom items data found, returning empty save");
-        return new BedroomSaveData
-        {
-            Currency = 0,
-            ActivatedItemIDs = new List<int>(),
-        };
+        return new BedroomSaveData();
     }
 
     public static void ClearBedroomSaveData()
@@ -58,6 +55,39 @@ public static class SaveLoadManager {
         else
         {
             Debug.LogWarning("No bedroom items data found to clear");
+        }
+    }
+
+    public static void SaveGameData(GameData data)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(gameDataPath, json);
+        Debug.Log($"Game data {json} saved to {gameDataPath}");
+    }
+
+    public static GameData LoadGameData()
+    {
+        if (File.Exists(gameDataPath))
+        {
+            string json = File.ReadAllText(gameDataPath);
+            GameData loadedData = JsonUtility.FromJson<GameData>(json);
+            Debug.Log($"Game data {json} loaded from {gameDataPath}");
+            return loadedData;
+        }
+        Debug.LogWarning("No game data found, returning empty save");
+        return new GameData();
+    }
+
+    public static void ClearGameData()
+    {
+        if (File.Exists(gameDataPath))
+        {
+            File.Delete(gameDataPath);
+            Debug.Log($"Game data cleared from {gameDataPath}");
+        }
+        else
+        {
+            Debug.LogWarning("No game data found to clear");
         }
     }
 }

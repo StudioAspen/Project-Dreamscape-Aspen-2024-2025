@@ -1,10 +1,11 @@
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BedroomManager : MonoBehaviour
 {
-    [SerializeField] private List<BedroomItem> bedroomItems;
+    private List<BedroomItem> bedroomItems;
 
     private int currentItemIndex = 0;
     public BedroomItem SelectedItem { get; private set; }
@@ -21,26 +22,52 @@ public class BedroomManager : MonoBehaviour
 
     // Debug button
     [Header("Debug")]
-    public bool ClearSaveData = false;
+    public bool ClearBedroomSaveData = false;
+    public bool ClearGameSaveData = false;
     private void OnValidate()
     {
-        if(ClearSaveData)
+        if(ClearBedroomSaveData)
         {
             SaveLoadManager.ClearBedroomSaveData();
-            ClearSaveData = false;
+            ClearBedroomSaveData = false;
             Debug.LogWarning("Cleared bedroom save data.");
+        }
+
+        if (ClearGameSaveData)
+        {
+            SaveLoadManager.ClearGameData();
+            ClearGameSaveData = false;
+            Debug.LogWarning("Cleared game save data.");
         }
     }
 
     private void Awake()
     {
-        originalCameraTransform = new GameObject("OriginalCameraTransform").transform;
-        originalCameraTransform.position = bedroomCameraTransform.position;
-        originalCameraTransform.rotation = bedroomCameraTransform.rotation;
+        // Automatically grabs all bedroom items in the scene. No need to drag them in now.
+        bedroomItems = GetSceneBedroomItems();
+
+        originalCameraTransform = CreateOriginalCameraTransform();
 
         LoadSave();
 
         SelectFirstItem();
+    }
+
+    /// <summary>
+    /// Gets the list of bedroom items in the scene. Ordered by their UniqueID in the config.
+    /// </summary>
+    private List<BedroomItem> GetSceneBedroomItems()
+    {
+        List<BedroomItem> items = new List<BedroomItem>(FindObjectsOfType<BedroomItem>());
+        return items.OrderBy(item => item.Config?.UniqueID ?? int.MaxValue).ToList();
+    }
+
+    private Transform CreateOriginalCameraTransform()
+    {
+        Transform newTransform = new GameObject("OriginalCameraTransform").transform;
+        newTransform.position = bedroomCameraTransform.position;
+        newTransform.rotation = bedroomCameraTransform.rotation;
+        return newTransform;
     }
 
     private void LoadSave()

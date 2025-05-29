@@ -53,6 +53,11 @@ public class TutorialWorldEventSO : WorldEventSO
         if(dummyInstance != null) dummyInstance.Die();
 
         optionalDescriptionTextReference.text = "";
+
+        // Update game data to reflect that the tutorial has been completed
+        GameData gameData = SaveLoadManager.LoadGameData();
+        gameData.IsFirstTime = false;
+        SaveLoadManager.SaveGameData(gameData);
     }
 
     private protected override void OnUpdate()

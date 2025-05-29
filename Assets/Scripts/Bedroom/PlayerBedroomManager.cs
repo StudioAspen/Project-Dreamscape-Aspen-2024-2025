@@ -34,7 +34,11 @@ public class PlayerBedroomManager : MonoBehaviour
             return;
         }
 
-        AddCurrencyToSave(1);
+        int currencyToAdd = 1; // Default amount to add
+
+        // TODO: Make different amounts based on entity type
+
+        AddCurrencyToSave(currencyToAdd);
     }
 
     private void ApplyActivatedBedroomItemBuffs()
