@@ -171,7 +171,15 @@ public class EventManager : MonoBehaviour
     {
         Player.OnPlayerLoaded -= Player_OnPlayerLoaded;
 
-        StartTutorialEvent();
+        GameData gameData = SaveLoadManager.LoadGameData();
+        if (gameData.IsFirstTime)
+        {
+            StartTutorialEvent();
+        }
+        else
+        {
+            gameManager.ChangeState(GameState.BIOME_SELECTION);
+        }
     }
 
     private void Player_OnPlayerDestroyed(Player player)

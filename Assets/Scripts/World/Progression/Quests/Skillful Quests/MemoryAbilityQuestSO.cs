@@ -4,76 +4,76 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Perform_x_MemoryAbilityQuestSO", menuName = "World/Progression Quest/Skillful Quests/Perform Memory Ability")]
 public class MemoryAbilityQuestSO : SkillfulQuestSO
 {
-  private MemorySystem memorySystem;
+  [field: Header("Perform Memory Ability Configuration")]
 
-  [field: Header("Config")]
-  [field: SerializeField] public bool RequireFullBar { get; private set; }
+  /// <summary>
+  /// The minimum Memory Meter level required for the Progression Manager to select the quest.
+  /// </summary>
+  [field: Tooltip("The minimum Memory Meter level required for the Progression Manager to select this quest.")]
   [field: Range(0, 3)]
   [field: SerializeField] public int MinRequiredMemoryLevel { get; private set; }
+
+  /// <summary>
+  /// The Memory Ability required to complete the quest. The Progression Manager will check if the majority of the Memory Meter consists of Shards for the specified Memory Ability.
+  /// </summary>
+  [field: Tooltip("The Memory Ability required to complete this quest. The Progression Manager will check if the majority of the Memory Meter consists of Shards for the specified Memory Ability.")]
   [field: SerializeField] public string RequiredMemoryAbility { get; private set; }
-  private bool memoryMeterFull = false;
-  private bool memoryAbilityActivated = false;
+
+  /// <summary>
+  /// Reference to the Memory System via the Progression Manager and Player.
+  /// </summary>
+  private MemorySystem memorySystem;
 
   public override bool MeetsCriteria(ProgressionManager progressionManager)
   {
-    memorySystem = FindFirstObjectByType<MemorySystem>();
+    if (!progressionManager.player.TryGetComponent(out MemorySystem memorySystemRef))
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Could not find Memory System component on the player.");
 
-    // For Quest of this class to meet the Criteria, the memory meter should contain the majority of shards for the specified Memory Ability.
-    if (memorySystem.GetMemoryLevel() < MinRequiredMemoryLevel)
       return false;
-    else if (RequiredMemoryAbility != string.Empty)
-      if (memorySystem.GetLargestShardType() != RequiredMemoryAbility || !memorySystem.ShardDictionary.ContainsKey(RequiredMemoryAbility))
-        return false;
+    }
+    else if (memorySystemRef.GetMemoryLevel() < MinRequiredMemoryLevel)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Memory Meter Level is below the minimum requirement.");
+
+      return false;
+    }
+    else if (string.IsNullOrEmpty(RequiredMemoryAbility) || !memorySystemRef.ShardDictionary.ContainsKey(RequiredMemoryAbility))
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: A required Memory Ability that exists was not provided.");
+
+      return false;
+    }
+    else if (memorySystemRef.GetLargestShardType() != RequiredMemoryAbility)
+    {
+      if (LogErrorMessages)
+        Debug.LogError($"{name} Criteria Error: Majority of Memory Meter does not consist of the Shards for the specified Memory Ability.");
+      
+      return false;
+    }
     
+    // Assign the Memory System reference to the variable.
+    memorySystem ??= memorySystemRef;
+
+    // Check the base criteria.
     return base.MeetsCriteria(progressionManager);
   }
 
-  private protected override void OnActivated()
-  {
-    memorySystem = FindFirstObjectByType<MemorySystem>();
-    if (memorySystem == null)
-    {
-      CleanUp();
-      return;
-    }
+  // Subscribe to the necessary Actions.
+  private protected override void OnActivated() => memorySystem.OnMemoryAbilityActivated += MemoryMeter_AbilityActivated;
 
-    // Check if the meter is already full;
-    memoryMeterFull = memorySystem.GetMemoryLevel() == 3;
+  // Unsubscribe to any Actions used for the quest.
+  private protected override void OnCleanUp() => memorySystem.OnMemoryAbilityActivated -= MemoryMeter_AbilityActivated;
 
-    memorySystem.OnMemoryBarFull += MemoryMeter_Full;
-    memorySystem.OnMemoryAbilityActivated += MemoryMeter_AbilityActivated;
-  }
-
-
-  private protected override void OnCleanUp()
-  {
-    if (memorySystem == null)
-      return;
-
-    memorySystem.OnMemoryBarFull -= MemoryMeter_Full;
-    memorySystem.OnMemoryAbilityActivated -= MemoryMeter_AbilityActivated;
-  }
-
-  private protected override void OnUpdate()
-  {
-    if (RequireFullBar && memoryMeterFull)
-      Complete();
-    else if(memoryAbilityActivated)
-      Complete();
-  }
-
-
-  private void MemoryMeter_Full(string shardHolderType)
-  {
-    if(memoryMeterFull == false && RequireFullBar)
-      memoryMeterFull = true;
-  }
+  private protected override void OnUpdate() { }
 
   private void MemoryMeter_AbilityActivated(string shardHolderType)
   {
+    // Check if the Memory Ability is the required one.
     if (shardHolderType == RequiredMemoryAbility)
-      memoryAbilityActivated = true;
-    else if (RequiredMemoryAbility == string.Empty)
-      memoryAbilityActivated = true;
+      Complete();
   }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
+using System;
 
 public class MomentumSystem : MonoBehaviour
 {
@@ -17,8 +18,8 @@ public class MomentumSystem : MonoBehaviour
     /// </summary>
     [SerializeField, SerializedDictionary("Chain Milestone", "% EXP Bonus")] private SerializedDictionary<int, float> chainRewards = new();
 
-    private int momentum;
-    public int Momentum => momentum;
+    public int Momentum { get; private set; }
+    public Action<int> OnMomentumUpdated;
 
     private void Awake()
     {
@@ -58,7 +59,7 @@ public class MomentumSystem : MonoBehaviour
 
     private void HandleMomentum()
     {
-        if (momentum > 0)
+        if (Momentum > 0)
         {
             timer += Time.deltaTime;
         }
@@ -70,13 +71,15 @@ public class MomentumSystem : MonoBehaviour
 
     public void AddMomentum()
     {
-        momentum++;
+        Momentum++;
+        OnMomentumUpdated?.Invoke(Momentum);
         timer = 0f;
     }
 
     private void ResetMomentum()
     {
-        momentum = 0;
+        Momentum = 0;
+        OnMomentumUpdated?.Invoke(Momentum);
         timer = 0;
     }
 
@@ -89,7 +92,7 @@ public class MomentumSystem : MonoBehaviour
             return;
         }
 
-        if (momentum == 0) return; // No need to check for rewards if there is no chain
+        if (Momentum == 0) return; // No need to check for rewards if there is no chain
 
         List<int> milestones = new List<int>(chainRewards.Keys);
         milestones.Sort(); // Ensures the milestones are in ascending order
@@ -98,7 +101,7 @@ public class MomentumSystem : MonoBehaviour
         int currentMilestone = 0;
         foreach(int milestone in milestones)
         {
-            if (milestone > momentum) break;
+            if (milestone > Momentum) break;
             currentMilestone = milestone;
         }
 

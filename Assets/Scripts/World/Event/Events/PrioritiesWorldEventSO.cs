@@ -40,7 +40,7 @@ public class PrioritiesWorldEventSO : WorldEventSO
     private int activeLands;
 
     private List<GameObject> debugSpheres = new List<GameObject>();
-    private Dictionary<Enemy, Marker> enemyMarkers = new();
+    public Dictionary<Enemy, Marker> enemyMarkers { get; private set; } = new();
 
     private int enemiesRemaining;
     private int totalEnemiesToKill;

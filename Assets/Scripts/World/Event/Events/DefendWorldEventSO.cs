@@ -129,7 +129,7 @@ public class DefendWorldEventSO : WorldEventSO
         }
     }
 
-    private void DefendEventEntity_OnEntityDeath(GameObject killerObject)
+    private void DefendEventEntity_OnEntityDeath(Entity victim, GameObject killerObject)
     {
         DefendEventEntity.OnEntityDeath -= DefendEventEntity_OnEntityDeath;
 

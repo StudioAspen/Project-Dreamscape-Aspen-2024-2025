@@ -114,8 +114,8 @@ MonoBehaviour:
         guid: ccf20bbfd9679242974dafacf7f90ea1
       Path: Events\Default Work Unit\UI\ButtonHover
       maxAttenuation: 0
-      maxDuration: 3.030204
-      minDuration: 3.030204
+      maxDuration: -1
+      minDuration: -1
     - name: ButtonSelect
       guid: a5c2723f96ccc048b19a108a7a4fc68b
       id: 2903558085
@@ -134,8 +134,8 @@ MonoBehaviour:
         guid: a5c2723f96ccc048b19a108a7a4fc68b
       Path: Events\Default Work Unit\UI\ButtonSelect
       maxAttenuation: 0
-      maxDuration: 2.324898
-      minDuration: 2.324898
+      maxDuration: -1
+      minDuration: -1
     - name: CardSelect
       guid: 9fcc251bf3243d4a9c586ad52cff5ffc
       id: 3128074203
@@ -154,8 +154,8 @@ MonoBehaviour:
         guid: 9fcc251bf3243d4a9c586ad52cff5ffc
       Path: Events\Default Work Unit\UI\CardSelect
       maxAttenuation: 0
-      maxDuration: 4.4465
-      minDuration: 4.4465
+      maxDuration: -1
+      minDuration: -1
     - name: Charger
       guid: b42fc9c747fa7045b140fdf8fbac06e2
       id: 3146088653
@@ -191,8 +191,8 @@ MonoBehaviour:
         guid: cb00df5346c3f740a7cd60b6f856e046
       Path: Events\Default Work Unit\UI\EmpowerTokenSelect
       maxAttenuation: 0
-      maxDuration: 1.845125
-      minDuration: 1.845125
+      maxDuration: -1
+      minDuration: -1
     - name: Follower
       guid: 31b20fd398887246942d2cdc85bf5293
       id: 1377093687
@@ -228,8 +228,8 @@ MonoBehaviour:
         guid: 0ab50b1e6433074084f7718548624f83
       Path: Events\Default Work Unit\UI\FoodBiomeSelect
       maxAttenuation: 0
-      maxDuration: 2.0549376
-      minDuration: 2.0549376
+      maxDuration: -1
+      minDuration: -1
     - name: Footsteps
       guid: f4e4ddac7c739145961d24623f73a119
       id: 2385628198
@@ -268,8 +268,8 @@ MonoBehaviour:
         guid: dbcd13a229424348b0f6d1b501bb403a
       Path: Events\Default Work Unit\UI\Pause
       maxAttenuation: 0
-      maxDuration: 6.0081635
-      minDuration: 6.0081635
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerFootstepLeft
       guid: 626899ad71b75b438c3d664deac11e08
       id: 3632326709
@@ -287,9 +287,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: 626899ad71b75b438c3d664deac11e08
       Path: Events\Default Work Unit\Charger\Play_ChargerFootstepLeft
-      maxAttenuation: 100
-      maxDuration: 1.6149433
-      minDuration: 1.6149433
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerFootstepRight
       guid: c8acadb4c6d8b14a9e98de04ffde6d62
       id: 282746656
@@ -307,9 +307,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: c8acadb4c6d8b14a9e98de04ffde6d62
       Path: Events\Default Work Unit\Charger\Play_ChargerFootstepRight
-      maxAttenuation: 100
-      maxDuration: 1.6149433
-      minDuration: 1.6149433
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerHitLeft
       guid: 810aca61fa60454dbd9427e3ac79a9d1
       id: 2655804996
@@ -327,9 +327,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: 810aca61fa60454dbd9427e3ac79a9d1
       Path: Events\Default Work Unit\Charger\Play_ChargerHitLeft
-      maxAttenuation: 100
-      maxDuration: 1.5465533
-      minDuration: 1.5465533
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerHitRight
       guid: c2eebc9bbf5f7c459992e50ab35807de
       id: 520370339
@@ -347,9 +347,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: c2eebc9bbf5f7c459992e50ab35807de
       Path: Events\Default Work Unit\Charger\Play_ChargerHitRight
-      maxAttenuation: 100
-      maxDuration: 1.5465533
-      minDuration: 1.5465533
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerMissLeft
       guid: c90f317e244c3e4aac04d62ff70be594
       id: 543040975
@@ -367,9 +367,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: c90f317e244c3e4aac04d62ff70be594
       Path: Events\Default Work Unit\Charger\Play_ChargerMissLeft
-      maxAttenuation: 100
-      maxDuration: 1.3736734
-      minDuration: 1.3736734
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_ChargerMissRight
       guid: 576916d45e11c74c9c30cd7d5a370bfe
       id: 166950546
@@ -387,9 +387,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: 576916d45e11c74c9c30cd7d5a370bfe
       Path: Events\Default Work Unit\Charger\Play_ChargerMissRight
-      maxAttenuation: 100
-      maxDuration: 1.3736734
-      minDuration: 1.3736734
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_DreamForestBiomeSelect
       guid: f91ea140db9f104f862de5fa3e98a74d
       id: 2070812680
@@ -427,9 +427,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: fd4da1053dd6c44fa49c70369500ee54
       Path: Events\Default Work Unit\Follower\Play_FollowerFootstepLeft
-      maxAttenuation: 100
-      maxDuration: 1.3803629
-      minDuration: 1.3803629
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_FollowerFootstepRight
       guid: a39b79b31a19404b90f8d3aed1d78a63
       id: 1352216468
@@ -447,9 +447,9 @@ MonoBehaviour:
         ObjectType: 3
         guid: a39b79b31a19404b90f8d3aed1d78a63
       Path: Events\Default Work Unit\Follower\Play_FollowerFootstepRight
-      maxAttenuation: 100
-      maxDuration: 1.3803629
-      minDuration: 1.3803629
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Play_LavaBiomeSelect
       guid: 1f497ce3380f7c4b8ca45ed28bc573e2
       id: 1598644012
@@ -556,8 +556,8 @@ MonoBehaviour:
         guid: 2b6771c50542664d96b518bd0fd9fda1
       Path: Events\Default Work Unit\Player\PlayerDash
       maxAttenuation: 0
-      maxDuration: 1.705034
-      minDuration: 1.705034
+      maxDuration: -1
+      minDuration: -1
     - name: PlayerFootstepSolidLeft
       guid: fee67c1abbc4b0478cae006b3e7ad83d
       id: 732023582
@@ -579,8 +579,8 @@ MonoBehaviour:
         guid: fee67c1abbc4b0478cae006b3e7ad83d
       Path: Events\Default Work Unit\Player\Footsteps\PlayerFootstepSolidLeft
       maxAttenuation: 0
-      maxDuration: 1.6133786
-      minDuration: 1.6133786
+      maxDuration: -1
+      minDuration: -1
     - name: PlayerFootstepSolidRight
       guid: ee5e546459273d4b9d62ee1aeb4c0c08
       id: 3581650749
@@ -602,8 +602,8 @@ MonoBehaviour:
         guid: ee5e546459273d4b9d62ee1aeb4c0c08
       Path: Events\Default Work Unit\Player\Footsteps\PlayerFootstepSolidRight
       maxAttenuation: 0
-      maxDuration: 1.6133786
-      minDuration: 1.6133786
+      maxDuration: -1
+      minDuration: -1
     - name: PlayerJump
       guid: b67ed53e740e5041893fb227877d53ef
       id: 4008126242
@@ -622,8 +622,8 @@ MonoBehaviour:
         guid: b67ed53e740e5041893fb227877d53ef
       Path: Events\Default Work Unit\Player\PlayerJump
       maxAttenuation: 0
-      maxDuration: 1.7039909
-      minDuration: 1.7039909
+      maxDuration: -1
+      minDuration: -1
     - name: PlayerLand
       guid: 5047ef1c12df264ba2225c55bf893853
       id: 846198821
@@ -642,8 +642,8 @@ MonoBehaviour:
         guid: 5047ef1c12df264ba2225c55bf893853
       Path: Events\Default Work Unit\Player\PlayerLand
       maxAttenuation: 0
-      maxDuration: 1.7086622
-      minDuration: 1.7086622
+      maxDuration: -1
+      minDuration: -1
     - name: Resume
       guid: 0c1f3fe60ea8ea4bb09194d4f5d2b361
       id: 953277036
@@ -662,8 +662,8 @@ MonoBehaviour:
         guid: 0c1f3fe60ea8ea4bb09194d4f5d2b361
       Path: Events\Default Work Unit\UI\Resume
       maxAttenuation: 0
-      maxDuration: 6.0081635
-      minDuration: 6.0081635
+      maxDuration: -1
+      minDuration: -1
     - name: Shielder
       guid: aa1d1ea790221545bcb4619ab52aeef0
       id: 4294045107
@@ -733,8 +733,8 @@ MonoBehaviour:
         guid: b33d54a0ae14b2459f994836587ea95f
       Path: Events\Default Work Unit\UI\WeakenTokenSelect
       maxAttenuation: 0
-      maxDuration: 1.468573
-      minDuration: 1.468573
+      maxDuration: -1
+      minDuration: -1
     - name: WeaponSwing
       guid: 653eabd70c0ff54d985fad2740936a7c
       id: 899748333
@@ -753,8 +753,8 @@ MonoBehaviour:
         guid: 653eabd70c0ff54d985fad2740936a7c
       Path: Events\Default Work Unit\Player\WeaponSwing
       maxAttenuation: 0
-      maxDuration: 0.45278913
-      minDuration: 0.45278913
+      maxDuration: -1
+      minDuration: -1
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:

@@ -63,7 +63,9 @@ MonoBehaviour:
   <CurrentHealth>k__BackingField: 0
   <MaxHealth>k__BackingField:
     <BaseValue>k__BackingField: 160
-  baseSpeed: 1
+  <Defense>k__BackingField:
+    <BaseValue>k__BackingField: 0
+  <BaseSpeed>k__BackingField: 1
   rotationSpeed: 7.5
   mass: 1
   <StatusSpeedModifier>k__BackingField:
@@ -97,6 +99,7 @@ MonoBehaviour:
     <AnimationClip>k__BackingField: {fileID: -203655887218126122, guid: 7a58f425ea65e914ca45d1476d2466aa,
       type: 3}
     <SpawnDuration>k__BackingField: 1.5
+  <EnemyType>k__BackingField: Charger
   <Cost>k__BackingField: 3
   <EXPValue>k__BackingField:
     <BaseValue>k__BackingField: 40
