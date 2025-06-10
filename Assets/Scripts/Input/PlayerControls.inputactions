@@ -342,7 +342,7 @@
                     "id": "37a9a36a-1d21-467b-a2df-7634f8ca78ae",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Press(pressPoint=0.6)",
                     "initialStateCheck": true
                 },
                 {
@@ -369,6 +369,17 @@
                     "name": "",
                     "id": "629dddf4-a2fe-4e16-81de-ff39e33c90bf",
                     "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Gamepad",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e2a3245-5f6f-42ff-82e8-339207922a17",
+                    "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Gamepad",
@@ -509,7 +520,7 @@
                     "id": "3d9667d7-2e3d-4210-b883-a3946a16537e",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(pressPoint=0.6)",
                     "initialStateCheck": true
                 },
                 {
@@ -563,6 +574,17 @@
                     "name": "",
                     "id": "162f1133-1e6c-4708-89ab-e463bba7da92",
                     "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Gamepad",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "51dfaa3b-b840-4ae9-976d-5139b9d3c3ec",
+                    "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Gamepad",
@@ -769,7 +791,7 @@
                     "id": "752b7041-a5e0-4df3-943a-3a783bc36199",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
