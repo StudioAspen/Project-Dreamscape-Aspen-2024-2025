@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,14 +13,13 @@ public class BirdsEyeCameraController : MonoBehaviour
     private ProgressionManager progressionManager;
 
     [Header("Settings")]
-    [SerializeField] private float minMoveSpeed = 30f;
-    [SerializeField] private float maxMoveSpeed = 100f;
+    [SerializeField] private Ease moveEaseType = Ease.OutCirc;
+    [SerializeField] private float moveDuration = 0.25f;
     [SerializeField] private float zoomSpeed = 500f;
     [SerializeField] private float minZoom = 25f;
     [SerializeField] private float maxZoom = 100f;
-    private Vector3 moveDirection;
-    private float currentMoveSpeed;
     private float zoomDelta;
+    private Vector2Int currentTilePosition = Vector2Int.zero;
 
     private void Start()
     {
@@ -29,13 +29,11 @@ public class BirdsEyeCameraController : MonoBehaviour
         progressionManager = FindObjectOfType<ProgressionManager>();
 
         playerControls.LandPlacement.Movement.performed += PlayerControls_OnMovementPerformed;
-        playerControls.LandPlacement.Movement.canceled += PlayerControls_OnMovementCanceled;
         playerControls.LandPlacement.Zoom.performed += PlayerControls_OnZoomPerformed;
         playerControls.LandPlacement.Zoom.canceled += PlayerControls_OnZoomCanceled;
         playerControls.LandPlacement.Select.performed += PlayerControls_LandPlacement_OnSelectedPerformed;
 
-        playerControls.LandEmpowerment.Movement.performed += PlayerControls_OnMovementPerformed;
-        playerControls.LandEmpowerment.Movement.canceled += PlayerControls_OnMovementCanceled;
+        playerControls.LandEmpowerment.Movement.performed += PlayerControlsEmpowerment_OnMovementPerformed;
         playerControls.LandEmpowerment.Zoom.performed += PlayerControls_OnZoomPerformed;
         playerControls.LandEmpowerment.Empower.performed += PlayerControls_LandEmpowerment_OnEmpowerPerformed;
         playerControls.LandEmpowerment.Weaken.performed += PlayerControls_LandEmpowerment_OnWeakenPerformed;
@@ -43,8 +41,6 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandEmpowerment.Continue.performed += PlayerControls_LandEmpowerment_OnContinuePerformed;
 
         gameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
-        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom) / (maxZoom - minZoom));
 
         GameManager_OnGameStateChanged(gameManager.CurrentState); // Manually call this to set the initial state of the camera. Race case with gameManager.
     }
@@ -55,7 +51,7 @@ public class BirdsEyeCameraController : MonoBehaviour
         playerControls.LandPlacement.Zoom.performed -= PlayerControls_OnZoomPerformed;
         playerControls.LandPlacement.Select.performed -= PlayerControls_LandPlacement_OnSelectedPerformed;
 
-        playerControls.LandEmpowerment.Movement.performed -= PlayerControls_OnMovementPerformed;
+        playerControls.LandEmpowerment.Movement.performed -= PlayerControlsEmpowerment_OnMovementPerformed;
         playerControls.LandEmpowerment.Zoom.performed -= PlayerControls_OnZoomPerformed;
         playerControls.LandEmpowerment.Empower.performed -= PlayerControls_LandEmpowerment_OnEmpowerPerformed;
         playerControls.LandEmpowerment.Weaken.performed -= PlayerControls_LandEmpowerment_OnWeakenPerformed;
@@ -67,7 +63,6 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void Update()
     {
-        HandleMovement();
         HandleZoom();
 
         HandleGhostLand();
@@ -85,17 +80,36 @@ public class BirdsEyeCameraController : MonoBehaviour
 
     private void PlayerControls_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        moveDirection = new Vector3(context.ReadValue<Vector2>().x, 0, context.ReadValue<Vector2>().y);
+        if (gameManager.CurrentState != GameState.LAND_PLACEMENT) return;
+
+        Vector2 moveDirection = context.ReadValue<Vector2>();
+        Vector2Int snappedMoveDirection = new Vector2Int(Mathf.RoundToInt(moveDirection.x), Mathf.RoundToInt(moveDirection.y));
+
+        if(snappedMoveDirection == Vector2Int.zero) return;
+
+        Vector2Int targetTile = currentTilePosition + snappedMoveDirection;
+        if (worldManager.Borders.ContainsKey(targetTile) || worldManager.SpawnedLands.ContainsKey(targetTile))
+        {
+            currentTilePosition = targetTile;
+            TweenToTilePosition(currentTilePosition);
+        }
     }
 
-    private void PlayerControls_OnMovementCanceled(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    private void PlayerControlsEmpowerment_OnMovementPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        moveDirection = Vector3.zero;
-    }
+        if (gameManager.CurrentState != GameState.LAND_EMPOWERMENT) return;
 
-    private void HandleMovement()
-    {
-        transform.Translate(currentMoveSpeed * Time.unscaledDeltaTime * moveDirection, Space.World);
+        Vector2 moveDirection = context.ReadValue<Vector2>();
+        Vector2Int snappedMoveDirection = new Vector2Int(Mathf.RoundToInt(moveDirection.x), Mathf.RoundToInt(moveDirection.y));
+
+        if (snappedMoveDirection == Vector2Int.zero) return;
+
+        Vector2Int targetTile = currentTilePosition + snappedMoveDirection;
+        if (worldManager.SpawnedLands.ContainsKey(targetTile))
+        {
+            currentTilePosition = targetTile;
+            TweenToTilePosition(currentTilePosition);
+        }
     }
 
     private void PlayerControls_OnZoomPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -117,8 +131,6 @@ public class BirdsEyeCameraController : MonoBehaviour
         float yPosition = transform.position.y;
         yPosition = Mathf.Clamp(yPosition, minZoom, maxZoom);
         transform.position = new Vector3(transform.position.x, yPosition, transform.position.z);
-
-        currentMoveSpeed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, (transform.position.y - minZoom) / (maxZoom - minZoom));
     }
 
     private void PlayerControls_LandPlacement_OnSelectedPerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
@@ -177,5 +189,13 @@ public class BirdsEyeCameraController : MonoBehaviour
 
         worldManager.DisableLandLevelTexts();
         worldManager.DisableGhostLand();
+    }
+
+    private void TweenToTilePosition(Vector2Int tilePosition)
+    {
+        DOTween.Kill(transform);
+
+        Vector3 worldMoveAmount = worldManager.LandScale * new Vector3(tilePosition.x, 0, tilePosition.y);
+        transform.DOMove(transform.position.y * Vector3.up + worldMoveAmount, moveDuration).SetEase(moveEaseType).SetUpdate(true);
     }
 }
